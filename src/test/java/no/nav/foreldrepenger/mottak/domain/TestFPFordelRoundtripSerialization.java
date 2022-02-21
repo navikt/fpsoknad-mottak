@@ -12,6 +12,7 @@ import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_FOREL
 import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.common.util.Versjon.V3;
 import static no.nav.foreldrepenger.mottak.innsending.MottakController.INNSENDING;
+import static no.nav.foreldrepenger.mottak.innsending.MottakDevController.INNSENDING_PREPROD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
@@ -148,6 +149,11 @@ class TestFPFordelRoundtripSerialization {
     void testPing() {
         assertEquals("Hallo joe fra ubeskyttet ressurs",
                 template.getForObject(INNSENDING + "/ping?navn=joe", String.class));
+    }
+
+    @Test
+    void test1() {
+        assertEquals(new AktørId("42"), template.getForObject(INNSENDING_PREPROD + "/test", AktørId.class));
     }
 
     @Test

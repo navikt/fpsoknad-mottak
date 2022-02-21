@@ -52,17 +52,17 @@ public class SvangerskapspengerInfoRenderer {
     private float frilans(Frilans frilans, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("frilans"), cos, y);
         List<String> attributter = new ArrayList<>();
-        if (frilans.jobberFremdelesSomFrilans()) {
-            addIfSet(attributter, "frilanspågår", textFormatter.dato(frilans.periode().fom()));
+        if (frilans.isJobberFremdelesSomFrilans()) {
+            addIfSet(attributter, "frilanspågår", textFormatter.dato(frilans.getPeriode().fom()));
         } else {
-            attributter.add(txt("frilansavsluttet", textFormatter.dato(frilans.periode().fom())));
+            attributter.add(txt("frilansavsluttet", textFormatter.dato(frilans.getPeriode().fom())));
         }
-        attributter.add(txt("fosterhjem", jaNei(frilans.harInntektFraFosterhjem())));
-        attributter.add(txt("nyoppstartet", jaNei(frilans.nyOppstartet())));
+        attributter.add(txt("fosterhjem", jaNei(frilans.isHarInntektFraFosterhjem())));
+        attributter.add(txt("nyoppstartet", jaNei(frilans.isNyOppstartet())));
         y -= renderer.addLinesOfRegularText(attributter, cos, y);
-        if (!frilans.frilansOppdrag().isEmpty()) {
+        if (!frilans.getFrilansOppdrag().isEmpty()) {
             y -= renderer.addLineOfRegularText(txt("oppdrag"), cos, y);
-            List<String> oppdrag = safeStream(frilans.frilansOppdrag())
+            List<String> oppdrag = safeStream(frilans.getFrilansOppdrag())
                     .map(o -> o.oppdragsgiver() + " " + textFormatter.periode(o.periode()))
                     .toList();
             y -= renderer.addBulletList(INDENT, oppdrag, cos, y);

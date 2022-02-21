@@ -2,9 +2,6 @@ package no.nav.foreldrepenger.mottak.http;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import static no.nav.foreldrepenger.common.util.Constants.CLAIMS;
-import static no.nav.foreldrepenger.common.util.Constants.ISSUER;
-import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.lang.annotation.Documented;
@@ -15,22 +12,21 @@ import org.springframework.core.annotation.AliasFor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.security.token.support.core.api.ProtectedWithClaims;
-import no.nav.security.token.support.core.api.RequiredIssuers;
+import no.nav.foreldrepenger.boot.conditionals.ConditionalOnNotProd;
+import no.nav.security.token.support.core.api.Unprotected;
 
 @RestController
+@RequestMapping
+@Unprotected
 @Documented
-@RequiredIssuers({
-        @ProtectedWithClaims(issuer = ISSUER, claimMap = CLAIMS),
-        @ProtectedWithClaims(issuer = TOKENX, claimMap = CLAIMS) })
-
+@ConditionalOnNotProd
 @Target(TYPE)
 @Retention(RUNTIME)
-@RequestMapping
-public @interface ProtectedRestController {
+public @interface UnprotectedRestController {
     @AliasFor(annotation = RequestMapping.class, attribute = "value")
     String[] value() default {};
 
     @AliasFor(annotation = RequestMapping.class, attribute = "produces")
     String[] produces() default APPLICATION_JSON_VALUE;
+
 }

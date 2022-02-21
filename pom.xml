@@ -32,7 +32,7 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
         <springfox.version>3.0.0</springfox.version>
-        <mottak-felles.version>0.5.1</mottak-felles.version>
+        <mottak-felles.version>0.5.0</mottak-felles.version>
     </properties>
     <scm>
         <connection>scm:git:https://github.com/navikt/fpsoknad-mottak.git</connection>
