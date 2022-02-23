@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.oppslag.dkif;
 import java.util.Map;
 import java.util.Optional;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
@@ -18,6 +17,5 @@ public record DigitalKontaktinfo(Map<String, Kontaktinformasjon> kontaktinfo) {
     }
 }
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 record Kontaktinformasjon(@JsonProperty("spraak") Målform målform) {
 }
