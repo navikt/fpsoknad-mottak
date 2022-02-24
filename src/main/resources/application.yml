@@ -65,9 +65,6 @@ no.nav:
               tokenx:
                  discovery-url: ${token.x.well.known.url}
                  accepted-audience: ${token.x.client.id}
-              selvbetjening:
-                 discovery-url: ${loginservice.idporten.discovery.url}
-                 accepted-audience: ${loginservice.idporten.audience}
 
 management:
    metrics:

@@ -35,7 +35,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.CallIdGenerator;
 import no.nav.foreldrepenger.common.domain.Kvittering;
 import no.nav.foreldrepenger.common.domain.felles.TestUtils;
@@ -74,8 +73,6 @@ import no.nav.security.token.support.spring.api.EnableJwtTokenValidation;
         "kafka.username=vtp",
         "kafka.password=vtp",
         "sak.rs.url=test",
-        "loginservice.idporten.discovery.url=test",
-        "loginservice.idporten.audience=test",
         "bootstrap.servers=test",
         "pdl.graphql.base.url=test",
         "fpsoknad.mottak=test",

@@ -18,9 +18,6 @@ no.nav:
                     aareg-service:
                         token-exchange:
                             audience: prod-fss:teamforeldrepenger:aareg-services-nais # TODO verifiser at de bruker aareg-services-nais i metadata.name når de har støtte
-            issuer:
-               selvbetjening:
-                 proxy-url: http://webproxy.nais:8088
 spring:
     config.import: vault://
     cloud:

@@ -44,10 +44,6 @@ public class TokenUtil {
         return fnr().kjønn();
     }
 
-    public String bearerToken() {
-        return erAutentisert() ? BEARER + getToken() : null;
-    }
-
     public boolean erAutentisert() {
         return getSubject() != null;
     }
@@ -60,14 +56,6 @@ public class TokenUtil {
                 .orElse(null);
     }
 
-    public AuthenticationLevel getLevel() {
-        return Optional.ofNullable(claimSet())
-                .map(c -> c.get("acr"))
-                .map(String.class::cast)
-                .map(AuthenticationLevel::of)
-                .orElse(AuthenticationLevel.NONE);
-    }
-
     public String getSubject() {
         return Optional.ofNullable(claimSet())
             .map(this::getSubjectFromPidOrSub)
@@ -77,12 +65,6 @@ public class TokenUtil {
     private String getSubjectFromPidOrSub(JwtTokenClaims claims) {
         return Optional.ofNullable(claims.getStringClaim("pid"))
             .orElseGet(claims::getSubject);
-    }
-
-    public boolean harTokenFor(String issuer) {
-        return Optional.ofNullable(context())
-            .map(s -> s.hasTokenFor(issuer))
-            .orElse(false);
     }
 
     public String autentisertBruker() {
@@ -145,11 +127,6 @@ public class TokenUtil {
                 .filter(Objects::nonNull)
                 .map(JwtToken::getTokenAsString)
                 .orElse(null);
-    }
-
-    public JwtToken getJWTToken(String issuer) {
-        return ctxHolder.getTokenValidationContext().getJwtToken(issuer);
-
     }
 
     @Override

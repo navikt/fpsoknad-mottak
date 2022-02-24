@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.http;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static no.nav.foreldrepenger.common.util.Constants.CLAIMS;
-import static no.nav.foreldrepenger.common.util.Constants.ISSUER;
 import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -21,10 +20,7 @@ import no.nav.security.token.support.core.api.RequiredIssuers;
 
 @RestController
 @Documented
-@RequiredIssuers({
-        @ProtectedWithClaims(issuer = ISSUER, claimMap = CLAIMS),
-        @ProtectedWithClaims(issuer = TOKENX, claimMap = CLAIMS) })
-
+@RequiredIssuers(@ProtectedWithClaims(issuer = TOKENX, claimMap = CLAIMS))
 @Target(TYPE)
 @Retention(RUNTIME)
 @Validated
