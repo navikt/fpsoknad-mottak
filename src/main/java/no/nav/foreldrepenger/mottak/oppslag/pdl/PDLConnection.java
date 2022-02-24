@@ -68,8 +68,8 @@ public class PDLConnection implements PingEndpointAware {
     }
 
     public Person hentSøker() {
-        return Optional.ofNullable(oppslagSøker(tokenUtil.getSubject()))
-                .map(s -> map(tokenUtil.getSubject(), aktøridFor(tokenUtil.fnr()), målform(), kontonr(), barn(s), s))
+        return Optional.ofNullable(oppslagSøker(tokenUtil.fnr().value()))
+                .map(s -> map(tokenUtil.fnr(), aktøridFor(tokenUtil.fnr()), målform(), kontonr(), barn(s), s))
                 .orElse(null);
     }
 

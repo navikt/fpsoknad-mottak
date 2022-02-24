@@ -34,9 +34,9 @@ class PDLMapper {
     private PDLMapper() {
     }
 
-    static Person map(String fnrSøker, AktørId aktørId, Målform målform, Bankkonto bankkonto, Set<PDLBarn> barn, PDLSøker søker) {
+    static Person map(Fødselsnummer fnrSøker, AktørId aktørId, Målform målform, Bankkonto bankkonto, Set<PDLBarn> barn, PDLSøker søker) {
         return Person.builder()
-            .fnr(new Fødselsnummer(fnrSøker))
+            .fnr(fnrSøker)
             .aktørId(aktørId)
             .land(landkodeFra(søker.getStatsborgerskap()))
             .fødselsdato(fødselsdatoFra(søker.getFødselsdato()))

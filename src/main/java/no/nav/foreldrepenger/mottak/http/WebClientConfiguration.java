@@ -161,7 +161,7 @@ public class WebClientConfiguration {
             if (tokenUtil.erAutentisert()) {
                 return next.exchange(builder
                     .header(AUTHORIZATION, sts.bearerToken())
-                    .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())
+                    .header(NAV_PERSON_IDENT, tokenUtil.fnr().value())
                     .build());
             }
             LOG.trace("Uautentisert bruker, kan ikke sette auth headers");
@@ -180,7 +180,7 @@ public class WebClientConfiguration {
         return (req, next) -> next.exchange(ClientRequest.from(req)
                 .header(AUTHORIZATION, sts.bearerToken())
                 .header(NAV_CONSUMER_ID, consumerId())
-                .header(NAV_PERSONIDENTER, tokenUtil.getSubject())
+                .header(NAV_PERSONIDENTER, tokenUtil.fnr().value())
                 .build());
 
     }

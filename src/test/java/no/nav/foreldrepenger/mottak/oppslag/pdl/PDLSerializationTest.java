@@ -144,7 +144,7 @@ class PDLSerializationTest {
     @Test
     void testSøkerDTO() {
         assertEquals(søker(), PDLMapper
-            .map(ID_SØKER, AKTØR_SØKER, BOKMÅL, bankkonto(), Set.of(pdlBarn().withId(ID_BARN)), pdlSøker()));
+            .map(FNR_SØKER, AKTØR_SØKER, BOKMÅL, bankkonto(), Set.of(pdlBarn().withId(ID_BARN)), pdlSøker()));
     }
 
     @Test

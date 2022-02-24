@@ -27,7 +27,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import no.nav.foreldrepenger.common.error.SøknadEgenskapException;
 import no.nav.foreldrepenger.common.error.UnexpectedInputException;
-import no.nav.foreldrepenger.common.util.StringUtil;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.security.token.support.core.exceptions.JwtTokenValidatorException;
 import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException;
@@ -102,7 +101,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
             List<Object> messages) {
         var apiError = apiErrorFra(status, e, messages);
         if (tokenUtil.erAutentisert() && !tokenUtil.erUtløpt()) {
-            LOG.warn("[{} ({})] {} {} ({})", req.getContextPath(), subject(), status, apiError.getMessages(),
+            LOG.warn("[{} ({})] {} {} ({})", req.getContextPath(), innloggetBruker(), status, apiError.getMessages(),
                     status.value(), e);
         } else {
             LOG.debug("[{}] {} {} ({})", req.getContextPath(), status, apiError.getMessages(),
@@ -111,10 +110,9 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(e, apiError, headers, status, req);
     }
 
-    private String subject() {
-        return Optional.ofNullable(tokenUtil.getSubject())
-                .map(StringUtil::partialMask)
-                .map(s -> s + " (" + tokenUtil.getExpiration() + ")")
+    private String innloggetBruker() {
+        return Optional.ofNullable(tokenUtil.fnr())
+                .map(fnr -> fnr + " (" + tokenUtil.getExpiration() + ")")
                 .orElse("Uautentisert");
     }
 

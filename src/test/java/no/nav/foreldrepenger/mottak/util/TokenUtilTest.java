@@ -1,11 +1,10 @@
 package no.nav.foreldrepenger.mottak.util;
 
-import static no.nav.foreldrepenger.common.util.Constants.ISSUER;
+import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.mockito.quality.Strictness.LENIENT;
 
@@ -45,16 +44,16 @@ class TokenUtilTest {
     @BeforeEach
     void before() {
         when(holder.getTokenValidationContext()).thenReturn(context);
-        when(context.getClaims(eq(ISSUER))).thenReturn(claims);
+        when(context.getClaims(TOKENX)).thenReturn(claims);
         tokenHelper = new TokenUtil(holder);
     }
 
     @Test
     void testOK() {
-        when(claims.get(eq("exp")))
-                .thenReturn(toDate(LocalDateTime.now().minusHours(1)).toInstant().getEpochSecond());
+        when(claims.get("exp"))
+            .thenReturn(toDate(LocalDateTime.now().minusHours(1)).toInstant().getEpochSecond());
         when(claims.getSubject()).thenReturn(FNR.value());
-        assertEquals(FNR.value(), tokenHelper.autentisertBruker());
+        assertEquals(FNR, tokenHelper.fnr());
         assertTrue(tokenHelper.erAutentisert());
     }
 
@@ -62,21 +61,21 @@ class TokenUtilTest {
     void testNoContext() {
         when(holder.getTokenValidationContext()).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
-        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
+        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.fnr());
     }
 
     @Test
     void testNoClaims() {
-        when(context.getClaims(eq("selvbetjening"))).thenReturn(null);
+        when(context.getClaims(TOKENX)).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
-        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
+        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.fnr());
     }
 
     @Test
     void testNoClaimset() {
-        when(context.getClaims(eq(ISSUER))).thenReturn(null);
+        when(context.getClaims(TOKENX)).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
-        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
+        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.fnr());
     }
 
     @Test
@@ -84,27 +83,26 @@ class TokenUtilTest {
         when(claims.getSubject()).thenReturn(null);
         when(claims.getStringClaim(PID)).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
-        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
+        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.fnr());
     }
 
     @Test
     void nårSubjectIkkeFinnesISubSåHentesDetFraPidTest() {
         when(claims.getSubject()).thenReturn(null);
-        when(claims.getStringClaim(PID)).thenReturn(FNR.toString());
+        when(claims.getStringClaim(PID)).thenReturn(FNR.value());
         assertTrue(tokenHelper.erAutentisert());
-        assertEquals(tokenHelper.getSubject(), FNR.toString());
+        assertEquals(FNR, tokenHelper.fnr());
     }
 
     @Test
     void nårSubjectIkkeFinnesIPidSåHentesDetFraSubTest() {
-        when(claims.getSubject()).thenReturn(FNR.toString());
+        when(claims.getSubject()).thenReturn(FNR.value());
         when(claims.getStringClaim(PID)).thenReturn(null);
         assertTrue(tokenHelper.erAutentisert());
-        assertEquals(tokenHelper.getSubject(), FNR.toString());
+        assertEquals(FNR, tokenHelper.fnr());
     }
 
     private static Date toDate(LocalDateTime date) {
         return Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
     }
-
 }
