@@ -38,6 +38,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
@@ -128,6 +129,7 @@ class MappablePdfGeneratorTest {
 
     @Test
     void engangs() throws Exception {
+        when(tokenUtil.autentisertBruker()).thenReturn(new Fødselsnummer("010101010101"));
         try (var fos = new FileOutputStream("engangssøknad.pdf")) {
             fos.write(gen.generer(engangssøknad(fødsel(), true), person(), INITIELL_ENGANGSSTØNAD));
         }
