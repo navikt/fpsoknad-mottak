@@ -81,7 +81,7 @@ public class FordelSøknadSender implements SøknadSender {
 
     private void publiserHendelse(Konvolutt konvolutt, String dialogId, FordelResultat kvittering) {
         try {
-            hendelser.publiser(tokenUtil.fnr(), kvittering, dialogId, konvolutt);
+            hendelser.publiser(tokenUtil.autentisertBruker(), kvittering, dialogId, konvolutt);
         } catch (Exception e) {
             LOG.warn("Kunne ikke publisere hendelse", e);
         }

@@ -111,7 +111,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private String innloggetBruker() {
-        return Optional.ofNullable(tokenUtil.fnr())
+        return Optional.ofNullable(tokenUtil.autentisertBruker())
                 .map(fnr -> fnr + " (" + tokenUtil.getExpiration() + ")")
                 .orElse("Uautentisert");
     }

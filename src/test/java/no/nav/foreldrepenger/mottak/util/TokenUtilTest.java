@@ -53,7 +53,7 @@ class TokenUtilTest {
         when(claims.get("exp"))
             .thenReturn(toDate(LocalDateTime.now().minusHours(1)).toInstant().getEpochSecond());
         when(claims.getSubject()).thenReturn(FNR.value());
-        assertEquals(FNR, tokenHelper.fnr());
+        assertEquals(FNR, tokenHelper.autentisertBruker());
         assertTrue(tokenHelper.erAutentisert());
     }
 
@@ -61,21 +61,21 @@ class TokenUtilTest {
     void testNoContext() {
         when(holder.getTokenValidationContext()).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
-        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.fnr());
+        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
     }
 
     @Test
     void testNoClaims() {
         when(context.getClaims(TOKENX)).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
-        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.fnr());
+        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
     }
 
     @Test
     void testNoClaimset() {
         when(context.getClaims(TOKENX)).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
-        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.fnr());
+        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
     }
 
     @Test
@@ -83,7 +83,7 @@ class TokenUtilTest {
         when(claims.getSubject()).thenReturn(null);
         when(claims.getStringClaim(PID)).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
-        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.fnr());
+        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
     }
 
     @Test
@@ -91,7 +91,7 @@ class TokenUtilTest {
         when(claims.getSubject()).thenReturn(null);
         when(claims.getStringClaim(PID)).thenReturn(FNR.value());
         assertTrue(tokenHelper.erAutentisert());
-        assertEquals(FNR, tokenHelper.fnr());
+        assertEquals(FNR, tokenHelper.autentisertBruker());
     }
 
     @Test
@@ -99,7 +99,7 @@ class TokenUtilTest {
         when(claims.getSubject()).thenReturn(FNR.value());
         when(claims.getStringClaim(PID)).thenReturn(null);
         assertTrue(tokenHelper.erAutentisert());
-        assertEquals(FNR, tokenHelper.fnr());
+        assertEquals(FNR, tokenHelper.autentisertBruker());
     }
 
     private static Date toDate(LocalDateTime date) {

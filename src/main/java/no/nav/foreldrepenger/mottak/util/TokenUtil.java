@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import com.nimbusds.jwt.util.DateUtils;
 
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
-import no.nav.foreldrepenger.common.domain.felles.Kjønn;
 import no.nav.foreldrepenger.common.util.TimeUtil;
 import no.nav.security.token.support.core.context.TokenValidationContext;
 import no.nav.security.token.support.core.context.TokenValidationContextHolder;
@@ -36,8 +35,8 @@ public class TokenUtil {
                 .isPresent();
     }
 
-    public Kjønn kjønn() {
-        return fnr().kjønn();
+    public Fødselsnummer autentisertBruker() {
+        return new Fødselsnummer(fødselsnummerFraToken());
     }
 
     public boolean erAutentisert() {
@@ -52,10 +51,6 @@ public class TokenUtil {
             .orElse(null);
     }
 
-    public Fødselsnummer fnr() {
-        return new Fødselsnummer(autentisertBruker());
-    }
-
     private String getSubject() {
         return Optional.ofNullable(claimSet())
             .map(this::getSubjectFromPidOrSub)
@@ -67,7 +62,7 @@ public class TokenUtil {
             .orElseGet(claims::getSubject);
     }
 
-    private String autentisertBruker() {
+    private String fødselsnummerFraToken() {
         return Optional.ofNullable(getSubject())
             .orElseThrow(unauthenticated("Fant ikke subject, antagelig ikke autentisert"));
     }
