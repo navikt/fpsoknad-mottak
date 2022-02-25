@@ -85,9 +85,10 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         var annenForelder = stønad.getAnnenForelder();
         List<TemaBlokk> grupper = new ArrayList<>();
 
-        LOG.info("KJØNN {}", tokenUtil.kjønn());
+        var kjønn = tokenUtil.autentisertBruker().kjønn();
+        LOG.info("KJØNN {}", kjønn);
         // info om barn
-        grupper.add(omBarn(søknad, Kjønn.M.equals(tokenUtil.kjønn()), stønad));
+        grupper.add(omBarn(søknad, kjønn, stønad));
 
         // info om annen forelder
         if (annenForelder != null && annenForelder.hasId()) {
@@ -176,16 +177,16 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
 
     }
 
-    private TemaBlokk omBarn(Søknad søknad, boolean erMann, Engangsstønad stønad) {
+    private TemaBlokk omBarn(Søknad søknad, Kjønn kjønn, Engangsstønad stønad) {
         return TemaBlokk.builder()
                 .medOverskrift(txt("ombarn"))
-                .medUnderBlokker(omFødsel(søknad, erMann, stønad))
+                .medUnderBlokker(omFødsel(søknad, kjønn, stønad))
                 .build();
     }
 
-    private List<Blokk> omFødsel(Søknad søknad, boolean erMann, Engangsstønad stønad) {
+    private List<Blokk> omFødsel(Søknad søknad, Kjønn kjønn, Engangsstønad stønad) {
         if (erAdopsjon(stønad)) {
-            return adopsjon(stønad, erMann, søknad.getVedlegg());
+            return adopsjon(stønad, kjønn, søknad.getVedlegg());
         }
         if (erFremtidigFødsel(stønad)) {
             return fødsel(søknad, stønad);
@@ -193,13 +194,13 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         return født(stønad);
     }
 
-    private List<Blokk> adopsjon(Engangsstønad stønad, boolean erMann, List<Vedlegg> v) {
+    private List<Blokk> adopsjon(Engangsstønad stønad, Kjønn kjønn, List<Vedlegg> v) {
         var a = Adopsjon.class.cast(stønad.getRelasjonTilBarn());
         var blokker = new ArrayList<Blokk>();
         blokker.add(new FritekstBlokk(txt("adopsjonsdato", textFormatter.dato(a.getOmsorgsovertakelsesdato()))));
         blokker.add(new FritekstBlokk(txt("fødselsdato", textFormatter.datoer(a.getFødselsdato()))));
         blokker.add(new FritekstBlokk(txt("ektefellesbarn", textFormatter.yesNo(a.isEktefellesBarn()))));
-        if (erMann) {
+        if (Kjønn.M.equals(kjønn)) {
             blokker.add(new FritekstBlokk(txt("søkeradopsjonalene", textFormatter.yesNo(a.isSøkerAdopsjonAlene()))));
         }
 

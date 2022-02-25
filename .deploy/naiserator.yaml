@@ -14,8 +14,6 @@ spec:
         - application: fpinfo-historikk
         - application: foreldrepengesoknad-api
           cluster: {{ cluster_foreldrepengesoknad-api }}
-  envFrom:
-    - configmap: loginservice-idporten
   image: {{image}}
   port: 8080
   replicas:

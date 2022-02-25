@@ -32,7 +32,7 @@ public class OppslagController {
 
     @GetMapping("/aktoer")
     public AktørId aktør() {
-        return oppslag.aktørId(tokenUtil.fnr());
+        return oppslag.aktørId(tokenUtil.autentisertBruker());
     }
 
     @GetMapping("/ping")

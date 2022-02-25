@@ -72,9 +72,6 @@ no.nav:
                 tokenx:
                     discovery-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
                     accepted-audience: lokal
-                selvbetjening:
-                    discovery-url: http://localhost:8060/rest/AzureAd/loginservice/v2.0/.well-known/openid-configuration
-                    accepted-audience: OIDC
 
 http.proxy:
 
