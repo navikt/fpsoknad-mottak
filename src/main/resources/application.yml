@@ -122,3 +122,5 @@ spring:
       banner-mode: off
 springdoc:
     packages-to-scan: no.nav.foreldrepenger.mottak
+    swagger-ui:
+        disable-swagger-default-url: true
