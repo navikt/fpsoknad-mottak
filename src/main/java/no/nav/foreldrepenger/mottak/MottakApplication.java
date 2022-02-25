@@ -12,7 +12,7 @@ import org.springframework.retry.annotation.EnableRetry;
 import no.nav.security.token.support.client.spring.oauth2.EnableOAuth2Client;
 import no.nav.security.token.support.spring.api.EnableJwtTokenValidation;
 
-@EnableJwtTokenValidation(ignore = { "graphql.spring", "org.springframework", "springfox.documentation" })
+@EnableJwtTokenValidation(ignore = { "graphql.spring", "org.springframework", "org.springdoc" })
 @SpringBootApplication
 @EnableCaching
 @EnableRetry

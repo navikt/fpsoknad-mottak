@@ -120,3 +120,5 @@ spring:
          value-serializer: org.apache.kafka.common.serialization.StringSerializer
    main:
       banner-mode: off
+springdoc:
+    packages-to-scan: no.nav.foreldrepenger.mottak
