@@ -65,7 +65,7 @@ public class InnsynTjeneste implements Innsyn {
 
     @Override
     public Saker sakerV2(AktørId aktørId) {
-        LOG.info("Henter sakerV2 for aktørId {}", partialMask(aktørId.value()));
+        LOG.info("Henter sakerV2 for aktørId {}", partialMask(aktørId.value(), 13));
         var saker = innsyn.sakerV2(aktørId.value());
         var beriketSaker = berikPerson(saker);
         LOG.info(CONFIDENTIAL, "{}", beriketSaker);
