@@ -11,7 +11,7 @@ import io.swagger.v3.oas.models.info.License;
 public class SwaggerConfiguration {
 
     @Bean
-    public OpenAPI springShopOpenAPI() {
+    public OpenAPI swaggerOpenAPI() {
         return new OpenAPI()
             .info(new Info().title("Fpsoknad-mottak")
                 .description("Mottar søknader om svangerskapspenger, foreldrepenger og engangsstønad fra frontend og sender dem videre inn i NAV for behandling")
