@@ -4,6 +4,7 @@ import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.common.util.StreamUtil.distinctByKey;
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.common.util.StringUtil.endelse;
+import static no.nav.foreldrepenger.common.util.StringUtil.partialMask;
 import static no.nav.foreldrepenger.mottak.innsyn.uttaksplan.ArbeidsgiverType.ORGANISASJON;
 import static no.nav.foreldrepenger.mottak.innsyn.uttaksplan.ArbeidsgiverType.PRIVAT;
 
@@ -64,7 +65,7 @@ public class InnsynTjeneste implements Innsyn {
 
     @Override
     public Saker sakerV2(AktørId aktørId) {
-        LOG.info("Henter sakerV2 for aktørId {}", aktørId.value());
+        LOG.info("Henter sakerV2 for aktørId {}", partialMask(aktørId.value()));
         var saker = innsyn.sakerV2(aktørId.value());
         var beriketSaker = berikPerson(saker);
         LOG.info(CONFIDENTIAL, "{}", beriketSaker);
