@@ -102,7 +102,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
             List<Object> messages) {
         var apiError = apiErrorFra(status, e, messages);
         if (tokenUtil.erAutentisert() && !tokenUtil.erUtløpt()) {
-            LOG.warn("[{} ({})] {} {}", req.getContextPath(), innloggetBruker(), status, apiError.getMessages());
+//            LOG.warn("[{} ({})] {} {}", req.getContextPath(), innloggetBruker(), status, apiError.getMessages());
         } else {
             LOG.debug("[{}] {} {}", req.getContextPath(), status, apiError.getMessages());
         }
@@ -120,11 +120,10 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private static List<String> validationErrors(MethodArgumentNotValidException e) {
-//        return e.getBindingResult().getFieldErrors()
-//                .stream()
-//                .map(FieldError::getField)
-//                .toList();
-        return List.of();
+        return e.getBindingResult().getFieldErrors()
+                .stream()
+                .map(FieldError::getField)
+                .toList();
     }
 
 }
