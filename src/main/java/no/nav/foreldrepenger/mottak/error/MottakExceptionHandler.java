@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.error;
 
-import static java.util.Arrays.asList;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -44,13 +43,23 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e,
-            HttpHeaders headers, HttpStatus status, WebRequest req) {
-        return logAndHandle(UNPROCESSABLE_ENTITY, e, req, headers, validationErrors(e));
+                                                                  HttpHeaders headers,
+                                                                  HttpStatus status,
+                                                                  WebRequest req) {
+        //Ikke logg rejected values fra exception, kan være sensitiv data
+        if (erAuthentisert()) {
+            LOG.warn("[{} ({})] {} {}", req.getContextPath(), innloggetBruker(), status, validationErrors(e));
+        } else {
+            LOG.debug("[{}] {} {}", req.getContextPath(), status, validationErrors(e));
+        }
+        return handleExceptionInternal(e, null, headers, UNPROCESSABLE_ENTITY, req);
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e,
-            HttpHeaders headers, HttpStatus status, WebRequest req) {
+                                                                  HttpHeaders headers,
+                                                                  HttpStatus status,
+                                                                  WebRequest req) {
         return logAndHandle(UNPROCESSABLE_ENTITY, e, req, headers);
     }
 
@@ -66,7 +75,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<Object> handleVersionException(SøknadEgenskapException e, WebRequest req) {
-        return logAndHandle(UNPROCESSABLE_ENTITY, e, req, e.getVersjon());
+        return logAndHandle(UNPROCESSABLE_ENTITY, e, req);
     }
 
     @ExceptionHandler
@@ -89,41 +98,35 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return logAndHandle(BAD_REQUEST, e, req);
     }
 
-    private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, Object... messages) {
-        return logAndHandle(status, e, req, new HttpHeaders(), messages);
+    private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req) {
+        return logAndHandle(status, e, req, new HttpHeaders());
     }
 
-    private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, HttpHeaders headers,
-            Object... messages) {
-        return logAndHandle(status, e, req, headers, asList(messages));
-    }
-
-    private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, HttpHeaders headers,
-            List<Object> messages) {
-        var apiError = apiErrorFra(status, e, messages);
-        if (tokenUtil.erAutentisert() && !tokenUtil.erUtløpt()) {
-//            LOG.warn("[{} ({})] {} {}", req.getContextPath(), innloggetBruker(), status, apiError.getMessages());
+    private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, HttpHeaders headers) {
+        if (erAuthentisert()) {
+            LOG.warn("[{} ({})] {}", req.getContextPath(), innloggetBruker(), status, e);
         } else {
-            LOG.debug("[{}] {} {}", req.getContextPath(), status, apiError.getMessages());
+            LOG.debug("[{}] {}", req.getContextPath(), status, e);
         }
-        return handleExceptionInternal(e, apiError, headers, status, req);
+        return handleExceptionInternal(e, null, headers, status, req);
     }
 
     private String innloggetBruker() {
         return Optional.ofNullable(tokenUtil.autentisertBruker())
-                .map(fnr -> fnr + " (" + tokenUtil.getExpiration() + ")")
-                .orElse("Uautentisert");
-    }
-
-    private static ApiError apiErrorFra(HttpStatus status, Exception e, List<Object> messages) {
-        return new ApiError(status, e, messages);
+            .map(fnr -> fnr + " (" + tokenUtil.getExpiration() + ")")
+            .orElse("Uautentisert");
     }
 
     private static List<String> validationErrors(MethodArgumentNotValidException e) {
-        return e.getBindingResult().getFieldErrors()
-                .stream()
-                .map(FieldError::getField)
-                .toList();
+        return e.getBindingResult()
+            .getFieldErrors()
+            .stream()
+            .map(FieldError::getField)
+            .toList();
+    }
+
+    private boolean erAuthentisert() {
+        return tokenUtil.erAutentisert() && !tokenUtil.erUtløpt();
     }
 
 }
