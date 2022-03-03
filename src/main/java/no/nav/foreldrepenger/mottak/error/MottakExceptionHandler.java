@@ -102,11 +102,9 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
             List<Object> messages) {
         var apiError = apiErrorFra(status, e, messages);
         if (tokenUtil.erAutentisert() && !tokenUtil.erUtløpt()) {
-            LOG.warn("[{} ({})] {} {} ({})", req.getContextPath(), innloggetBruker(), status, apiError.getMessages(),
-                    status.value(), e);
+            LOG.warn("[{} ({})] {} {}", req.getContextPath(), innloggetBruker(), status, apiError.getMessages());
         } else {
-            LOG.debug("[{}] {} {} ({})", req.getContextPath(), status, apiError.getMessages(),
-                    status.value(), e);
+            LOG.debug("[{}] {} {}", req.getContextPath(), status, apiError.getMessages());
         }
         return handleExceptionInternal(e, apiError, headers, status, req);
     }
