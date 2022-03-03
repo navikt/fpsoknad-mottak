@@ -120,10 +120,11 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private static List<String> validationErrors(MethodArgumentNotValidException e) {
-        return e.getBindingResult().getFieldErrors()
-                .stream()
-                .map(FieldError::getField)
-                .toList();
+//        return e.getBindingResult().getFieldErrors()
+//                .stream()
+//                .map(FieldError::getField)
+//                .toList();
+        return List.of();
     }
 
 }
