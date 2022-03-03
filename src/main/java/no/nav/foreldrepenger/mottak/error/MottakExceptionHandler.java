@@ -44,13 +44,13 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e,
-            HttpHeaders headers, HttpStatus status, WebRequest req) {
+                                                                  HttpHeaders headers, HttpStatus status, WebRequest req) {
         return logAndHandle(UNPROCESSABLE_ENTITY, e, req, headers, validationErrors(e));
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e,
-            HttpHeaders headers, HttpStatus status, WebRequest req) {
+                                                                  HttpHeaders headers, HttpStatus status, WebRequest req) {
         return logAndHandle(UNPROCESSABLE_ENTITY, e, req, headers);
     }
 
@@ -94,25 +94,28 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, HttpHeaders headers,
-            Object... messages) {
+                                                Object... messages) {
         return logAndHandle(status, e, req, headers, asList(messages));
     }
 
     private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, HttpHeaders headers,
-            List<Object> messages) {
+                                                List<Object> messages) {
         var apiError = apiErrorFra(status, e, messages);
-        if (tokenUtil.erAutentisert() && !tokenUtil.erUtløpt()) {
-//            LOG.warn("[{} ({})] {} {}", req.getContextPath(), innloggetBruker(), status, apiError.getMessages());
+        if (e instanceof MethodArgumentNotValidException) {
+            //quickfix, ikke log rejected value
+            LOG.warn("[{} ({})] {}", req.getContextPath(), status, messages);
+        } else if (tokenUtil.erAutentisert() && !tokenUtil.erUtløpt()) {
+            LOG.warn("[{} ({})] {} {}", req.getContextPath(), innloggetBruker(), status, apiError.getMessages(), e);
         } else {
-            LOG.debug("[{}] {} {}", req.getContextPath(), status, apiError.getMessages());
+            LOG.debug("[{}] {} {}", req.getContextPath(), status, apiError.getMessages(), e);
         }
         return handleExceptionInternal(e, apiError, headers, status, req);
     }
 
     private String innloggetBruker() {
         return Optional.ofNullable(tokenUtil.autentisertBruker())
-                .map(fnr -> fnr + " (" + tokenUtil.getExpiration() + ")")
-                .orElse("Uautentisert");
+            .map(fnr -> fnr + " (" + tokenUtil.getExpiration() + ")")
+            .orElse("Uautentisert");
     }
 
     private static ApiError apiErrorFra(HttpStatus status, Exception e, List<Object> messages) {
@@ -121,9 +124,9 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static List<String> validationErrors(MethodArgumentNotValidException e) {
         return e.getBindingResult().getFieldErrors()
-                .stream()
-                .map(FieldError::getField)
-                .toList();
+            .stream()
+            .map(FieldError::getField)
+            .toList();
     }
 
 }
