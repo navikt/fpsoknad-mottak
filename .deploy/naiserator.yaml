@@ -9,33 +9,33 @@ spec:
   tokenx:
     enabled: true
   accessPolicy:
-     inbound:
-       rules:
+    inbound:
+      rules:
         - application: fpinfo-historikk
         - application: foreldrepengesoknad-api
           cluster: {{ cluster_foreldrepengesoknad-api }}
   image: {{image}}
   port: 8080
   replicas:
-      min: 2
-      max: 3
+    min: 2
+    max: 3
   liveness:
-      path: /api/actuator/health/liveness
-      initialDelay: 60
+    path: /api/actuator/health/liveness
+    initialDelay: 60
   readiness:
-      path: /api/actuator/health/readiness
-      initialDelay: 60
+    path: /api/actuator/health/readiness
+    initialDelay: 60
   prometheus:
-      enabled: true
-      path: /api/actuator/prometheus
+    enabled: true
+    path: /api/actuator/prometheus
   ingresses:
-{{#each ingresses as |url|}}
-    - {{url}}
-{{/each}}
-  resources:
-      limits:
-        cpu: 1500m
-        memory: 3072Mi
-      requests:
-        cpu: 25m
-        memory: 1024Mi
+  {{#each ingresses as |url|}}
+     - {{url}}
+  {{/each}}
+resources:
+  limits:
+    cpu: 1500m
+    memory: 3072Mi
+  requests:
+    cpu: 25m
+    memory: 1024Mi

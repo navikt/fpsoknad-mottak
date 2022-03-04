@@ -1,38 +1,38 @@
 no.nav:
-    security:
-        jwt:
-            client:
-                registration:
-                    fpsoknad-oppslag:
-                        token-exchange:
-                            audience: prod-fss:teamforeldrepenger:fpsoknad-oppslag
-                    fpinfo:
-                        token-exchange:
-                            audience: prod-fss:teamforeldrepenger:fpinfo
-                    fpfordel:
-                        token-exchange:
-                            audience: prod-fss:teamforeldrepenger:fpfordel
-                    pdl-api:
-                        token-exchange:
-                            audience: prod-fss:pdl:pdl-api
-                    aareg-service:
-                        token-exchange:
-                            audience: prod-fss:teamforeldrepenger:aareg-services-nais # TODO verifiser at de bruker aareg-services-nais i metadata.name når de har støtte
+  security:
+    jwt:
+      client:
+        registration:
+          fpsoknad-oppslag:
+            token-exchange:
+              audience: prod-fss:teamforeldrepenger:fpsoknad-oppslag
+          fpinfo:
+            token-exchange:
+              audience: prod-fss:teamforeldrepenger:fpinfo
+          fpfordel:
+            token-exchange:
+              audience: prod-fss:teamforeldrepenger:fpfordel
+          pdl-api:
+            token-exchange:
+              audience: prod-fss:pdl:pdl-api
+          aareg-service:
+            token-exchange:
+              audience: prod-fss:teamforeldrepenger:aareg-services-nais # TODO verifiser at de bruker aareg-services-nais i metadata.name når de har støtte
 spring:
-    config.import: vault://
-    cloud:
-      vault:
-         reactive:
-           enabled: false
-         enabled: true
-         uri: https://vault.adeo.no
-         authentication: KUBERNETES
-         kubernetes:
-            role: fpsoknad-mottak
-            kubernetes-path: kubernetes/prod/fss
-            service-account-token-file: /var/run/secrets/kubernetes.io/serviceaccount/token
-         kv:
-            enabled: true
-            backend: kv/prod/fss
-            application-name: fpsoknad-mottak/teamforeldrepenger
-            default-context: fpsoknad-mottak/teamforeldrepenger
+  config.import: vault://
+  cloud:
+    vault:
+      reactive:
+        enabled: false
+      enabled: true
+      uri: https://vault.adeo.no
+      authentication: KUBERNETES
+      kubernetes:
+        role: fpsoknad-mottak
+        kubernetes-path: kubernetes/prod/fss
+        service-account-token-file: /var/run/secrets/kubernetes.io/serviceaccount/token
+      kv:
+        enabled: true
+        backend: kv/prod/fss
+        application-name: fpsoknad-mottak/teamforeldrepenger
+        default-context: fpsoknad-mottak/teamforeldrepenger

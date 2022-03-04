@@ -1,91 +1,91 @@
 arbeidsforhold:
-    base-uri: ${aareg.rs.url}
+  base-uri: ${aareg.rs.url}
 
 organisasjon:
-    base-uri: ${organisasjon.rs.url}
+  base-uri: ${organisasjon.rs.url}
 
 sts:
-    base-uri: ${oidc.sts.issuer.url}
-    username: ${kafka.username}
-    password: ${kafka.password}
+  base-uri: ${oidc.sts.issuer.url}
+  username: ${kafka.username}
+  password: ${kafka.password}
 
 sak:
-    securitytokenservice:
-        username: ${securitytokenservice.username}
-        password : ${securitytokenservice.password}
-        url: ${securitytokenservice.url}
-    saker:
-        url: ${sak.rs.url}
+  securitytokenservice:
+    username: ${securitytokenservice.username}
+    password : ${securitytokenservice.password}
+    url: ${securitytokenservice.url}
+  saker:
+    url: ${sak.rs.url}
 
 securitytokenservice:
-    username: ${kafka.username}
-    password : ${kafka.password}
-    url: ${securitytokenservice.url}
+  username: ${kafka.username}
+  password : ${kafka.password}
+  url: ${securitytokenservice.url}
 
 mottak:
-   sender:
-      domainevent:
-         enabled : false
+  sender:
+    domainevent:
+      enabled : false
 
 http.proxy:
 
 management:
-    endpoints:
-      web:
-        exposure:
-          include:  '*'
-    endpoint:
-        health:
-          enabled: false
-          show-details : always
+  endpoints:
+    web:
+      exposure:
+        include:  '*'
+  endpoint:
+    health:
+      enabled: false
+      show-details : always
 
 kafka:
-    username: ${kafka.username}
-    password : ${kafka.password}
+  username: ${kafka.username}
+  password : ${kafka.password}
 no.nav:
-    security:
-        jwt:
-            client:
-                registration:
-                    fpsoknad-oppslag:
-                        token-exchange:
-                            audience: lokal
-                    fpfordel:
-                        token-exchange:
-                            audience: lokal
-                    fpinfo:
-                        token-exchange:
-                            audience: lokal
-                    pdl-api:
-                        token-exchange:
-                            audience: lokal
-                    aareg-service:
-                        token-exchange:
-                            audience: lokal
+  security:
+    jwt:
+      client:
+        registration:
+          fpsoknad-oppslag:
+            token-exchange:
+              audience: lokal
+          fpfordel:
+            token-exchange:
+              audience: lokal
+          fpinfo:
+            token-exchange:
+              audience: lokal
+          pdl-api:
+            token-exchange:
+              audience: lokal
+          aareg-service:
+            token-exchange:
+              audience: lokal
 server:
-    port: 9001
+  port: 9001
 spring:
-    cloud:
-        vault:
-            enabled: false
-    mvc:
-        log-request-details : true
-    kafka:
-        consumer:
-            enable-auto-commit: false
-            bootstrap-servers: ${bootstrap.servers}
-        producer:
-            bootstrap-servers: ${bootstrap.servers}
+  cloud:
+    vault:
+      enabled: false
+  mvc:
+    log-request-details : true
+  kafka:
+    consumer:
+      enable-auto-commit: false
+      bootstrap-servers: ${bootstrap.servers}
+    producer:
+      bootstrap-servers: ${bootstrap.servers}
 
 pdl:
-    base-uri: ${pdl.graphql.base.url}
+  base-uri: ${pdl.graphql.base.url}
 fppdfgen:
-    enabled: false
+  enabled: false
 kontonummer:
-    base-uri: ${oppslag.url}
+  base-uri: ${oppslag.url}
 fpfordel:
-    base-uri: ${fpfordel.base.url}
+  base-uri: ${fpfordel.base.url}
 dkif:
-    base-uri: ${dkif.base.url}
+  base-uri: ${dkif.base.url}
 innsyn:
-    base-uri: ${fpinfo.base.url}
+  base-uri: ${fpinfo.base.url}

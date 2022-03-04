@@ -1,58 +1,58 @@
 management :
-   endpoints:
-      web:
-         exposure:
-            include:  '*'
-   endpoint:
-     health:
-        show-details : always
+  endpoints:
+    web:
+      exposure:
+        include:  '*'
+  endpoint:
+    health:
+      show-details : always
 no.nav:
-    security:
-        jwt:
-            client:
-                registration:
-                    fpsoknad-oppslag:
-                        token-exchange:
-                            audience: dev-fss:teamforeldrepenger:fpsoknad-oppslag
-                    fpinfo:
-                        token-exchange:
-                            audience: dev-fss:teamforeldrepenger:fpinfo
-                    fpfordel:
-                        token-exchange:
-                            audience: dev-fss:teamforeldrepenger:fpfordel
-                    pdl-api:
-                        token-exchange:
-                            audience: dev-fss:pdl:pdl-api
-                    aareg-service:
-                        token-exchange:
-                            audience: dev-fss:teamforeldrepenger:aareg-services-nais-q1 # TODO verifiser at de bruker aareg-services-nais-q1 i metadata.name når de har støtte
+  security:
+    jwt:
+      client:
+        registration:
+          fpsoknad-oppslag:
+            token-exchange:
+              audience: dev-fss:teamforeldrepenger:fpsoknad-oppslag
+          fpinfo:
+            token-exchange:
+              audience: dev-fss:teamforeldrepenger:fpinfo
+          fpfordel:
+            token-exchange:
+              audience: dev-fss:teamforeldrepenger:fpfordel
+          pdl-api:
+            token-exchange:
+              audience: dev-fss:pdl:pdl-api
+          aareg-service:
+            token-exchange:
+              audience: dev-fss:teamforeldrepenger:aareg-services-nais-q1 # TODO verifiser at de bruker aareg-services-nais-q1 i metadata.name når de har støtte
 spring:
-   config.import: vault://
-   cloud:
-      vault:
-         reactive:
-           enabled: false
-         enabled: true
-         uri: https://vault.adeo.no
-         authentication: KUBERNETES
-         kubernetes:
-            role: fpsoknad-mottak
-            kubernetes-path: kubernetes/preprod/fss
-            service-account-token-file: /var/run/secrets/kubernetes.io/serviceaccount/token
-         kv:
-            enabled: true
-            backend: kv/preprod/fss
-            application-name: fpsoknad-mottak/teamforeldrepenger
-            default-context: fpsoknad-mottak/teamforeldrepenger
-   codec:
-     log-request-details: true
-   kafka:
-       consumer:
-         bootstrap-servers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00046.preprod.local:8443
-       producer:
-         bootstrap-servers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00046.preprod.local:8443
-   mvc:
-     log-request-details : true
+  config.import: vault://
+  cloud:
+    vault:
+      reactive:
+        enabled: false
+      enabled: true
+      uri: https://vault.adeo.no
+      authentication: KUBERNETES
+      kubernetes:
+        role: fpsoknad-mottak
+        kubernetes-path: kubernetes/preprod/fss
+        service-account-token-file: /var/run/secrets/kubernetes.io/serviceaccount/token
+      kv:
+        enabled: true
+        backend: kv/preprod/fss
+        application-name: fpsoknad-mottak/teamforeldrepenger
+        default-context: fpsoknad-mottak/teamforeldrepenger
+  codec:
+    log-request-details: true
+  kafka:
+    consumer:
+      bootstrap-servers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00046.preprod.local:8443
+    producer:
+      bootstrap-servers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00046.preprod.local:8443
+  mvc:
+    log-request-details : true
 
 arbeidsforhold:
   base-uri: https://modapp-q1.adeo.no/aareg-services/api
@@ -62,6 +62,6 @@ sts:
   base-uri: https://security-token-service.nais.preprod.local
 
 securitytokenservice:
-    url: https://sts-q1.preprod.local/SecurityTokenServiceProvider/
+  url: https://sts-q1.preprod.local/SecurityTokenServiceProvider/
 
 

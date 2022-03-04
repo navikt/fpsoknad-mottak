@@ -1,9 +1,9 @@
 arbeidsforhold:
-    base-uri: https://modapp.adeo.no/aareg-services/api
-    sporingsinformasjon: true
+  base-uri: https://modapp.adeo.no/aareg-services/api
+  sporingsinformasjon: true
 
 organisasjon:
-    base-uri: https://modapp.adeo.no/ereg/api
+  base-uri: https://modapp.adeo.no/ereg/api
 
 sts:
   base-uri:  https://security-token-service.nais.adeo.no
@@ -11,116 +11,116 @@ sts:
   password: ${kafka.password}
 
 securitytokenservice:
-    username: ${kafka.username}
-    password : ${kafka.password}
-    url: https://sts.adeo.no/SecurityTokenServiceProvider/
+  username: ${kafka.username}
+  password : ${kafka.password}
+  url: https://sts.adeo.no/SecurityTokenServiceProvider/
 
 mottak:
-   sender:
-      domainevent:
-         enabled: true
-         topic: fpsoknad-mottak
+  sender:
+    domainevent:
+      enabled: true
+      topic: fpsoknad-mottak
 
 no.nav:
-    security:
-        jwt:
-            client:
-                registration:
-                    fpsoknad-oppslag:
-                        well-known-url: ${token.x.well.known.url}
-                        grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-                        authentication:
-                            client-id: ${token.x.client.id}
-                            client-jwk: ${token.x.private.jwk}
-                            client-auth-method: private_key_jwt
-                    fpinfo:
-                        well-known-url: ${token.x.well.known.url}
-                        grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-                        authentication:
-                            client-id: ${token.x.client.id}
-                            client-jwk: ${token.x.private.jwk}
-                            client-auth-method: private_key_jwt
-                    fpfordel:
-                        well-known-url: ${token.x.well.known.url}
-                        grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-                        authentication:
-                            client-id: ${token.x.client.id}
-                            client-jwk: ${token.x.private.jwk}
-                            client-auth-method: private_key_jwt
-                    pdl-api:
-                        well-known-url: ${token.x.well.known.url}
-                        grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-                        authentication:
-                            client-id: ${token.x.client.id}
-                            client-jwk: ${token.x.private.jwk}
-                            client-auth-method: private_key_jwt
-                    aareg-service:
-                        well-known-url: ${token.x.well.known.url}
-                        grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-                        authentication:
-                            client-id: ${token.x.client.id}
-                            client-jwk: ${token.x.private.jwk}
-                            client-auth-method: private_key_jwt
-            issuer:
-              tokenx:
-                 discovery-url: ${token.x.well.known.url}
-                 accepted-audience: ${token.x.client.id}
+  security:
+    jwt:
+      client:
+        registration:
+          fpsoknad-oppslag:
+            well-known-url: ${token.x.well.known.url}
+            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+            authentication:
+              client-id: ${token.x.client.id}
+              client-jwk: ${token.x.private.jwk}
+              client-auth-method: private_key_jwt
+          fpinfo:
+            well-known-url: ${token.x.well.known.url}
+            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+            authentication:
+              client-id: ${token.x.client.id}
+              client-jwk: ${token.x.private.jwk}
+              client-auth-method: private_key_jwt
+          fpfordel:
+            well-known-url: ${token.x.well.known.url}
+            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+            authentication:
+              client-id: ${token.x.client.id}
+              client-jwk: ${token.x.private.jwk}
+              client-auth-method: private_key_jwt
+          pdl-api:
+            well-known-url: ${token.x.well.known.url}
+            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+            authentication:
+              client-id: ${token.x.client.id}
+              client-jwk: ${token.x.private.jwk}
+              client-auth-method: private_key_jwt
+          aareg-service:
+            well-known-url: ${token.x.well.known.url}
+            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+            authentication:
+              client-id: ${token.x.client.id}
+              client-jwk: ${token.x.private.jwk}
+              client-auth-method: private_key_jwt
+      issuer:
+        tokenx:
+          discovery-url: ${token.x.well.known.url}
+          accepted-audience: ${token.x.client.id}
 
 management:
-   metrics:
-      web:
-         server:
-            request:
-               autotime:
-                 enabled: true
-   endpoint:
-      health:
-         show-details: never
-   endpoints:
-      web:
-         exposure:
-            include: info, health, metrics, prometheus, env, configprops, beans
-   health:
-      ping:
-        enabled: false
-      diskspace:
-        enabled: false
+  metrics:
+    web:
+      server:
+        request:
+          autotime:
+            enabled: true
+  endpoint:
+    health:
+      show-details: never
+  endpoints:
+    web:
+      exposure:
+        include: info, health, metrics, prometheus, env, configprops, beans
+  health:
+    ping:
+      enabled: false
+    diskspace:
+      enabled: false
 server:
-   servlet:
-      context-path: /api
+  servlet:
+    context-path: /api
 
 spring:
-   cloud.discovery.client.health-indicator.enabled: false
-   codec:
-      max-in-memory-size: 32MB
-   cache:
-      cache-names: aktør, organisasjon
-      caffeine:
-         spec: maximumSize=100,expireAfterAccess=3600s
-   application:
-      name: fpsoknad-mottak
-   kafka:
-      properties:
-         security:
-            protocol: SASL_SSL
-         sasl:
-            mechanism: PLAIN
-            jaas:
-               config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${kafka.username}" password="${kafka.password}";
-      consumer:
-         enable-auto-commit: false
-         bootstrap-servers: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443
-         group-id: group_id
-         auto-offset-reset: earliest
-         key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-         value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      producer:
-         bootstrap-servers: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443
-         key-serializer: org.apache.kafka.common.serialization.StringSerializer
-         value-serializer: org.apache.kafka.common.serialization.StringSerializer
-   main:
-      banner-mode: off
+  cloud.discovery.client.health-indicator.enabled: false
+  codec:
+    max-in-memory-size: 32MB
+  cache:
+    cache-names: aktør, organisasjon
+    caffeine:
+      spec: maximumSize=100,expireAfterAccess=3600s
+  application:
+    name: fpsoknad-mottak
+  kafka:
+    properties:
+      security:
+        protocol: SASL_SSL
+      sasl:
+        mechanism: PLAIN
+        jaas:
+          config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${kafka.username}" password="${kafka.password}";
+    consumer:
+      enable-auto-commit: false
+      bootstrap-servers: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443
+      group-id: group_id
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      bootstrap-servers: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  main:
+    banner-mode: off
 springdoc:
-    packages-to-scan: no.nav.foreldrepenger.mottak
-    swagger-ui:
-        disable-swagger-default-url: true
+  packages-to-scan: no.nav.foreldrepenger.mottak
+  swagger-ui:
+    disable-swagger-default-url: true
