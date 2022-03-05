@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -53,7 +54,11 @@ class ApiError {
 
     private static List<String> messages(Throwable t, List<Object> objects) {
         var messages = new ArrayList<>(objects);
-        messages.add(getMostSpecificCause(t).getMessage());
+        var mostSpecificCause = getMostSpecificCause(t);
+        //quickfix
+        if (!(mostSpecificCause instanceof MethodArgumentNotValidException)) {
+            messages.add(mostSpecificCause.getMessage());
+        }
         return messages.stream()
                 .filter(Objects::nonNull)
                 .map(Object::toString)
