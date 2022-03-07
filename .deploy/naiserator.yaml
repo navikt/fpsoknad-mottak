@@ -32,10 +32,10 @@ spec:
   {{#each ingresses as |url|}}
      - {{url}}
   {{/each}}
-resources:
-  limits:
-    cpu: 1500m
-    memory: 3072Mi
-  requests:
-    cpu: 25m
-    memory: 1024Mi
+  resources:
+    limits:
+      cpu: 1500m
+      memory: 3072Mi
+    requests:
+      cpu: 25m
+      memory: 1024Mi
