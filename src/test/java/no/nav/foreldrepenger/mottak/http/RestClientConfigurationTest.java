@@ -9,13 +9,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 
+import no.nav.foreldrepenger.mottak.config.TokenConfigMatcherConfiguration;
 import no.nav.security.token.support.client.core.ClientAuthenticationProperties;
 import no.nav.security.token.support.client.core.ClientProperties;
 import no.nav.security.token.support.client.core.OAuth2GrantType;
@@ -23,12 +22,8 @@ import no.nav.security.token.support.client.spring.ClientConfigurationProperties
 import no.nav.security.token.support.client.spring.oauth2.ClientConfigurationPropertiesMatcher;
 
 @ExtendWith(SpringExtension.class)
-@RestClientTest
-@ContextConfiguration(classes = RestClientConfiguration.class)
+@Import(value = TokenConfigMatcherConfiguration.class)
 class RestClientConfigurationTest {
-
-    @Autowired
-    private RestTemplateBuilder builder;
 
     @Autowired
     private ClientConfigurationPropertiesMatcher matcher;
