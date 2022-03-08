@@ -1,20 +1,24 @@
 package no.nav.foreldrepenger.mottak.http;
 
 import static java.util.function.Predicate.not;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static org.springframework.retry.RetryContext.NAME;
 import static org.springframework.util.ReflectionUtils.findField;
 import static org.springframework.util.ReflectionUtils.getField;
 import static org.springframework.util.ReflectionUtils.makeAccessible;
 
+import java.net.URI;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;
@@ -23,7 +27,11 @@ import org.springframework.web.client.RestOperations;
 
 import com.google.common.base.Splitter;
 
-import no.nav.foreldrepenger.mottak.http.interceptors.TokenXConfigFinder;
+import no.nav.security.token.support.client.core.ClientProperties;
+import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
+import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
+import no.nav.security.token.support.client.spring.oauth2.ClientConfigurationPropertiesMatcher;
+import no.nav.security.token.support.client.spring.oauth2.OAuth2ClientRequestInterceptor;
 import no.nav.security.token.support.spring.validation.interceptor.BearerTokenClientHttpRequestInterceptor;
 
 @Configuration
@@ -50,19 +58,32 @@ public class RestClientConfiguration {
     }
 
     @Bean
-    public TokenXConfigFinder configFinder() {
-        return (cfgs, req) -> {
-            LOG.trace("Oppslag token X konfig for {}", req.getHost());
-            var cfg = cfgs.getRegistration().get(Splitter.on(".").splitToList(req.getHost()).get(0));
-            if (cfg == null) {
-                cfg = cfgs.getRegistration().get(Splitter.on("/").splitToList(req.getPath()).get(1));
+    @Order(HIGHEST_PRECEDENCE)
+    public OAuth2ClientRequestInterceptor tokenExchangeClientRequestInterceptor(ClientConfigurationProperties properties,
+                                                                                OAuth2AccessTokenService service,
+                                                                                ClientConfigurationPropertiesMatcher matcher) {
+        return new OAuth2ClientRequestInterceptor(properties, service, matcher);
+    }
+
+    @Bean
+    public ClientConfigurationPropertiesMatcher configFinder() {
+        return new ClientConfigurationPropertiesMatcher() {
+            @Override
+            public Optional<ClientProperties> findProperties(ClientConfigurationProperties properties, URI uri) {
+                LOG.trace("Oppslag token X konfig for {}", uri.getHost());
+                var cfg = Optional.ofNullable(properties.getRegistration().get(
+                    Splitter.on(".").splitToList(uri.getHost()).get(0)));
+                if (cfg.isEmpty()) {
+                    cfg = Optional.ofNullable(properties.getRegistration().get(Splitter.on("/").splitToList(uri.getPath()).get(1)));
+                }
+
+                if (cfg.isPresent()) {
+                    LOG.trace("Oppslag token X konfig for {} OK", uri.getHost());
+                } else {
+                    LOG.trace("Oppslag token X konfig for {} fant ingenting", uri.getHost());
+                }
+                return cfg;
             }
-            if (cfg != null) {
-                LOG.trace("Oppslag token X konfig for {} OK", req.getHost());
-            } else {
-                LOG.trace("Oppslag token X konfig for {} fant ingenting", req.getHost());
-            }
-            return cfg;
         };
     }
 

@@ -16,11 +16,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 
-import no.nav.foreldrepenger.mottak.http.interceptors.TokenXConfigFinder;
 import no.nav.security.token.support.client.core.ClientAuthenticationProperties;
 import no.nav.security.token.support.client.core.ClientProperties;
 import no.nav.security.token.support.client.core.OAuth2GrantType;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
+import no.nav.security.token.support.client.spring.oauth2.ClientConfigurationPropertiesMatcher;
 
 @ExtendWith(SpringExtension.class)
 @RestClientTest
@@ -31,7 +31,7 @@ class RestClientConfigurationTest {
     private RestTemplateBuilder builder;
 
     @Autowired
-    private TokenXConfigFinder finder;
+    private ClientConfigurationPropertiesMatcher matcher;
 
     private static ClientConfigurationProperties properties;
 
@@ -58,25 +58,25 @@ class RestClientConfigurationTest {
     @Test
     void sjekkAtViKlarerÅHenteUtConfigForAaregServiceFraPath() {
         var aaregUri = URI.create("https://modapp-q1.adeo.no/aareg-services/api/v1/arbeidstaker/arbeidsforhold?historikk=false&sporingsinformasjon=true&ansettelsesperiodeFom=2019-03-08");
-        var klientProperty = finder.findProperties(properties, aaregUri);
-        assertThat(klientProperty).isNotNull();
+        var klientProperty = matcher.findProperties(properties, aaregUri);
+        assertThat(klientProperty).isPresent();
 
         var aaregUriProd = URI.create("https://modapp.adeo.no/aareg-services/api/v1/arbeidstaker/arbeidsforhold?historikk=false&sporingsinformasjon=true&ansettelsesperiodeFom=2019-03-08");
-        var klientPropertyProd = finder.findProperties(properties, aaregUriProd);
-        assertThat(klientPropertyProd).isNotNull();
+        var klientPropertyProd = matcher.findProperties(properties, aaregUriProd);
+        assertThat(klientPropertyProd).isPresent();
     }
 
     @Test
     void sjekkAtViFinnerConfigForFpfordelFraHost() {
         var aaregUri = URI.create("http://fpfordel/fpfordel/api/dokumentforsendelse");
-        var klientProperty = finder.findProperties(properties, aaregUri);
-        assertThat(klientProperty).isNotNull();
+        var klientProperty = matcher.findProperties(properties, aaregUri);
+        assertThat(klientProperty).isPresent();
     }
 
     @Test
     void sjekkAtViReturnererNullNårKlientIkkeErRegistrert() {
         var fpsakUri = URI.create("http://fpsak/fpsak/saksnummer/en/to");
-        var klientProperty = finder.findProperties(properties, fpsakUri);
-        assertThat(klientProperty).isNull();
+        var klientProperty = matcher.findProperties(properties, fpsakUri);
+        assertThat(klientProperty).isEmpty();
     }
 }

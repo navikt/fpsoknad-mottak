@@ -30,7 +30,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.common.util.MDCUtil;
-import no.nav.foreldrepenger.mottak.http.interceptors.TokenXConfigFinder;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DKIFConfig;
@@ -41,6 +40,7 @@ import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
+import no.nav.security.token.support.client.spring.oauth2.ClientConfigurationPropertiesMatcher;
 import reactor.core.publisher.Mono;
 
 @Configuration
@@ -214,12 +214,12 @@ public class WebClientConfiguration {
         private static final Logger LOG = LoggerFactory.getLogger(TokenXExchangeFilterFunction.class);
 
         private final OAuth2AccessTokenService service;
-        private final TokenXConfigFinder finder;
+        private final ClientConfigurationPropertiesMatcher matcher;
         private final ClientConfigurationProperties configs;
 
-        TokenXExchangeFilterFunction(ClientConfigurationProperties configs, OAuth2AccessTokenService service, TokenXConfigFinder finder) {
+        TokenXExchangeFilterFunction(ClientConfigurationProperties configs, OAuth2AccessTokenService service, ClientConfigurationPropertiesMatcher matcher) {
             this.service = service;
-            this.finder = finder;
+            this.matcher = matcher;
             this.configs = configs;
         }
 
@@ -227,13 +227,13 @@ public class WebClientConfiguration {
         public Mono<ClientResponse> filter(ClientRequest req, ExchangeFunction next) {
             var url = req.url();
             LOG.trace("Sjekker token exchange for {}", url);
-            var config = finder.findProperties(configs, url);
-            if (config != null) {
+            var config = matcher.findProperties(configs, url);
+            if (config.isPresent()) {
                 LOG.trace("Gjør token exchange for {} med konfig {}", url, config);
-                var token = service.getAccessToken(config).getAccessToken();
+                var token = service.getAccessToken(config.get()).getAccessToken();
                 LOG.info("Token exchange for {} OK", url);
                 return next.exchange(ClientRequest.from(req).header(AUTHORIZATION, BEARER + token)
-                        .build());
+                    .build());
             }
             LOG.trace("Ingen token exchange for {}", url);
             return next.exchange(ClientRequest.from(req).build());
@@ -241,7 +241,7 @@ public class WebClientConfiguration {
 
         @Override
         public String toString() {
-            return getClass().getSimpleName() + " [service=" + service + ", finder=" + finder + ", configs=" + configs + "]";
+            return getClass().getSimpleName() + " [service=" + service + ", matcher=" + matcher + ", configs=" + configs + "]";
         }
     }
 }
