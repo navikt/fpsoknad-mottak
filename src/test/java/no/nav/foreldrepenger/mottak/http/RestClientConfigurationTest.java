@@ -37,21 +37,10 @@ class RestClientConfigurationTest {
 
     @BeforeAll
     private static void instansiererClientPropertiesForAaregOgFpfordel() {
-        var aaregClientProperties = ClientProperties.builder()
+        var generellKlientProperties = ClientProperties.builder()
             .wellKnownUrl(URI.create("http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server"))
             .tokenEndpointUrl(URI.create("http://localhost:8060/rest/tokenx/token"))
-            .tokenExchange(ClientProperties.TokenExchangeProperties.builder().audience("prod-fss:arbeidsforhold:aareg-services-nais").build())
-            .grantType(OAuth2GrantType.TOKEN_EXCHANGE)
-            .authentication(ClientAuthenticationProperties.builder()
-                .clientId("fpsoknad-mottak")
-                .clientJwk("src/test/resources/tokenx/jwk.json")
-                .clientAuthMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
-                .build())
-            .build();
-        var fpfordelClientProperties = ClientProperties.builder()
-            .wellKnownUrl(URI.create("http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server"))
-            .tokenEndpointUrl(URI.create("http://localhost:8060/rest/tokenx/token"))
-            .tokenExchange(ClientProperties.TokenExchangeProperties.builder().audience("prod-fss:arbeidsforhold:aareg-services-nais").build())
+            .tokenExchange(ClientProperties.TokenExchangeProperties.builder().audience("prod-fss:namespace:services").build())
             .grantType(OAuth2GrantType.TOKEN_EXCHANGE)
             .authentication(ClientAuthenticationProperties.builder()
                 .clientId("fpsoknad-mottak")
@@ -60,8 +49,8 @@ class RestClientConfigurationTest {
                 .build())
             .build();
         var clientProperties = Map.of(
-            "aareg-services", aaregClientProperties,
-            "fpfordel", fpfordelClientProperties);
+            "aareg-services", generellKlientProperties,
+            "fpfordel", generellKlientProperties);
         properties = new ClientConfigurationProperties(clientProperties);
     }
 
