@@ -23,7 +23,7 @@ no.nav:
           pdl-api:
             token-exchange:
               audience: dev-fss:pdl:pdl-api
-          aareg-service:
+          aareg-services:
             token-exchange:
               audience: dev-fss:arbeidsforhold:aareg-services-nais-q1
 spring:

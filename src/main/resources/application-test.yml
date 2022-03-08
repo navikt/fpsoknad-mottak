@@ -59,7 +59,7 @@ no.nav:
           pdl-api:
             token-exchange:
               audience: lokal
-          aareg-service:
+          aareg-services:
             token-exchange:
               audience: lokal
 server:
