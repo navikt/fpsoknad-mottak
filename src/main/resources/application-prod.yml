@@ -15,7 +15,7 @@ no.nav:
           pdl-api:
             token-exchange:
               audience: prod-fss:pdl:pdl-api
-          aareg-service:
+          aareg-services:
             token-exchange:
               audience: prod-fss:arbeidsforhold:aareg-services-nais
 spring:

@@ -54,6 +54,9 @@ public class RestClientConfiguration {
         return (cfgs, req) -> {
             LOG.trace("Oppslag token X konfig for {}", req.getHost());
             var cfg = cfgs.getRegistration().get(Splitter.on(".").splitToList(req.getHost()).get(0));
+            if (cfg == null) {
+                cfg = cfgs.getRegistration().get(Splitter.on("/").splitToList(req.getPath()).get(1));
+            }
             if (cfg != null) {
                 LOG.trace("Oppslag token X konfig for {} OK", req.getHost());
             } else {
