@@ -25,7 +25,7 @@ no.nav:
               audience: dev-fss:pdl:pdl-api
           aareg-service:
             token-exchange:
-              audience: dev-fss:teamforeldrepenger:aareg-services-nais-q1 # TODO verifiser at de bruker aareg-services-nais-q1 i metadata.name når de har støtte
+              audience: dev-fss:arbeidsforhold:aareg-services-nais-q1
 spring:
   config.import: vault://
   cloud:
@@ -56,6 +56,7 @@ spring:
 
 arbeidsforhold:
   base-uri: https://modapp-q1.adeo.no/aareg-services/api
+  bruk-token-x: true
 organisasjon:
   base-uri: https://modapp-q1.adeo.no/ereg/api
 sts:
