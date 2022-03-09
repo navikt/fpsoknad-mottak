@@ -23,7 +23,13 @@ no.nav:
           pdl-api:
             token-exchange:
               audience: dev-fss:pdl:pdl-api
-          aareg-services:
+          aareg-services-q1:
+            well-known-url: ${token.x.well.known.url}
+            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+            authentication:
+              client-id: ${token.x.client.id}
+              client-jwk: ${token.x.private.jwk}
+              client-auth-method: private_key_jwt
             token-exchange:
               audience: dev-fss:arbeidsforhold:aareg-services-nais-q1
 spring:

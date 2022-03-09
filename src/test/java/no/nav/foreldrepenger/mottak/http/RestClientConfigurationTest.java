@@ -39,6 +39,7 @@ class RestClientConfigurationTest {
             .build();
         var clientProperties = Map.of(
             "aareg-services", generellKlientProperties,
+            "aareg-services-q1", generellKlientProperties,
             "fpfordel", generellKlientProperties);
         properties = new ClientConfigurationProperties(clientProperties);
     }
