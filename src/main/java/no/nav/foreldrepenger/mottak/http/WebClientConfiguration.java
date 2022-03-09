@@ -112,8 +112,8 @@ public class WebClientConfiguration {
                 .build();
     }
 
-    @Qualifier(ORGANISASJON)
     @Bean
+    @Qualifier(ORGANISASJON)
     public WebClient webClientOrganisasjon(Builder builder, OrganisasjonConfig cfg) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
@@ -121,8 +121,8 @@ public class WebClientConfiguration {
                 .build();
     }
 
-    @Qualifier(PDL_USER)
     @Bean
+    @Qualifier(PDL_USER)
     public WebClient webClientPDL(Builder builder, PDLConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
@@ -199,7 +199,6 @@ public class WebClientConfiguration {
                 .header(NAV_CALL_ID, MDCUtil.callId())
                 .header(NAV_CALL_ID1, MDCUtil.callId())
                 .header(NAV_CALL_ID2, MDCUtil.callId())
-
                 .build());
     }
 
