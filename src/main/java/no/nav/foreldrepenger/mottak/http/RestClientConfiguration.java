@@ -71,12 +71,7 @@ public class RestClientConfiguration {
             @Override
             public Optional<ClientProperties> findProperties(ClientConfigurationProperties properties, URI uri) {
                 LOG.trace("Oppslag token X konfig for {}", uri.getHost());
-                var hostName = Splitter.on(".").splitToList(uri.getHost()).get(0);
-                var cfg = properties.getRegistration().get(Splitter.on(".").splitToList(hostName).get(0));
-                if (cfg == null && hostName.equalsIgnoreCase("aareg-services-q1")) {
-                    cfg = properties.getRegistration().get("aareg-services");
-                }
-
+                var cfg = properties.getRegistration().get(Splitter.on(".").splitToList(uri.getHost()).get(0));
                 if (cfg != null) {
                     LOG.trace("Oppslag token X konfig for {} OK", uri.getHost());
                 } else {
