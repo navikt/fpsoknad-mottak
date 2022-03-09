@@ -7,9 +7,11 @@ import static org.springframework.util.ReflectionUtils.findField;
 import static org.springframework.util.ReflectionUtils.getField;
 import static org.springframework.util.ReflectionUtils.makeAccessible;
 
+import java.net.URI;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,9 @@ import org.springframework.retry.RetryContext;
 import org.springframework.retry.RetryListener;
 import org.springframework.web.client.RestOperations;
 
+import com.google.common.base.Splitter;
+
+import no.nav.security.token.support.client.core.ClientProperties;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 import no.nav.security.token.support.client.spring.oauth2.ClientConfigurationPropertiesMatcher;
@@ -58,6 +63,27 @@ public class RestClientConfiguration {
                                                                                 OAuth2AccessTokenService service,
                                                                                 ClientConfigurationPropertiesMatcher matcher) {
         return new OAuth2ClientRequestInterceptor(properties, service, matcher);
+    }
+
+    @Bean
+    public ClientConfigurationPropertiesMatcher tokenxClientConfigMatcher() {
+        return new ClientConfigurationPropertiesMatcher() {
+            @Override
+            public Optional<ClientProperties> findProperties(ClientConfigurationProperties properties, URI uri) {
+                LOG.trace("Oppslag token X konfig for {}", uri.getHost());
+                var cfg = properties.getRegistration().get(Splitter.on(".").splitToList(uri.getHost()).get(0));
+                if (cfg == null) {
+                    cfg = properties.getRegistration().get(Splitter.on("/").splitToList(uri.getPath()).get(1));
+                }
+
+                if (cfg != null) {
+                    LOG.trace("Oppslag token X konfig for {} OK", uri.getHost());
+                } else {
+                    LOG.trace("Oppslag token X konfig for {} fant ingenting", uri.getHost());
+                }
+                return Optional.ofNullable(cfg);
+            }
+        };
     }
 
     @Bean
