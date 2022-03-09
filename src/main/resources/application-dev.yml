@@ -25,7 +25,7 @@ no.nav:
               audience: dev-fss:pdl:pdl-api
           aareg-services:
             token-exchange:
-              audience: dev-fss:arbeidsforhold:aareg-services-nais
+              audience: dev-fss:arbeidsforhold:aareg-services-nais-q1
 spring:
   config.import: vault://
   cloud:
@@ -55,7 +55,7 @@ spring:
     log-request-details : true
 
 arbeidsforhold:
-  base-uri: https://modapp-q1.adeo.no/aareg-services/api
+  base-uri: https://aareg-services-q1.dev.intern.nav.no/api
   bruk-token-x: true
 organisasjon:
   base-uri: https://modapp-q1.adeo.no/ereg/api

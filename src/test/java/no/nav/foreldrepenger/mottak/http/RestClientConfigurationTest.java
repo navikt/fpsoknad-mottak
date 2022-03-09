@@ -46,11 +46,11 @@ class RestClientConfigurationTest {
 
     @Test
     void sjekkAtViKlarerÅHenteUtConfigForAaregServiceFraPath() {
-        var aaregUri = URI.create("https://modapp-q1.adeo.no/aareg-services/api/v1/arbeidstaker/arbeidsforhold?historikk=false&sporingsinformasjon=true&ansettelsesperiodeFom=2019-03-08");
+        var aaregUri = URI.create("https://aareg-services-q1.dev.intern.nav.no/api/v1/arbeidstaker/arbeidsforhold?historikk=false&sporingsinformasjon=true&ansettelsesperiodeFom=2019-03-08");
         var klientProperty = matcher.findProperties(properties, aaregUri);
         assertThat(klientProperty).isPresent();
 
-        var aaregUriProd = URI.create("https://modapp.adeo.no/aareg-services/api/v1/arbeidstaker/arbeidsforhold?historikk=false&sporingsinformasjon=true&ansettelsesperiodeFom=2019-03-08");
+        var aaregUriProd = URI.create("https://aareg-services.intern.nav.no/v1/arbeidstaker/arbeidsforhold?historikk=false&sporingsinformasjon=true&ansettelsesperiodeFom=2019-03-08");
         var klientPropertyProd = matcher.findProperties(properties, aaregUriProd);
         assertThat(klientPropertyProd).isPresent();
     }
