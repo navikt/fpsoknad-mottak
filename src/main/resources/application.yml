@@ -23,6 +23,7 @@ mottak:
 no.nav:
   security:
     jwt:
+      dont-propagate-bearertoken: true
       client:
         registration:
           fpsoknad-oppslag:
