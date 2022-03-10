@@ -296,7 +296,8 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                         cos, y);
             }
 
-            if (søknad.getTilleggsopplysninger() != null) {
+            var tilleggsopplysninger = søknad.getTilleggsopplysninger();
+            if (tilleggsopplysninger != null && !"".equals(tilleggsopplysninger)) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
