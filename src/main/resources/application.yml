@@ -1,7 +1,5 @@
 arbeidsforhold:
   base-uri: https://aareg-services.intern.nav.no/api
-  bruk-token-x: true
-  sporingsinformasjon: true
 
 organisasjon:
   base-uri: https://modapp.adeo.no/ereg/api

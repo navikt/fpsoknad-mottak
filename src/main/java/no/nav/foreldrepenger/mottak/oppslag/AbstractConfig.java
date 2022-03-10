@@ -35,4 +35,12 @@ public class AbstractConfig {
         return baseUri.getHost();
     }
 
+    @Override
+    public String toString() {
+        return "AbstractConfig{" +
+            "baseUri=" + baseUri +
+            ", pingPath='" + pingPath + '\'' +
+            ", enabled=" + enabled +
+            '}';
+    }
 }

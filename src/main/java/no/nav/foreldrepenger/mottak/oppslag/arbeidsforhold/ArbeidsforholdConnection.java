@@ -2,8 +2,7 @@ package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import static java.time.LocalDate.now;
 import static java.util.Comparator.comparing;
-import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ARBEIDSFORHOLD_STS;
-import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ARBEIDSFORHOLD_TOKENX;
+import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ARBEIDSFORHOLD;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;
 
@@ -27,32 +26,21 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdConnection.class);
     private final ArbeidsforholdConfig cfg;
     private final ArbeidsforholdMapper mapper;
-    private final WebClient clientTokenX;
 
-    public ArbeidsforholdConnection(@Qualifier(ARBEIDSFORHOLD_STS) WebClient clientSts,
-                                    @Qualifier(ARBEIDSFORHOLD_TOKENX) WebClient clientTokenX,
+    public ArbeidsforholdConnection(@Qualifier(ARBEIDSFORHOLD) WebClient clientSts,
                                     ArbeidsforholdConfig cfg, ArbeidsforholdMapper mapper) {
         super(clientSts, cfg);
-        this.clientTokenX = clientTokenX;
         this.cfg = cfg;
         this.mapper = mapper;
     }
 
     List<EnkeltArbeidsforhold> hentArbeidsforhold() {
-        if (cfg.isBrukTokenX()) {
-            try {
-                LOG.info("Kaller aareg med TokenX");
-                return hentArbeidsforhold(now().minus(cfg.getTidTilbake()), clientTokenX);
-            } catch (Exception e) {
-                LOG.warn("Kall mot aareg med tokenx feilet! Fallback på kall mot aareg med STS token", e);
-            }
-        }
-        return hentArbeidsforhold(now().minus(cfg.getTidTilbake()), webClient);
+        return hentArbeidsforhold(now().minus(cfg.getTidTilbake()));
     }
 
-    private List<EnkeltArbeidsforhold> hentArbeidsforhold(LocalDate fom, WebClient client) {
+    private List<EnkeltArbeidsforhold> hentArbeidsforhold(LocalDate fom) {
         LOG.info("Henter arbeidsforhold for perioden fra {}", fom);
-        var arbeidsforhold = client
+        var arbeidsforhold = webClient
                 .get()
                 .uri(b -> cfg.getArbeidsforholdURI(b, fom))
                 .accept(APPLICATION_JSON)
@@ -72,12 +60,12 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
 
     @Override
     public String name() {
-        return capitalize(ARBEIDSFORHOLD_STS.toLowerCase());
+        return capitalize(ARBEIDSFORHOLD.toLowerCase());
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[cfg=" + cfg + ", webClientSts=" + webClient + ", name=" + name() + "]";
+        return getClass().getSimpleName() + "[cfg=" + cfg + ", webClient=" + webClient + ", name=" + name() + "]";
     }
 
 }
