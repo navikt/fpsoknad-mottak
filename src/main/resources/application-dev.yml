@@ -62,7 +62,6 @@ spring:
 
 arbeidsforhold:
   base-uri: https://aareg-services-q1.dev.intern.nav.no/api
-  bruk-token-x: true
 organisasjon:
   base-uri: https://modapp-q1.adeo.no/ereg/api
 sts:
