@@ -1,15 +1,12 @@
 package no.nav.foreldrepenger.mottak.http;
 
-import static java.util.function.Predicate.not;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static org.springframework.retry.RetryContext.NAME;
 import static org.springframework.util.ReflectionUtils.findField;
 import static org.springframework.util.ReflectionUtils.getField;
 import static org.springframework.util.ReflectionUtils.makeAccessible;
 
-import java.net.URI;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,12 +24,10 @@ import org.springframework.web.client.RestOperations;
 
 import com.google.common.base.Splitter;
 
-import no.nav.security.token.support.client.core.ClientProperties;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 import no.nav.security.token.support.client.spring.oauth2.ClientConfigurationPropertiesMatcher;
 import no.nav.security.token.support.client.spring.oauth2.OAuth2ClientRequestInterceptor;
-import no.nav.security.token.support.spring.validation.interceptor.BearerTokenClientHttpRequestInterceptor;
 
 @Configuration
 public class RestClientConfiguration {
@@ -41,20 +36,12 @@ public class RestClientConfiguration {
     private static final Logger LOG = LoggerFactory.getLogger(RestClientConfiguration.class);
 
     @Bean
-    public RestOperations tokenXTemplate(RestTemplateBuilder b, ClientHttpRequestInterceptor... interceptors) {
+    public RestOperations customRestTemplate(RestTemplateBuilder b, ClientHttpRequestInterceptor... interceptors) {
         return b.requestFactory(NonRedirectingRequestFactory.class)
-                .interceptors(interceptorsWithoutBearerToken(interceptors))
+                .interceptors(interceptors)
                 .setConnectTimeout(CONNECT_TIMEOUT)
                 .setReadTimeout(READ_TIMEOUT)
                 .build();
-    }
-
-    private static List<ClientHttpRequestInterceptor> interceptorsWithoutBearerToken(ClientHttpRequestInterceptor... interceptors) {
-        var filtered = Arrays.stream(interceptors)
-                .filter(not(i -> i.getClass().equals(BearerTokenClientHttpRequestInterceptor.class)))
-                .toList();
-        LOG.trace("Filtered message interceptors er {}", filtered);
-        return filtered;
     }
 
     @Bean
@@ -67,18 +54,15 @@ public class RestClientConfiguration {
 
     @Bean
     public ClientConfigurationPropertiesMatcher tokenxClientConfigMatcher() {
-        return new ClientConfigurationPropertiesMatcher() {
-            @Override
-            public Optional<ClientProperties> findProperties(ClientConfigurationProperties properties, URI uri) {
-                LOG.trace("Oppslag token X konfig for {}", uri.getHost());
-                var cfg = properties.getRegistration().get(Splitter.on(".").splitToList(uri.getHost()).get(0));
-                if (cfg != null) {
-                    LOG.trace("Oppslag token X konfig for {} OK", uri.getHost());
-                } else {
-                    LOG.trace("Oppslag token X konfig for {} fant ingenting", uri.getHost());
-                }
-                return Optional.ofNullable(cfg);
+        return (properties, uri) -> {
+            LOG.trace("Oppslag token X konfig for {}", uri.getHost());
+            var cfg = properties.getRegistration().get(Splitter.on(".").splitToList(uri.getHost()).get(0));
+            if (cfg != null) {
+                LOG.trace("Oppslag token X konfig for {} OK", uri.getHost());
+            } else {
+                LOG.trace("Oppslag token X konfig for {} fant ingenting", uri.getHost());
             }
+            return Optional.ofNullable(cfg);
         };
     }
 
