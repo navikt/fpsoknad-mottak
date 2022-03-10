@@ -73,8 +73,6 @@ no.nav:
           discovery-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
           accepted-audience: lokal
 
-http.proxy:
-
 management:
   endpoints:
     web:

@@ -27,8 +27,6 @@ mottak:
     domainevent:
       enabled : false
 
-http.proxy:
-
 management:
   endpoints:
     web:
