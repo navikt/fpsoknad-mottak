@@ -52,15 +52,12 @@ public class WebClientConfiguration {
     public static final String PDL_USER = "PDL";
     public static final String PDL_SYSTEM = "PDL-RELASJON";
     public static final String KRR = "KRR";
-    public static final String ARBEIDSFORHOLD_STS = "ARBEIDSFORHOLD_STS";
-    public static final String ARBEIDSFORHOLD_TOKENX = "ARBEIDSFORHOLD_TOKENX";
+    public static final String ARBEIDSFORHOLD = "ARBEIDSFORHOLD";
     public static final String ORGANISASJON = "ORGANISASJON";
     public static final String KONTONR = "KONTONR";
 
     @Value("${spring.application.name:fpsoknad-mottak}")
     private String consumer;
-
-    private static final Logger LOG = LoggerFactory.getLogger(WebClientConfiguration.class);
 
     @Bean
     @Qualifier(KRR)
@@ -93,17 +90,7 @@ public class WebClientConfiguration {
     }
 
     @Bean
-    @Qualifier(ARBEIDSFORHOLD_STS)
-    public WebClient webClientArbeidsforhold(Builder builder, ArbeidsforholdConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil) {
-        return builder
-                .baseUrl(cfg.getBaseUri().toString())
-                .filter(correlatingFilterFunction())
-                .filter(authenticatingFilterFunction(sts, tokenUtil))
-                .build();
-    }
-
-    @Bean
-    @Qualifier(ARBEIDSFORHOLD_TOKENX)
+    @Qualifier(ARBEIDSFORHOLD)
     public WebClient webClientArbeidsforholdTokenX(Builder builder,
                                                    ArbeidsforholdConfig cfg,
                                                    TokenUtil tokenUtil,
@@ -156,21 +143,6 @@ public class WebClientConfiguration {
     @Bean
     public GraphQLWebClient pdlSystemWebClient(@Qualifier(PDL_SYSTEM) WebClient client, ObjectMapper mapper) {
         return GraphQLWebClient.newInstance(client, mapper);
-    }
-
-    private static ExchangeFilterFunction authenticatingFilterFunction(SystemTokenTjeneste sts, TokenUtil tokenUtil) {
-        return (req, next) -> {
-            var builder = ClientRequest.from(req)
-                    .header(NAV_CONSUMER_TOKEN, sts.bearerToken());
-            if (tokenUtil.erAutentisert()) {
-                return next.exchange(builder
-                    .header(AUTHORIZATION, sts.bearerToken())
-                    .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker().value())
-                    .build());
-            }
-            LOG.trace("Uautentisert bruker, kan ikke sette auth headers");
-            return next.exchange(builder.build());
-        };
     }
 
     private static ExchangeFilterFunction temaFilterFunction() {
