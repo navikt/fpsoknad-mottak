@@ -104,10 +104,14 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(ARBEIDSFORHOLD_TOKENX)
-    public WebClient webClientArbeidsforholdTokenX(Builder builder, ArbeidsforholdConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
+    public WebClient webClientArbeidsforholdTokenX(Builder builder,
+                                                   ArbeidsforholdConfig cfg,
+                                                   TokenUtil tokenUtil,
+                                                   TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
+                .filter(navPersonIdentFunction(tokenUtil))
                 .filter(tokenXFilterFunction)
                 .build();
     }
@@ -173,7 +177,12 @@ public class WebClientConfiguration {
         return (req, next) -> next.exchange(ClientRequest.from(req)
                 .header(TEMA, FORELDREPENGER)
                 .build());
+    }
 
+    private static ExchangeFilterFunction navPersonIdentFunction(TokenUtil tokenUtil) {
+        return (req, next) -> next.exchange(ClientRequest.from(req)
+                .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker().value())
+                .build());
     }
 
     private ExchangeFilterFunction dkifExchangeFilterFunction(SystemTokenTjeneste sts, TokenUtil tokenUtil) {
