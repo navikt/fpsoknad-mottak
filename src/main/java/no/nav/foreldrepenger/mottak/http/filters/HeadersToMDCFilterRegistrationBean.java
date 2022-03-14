@@ -11,7 +11,8 @@ public class HeadersToMDCFilterRegistrationBean extends FilterRegistrationBean<H
 
     public HeadersToMDCFilterRegistrationBean(HeadersToMDCFilterBean headersFilter) {
         setFilter(headersFilter);
+        setOrder(1);
         setUrlPatterns(FilterRegistrationUtil.always());
-        LOG.info("Registrert filter {}", this.getClass().getSimpleName());
+        LOG.trace("Registrert filter {}", this.getClass().getSimpleName());
     }
 }
