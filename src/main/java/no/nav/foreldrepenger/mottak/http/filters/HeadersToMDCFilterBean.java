@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.http.filters;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.common.util.MDCUtil.toMDC;
-import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 
 import java.io.IOException;
 
@@ -16,14 +15,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import no.nav.foreldrepenger.common.domain.CallIdGenerator;
 
 @Component
-@Order(LOWEST_PRECEDENCE)
 public class HeadersToMDCFilterBean extends GenericFilterBean {
     private static final Logger LOG = LoggerFactory.getLogger(HeadersToMDCFilterBean.class);
 
