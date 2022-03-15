@@ -28,15 +28,14 @@ public class STSConnection extends AbstractWebClientConnection {
     SystemToken refresh() {
         LOG.trace("Refresh av system token");
         var token = webClient
-                .post()
-                .uri(cfg::getStsURI)
-                .accept(APPLICATION_JSON)
-                .contentType(APPLICATION_FORM_URLENCODED)
-                .body(cfg.stsBody())
-                .exchange()
-                .block()
-                .bodyToMono(SystemToken.class)
-                .block();
+            .post()
+            .uri(cfg::getStsURI)
+            .accept(APPLICATION_JSON)
+            .contentType(APPLICATION_FORM_URLENCODED)
+            .body(cfg.stsBody())
+            .retrieve()
+            .bodyToMono(SystemToken.class)
+            .block();
         LOG.trace("Refresh av system token OK ({})", token.getExpiration());
         return token;
     }

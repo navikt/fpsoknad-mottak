@@ -40,6 +40,7 @@ class RestClientConfigurationTest {
         var clientProperties = Map.of(
             "aareg-services", generellKlientProperties,
             "aareg-services-q1", generellKlientProperties,
+            "digdir-krr-proxy", generellKlientProperties,
             "fpfordel", generellKlientProperties);
         properties = new ClientConfigurationProperties(clientProperties);
     }
@@ -54,6 +55,12 @@ class RestClientConfigurationTest {
         var aaregUriProd = URI.create("https://aareg-services.intern.nav.no/v1/arbeidstaker/arbeidsforhold?historikk=false&sporingsinformasjon=true&ansettelsesperiodeFom=2019-03-08");
         var klientPropertyProd = matcher.findProperties(properties, aaregUriProd);
         assertThat(klientPropertyProd).isPresent();
+    }
+    @Test
+    void sjekkAtViKlarerÅHenteUtConfigForDigdirKrrProxy() {
+        var aaregUri = URI.create("https://digdir-krr-proxy.intern.nav.no/rest/v1/person");
+        var klientProperty = matcher.findProperties(properties, aaregUri);
+        assertThat(klientProperty).isPresent();
     }
 
     @Test

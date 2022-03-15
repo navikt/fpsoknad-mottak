@@ -32,6 +32,9 @@ no.nav:
               client-auth-method: private_key_jwt
             token-exchange:
               audience: dev-fss:arbeidsforhold:aareg-services-nais-q1
+          digdir-krr-proxy:
+            token-exchange:
+              audience: dev-fss:team-rocket:digdir-krr-proxy
 spring:
   config.import: vault://
   cloud:
@@ -62,11 +65,12 @@ spring:
 
 arbeidsforhold:
   base-uri: https://aareg-services-q1.dev.intern.nav.no/api
+digdir:
+  base-uri: https://digdir-krr-proxy.dev.intern.nav.no
 organisasjon:
   base-uri: https://modapp-q1.adeo.no/ereg/api
 sts:
   base-uri: https://security-token-service.nais.preprod.local
-
 securitytokenservice:
   url: https://sts-q1.preprod.local/SecurityTokenServiceProvider/
 
