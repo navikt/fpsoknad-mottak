@@ -7,7 +7,6 @@ import java.net.URI;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
-import org.springframework.web.util.UriBuilder;
 
 import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 
@@ -28,7 +27,7 @@ public class DKIFConfig extends AbstractConfig {
         this.kontaktPath = kontaktPath;
     }
 
-    URI kontaktUri(UriBuilder b) {
+    URI kontaktUri() {
         return uri(getBaseUri(), kontaktPath);
     }
 }

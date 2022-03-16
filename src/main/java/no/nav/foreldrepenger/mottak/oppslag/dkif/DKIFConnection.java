@@ -17,6 +17,7 @@ import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
+@Deprecated(forRemoval = true)
 public class DKIFConnection extends AbstractWebClientConnection {
     private static final Logger LOG = LoggerFactory.getLogger(DKIFConnection.class);
 
@@ -30,9 +31,9 @@ public class DKIFConnection extends AbstractWebClientConnection {
     }
 
     public Målform målform() {
-        LOG.info("Henter målform");
+        LOG.info("Henter målform fra dkif");
         return webClient.get()
-                .uri(b -> cfg.kontaktUri(b))
+                .uri(uri -> cfg.kontaktUri())
                 .accept(APPLICATION_JSON)
                 .retrieve()
                 .onStatus(HttpStatus::isError, ClientResponse::createException)

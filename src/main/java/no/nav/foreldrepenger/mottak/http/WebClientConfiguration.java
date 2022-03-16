@@ -33,6 +33,7 @@ import no.nav.foreldrepenger.common.util.MDCUtil;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DKIFConfig;
+import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConfig;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontonummerConfig;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig;
 import no.nav.foreldrepenger.mottak.oppslag.sts.STSConfig;
@@ -52,6 +53,7 @@ public class WebClientConfiguration {
     public static final String PDL_USER = "PDL";
     public static final String PDL_SYSTEM = "PDL-RELASJON";
     public static final String KRR = "KRR";
+    public static final String KRR_TOKENX = "KRR_TOKENX";
     public static final String ARBEIDSFORHOLD = "ARBEIDSFORHOLD";
     public static final String ORGANISASJON = "ORGANISASJON";
     public static final String KONTONR = "KONTONR";
@@ -59,6 +61,7 @@ public class WebClientConfiguration {
     @Value("${spring.application.name:fpsoknad-mottak}")
     private String consumer;
 
+    @Deprecated(forRemoval = true)
     @Bean
     @Qualifier(KRR)
     public WebClient webClientDKIF(Builder builder, DKIFConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil) {
@@ -66,6 +69,17 @@ public class WebClientConfiguration {
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
                 .filter(dkifExchangeFilterFunction(sts, tokenUtil))
+                .build();
+    }
+
+    @Bean
+    @Qualifier(KRR_TOKENX)
+    public WebClient webClientDKIF(Builder builder, DigdirKrrProxyConfig cfg, TokenUtil tokenUtil, TokenXExchangeFilterFunction tokenXFilterFunction) {
+        return builder
+                .baseUrl(cfg.getBaseUri().toString())
+                .filter(correlatingFilterFunction())
+                .filter(navPersonIdentFunction(tokenUtil))
+                .filter(tokenXFilterFunction)
                 .build();
     }
 
@@ -157,10 +171,10 @@ public class WebClientConfiguration {
                 .build());
     }
 
+    @Deprecated(forRemoval = true)
     private ExchangeFilterFunction dkifExchangeFilterFunction(SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return (req, next) -> next.exchange(ClientRequest.from(req)
                 .header(AUTHORIZATION, sts.bearerToken())
-                .header(NAV_CONSUMER_ID, consumerId())
                 .header(NAV_PERSONIDENTER, tokenUtil.autentisertBruker().value())
                 .build());
 

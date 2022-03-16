@@ -60,6 +60,9 @@ no.nav:
           aareg-services:
             token-exchange:
               audience: lokal
+          digdir-krr-proxy:
+            token-exchange:
+              audience: lokal
 server:
   port: 9001
 spring:

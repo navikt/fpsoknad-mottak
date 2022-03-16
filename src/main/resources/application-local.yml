@@ -55,7 +55,14 @@ no.nav:
           aareg-services:
             well-known-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
             token-exchange:
-              audience: local:teamforeldrepenger:aareg-services-nais
+              audience: local:arbeidsforhold:aareg-services-nais
+            authentication:
+              client-id: fpsoknad-mottak
+              client-jwk: src/test/resources/tokenx/jwk.json
+          digdir-krr-proxy:
+            well-known-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
+            token-exchange:
+              audience: local:arbeidsforhold:digdir-krr-proxy
             authentication:
               client-id: fpsoknad-mottak
               client-jwk: src/test/resources/tokenx/jwk.json
