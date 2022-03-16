@@ -78,7 +78,7 @@ public class WebClientConfiguration {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
-                .filter(dkifExchangeFilterFunction(tokenUtil))
+                .filter(navPersonIdentFunction(tokenUtil))
                 .filter(tokenXFilterFunction)
                 .build();
     }
@@ -169,13 +169,6 @@ public class WebClientConfiguration {
         return (req, next) -> next.exchange(ClientRequest.from(req)
                 .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker().value())
                 .build());
-    }
-
-    private ExchangeFilterFunction dkifExchangeFilterFunction(TokenUtil tokenUtil) {
-        return (req, next) -> next.exchange(ClientRequest.from(req)
-            .header(NAV_PERSONIDENTER, tokenUtil.autentisertBruker().value())
-            .build());
-
     }
 
     @Deprecated(forRemoval = true)
