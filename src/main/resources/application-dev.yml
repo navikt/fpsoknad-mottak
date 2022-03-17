@@ -34,7 +34,7 @@ no.nav:
               audience: dev-fss:arbeidsforhold:aareg-services-nais-q1
           digdir-krr-proxy:
             token-exchange:
-              audience: dev-fss:team-rocket:digdir-krr-proxy
+              audience: dev-gcp:team-rocket:digdir-krr-proxy
 spring:
   config.import: vault://
   cloud:

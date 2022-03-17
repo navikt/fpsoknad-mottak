@@ -20,7 +20,7 @@ no.nav:
               audience: prod-fss:arbeidsforhold:aareg-services-nais
           digdir-krr-proxy:
             token-exchange:
-              audience: prod-fss:team-rocket:digdir-krr-proxy
+              audience: prod-gcp:team-rocket:digdir-krr-proxy
 spring:
   config.import: vault://
   cloud:
