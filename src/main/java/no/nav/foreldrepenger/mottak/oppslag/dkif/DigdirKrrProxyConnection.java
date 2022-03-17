@@ -27,7 +27,7 @@ public class DigdirKrrProxyConnection extends AbstractWebClientConnection {
 
     public Målform målform() {
         LOG.info("Henter målform fra digdir-krr-proxy");
-        return webClient.post()
+        return webClient.get()
             .uri(uri -> cfg.kontaktUri())
             .accept(APPLICATION_JSON)
             .retrieve()
