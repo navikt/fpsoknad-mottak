@@ -117,7 +117,7 @@ kontonummer:
   base-uri: http://localhost:8060/rest/dummy/oppslag
 fpfordel:
   base-uri: http://localhost:8090
-dkif:
+digdir:
   base-uri: http://localhost:8060/rest/api
 innsyn:
   base-uri: http://localhost:8040

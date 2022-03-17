@@ -86,7 +86,7 @@ kontonummer:
   base-uri: ${oppslag.url}
 fpfordel:
   base-uri: ${fpfordel.base.url}
-dkif:
-  base-uri: ${dkif.base.url}
+digdir:
+  base-uri: ${digdir.base.url}
 innsyn:
   base-uri: ${fpinfo.base.url}
