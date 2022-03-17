@@ -197,7 +197,7 @@ public class PDLConnection implements PingEndpointAware {
         try {
             return digdir.målform();
         } catch (Exception e) {
-            LOG.trace("Kall mot digdir-krr-proxy feilet. Fallback til dkif.");
+            LOG.trace("Kall mot digdir-krr-proxy feilet. Fallback til dkif.", e);
             return dkif.målform();
         }
     }
