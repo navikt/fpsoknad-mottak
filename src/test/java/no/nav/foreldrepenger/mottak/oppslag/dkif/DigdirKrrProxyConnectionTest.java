@@ -77,17 +77,16 @@ class DigdirKrrProxyConnectionTest {
     }
 
     @Test
-    void defaultMålformBrukesVed404MotDigdir() {
+    void skalHiveExceptionVed4xxFeil() {
         mockWebServer.enqueue(new MockResponse()
             .setResponseCode(404)
             .addHeader("Content-Type", "application/json"));
 
-        var målform = digdirKrrProxyConnection.målform();
-        assertThat(målform).isEqualTo(Målform.NB);
+        assertThrows(Exception.class, () -> digdirKrrProxyConnection.målform());
     }
 
     @Test
-    void skalHiveExceptionVed500Feil() {
+    void skalHiveExceptionVed5xxFeil() {
         mockWebServer.enqueue(new MockResponse()
             .setResponseCode(500)
             .addHeader("Content-Type", "application/json"));

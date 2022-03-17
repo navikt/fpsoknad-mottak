@@ -37,7 +37,6 @@ import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
-import no.nav.foreldrepenger.mottak.oppslag.dkif.DKIFConnection;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConnection;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontonummerConnection;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
@@ -51,7 +50,6 @@ public class PDLConnection implements PingEndpointAware {
     private final GraphQLWebClient userClient;
     private final GraphQLWebClient systemClient;
     private final PDLConfig cfg;
-    private final DKIFConnection dkif;
     private final DigdirKrrProxyConnection digdir;
     private final PDLErrorResponseHandler errorHandler;
     private final KontonummerConnection kontonr;
@@ -59,11 +57,11 @@ public class PDLConnection implements PingEndpointAware {
 
     PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient,
                   @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
-                  PDLConfig cfg, DKIFConnection dkif, DigdirKrrProxyConnection digdir,
-                  KontonummerConnection kontonr, TokenUtil tokenUtil, PDLErrorResponseHandler errorHandler) {
+                  PDLConfig cfg, DigdirKrrProxyConnection digdir,
+                  KontonummerConnection kontonr, TokenUtil tokenUtil,
+                  PDLErrorResponseHandler errorHandler) {
         this.userClient = userClient;
         this.systemClient = systemClient;
-        this.dkif = dkif;
         this.digdir = digdir;
         this.kontonr = kontonr;
         this.cfg = cfg;
@@ -186,19 +184,10 @@ public class PDLConnection implements PingEndpointAware {
 
     private Målform målform() {
         try {
-            return hentMålformFraDigdirKrrProxyMedFallbackTilDkif();
-        } catch (Exception e) {
-            LOG.warn("DKIF oppslag målform feilet", e);
-            return Målform.standard();
-        }
-    }
-
-    private Målform hentMålformFraDigdirKrrProxyMedFallbackTilDkif() {
-        try {
             return digdir.målform();
         } catch (Exception e) {
-            LOG.trace("Kall mot digdir-krr-proxy feilet. Fallback til dkif.", e);
-            return dkif.målform();
+            LOG.warn("DKIF oppslag målform feilet. Bruker default Målform.", e);
+            return Målform.standard();
         }
     }
 
