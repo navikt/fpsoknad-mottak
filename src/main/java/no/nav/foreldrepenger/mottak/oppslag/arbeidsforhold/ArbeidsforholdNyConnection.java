@@ -45,6 +45,7 @@ public class ArbeidsforholdNyConnection extends AbstractWebClientConnection {
             .retrieve()
             .bodyToFlux(ArbeidsforholdDTO.class)
             .mapNotNull(this::tilEnkeltArbeidsforhold)
+            .sort(comparing(EnkeltArbeidsforhold::getArbeidsgiverNavn))
             .collectList()
             .block();
 
