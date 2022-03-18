@@ -212,6 +212,7 @@ class ArbeidsforholdConnectionTest {
         assertThat(arbeidsforhold).hasSize(1);
         var enkeltArbeidsforhold = arbeidsforhold.get(0);
         assertThat(enkeltArbeidsforhold.getArbeidsgiverId()).isEqualTo("999999999");
+        assertThat(enkeltArbeidsforhold.getArbeidsgiverIdType()).isEqualTo("orgnr");
         assertThat(enkeltArbeidsforhold.getArbeidsgiverNavn()).isNotNull();
         assertThat(enkeltArbeidsforhold.getFrom()).isEqualTo(LocalDate.parse("2014-07-01"));
         assertThat(enkeltArbeidsforhold.getTo()).isPresent().get().isEqualTo(LocalDate.parse("2015-12-31"));
@@ -284,6 +285,7 @@ class ArbeidsforholdConnectionTest {
         assertThat(arbeidsforhold).hasSize(1);
         var enkeltArbeidsforhold = arbeidsforhold.get(0);
         assertThat(enkeltArbeidsforhold.getArbeidsgiverId()).isEqualTo("22222233333");
+        assertThat(enkeltArbeidsforhold.getArbeidsgiverIdType()).isEqualTo("fnr");
         assertThat(enkeltArbeidsforhold.getArbeidsgiverNavn()).isNotNull();
         assertThat(enkeltArbeidsforhold.getFrom()).isEqualTo(LocalDate.parse("2014-07-01"));
         assertThat(enkeltArbeidsforhold.getTo()).isNotPresent();

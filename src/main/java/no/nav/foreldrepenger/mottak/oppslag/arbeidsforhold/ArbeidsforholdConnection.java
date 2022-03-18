@@ -19,6 +19,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.ArbeidsforholdDTO;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.ArbeidsgiverDTO;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.ArbeidsgiverType;
 
 @Component
 public class ArbeidsforholdConnection extends AbstractWebClientConnection {
@@ -59,12 +60,19 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
         var arbeidsgiverId = tilArbeidsgiverId(a.arbeidsgiver());
         return EnkeltArbeidsforhold.builder()
             .arbeidsgiverId(arbeidsgiverId)
-            .arbeidsgiverIdType(a.arbeidsgiver().type().name())
+            .arbeidsgiverIdType(tilArbeidsgiverTypeFrontend(a.arbeidsgiver().type()))
             .from(a.ansettelsesperiode().periode().fom())
             .to(Optional.ofNullable(a.ansettelsesperiode().periode().tom()))
             .stillingsprosent(a.gjeldendeStillingsprosent())
             .arbeidsgiverNavn(organisasjon.navn(arbeidsgiverId))
             .build();
+    }
+
+    private String tilArbeidsgiverTypeFrontend(ArbeidsgiverType type) {
+        return switch (type) {
+            case Organisasjon -> "orgnr";
+            case Person -> "fnr";
+        };
     }
 
     private String tilArbeidsgiverId(ArbeidsgiverDTO arbeidsgiver) {
