@@ -59,6 +59,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
         var arbeidsgiverId = tilArbeidsgiverId(a.arbeidsgiver());
         return EnkeltArbeidsforhold.builder()
             .arbeidsgiverId(arbeidsgiverId)
+            .arbeidsgiverIdType(a.arbeidsgiver().type().name())
             .from(a.ansettelsesperiode().periode().fom())
             .to(Optional.ofNullable(a.ansettelsesperiode().periode().tom()))
             .stillingsprosent(a.gjeldendeStillingsprosent())
