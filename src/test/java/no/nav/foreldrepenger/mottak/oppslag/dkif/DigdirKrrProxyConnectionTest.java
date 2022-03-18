@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.dkif;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.net.URI;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 import okhttp3.mockwebserver.MockResponse;
@@ -78,20 +76,22 @@ class DigdirKrrProxyConnectionTest {
     }
 
     @Test
-    void skalHiveExceptionVed4xxFeil() {
+    void skalBrukeDefaultMålformVed4xxFeil() {
         mockWebServer.enqueue(new MockResponse()
             .setResponseCode(404)
             .addHeader("Content-Type", "application/json"));
 
-        assertThrows(WebClientResponseException.NotFound.class, () -> digdirKrrProxyConnection.målform());
+        var målform = digdirKrrProxyConnection.målform();
+        assertThat(målform).isEqualTo(Målform.NB);
     }
 
     @Test
-    void skalHiveExceptionVed5xxFeil() {
+    void skalBrukeDefaultMålformVed5xxFeil() {
         mockWebServer.enqueue(new MockResponse()
             .setResponseCode(500)
             .addHeader("Content-Type", "application/json"));
 
-        assertThrows(WebClientResponseException.InternalServerError.class, () -> digdirKrrProxyConnection.målform());
+        var målform = digdirKrrProxyConnection.målform();
+        assertThat(målform).isEqualTo(Målform.NB);
     }
 }

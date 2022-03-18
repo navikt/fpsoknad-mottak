@@ -30,8 +30,7 @@ class ArbeidsforholdConnectionTest {
 
     @MockBean
     private OrganisasjonConnection organisasjonConnection;
-    private ArbeidsforholdNyConnection arbeidsforholdConnectionForenklet;
-    private ArbeidsforholdConnection arbeidsforholdConnection;
+    private ArbeidsforholdConnection arbeidsforholdConnectionForenklet;
 
     @BeforeAll
     static void setUp() throws IOException {
@@ -46,10 +45,7 @@ class ArbeidsforholdConnectionTest {
         var arbeidsforholdConfig = new ArbeidsforholdConfig(URI.create(baseUrl), "/ping",
             "v1/arbeidstaker/arbeidsforhold", true, Period.of(3,0,0),
             false);
-        arbeidsforholdConnectionForenklet = new ArbeidsforholdNyConnection(webClient, arbeidsforholdConfig, organisasjonConnection);
-
-        arbeidsforholdConnection = new ArbeidsforholdConnection(webClient, arbeidsforholdConfig,
-            new ArbeidsforholdMapper(organisasjonConnection));
+        arbeidsforholdConnectionForenklet = new ArbeidsforholdConnection(webClient, arbeidsforholdConfig, organisasjonConnection);
     }
 
     @AfterAll
@@ -220,12 +216,6 @@ class ArbeidsforholdConnectionTest {
         assertThat(enkeltArbeidsforhold.getFrom()).isEqualTo(LocalDate.parse("2014-07-01"));
         assertThat(enkeltArbeidsforhold.getTo()).isPresent().get().isEqualTo(LocalDate.parse("2015-12-31"));
         assertThat(enkeltArbeidsforhold.getStillingsprosent()).isNull();
-
-        mockWebServer.enqueue(new MockResponse()
-            .setBody(body)
-            .addHeader("Content-Type", "application/json"));
-        var arbeidsforholdOld = arbeidsforholdConnection.hentArbeidsforhold();
-        assertThat(arbeidsforholdOld).isEqualTo(arbeidsforhold);
     }
 
     @Test
@@ -298,12 +288,6 @@ class ArbeidsforholdConnectionTest {
         assertThat(enkeltArbeidsforhold.getFrom()).isEqualTo(LocalDate.parse("2014-07-01"));
         assertThat(enkeltArbeidsforhold.getTo()).isNotPresent();
         assertThat(enkeltArbeidsforhold.getStillingsprosent()).isEqualTo(new ProsentAndel(49.5));
-
-        mockWebServer.enqueue(new MockResponse()
-            .setBody(body)
-            .addHeader("Content-Type", "application/json"));
-        var arbeidsforholdOld = arbeidsforholdConnection.hentArbeidsforhold();
-        assertThat(arbeidsforholdOld).isEqualTo(arbeidsforhold);
     }
 
     @Test
