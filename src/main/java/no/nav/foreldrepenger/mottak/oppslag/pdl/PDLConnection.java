@@ -183,12 +183,7 @@ public class PDLConnection implements PingEndpointAware {
     }
 
     private Målform målform() {
-        try {
-            return digdir.målform();
-        } catch (Exception e) {
-            LOG.warn("DKIF oppslag målform feilet. Bruker default Målform.", e);
-            return Målform.standard();
-        }
+        return digdir.målform();
     }
 
     @Override
