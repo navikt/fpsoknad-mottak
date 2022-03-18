@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import static java.time.LocalDate.now;
+import static java.util.Comparator.comparing;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ARBEIDSFORHOLD;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;
