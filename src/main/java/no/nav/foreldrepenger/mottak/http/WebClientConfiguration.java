@@ -62,31 +62,31 @@ public class WebClientConfiguration {
     @Qualifier(KRR)
     public WebClient webClientDigdir(Builder builder, DigdirKrrProxyConfig cfg, TokenUtil tokenUtil, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
-                .baseUrl(cfg.getBaseUri().toString())
-                .filter(correlatingFilterFunction())
-                .filter(navPersonIdentFunction(tokenUtil))
-                .filter(tokenXFilterFunction)
-                .build();
+            .baseUrl(cfg.getBaseUri().toString())
+            .filter(correlatingFilterFunction())
+            .filter(navPersonIdentFunction(tokenUtil))
+            .filter(tokenXFilterFunction)
+            .build();
     }
 
     @Bean
     @Qualifier(KONTONR)
     public WebClient webClientKontonummer(Builder builder, KontonummerConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
-                .baseUrl(cfg.getBaseUri().toString())
-                .filter(correlatingFilterFunction())
-                .filter(tokenXFilterFunction)
-                .build();
+            .baseUrl(cfg.getBaseUri().toString())
+            .filter(correlatingFilterFunction())
+            .filter(tokenXFilterFunction)
+            .build();
     }
 
     @Bean
     @Qualifier(STS)
     public WebClient webClientSTS(Builder builder, STSConfig cfg) {
         return builder
-                .baseUrl(cfg.getBaseUri().toString())
-                .filter(correlatingFilterFunction())
-                .defaultHeaders(h -> h.setBasicAuth(cfg.getUsername(), cfg.getPassword()))
-                .build();
+            .baseUrl(cfg.getBaseUri().toString())
+            .filter(correlatingFilterFunction())
+            .defaultHeaders(h -> h.setBasicAuth(cfg.getUsername(), cfg.getPassword()))
+            .build();
     }
 
     @Bean
@@ -96,11 +96,11 @@ public class WebClientConfiguration {
                                                    TokenUtil tokenUtil,
                                                    TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
-                .baseUrl(cfg.getBaseUri().toString())
-                .filter(correlatingFilterFunction())
-                .filter(navPersonIdentFunction(tokenUtil))
-                .filter(tokenXFilterFunction)
-                .build();
+            .baseUrl(cfg.getBaseUri().toString())
+            .filter(correlatingFilterFunction())
+            .filter(navPersonIdentFunction(tokenUtil))
+            .filter(tokenXFilterFunction)
+            .build();
     }
 
     @Bean

@@ -47,7 +47,6 @@ class ArbeidsforholdMapper {
         var periode = get(get(map, ANSETTELSESPERIODE, Map.class), PERIODE, Map.class);
         return EnkeltArbeidsforhold.builder()
                 .arbeidsgiverId(id.getFirst())
-                .arbeidsgiverIdType(id.getSecond())
                 .from(dato(get(periode, FOM)))
                 .to(Optional.ofNullable(dato(get(periode, TOM))))
                 .stillingsprosent(stillingsprosent(get(map, ARBEIDSAVTALER, List.class)))

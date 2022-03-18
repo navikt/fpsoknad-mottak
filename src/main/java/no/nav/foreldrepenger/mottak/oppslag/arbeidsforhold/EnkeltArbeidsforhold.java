@@ -11,7 +11,6 @@ import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 @Builder
 public class EnkeltArbeidsforhold {
     private final String arbeidsgiverId;
-    private final String arbeidsgiverIdType;
     private final LocalDate from;
     private final Optional<LocalDate> to;
     private final ProsentAndel stillingsprosent;

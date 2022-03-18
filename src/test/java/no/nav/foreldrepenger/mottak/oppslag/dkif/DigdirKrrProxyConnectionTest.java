@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 import okhttp3.mockwebserver.MockResponse;
@@ -82,7 +83,7 @@ class DigdirKrrProxyConnectionTest {
             .setResponseCode(404)
             .addHeader("Content-Type", "application/json"));
 
-        assertThrows(Exception.class, () -> digdirKrrProxyConnection.målform());
+        assertThrows(WebClientResponseException.NotFound.class, () -> digdirKrrProxyConnection.målform());
     }
 
     @Test
@@ -91,6 +92,6 @@ class DigdirKrrProxyConnectionTest {
             .setResponseCode(500)
             .addHeader("Content-Type", "application/json"));
 
-        assertThrows(Exception.class, () -> digdirKrrProxyConnection.målform());
+        assertThrows(WebClientResponseException.InternalServerError.class, () -> digdirKrrProxyConnection.målform());
     }
 }
