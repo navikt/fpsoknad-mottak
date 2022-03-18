@@ -5,6 +5,8 @@ import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ORGANISAS
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;
 
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -18,7 +20,6 @@ import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Navn;
 import no.nav.foreldrepenger.common.domain.Orgnummer;
 import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.OrganisasjonsNavnDTO;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 
 @Component
@@ -27,7 +28,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
     private static final String PRIVAT_ARBEIDSGIVER = "Privat arbeidsgiver";
     private static final Logger LOG = LoggerFactory.getLogger(OrganisasjonConnection.class);
     private final OrganisasjonConfig cfg;
-    private final PDLConnection oppslag;
+    private PDLConnection oppslag;
 
     public OrganisasjonConnection(@Qualifier(ORGANISASJON) WebClient client, PDLConnection oppslag, OrganisasjonConfig cfg) {
         super(client, cfg);
@@ -36,12 +37,12 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
     }
 
     @Cacheable(cacheNames = "organisasjon")
-    public String navn(String identifikator) {
-        if (isFnr(identifikator)) {
-            return personNavn(new Fødselsnummer(identifikator));
+    public String navn(String orgnr) {
+        if (isFnr(orgnr)) {
+            return personNavn(new Fødselsnummer(orgnr));
         }
-        if (isOrgnr(identifikator)) {
-            return orgNavn(Orgnummer.valueOf(identifikator));
+        if (isOrgnr(orgnr)) {
+            return orgNavn(Orgnummer.valueOf(orgnr));
         }
         return "";
     }
@@ -56,19 +57,25 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
 
     private String orgNavn(Orgnummer orgnr) {
         LOG.info("Henter organisasjonsnavn for {}", orgnr.maskert());
-        var navn = webClient.get()
-            .uri(b -> cfg.getOrganisasjonURI(b, orgnr.value()))
-            .accept(APPLICATION_JSON)
-            .retrieve()
-            .bodyToMono(OrganisasjonsNavnDTO.class)
-            .mapNotNull(OrganisasjonsNavnDTO::tilOrganisasjonsnavn)
-            .defaultIfEmpty(orgnr.value())
-            .doOnError(throwable -> LOG.warn("Fant ikke organisasjonsnavn for {}. Returnerer orgnummer som navn.", orgnr.maskert(), throwable))
-            .onErrorReturn(orgnr.value())
-            .block();
-        LOG.info("Hentet organisasjonsnavn for {} OK", orgnr.maskert());
-        LOG.trace("Organisasjonsnavn for {} er {}", orgnr, navn);
-        return navn;
+        try {
+            var navn = Optional.ofNullable(webClient
+                    .get()
+                    .uri(b -> cfg.getOrganisasjonURI(b, orgnr.value()))
+                    .accept(APPLICATION_JSON)
+                    .retrieve()
+                    .toEntity(Map.class)
+                    .block()
+                    .getBody())
+                    .map(OrganisasjonMapper::tilOrganisasjonsnavn)
+                    .filter(Objects::nonNull)
+                    .orElse(orgnr.value());
+            LOG.info("Hentet organisasjonsnavn for {} OK", orgnr.maskert());
+            LOG.trace("Organisasjonsnavn for {} er {}", orgnr, navn);
+            return navn;
+        } catch (Exception e) {
+            LOG.warn("Fant ikke organisasjonsnavn for {}", orgnr.maskert());
+            return orgnr.value();
+        }
     }
 
     private String personNavn(Fødselsnummer fnr) {
@@ -76,8 +83,8 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
         try {
             var n = oppslag.navnFor(fnr.value());
             var navn = Optional.ofNullable(n)
-                .map(Navn::navn)
-                .orElse(PRIVAT_ARBEIDSGIVER);
+                    .map(Navn::navn)
+                    .orElse(PRIVAT_ARBEIDSGIVER);
             LOG.info("Hentet personnavn {} for {}", n.fornavn(), fnr);
             return navn;
         } catch (Exception e) {
