@@ -99,6 +99,7 @@ class OrganisasjonConnectionTest {
     @Test
     void skalBrukeOrgnummerSomDefaultVed5xxFeil() {
         mockWebServer.enqueue(new MockResponse()
+            .setBody("ERROR")
             .setResponseCode(500)
             .addHeader("Content-Type", "application/json"));
 

@@ -20,7 +20,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import no.nav.foreldrepenger.common.domain.Navn;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
@@ -29,8 +31,18 @@ class ArbeidsforholdConnectionTest {
     private static MockWebServer mockWebServer;
 
     @MockBean
+    private PDLConnection pdlConnection;
     private OrganisasjonConnection organisasjonConnection;
-    private ArbeidsforholdConnection arbeidsforholdConnectionForenklet;
+    private ArbeidsforholdConnection arbeidsforholdConnection;
+
+    private static final String DEFAULT_RESPONSE_EEREG =
+        """
+        {
+            "navn": {
+                "navnelinje1": "Fake Bedrift AS"
+                }
+        }
+        """;
 
     @BeforeAll
     static void setUp() throws IOException {
@@ -42,10 +54,12 @@ class ArbeidsforholdConnectionTest {
     void setupConnection() {
         var baseUrl = String.format("http://localhost:%s", mockWebServer.getPort());
         var webClient = WebClient.builder().baseUrl(baseUrl).build();
+        var organisasjonConfig = new OrganisasjonConfig(URI.create(baseUrl), "/v1/organisasjon/{orgnr}", true);
+        organisasjonConnection = new OrganisasjonConnection(webClient, pdlConnection, organisasjonConfig);
         var arbeidsforholdConfig = new ArbeidsforholdConfig(URI.create(baseUrl), "/ping",
             "v1/arbeidstaker/arbeidsforhold", true, Period.of(3,0,0),
             false);
-        arbeidsforholdConnectionForenklet = new ArbeidsforholdConnection(webClient, arbeidsforholdConfig, organisasjonConnection);
+        arbeidsforholdConnection = new ArbeidsforholdConnection(webClient, arbeidsforholdConfig, organisasjonConnection);
     }
 
     @AfterAll
@@ -55,7 +69,7 @@ class ArbeidsforholdConnectionTest {
 
     @Test
     void verifiserAtOrdinærtArbeidsforholdMedSluttDatoOgOrgnummerBlirMappetKorrekt() {
-        var body = """
+        var bodyAareg = """
             [
               {
                 "ansettelsesperiode": {
@@ -204,16 +218,18 @@ class ArbeidsforholdConnectionTest {
             ]
         """;
         mockWebServer.enqueue(new MockResponse()
-            .setBody(body)
+            .setBody(bodyAareg)
             .addHeader("Content-Type", "application/json"));
-        when(organisasjonConnection.navn(any(String.class))).thenReturn("Navn");
+        mockWebServer.enqueue(new MockResponse()
+            .setBody(DEFAULT_RESPONSE_EEREG)
+            .addHeader("Content-Type", "application/json"));
 
-        var arbeidsforhold = arbeidsforholdConnectionForenklet.hentArbeidsforhold();
+        var arbeidsforhold = arbeidsforholdConnection.hentArbeidsforhold();
         assertThat(arbeidsforhold).hasSize(1);
         var enkeltArbeidsforhold = arbeidsforhold.get(0);
         assertThat(enkeltArbeidsforhold.getArbeidsgiverId()).isEqualTo("999999999");
         assertThat(enkeltArbeidsforhold.getArbeidsgiverIdType()).isEqualTo("orgnr");
-        assertThat(enkeltArbeidsforhold.getArbeidsgiverNavn()).isNotNull();
+        assertThat(enkeltArbeidsforhold.getArbeidsgiverNavn()).isEqualTo("Fake Bedrift AS");
         assertThat(enkeltArbeidsforhold.getFrom()).isEqualTo(LocalDate.parse("2014-07-01"));
         assertThat(enkeltArbeidsforhold.getTo()).isPresent().get().isEqualTo(LocalDate.parse("2015-12-31"));
         assertThat(enkeltArbeidsforhold.getStillingsprosent()).isNull();
@@ -279,9 +295,9 @@ class ArbeidsforholdConnectionTest {
         mockWebServer.enqueue(new MockResponse()
             .setBody(body)
             .addHeader("Content-Type", "application/json"));
-        when(organisasjonConnection.navn(any(String.class))).thenReturn("Navn");
+        when(pdlConnection.navnFor(any())).thenReturn(new Navn("Per", "", "Pål"));
 
-        var arbeidsforhold = arbeidsforholdConnectionForenklet.hentArbeidsforhold();
+        var arbeidsforhold = arbeidsforholdConnection.hentArbeidsforhold();
         assertThat(arbeidsforhold).hasSize(1);
         var enkeltArbeidsforhold = arbeidsforhold.get(0);
         assertThat(enkeltArbeidsforhold.getArbeidsgiverId()).isEqualTo("22222233333");
@@ -296,9 +312,8 @@ class ArbeidsforholdConnectionTest {
     void verifiserAtIngenBodyGirEnTomArbeidsforholdsListeOgIkkeException() {
         mockWebServer.enqueue(new MockResponse()
             .addHeader("Content-Type", "application/json"));
-        when(organisasjonConnection.navn(any(String.class))).thenReturn("Navn");
 
-        var arbeidsforhold = arbeidsforholdConnectionForenklet.hentArbeidsforhold();
+        var arbeidsforhold = arbeidsforholdConnection.hentArbeidsforhold();
         assertThat(arbeidsforhold)
             .isNotNull()
             .isEmpty();
@@ -309,9 +324,8 @@ class ArbeidsforholdConnectionTest {
         mockWebServer.enqueue(new MockResponse()
             .setBody("[]")
             .addHeader("Content-Type", "application/json"));
-        when(organisasjonConnection.navn(any(String.class))).thenReturn("Navn");
 
-        var arbeidsforhold = arbeidsforholdConnectionForenklet.hentArbeidsforhold();
+        var arbeidsforhold = arbeidsforholdConnection.hentArbeidsforhold();
         assertThat(arbeidsforhold)
             .isNotNull()
             .isEmpty();
@@ -322,9 +336,7 @@ class ArbeidsforholdConnectionTest {
         mockWebServer.enqueue(new MockResponse()
             .setResponseCode(403)
             .addHeader("Content-Type", "application/json"));
-        when(organisasjonConnection.navn(any(String.class))).thenReturn("Navn");
-
-        assertThrows(WebClientResponseException.Forbidden.class, () -> arbeidsforholdConnectionForenklet.hentArbeidsforhold());
+        assertThrows(WebClientResponseException.Forbidden.class, () -> arbeidsforholdConnection.hentArbeidsforhold());
     }
 
     @Test
@@ -332,9 +344,7 @@ class ArbeidsforholdConnectionTest {
         mockWebServer.enqueue(new MockResponse()
             .setResponseCode(500)
             .addHeader("Content-Type", "application/json"));
-        when(organisasjonConnection.navn(any(String.class))).thenReturn("Navn");
 
-        assertThrows(WebClientResponseException.InternalServerError.class, () -> arbeidsforholdConnectionForenklet.hentArbeidsforhold());
+        assertThrows(WebClientResponseException.InternalServerError.class, () -> arbeidsforholdConnection.hentArbeidsforhold());
     }
-
 }

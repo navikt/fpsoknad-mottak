@@ -15,5 +15,5 @@ public class EnkeltArbeidsforhold {
     private final LocalDate from;
     private final Optional<LocalDate> to;
     private final ProsentAndel stillingsprosent;
-    private final String arbeidsgiverNavn;
+    private String arbeidsgiverNavn;
 }
