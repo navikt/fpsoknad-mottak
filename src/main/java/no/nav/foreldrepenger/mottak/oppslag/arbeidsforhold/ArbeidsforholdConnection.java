@@ -8,6 +8,7 @@ import static org.springframework.util.StringUtils.capitalize;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -46,10 +47,14 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
             .accept(APPLICATION_JSON)
             .retrieve()
             .bodyToFlux(ArbeidsforholdDTO.class)
-            .mapNotNull(this::tilEnkeltArbeidsforhold)
-            .sort(comparing(EnkeltArbeidsforhold::getArbeidsgiverNavn))
             .collectList()
-            .block();
+            .blockOptional()
+            .orElse(List.of())
+            .stream()
+            .filter(Objects::nonNull)
+            .map(this::tilEnkeltArbeidsforhold)
+            .sorted(comparing(EnkeltArbeidsforhold::getArbeidsgiverNavn))
+            .toList();
 
         LOG.info("Hentet {} arbeidsforhold for perioden fra {}", arbeidsforhold.size(), fom);
         LOG.trace("Arbeidsforhold: {}", arbeidsforhold);
