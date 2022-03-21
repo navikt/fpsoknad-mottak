@@ -358,10 +358,6 @@ class ArbeidsforholdConnectionTest {
 
     @Test
     void arbeidsavtaleKanHaIkkeOppgittStillingsprosentVerifiserNullBrukesOgExceptionIkkeHives(){
-        mockWebServer.enqueue(new MockResponse()
-            .setBody(DEFAULT_RESPONSE_EEREG)
-            .addHeader("Content-Type", "application/json"));
-
         var fom = LocalDate.now().minusMonths(1);
         var arbeidsforholdDTO = new ArbeidsforholdDTO(
             new ArbeidsgiverDTO(ArbeidsgiverType.Organisasjon, Orgnummer.MAGIC_ORG, null),
@@ -369,6 +365,12 @@ class ArbeidsforholdConnectionTest {
             List.of(new ArbeidsavtaleDTO(new Periode(fom, null), null)));
 
 
-        arbeidsforholdConnection.tilEnkeltArbeidsforhold(arbeidsforholdDTO);
+        var enkeltArbeidsforhold = arbeidsforholdConnection.tilEnkeltArbeidsforhold(arbeidsforholdDTO);
+        assertThat(enkeltArbeidsforhold.getArbeidsgiverId()).isEqualTo(Orgnummer.MAGIC_ORG.value());
+        assertThat(enkeltArbeidsforhold.getArbeidsgiverIdType()).isEqualTo("orgnr");
+        assertThat(enkeltArbeidsforhold.getArbeidsgiverNavn()).isNotNull();
+        assertThat(enkeltArbeidsforhold.getFrom()).isNotNull();
+        assertThat(enkeltArbeidsforhold.getTo()).isNotPresent();
+        assertThat(enkeltArbeidsforhold.getStillingsprosent()).isNull();
     }
 }
