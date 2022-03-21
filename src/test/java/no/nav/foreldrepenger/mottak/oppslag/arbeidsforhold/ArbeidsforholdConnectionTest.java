@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,7 +22,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import no.nav.foreldrepenger.common.domain.Navn;
+import no.nav.foreldrepenger.common.domain.Orgnummer;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.AnsettelsesperiodeDTO;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.ArbeidsavtaleDTO;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.ArbeidsforholdDTO;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.ArbeidsgiverDTO;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.ArbeidsgiverType;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.Periode;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -346,5 +354,21 @@ class ArbeidsforholdConnectionTest {
             .addHeader("Content-Type", "application/json"));
 
         assertThrows(WebClientResponseException.InternalServerError.class, () -> arbeidsforholdConnection.hentArbeidsforhold());
+    }
+
+    @Test
+    void arbeidsavtaleKanHaIkkeOppgittStillingsprosentVerifiserNullBrukesOgExceptionIkkeHives(){
+        mockWebServer.enqueue(new MockResponse()
+            .setBody(DEFAULT_RESPONSE_EEREG)
+            .addHeader("Content-Type", "application/json"));
+
+        var fom = LocalDate.now().minusMonths(1);
+        var arbeidsforholdDTO = new ArbeidsforholdDTO(
+            new ArbeidsgiverDTO(ArbeidsgiverType.Organisasjon, Orgnummer.MAGIC_ORG, null),
+            new AnsettelsesperiodeDTO(new Periode(fom, null)),
+            List.of(new ArbeidsavtaleDTO(new Periode(fom, null), null)));
+
+
+        arbeidsforholdConnection.tilEnkeltArbeidsforhold(arbeidsforholdDTO);
     }
 }

@@ -61,7 +61,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
         return arbeidsforhold;
     }
 
-    private EnkeltArbeidsforhold tilEnkeltArbeidsforhold(ArbeidsforholdDTO a) {
+    public EnkeltArbeidsforhold tilEnkeltArbeidsforhold(ArbeidsforholdDTO a) {
         var arbeidsgiverId = tilArbeidsgiverId(a.arbeidsgiver());
         return EnkeltArbeidsforhold.builder()
             .arbeidsgiverId(arbeidsgiverId)
