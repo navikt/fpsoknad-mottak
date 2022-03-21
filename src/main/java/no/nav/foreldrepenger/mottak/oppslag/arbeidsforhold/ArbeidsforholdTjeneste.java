@@ -28,8 +28,7 @@ public class ArbeidsforholdTjeneste implements RetryAware, ArbeidsInfo {
 
     @Override
     public List<EnkeltArbeidsforhold> hentArbeidsforhold() {
-        var arbeidsforholdAareg = connection.hentArbeidsforhold();
-        var enkleArbeidsforhold = arbeidsforholdAareg.stream()
+        var enkleArbeidsforhold = connection.hentArbeidsforhold().stream()
             .filter(Objects::nonNull)
             .map(this::tilEnkeltArbeidsforhold)
             .sorted(comparing(EnkeltArbeidsforhold::getArbeidsgiverNavn))
