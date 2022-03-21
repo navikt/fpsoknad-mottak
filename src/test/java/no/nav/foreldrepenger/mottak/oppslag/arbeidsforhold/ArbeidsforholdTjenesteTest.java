@@ -2,8 +2,6 @@ package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,7 +11,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,7 +18,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import no.nav.foreldrepenger.common.domain.Navn;
 import no.nav.foreldrepenger.common.domain.Orgnummer;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.AnsettelsesperiodeDTO;
@@ -35,13 +31,12 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
 @ExtendWith(SpringExtension.class)
-class ArbeidsforholdConnectionTest {
+class ArbeidsforholdTjenesteTest {
     private static MockWebServer mockWebServer;
 
     @MockBean
-    private PDLConnection pdlConnection;
-    private OrganisasjonConnection organisasjonConnection;
-    private ArbeidsforholdConnection arbeidsforholdConnection;
+    private static PDLConnection pdlConnection;
+    private static ArbeidsforholdTjeneste arbeidsforholdTjeneste;
 
     private static final String DEFAULT_RESPONSE_EEREG =
         """
@@ -56,18 +51,15 @@ class ArbeidsforholdConnectionTest {
     static void setUp() throws IOException {
         mockWebServer = new MockWebServer();
         mockWebServer.start(63631);
-    }
-
-    @BeforeEach
-    void setupConnection() {
         var baseUrl = String.format("http://localhost:%s", mockWebServer.getPort());
         var webClient = WebClient.builder().baseUrl(baseUrl).build();
         var organisasjonConfig = new OrganisasjonConfig(URI.create(baseUrl), "/v1/organisasjon/{orgnr}", true);
-        organisasjonConnection = new OrganisasjonConnection(webClient, pdlConnection, organisasjonConfig);
+        var organisasjonConnection = new OrganisasjonConnection(webClient, pdlConnection, organisasjonConfig);
         var arbeidsforholdConfig = new ArbeidsforholdConfig(URI.create(baseUrl), "/ping",
             "v1/arbeidstaker/arbeidsforhold", true, Period.of(3,0,0),
             false);
-        arbeidsforholdConnection = new ArbeidsforholdConnection(webClient, arbeidsforholdConfig, organisasjonConnection);
+        var arbeidsforholdConnection = new ArbeidsforholdConnection(webClient, arbeidsforholdConfig);
+        arbeidsforholdTjeneste = new ArbeidsforholdTjeneste(arbeidsforholdConnection, organisasjonConnection);
     }
 
     @AfterAll
@@ -232,7 +224,7 @@ class ArbeidsforholdConnectionTest {
             .setBody(DEFAULT_RESPONSE_EEREG)
             .addHeader("Content-Type", "application/json"));
 
-        var arbeidsforhold = arbeidsforholdConnection.hentArbeidsforhold();
+        var arbeidsforhold = arbeidsforholdTjeneste.hentArbeidsforhold();
         assertThat(arbeidsforhold).hasSize(1);
         var enkeltArbeidsforhold = arbeidsforhold.get(0);
         assertThat(enkeltArbeidsforhold.getArbeidsgiverId()).isEqualTo("999999999");
@@ -303,9 +295,8 @@ class ArbeidsforholdConnectionTest {
         mockWebServer.enqueue(new MockResponse()
             .setBody(body)
             .addHeader("Content-Type", "application/json"));
-        when(pdlConnection.navnFor(any())).thenReturn(new Navn("Per", "", "Pål"));
 
-        var arbeidsforhold = arbeidsforholdConnection.hentArbeidsforhold();
+        var arbeidsforhold = arbeidsforholdTjeneste.hentArbeidsforhold();
         assertThat(arbeidsforhold).hasSize(1);
         var enkeltArbeidsforhold = arbeidsforhold.get(0);
         assertThat(enkeltArbeidsforhold.getArbeidsgiverId()).isEqualTo("22222233333");
@@ -321,7 +312,7 @@ class ArbeidsforholdConnectionTest {
         mockWebServer.enqueue(new MockResponse()
             .addHeader("Content-Type", "application/json"));
 
-        var arbeidsforhold = arbeidsforholdConnection.hentArbeidsforhold();
+        var arbeidsforhold = arbeidsforholdTjeneste.hentArbeidsforhold();
         assertThat(arbeidsforhold)
             .isNotNull()
             .isEmpty();
@@ -333,7 +324,7 @@ class ArbeidsforholdConnectionTest {
             .setBody("[]")
             .addHeader("Content-Type", "application/json"));
 
-        var arbeidsforhold = arbeidsforholdConnection.hentArbeidsforhold();
+        var arbeidsforhold = arbeidsforholdTjeneste.hentArbeidsforhold();
         assertThat(arbeidsforhold)
             .isNotNull()
             .isEmpty();
@@ -344,7 +335,7 @@ class ArbeidsforholdConnectionTest {
         mockWebServer.enqueue(new MockResponse()
             .setResponseCode(403)
             .addHeader("Content-Type", "application/json"));
-        assertThrows(WebClientResponseException.Forbidden.class, () -> arbeidsforholdConnection.hentArbeidsforhold());
+        assertThrows(WebClientResponseException.Forbidden.class, () -> arbeidsforholdTjeneste.hentArbeidsforhold());
     }
 
     @Test
@@ -353,7 +344,7 @@ class ArbeidsforholdConnectionTest {
             .setResponseCode(500)
             .addHeader("Content-Type", "application/json"));
 
-        assertThrows(WebClientResponseException.InternalServerError.class, () -> arbeidsforholdConnection.hentArbeidsforhold());
+        assertThrows(WebClientResponseException.InternalServerError.class, () -> arbeidsforholdTjeneste.hentArbeidsforhold());
     }
 
     @Test
@@ -364,8 +355,7 @@ class ArbeidsforholdConnectionTest {
             new AnsettelsesperiodeDTO(new Periode(fom, null)),
             List.of(new ArbeidsavtaleDTO(new Periode(fom, null), null)));
 
-
-        var enkeltArbeidsforhold = arbeidsforholdConnection.tilEnkeltArbeidsforhold(arbeidsforholdDTO);
+        var enkeltArbeidsforhold = arbeidsforholdTjeneste.tilEnkeltArbeidsforhold(arbeidsforholdDTO);
         assertThat(enkeltArbeidsforhold.getArbeidsgiverId()).isEqualTo(Orgnummer.MAGIC_ORG.value());
         assertThat(enkeltArbeidsforhold.getArbeidsgiverIdType()).isEqualTo("orgnr");
         assertThat(enkeltArbeidsforhold.getArbeidsgiverNavn()).isNotNull();
