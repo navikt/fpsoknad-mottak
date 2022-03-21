@@ -36,6 +36,9 @@ public class STSConnection extends AbstractWebClientConnection {
             .retrieve()
             .bodyToMono(SystemToken.class)
             .block();
+        if (token == null) {
+            throw new IllegalStateException("Tom body fra STS-tjenesten ble returnert. Noe er galt!");
+        }
         LOG.trace("Refresh av system token OK ({})", token.getExpiration());
         return token;
     }

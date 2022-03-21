@@ -69,6 +69,7 @@ public class ForeldrepengeInfoRenderer {
     private static final String DOKUMENTASJON = "dokumentasjon";
     private static final String DAGER = "dager";
     private static final String ARBEIDSGIVER = "arbeidsgiver";
+    private static final String ALENESORG_KEY = "aleneomsorg";
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private static final float STARTY = PdfElementRenderer.calculateStartY();
     private static final int INDENT = 20;
@@ -101,11 +102,11 @@ public class ForeldrepengeInfoRenderer {
         if (annenForelder instanceof NorskForelder) {
             y -= renderer.addLinesOfRegularText(INDENT, norskForelder(NorskForelder.class.cast(annenForelder)), cos, y);
             y -= renderer.addLineOfRegularText(INDENT,
-                    txt("aleneomsorg", jaNei(rettigheter.harAleneOmsorgForBarnet())), cos, y);
+                    txt(ALENESORG_KEY, jaNei(rettigheter.harAleneOmsorgForBarnet())), cos, y);
         } else if (annenForelder instanceof UtenlandskForelder) {
             y -= renderer.addLinesOfRegularText(INDENT, utenlandskForelder(annenForelder), cos, y);
             y -= renderer.addLineOfRegularText(INDENT,
-                    txt("aleneomsorg", jaNei(rettigheter.harAleneOmsorgForBarnet())), cos, y);
+                    txt(ALENESORG_KEY, jaNei(rettigheter.harAleneOmsorgForBarnet())), cos, y);
         } else {
             y -= renderer.addLineOfRegularText(INDENT, "Jeg kan ikke oppgi navnet til den andre forelderen", cos, y);
         }
@@ -120,7 +121,7 @@ public class ForeldrepengeInfoRenderer {
 
     public float rettigheter(Rettigheter rettigheter, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("rettigheter"), cos, y);
-        y -= renderer.addLineOfRegularText(INDENT, txt("aleneomsorg", jaNei(rettigheter.harAleneOmsorgForBarnet())),
+        y -= renderer.addLineOfRegularText(INDENT, txt(ALENESORG_KEY, jaNei(rettigheter.harAleneOmsorgForBarnet())),
                 cos, y);
         y -= renderer.addLineOfRegularText(INDENT, txt("omsorgiperiodene") +
                 jaNei(rettigheter.harAleneOmsorgForBarnet()), cos, y);
