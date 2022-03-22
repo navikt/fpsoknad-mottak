@@ -351,7 +351,7 @@ class ArbeidsforholdTjenesteTest {
     void arbeidsavtaleKanHaIkkeOppgittStillingsprosentVerifiserNullBrukesOgExceptionIkkeHives(){
         var fom = LocalDate.now().minusMonths(1);
         var arbeidsforholdDTO = new ArbeidsforholdDTO(
-            new ArbeidsgiverDTO(ArbeidsgiverType.Organisasjon, Orgnummer.MAGIC_ORG, null),
+            new ArbeidsgiverDTO(ArbeidsgiverType.ORGANISASJON, Orgnummer.MAGIC_ORG, null),
             new AnsettelsesperiodeDTO(new Periode(fom, null)),
             List.of(new ArbeidsavtaleDTO(new Periode(fom, null), null)));
 

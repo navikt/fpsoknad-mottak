@@ -56,8 +56,8 @@ public class ArbeidsforholdTjeneste implements RetryAware, ArbeidsInfo {
 
     private String tilArbeidsgiverTypeFrontend(ArbeidsgiverType type) {
         return switch (type) {
-            case Organisasjon -> "orgnr";
-            case Person -> "fnr";
+            case ORGANISASJON -> "orgnr";
+            case PERSON -> "fnr";
         };
     }
 
@@ -66,8 +66,8 @@ public class ArbeidsforholdTjeneste implements RetryAware, ArbeidsInfo {
             throw new IllegalArgumentException("Arbeidsgiver er hverken av typen organisasjon eller privatperson. Noe er galt!");
         }
         return switch (arbeidsgiver.type()) {
-            case Organisasjon -> arbeidsgiver.organisasjonsnummer().value();
-            case Person -> arbeidsgiver.offentligIdent().value();
+            case ORGANISASJON -> arbeidsgiver.organisasjonsnummer().value();
+            case PERSON -> arbeidsgiver.offentligIdent().value();
         };
     }
 

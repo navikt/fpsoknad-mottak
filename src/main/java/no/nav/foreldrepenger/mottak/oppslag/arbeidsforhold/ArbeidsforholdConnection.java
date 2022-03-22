@@ -40,7 +40,6 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
             .retrieve()
             .bodyToFlux(ArbeidsforholdDTO.class)
             .collectList()
-            .defaultIfEmpty(List.of())
             .blockOptional()
             .orElse(List.of());
 

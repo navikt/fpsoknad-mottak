@@ -1,6 +1,10 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public enum ArbeidsgiverType {
-    Organisasjon,
-    Person
+    @JsonProperty("Organisasjon")
+    ORGANISASJON,
+    @JsonProperty("Person")
+    PERSON
 }
