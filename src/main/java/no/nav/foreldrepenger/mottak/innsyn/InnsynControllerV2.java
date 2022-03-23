@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import no.nav.foreldrepenger.boot.conditionals.Cluster;
 import no.nav.foreldrepenger.boot.conditionals.ConditionalOnClusters;
+import no.nav.foreldrepenger.common.innsyn.v2.Saker;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
-import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.Saker;
 
 @ConditionalOnClusters(clusters = {Cluster.DEV_FSS, Cluster.LOCAL, Cluster.VTP, Cluster.TEST})
 @ProtectedRestController(INNSYNV2)

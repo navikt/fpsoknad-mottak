@@ -4,8 +4,8 @@ import java.util.List;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Sak;
+import no.nav.foreldrepenger.common.innsyn.v2.Saker;
 import no.nav.foreldrepenger.mottak.http.Pingable;
-import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.Saker;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
 
 public interface Innsyn extends Pingable {
