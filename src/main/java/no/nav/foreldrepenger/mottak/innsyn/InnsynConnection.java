@@ -14,11 +14,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.innsyn.v2.Saker;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
-import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.Saker;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksplanDTO;
 
 @Component

@@ -29,13 +29,13 @@ import no.nav.foreldrepenger.common.innsyn.Behandling;
 import no.nav.foreldrepenger.common.innsyn.BehandlingResultat;
 import no.nav.foreldrepenger.common.innsyn.BehandlingStatus;
 import no.nav.foreldrepenger.common.innsyn.BehandlingType;
+import no.nav.foreldrepenger.common.innsyn.v2.FpSak;
+import no.nav.foreldrepenger.common.innsyn.v2.PersonDetaljer;
+import no.nav.foreldrepenger.common.innsyn.v2.Saker;
+import no.nav.foreldrepenger.common.innsyn.v2.persondetaljer.Kjønn;
+import no.nav.foreldrepenger.common.innsyn.v2.persondetaljer.Person;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
-import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.FpSak;
-import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.PersonDetaljer;
-import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.Saker;
-import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Kjønn;
-import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Person;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.ArbeidsgiverInfo;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.SøknadsGrunnlag;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.UttaksPeriode;
@@ -90,32 +90,32 @@ public class InnsynTjeneste implements Innsyn {
     private Set<PersonDetaljer> barn(Set<PersonDetaljer> barn, Set<Barn> søkerBarn) {
         return barn.stream()
             .map(b -> {
-                var aktørId = (no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.AktørId) b;
+                var aktørId = (no.nav.foreldrepenger.common.innsyn.v2.persondetaljer.AktørId) b;
                 var fødselsnummer = oppslag.fnr(new AktørId(aktørId.value()));
                 return søkerBarn.stream()
                     .filter(sb -> sb.fnr().equals(fødselsnummer))
                     .findFirst()
-                    .map(bb -> new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(bb.fnr().value()),
+                    .map(bb -> new Person(new Fødselsnummer(bb.fnr().value()),
                             bb.navn().fornavn(), bb.navn().mellomnavn(), bb.navn().etternavn(), Kjønn.U, bb.fødselsdato()))
                     .orElseGet(() -> {
                         LOG.warn("Barn med aktørId {} ikke i resultat fra pdl query basert på knytning til søker", aktørId.value());
-                        return new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(fødselsnummer.value()),
+                        return new Person(new Fødselsnummer(fødselsnummer.value()),
                             "Barn", "", "Barnesen", Kjønn.U, LocalDate.now());
                     });
             })
             .collect(Collectors.toSet());
     }
 
-    private no.nav.foreldrepenger.mottak.innsyn.fpinfov2.AnnenPart berik(no.nav.foreldrepenger.mottak.innsyn.fpinfov2.AnnenPart annenPart) {
+    private no.nav.foreldrepenger.common.innsyn.v2.AnnenPart berik(no.nav.foreldrepenger.common.innsyn.v2.AnnenPart annenPart) {
         if (annenPart == null) {
             return null;
         }
-        var aktørId = (no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.AktørId) annenPart.personDetaljer();
+        var aktørId = (no.nav.foreldrepenger.common.innsyn.v2.persondetaljer.AktørId) annenPart.personDetaljer();
         var fødselsnummer = oppslag.fnr(new AktørId(aktørId.value()));
         var navn = oppslag.navn(fødselsnummer.value());
-        var person = new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(fødselsnummer.value()),
+        var person = new Person(new Fødselsnummer(fødselsnummer.value()),
             navn.fornavn(), navn.mellomnavn(), navn.etternavn(), null, null);
-        return new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.AnnenPart(person);
+        return new no.nav.foreldrepenger.common.innsyn.v2.AnnenPart(person);
     }
 
     @Override
