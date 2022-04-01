@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
+import static io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
@@ -99,9 +100,13 @@ class OrganisasjonConnectionTest {
     @Test
     void skalBrukeOrgnummerSomDefaultVed5xxFeil() {
         mockWebServer.enqueue(new MockResponse()
-            .setBody("ERROR")
-            .setResponseCode(500)
-            .addHeader("Content-Type", "application/json"));
+            .setResponseCode(INTERNAL_SERVER_ERROR.code()));
+        mockWebServer.enqueue(new MockResponse()
+            .setResponseCode(INTERNAL_SERVER_ERROR.code()));
+        mockWebServer.enqueue(new MockResponse()
+            .setResponseCode(INTERNAL_SERVER_ERROR.code()));
+        mockWebServer.enqueue(new MockResponse()
+            .setResponseCode(INTERNAL_SERVER_ERROR.code()));
 
         var navn = organisasjonConnection.navn("999999999");
         assertThat(navn).isEqualTo("999999999");
