@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.kontonummer;
 
+import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retrySpec;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.KONTONR;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;
@@ -30,6 +31,7 @@ public class KontonummerConnection extends AbstractWebClientConnection {
             .accept(APPLICATION_JSON)
             .retrieve()
             .bodyToMono(Bankkonto.class)
+            .retryWhen(retrySpec(cfg.getBaseUri().toString()))
             .block();
     }
 
