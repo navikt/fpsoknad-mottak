@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import static java.time.LocalDate.now;
+import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retrySpec;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ARBEIDSFORHOLD;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;
@@ -39,6 +40,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
             .accept(APPLICATION_JSON)
             .retrieve()
             .bodyToFlux(ArbeidsforholdDTO.class)
+            .retryWhen(retrySpec(cfg.getBaseUri().toString()))
             .collectList()
             .blockOptional()
             .orElse(List.of());

@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.dkif;
 
+import static io.netty.handler.codec.http.HttpResponseStatus.BAD_GATEWAY;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
@@ -86,10 +87,19 @@ class DigdirKrrProxyConnectionTest {
     }
 
     @Test
-    void skalBrukeDefaultMålformVed5xxFeil() {
+    void sjekkerAtRetryMekanismenFungere() {
         mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(500)
+            .setResponseCode(BAD_GATEWAY.code()));
+        mockWebServer.enqueue(new MockResponse()
+            .setResponseCode(BAD_GATEWAY.code()));
+        mockWebServer.enqueue(new MockResponse()
+            .setResponseCode(BAD_GATEWAY.code()));
+        mockWebServer.enqueue(new MockResponse()
+            .setBody("""
+                       {"spraak": "NB"}
+                    """)
             .addHeader("Content-Type", "application/json"));
+
 
         var målform = digdirKrrProxyConnection.målform();
         assertThat(målform).isEqualTo(Målform.NB);

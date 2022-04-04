@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
+import static io.netty.handler.codec.http.HttpResponseStatus.BAD_GATEWAY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -341,10 +342,17 @@ class ArbeidsforholdTjenesteTest {
     @Test
     void verifiserAtWebclientPropagerer5xxExceptions() {
         mockWebServer.enqueue(new MockResponse()
+            .setResponseCode(BAD_GATEWAY.code()));
+        mockWebServer.enqueue(new MockResponse()
+            .setResponseCode(BAD_GATEWAY.code()));
+        mockWebServer.enqueue(new MockResponse()
+            .setResponseCode(BAD_GATEWAY.code()));
+        mockWebServer.enqueue(new MockResponse()
             .setResponseCode(500)
             .addHeader("Content-Type", "application/json"));
 
-        assertThrows(WebClientResponseException.InternalServerError.class, () -> arbeidsforholdTjeneste.hentArbeidsforhold());
+        var err = assertThrows(IllegalStateException.class, () -> arbeidsforholdTjeneste.hentArbeidsforhold());
+        assertThat(err.getCause()).isInstanceOf(WebClientResponseException.InternalServerError.class);
     }
 
     @Test

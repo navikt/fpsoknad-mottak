@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.sts;
 
+import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retrySpec;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.STS;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -35,6 +36,7 @@ public class STSConnection extends AbstractWebClientConnection {
             .body(cfg.stsBody())
             .retrieve()
             .bodyToMono(SystemToken.class)
+            .retryWhen(retrySpec(cfg.getStsPath()))
             .block();
         if (token == null) {
             throw new IllegalStateException("Tom body fra STS-tjenesten ble returnert. Noe er galt!");
