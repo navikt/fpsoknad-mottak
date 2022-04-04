@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.http;
 
+import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.isDevOrLocal;
 import static no.nav.foreldrepenger.common.util.Constants.FORELDREPENGER;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID1;
@@ -16,8 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.reactive.function.client.WebClientCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -42,6 +46,7 @@ import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 import no.nav.security.token.support.client.spring.oauth2.ClientConfigurationPropertiesMatcher;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
 @Configuration
 public class WebClientConfiguration {
@@ -59,11 +64,19 @@ public class WebClientConfiguration {
     private String consumer;
 
     @Bean
+    public WebClientCustomizer fellesWebKlientKonfig(Environment env) {
+        return webClientBuilder -> webClientBuilder
+            .clientConnector(new ReactorClientHttpConnector(HttpClient.create().wiretap(isDevOrLocal(env))))
+            .filter(correlatingFilterFunction())
+            .build();
+    }
+
+
+    @Bean
     @Qualifier(KRR)
     public WebClient webClientDigdir(Builder builder, DigdirKrrProxyConfig cfg, TokenUtil tokenUtil, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
             .baseUrl(cfg.getBaseUri().toString())
-            .filter(correlatingFilterFunction())
             .filter(navPersonIdentFunction(tokenUtil))
             .filter(tokenXFilterFunction)
             .build();
@@ -74,7 +87,6 @@ public class WebClientConfiguration {
     public WebClient webClientKontonummer(Builder builder, KontonummerConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
             .baseUrl(cfg.getBaseUri().toString())
-            .filter(correlatingFilterFunction())
             .filter(tokenXFilterFunction)
             .build();
     }
@@ -84,7 +96,6 @@ public class WebClientConfiguration {
     public WebClient webClientSTS(Builder builder, STSConfig cfg) {
         return builder
             .baseUrl(cfg.getBaseUri().toString())
-            .filter(correlatingFilterFunction())
             .defaultHeaders(h -> h.setBasicAuth(cfg.getUsername(), cfg.getPassword()))
             .build();
     }
@@ -97,7 +108,6 @@ public class WebClientConfiguration {
                                                    TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
             .baseUrl(cfg.getBaseUri().toString())
-            .filter(correlatingFilterFunction())
             .filter(navPersonIdentFunction(tokenUtil))
             .filter(tokenXFilterFunction)
             .build();
@@ -108,7 +118,6 @@ public class WebClientConfiguration {
     public WebClient webClientOrganisasjon(Builder builder, OrganisasjonConfig cfg) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
-                .filter(correlatingFilterFunction())
                 .build();
     }
 
@@ -117,7 +126,6 @@ public class WebClientConfiguration {
     public WebClient webClientPDL(Builder builder, PDLConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
-                .filter(correlatingFilterFunction())
                 .filter(temaFilterFunction())
                 .filter(tokenXFilterFunction)
                 .build();
@@ -128,7 +136,6 @@ public class WebClientConfiguration {
     public WebClient webClientSystemPDL(Builder builder, PDLConfig cfg, SystemTokenTjeneste sts) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
-                .filter(correlatingFilterFunction())
                 .filter(pdlSystemUserExchangeFilterFunction(sts))
                 .build();
     }
