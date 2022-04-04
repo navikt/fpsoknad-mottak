@@ -11,6 +11,7 @@ import static no.nav.foreldrepenger.common.util.Constants.NAV_PERSON_IDENT;
 import static no.nav.foreldrepenger.mottak.util.TokenUtil.BEARER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+import java.time.Duration;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -47,6 +48,7 @@ import no.nav.security.token.support.client.spring.ClientConfigurationProperties
 import no.nav.security.token.support.client.spring.oauth2.ClientConfigurationPropertiesMatcher;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 
 @Configuration
 public class WebClientConfiguration {
@@ -65,8 +67,15 @@ public class WebClientConfiguration {
 
     @Bean
     public WebClientCustomizer fellesWebKlientKonfig(Environment env) {
+        var provider = ConnectionProvider.builder("custom")
+            .maxConnections(50)
+            .maxIdleTime(Duration.ofSeconds(20))
+            .maxLifeTime(Duration.ofSeconds(60))
+            .pendingAcquireTimeout(Duration.ofSeconds(60))
+            .evictInBackground(Duration.ofSeconds(120))
+            .build();
         return webClientBuilder -> webClientBuilder
-            .clientConnector(new ReactorClientHttpConnector(HttpClient.create().wiretap(isDevOrLocal(env))))
+            .clientConnector(new ReactorClientHttpConnector(HttpClient.create(provider).wiretap(isDevOrLocal(env))))
             .filter(correlatingFilterFunction())
             .build();
     }
