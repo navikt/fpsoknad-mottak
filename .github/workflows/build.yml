@@ -1,5 +1,4 @@
-
-name: Deployment pipeline dev
+name: Bygg og deploy
 
 on:
   push:
