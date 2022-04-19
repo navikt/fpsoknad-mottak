@@ -99,16 +99,18 @@ public class ForeldrepengeInfoRenderer {
             Rettigheter rettigheter,
             FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("omannenforelder"), cos, y);
-        if (annenForelder instanceof NorskForelder) {
-            y -= renderer.addLinesOfRegularText(INDENT, norskForelder(NorskForelder.class.cast(annenForelder)), cos, y);
-            y -= renderer.addLineOfRegularText(INDENT,
+        switch (annenForelder) {
+            case NorskForelder norskForelder -> {
+                y -= renderer.addLinesOfRegularText(INDENT, norskForelder(norskForelder), cos, y);
+                y -= renderer.addLineOfRegularText(INDENT,
                     txt(ALENESORG_KEY, jaNei(rettigheter.harAleneOmsorgForBarnet())), cos, y);
-        } else if (annenForelder instanceof UtenlandskForelder) {
-            y -= renderer.addLinesOfRegularText(INDENT, utenlandskForelder(annenForelder), cos, y);
-            y -= renderer.addLineOfRegularText(INDENT,
+            }
+            case UtenlandskForelder utenlandskForelder -> {
+                y -= renderer.addLinesOfRegularText(INDENT, utenlandskForelder(utenlandskForelder), cos, y);
+                y -= renderer.addLineOfRegularText(INDENT,
                     txt(ALENESORG_KEY, jaNei(rettigheter.harAleneOmsorgForBarnet())), cos, y);
-        } else {
-            y -= renderer.addLineOfRegularText(INDENT, "Jeg kan ikke oppgi navnet til den andre forelderen", cos, y);
+            }
+            default -> y -= renderer.addLineOfRegularText(INDENT, "Jeg kan ikke oppgi navnet til den andre forelderen", cos, y);
         }
         if (!(annenForelder instanceof UkjentForelder)) {
             y -= renderer.addLineOfRegularText(INDENT, txt("harrett", jaNei(rettigheter.harAnnenForelderRett())), cos,
@@ -116,15 +118,6 @@ public class ForeldrepengeInfoRenderer {
             y -= renderer.addLineOfRegularText(INDENT, txt("informert", jaNei(erAnnenForlderInformert)), cos, y);
         }
         y -= PdfElementRenderer.BLANK_LINE;
-        return y;
-    }
-
-    public float rettigheter(Rettigheter rettigheter, FontAwareCos cos, float y) throws IOException {
-        y -= renderer.addLeftHeading(txt("rettigheter"), cos, y);
-        y -= renderer.addLineOfRegularText(INDENT, txt(ALENESORG_KEY, jaNei(rettigheter.harAleneOmsorgForBarnet())),
-                cos, y);
-        y -= renderer.addLineOfRegularText(INDENT, txt("omsorgiperiodene") +
-                jaNei(rettigheter.harAleneOmsorgForBarnet()), cos, y);
         return y;
     }
 
@@ -642,8 +635,7 @@ public class ForeldrepengeInfoRenderer {
                 textFormatter.fromMessageSource("fødselsnummerinline", søker.fnr().value()));
     }
 
-    private List<String> utenlandskForelder(AnnenForelder annenForelder) {
-        var utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
+    private List<String> utenlandskForelder(UtenlandskForelder utenlandsForelder) {
         List<String> attributter = new ArrayList<>();
         attributter.add(Optional.ofNullable(utenlandsForelder.getNavn())
                 .map(n -> txt("navninline", n))
