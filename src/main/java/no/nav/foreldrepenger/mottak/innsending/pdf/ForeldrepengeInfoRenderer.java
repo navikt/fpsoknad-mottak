@@ -96,7 +96,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     public float annenForelder(AnnenForelder annenForelder, boolean erAnnenForlderInformert,
-            Rettigheter rettigheter,
+            Rettigheter rettigheter, BrukerRolle brukerRolle,
             FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("omannenforelder"), cos, y);
         switch (annenForelder) {
@@ -115,6 +115,10 @@ public class ForeldrepengeInfoRenderer {
         if (!(annenForelder instanceof UkjentForelder)) {
             y -= renderer.addLineOfRegularText(INDENT, txt("harrett", jaNei(rettigheter.harAnnenForelderRett())), cos,
                     y);
+            if (!rettigheter.harAnnenForelderRett() && brukerRolle != BrukerRolle.MOR) {
+                y -= renderer.addLineOfRegularText(INDENT, txt("harmorufor", jaNei(rettigheter.harMorUføretrygd())), cos,
+                    y);
+            }
             y -= renderer.addLineOfRegularText(INDENT, txt("informert", jaNei(erAnnenForlderInformert)), cos, y);
         }
         y -= PdfElementRenderer.BLANK_LINE;

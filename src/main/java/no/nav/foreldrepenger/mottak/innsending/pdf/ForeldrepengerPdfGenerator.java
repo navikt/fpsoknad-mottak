@@ -99,7 +99,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             var annenForelder = stønad.getAnnenForelder();
             if (annenForelder != null) {
                 y = fpRenderer.annenForelder(annenForelder, stønad.getFordeling().isErAnnenForelderInformert(),
-                        stønad.getRettigheter(), cos, y);
+                        stønad.getRettigheter(), søknad.getSøknadsRolle(), cos, y);
             }
 
             if (søknad.getTilleggsopplysninger() != null) {
@@ -293,6 +293,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             if (annenForelder != null) {
                 y = fpRenderer.annenForelder(annenForelder,
                         stønad.getFordeling().isErAnnenForelderInformert(), stønad.getRettigheter(),
+                        søknad.getSøknadsRolle(),
                         cos, y);
             }
 
