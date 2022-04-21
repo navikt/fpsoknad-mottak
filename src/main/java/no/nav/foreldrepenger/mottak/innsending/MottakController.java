@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import no.nav.foreldrepenger.common.domain.Kvittering;
 import no.nav.foreldrepenger.common.domain.Sak;
 import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.Ytelse;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.common.error.UnexpectedInputException;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
 import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
@@ -42,6 +45,7 @@ public class MottakController {
     @PostMapping("/send")
     public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
         var søknadEgenskap = Inspektør.inspiser(søknad);
+        validerFpSøknad(søknad.getYtelse());
         return søknadSender.søk(søknad, oppslag.person(), søknadEgenskap);
     }
 
@@ -52,6 +56,7 @@ public class MottakController {
 
     @PostMapping("/endre")
     public Kvittering endre(@Valid @RequestBody Endringssøknad endringssøknad) {
+        validerFpSøknad(endringssøknad.getYtelse());
         return søknadSender.endreSøknad(endringssøknad, oppslag.person(), ENDRING_FORELDREPENGER);
     }
 
@@ -72,5 +77,11 @@ public class MottakController {
     public String toString() {
         return getClass().getSimpleName() + " [innsyn=" + innsyn + ", oppslag=" + oppslag + ", søknadSender="
                 + søknadSender +"]";
+    }
+
+    private void validerFpSøknad(Ytelse ytelse) {
+        if (ytelse instanceof Foreldrepenger && ((Foreldrepenger) ytelse).getFordeling().getPerioder().isEmpty()) {
+            throw new UnexpectedInputException("Søknad må inneholde minst en søknadsperiode");
+        }
     }
 }
