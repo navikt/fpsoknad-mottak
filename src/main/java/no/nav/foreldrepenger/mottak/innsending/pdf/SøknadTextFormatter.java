@@ -39,7 +39,7 @@ public class SøknadTextFormatter {
 
     @Inject
     public SøknadTextFormatter(@Qualifier(LANDKODER) MessageSource landkoder,
-            @Qualifier(KVITTERINGSTEKSTER) MessageSource kvitteringstekster) {
+                               @Qualifier(KVITTERINGSTEKSTER) MessageSource kvitteringstekster) {
         this(landkoder, kvitteringstekster, CountryCode.NO.toLocale());
     }
 

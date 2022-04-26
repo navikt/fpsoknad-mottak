@@ -5,7 +5,6 @@ import static java.util.Collections.emptyList;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -18,8 +17,9 @@ import no.nav.foreldrepenger.common.innsyn.v2.Saker;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
+import no.nav.foreldrepenger.mottak.innsyn.dto.LenkeDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
-import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksplanDTO;
+import no.nav.foreldrepenger.mottak.innsyn.dto.UttaksplanDTO;
 
 @Component
 public class InnsynConnection extends AbstractRestConnection implements PingEndpointAware {
@@ -75,16 +75,15 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
         }
     }
 
-    BehandlingDTO behandling(Lenke lenke) {
+    BehandlingDTO behandling(LenkeDTO lenke) {
         return hent(lenke, BehandlingDTO.class);
     }
 
-    private <T> T hent(Lenke lenke, Class<T> clazz) {
+    private <T> T hent(LenkeDTO lenke, Class<T> clazz) {
         return Optional.ofNullable(lenke)
-                .map(Lenke::href)
-                .filter(Objects::nonNull)
-                .map(l -> getForObject(config.createLink(l), clazz))
-                .orElse(null);
+            .map(LenkeDTO::href)
+            .map(l -> getForObject(config.createLink(l), clazz))
+            .orElse(null);
     }
 
     @Override
