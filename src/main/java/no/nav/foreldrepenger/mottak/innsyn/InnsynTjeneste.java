@@ -1,12 +1,12 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.CONFIDENTIAL;
+import static no.nav.foreldrepenger.common.innsyn.uttaksplan.ArbeidsgiverType.ORGANISASJON;
+import static no.nav.foreldrepenger.common.innsyn.uttaksplan.ArbeidsgiverType.PRIVAT;
 import static no.nav.foreldrepenger.common.util.StreamUtil.distinctByKey;
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.common.util.StringUtil.endelse;
 import static no.nav.foreldrepenger.common.util.StringUtil.partialMask;
-import static no.nav.foreldrepenger.mottak.innsyn.uttaksplan.ArbeidsgiverType.ORGANISASJON;
-import static no.nav.foreldrepenger.mottak.innsyn.uttaksplan.ArbeidsgiverType.PRIVAT;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Barn;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Orgnummer;
 import no.nav.foreldrepenger.common.domain.Sak;
 import no.nav.foreldrepenger.common.domain.felles.AnnenPart;
 import no.nav.foreldrepenger.common.domain.felles.BehandlingTema;
@@ -29,19 +30,20 @@ import no.nav.foreldrepenger.common.innsyn.Behandling;
 import no.nav.foreldrepenger.common.innsyn.BehandlingResultat;
 import no.nav.foreldrepenger.common.innsyn.BehandlingStatus;
 import no.nav.foreldrepenger.common.innsyn.BehandlingType;
+import no.nav.foreldrepenger.common.innsyn.uttaksplan.ArbeidsgiverInfoDto;
+import no.nav.foreldrepenger.common.innsyn.uttaksplan.SøknadsGrunnlagDto;
+import no.nav.foreldrepenger.common.innsyn.uttaksplan.UttaksPeriodeDto;
+import no.nav.foreldrepenger.common.innsyn.uttaksplan.UttaksplanDto;
 import no.nav.foreldrepenger.common.innsyn.v2.FpSak;
 import no.nav.foreldrepenger.common.innsyn.v2.PersonDetaljer;
 import no.nav.foreldrepenger.common.innsyn.v2.Saker;
 import no.nav.foreldrepenger.common.innsyn.v2.persondetaljer.Kjønn;
 import no.nav.foreldrepenger.common.innsyn.v2.persondetaljer.Person;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
+import no.nav.foreldrepenger.mottak.innsyn.dto.LenkeDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
-import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.ArbeidsgiverInfo;
-import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.SøknadsGrunnlag;
-import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.UttaksPeriode;
-import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
-import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksPeriodeDTO;
-import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksplanDTO;
+import no.nav.foreldrepenger.mottak.innsyn.dto.UttaksPeriodeDTO;
+import no.nav.foreldrepenger.mottak.innsyn.dto.UttaksplanDTO;
 import no.nav.foreldrepenger.mottak.oppslag.OppslagTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConnection;
 
@@ -95,8 +97,8 @@ public class InnsynTjeneste implements Innsyn {
                 return søkerBarn.stream()
                     .filter(sb -> sb.fnr().equals(fødselsnummer))
                     .findFirst()
-                    .map(bb -> new Person(new Fødselsnummer(bb.fnr().value()),
-                            bb.navn().fornavn(), bb.navn().mellomnavn(), bb.navn().etternavn(), Kjønn.U, bb.fødselsdato()))
+                    .map(bb -> new Person(new Fødselsnummer(bb.fnr().value()), bb.navn().fornavn(),
+                        bb.navn().mellomnavn(), bb.navn().etternavn(), Kjønn.U, bb.fødselsdato()))
                     .orElseGet(() -> {
                         LOG.warn("Barn med aktørId {} ikke i resultat fra pdl query basert på knytning til søker", aktørId.value());
                         return new Person(new Fødselsnummer(fødselsnummer.value()),
@@ -119,17 +121,17 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     @Override
-    public Uttaksplan uttaksplan(String saksnummer) {
+    public UttaksplanDto uttaksplan(String saksnummer) {
         return Optional.ofNullable(innsyn.uttaksplan(saksnummer))
-                .map(this::tilUttaksplan)
-                .orElse(null);
+            .map(this::tilUttaksplan)
+            .orElse(null);
     }
 
     @Override
-    public Uttaksplan uttaksplan(AktørId aktørId, AktørId annenPart) {
+    public UttaksplanDto uttaksplan(AktørId aktørId, AktørId annenPart) {
         return Optional.ofNullable(innsyn.uttaksplan(aktørId, annenPart))
-                .map(this::tilUttaksplan)
-                .orElse(null);
+            .map(this::tilUttaksplan)
+            .orElse(null);
     }
 
     @Override
@@ -137,9 +139,9 @@ public class InnsynTjeneste implements Innsyn {
         String id = aktørId.value();
         LOG.info("Henter sak(er) for {}", id);
         var saker = safeStream(innsyn.saker(id))
-                .filter(distinctByKey(SakDTO::getSaksnummer))
-                .map(this::tilSak)
-                .toList();
+            .filter(distinctByKey(SakDTO::saksnummer))
+            .map(this::tilSak)
+            .toList();
         LOG.info("Hentet {} sak{}", saker.size(), endelse(saker));
         if (!saker.isEmpty()) {
             LOG.info(CONFIDENTIAL, "{}", saker);
@@ -147,13 +149,13 @@ public class InnsynTjeneste implements Innsyn {
         return saker;
     }
 
-    private List<Behandling> hentBehandlinger(List<Lenke> lenker, String saksnr) {
+    private List<Behandling> hentBehandlinger(List<LenkeDTO> lenker, String saksnr) {
         LOG.info("Henter {} behandling{} for sak {}", lenker.size(), endelse(lenker), saksnr);
         var behandlinger = safeStream(lenker)
-                .filter(distinctByKey(Lenke::href))
-                .map(innsyn::behandling)
-                .map(this::tilBehandling)
-                .toList();
+            .filter(distinctByKey(LenkeDTO::href))
+            .map(innsyn::behandling)
+            .map(this::tilBehandling)
+            .toList();
         LOG.info("Hentet {} behandling{} for sak {}", behandlinger.size(), endelse(behandlinger), saksnr);
         if (!behandlinger.isEmpty()) {
             LOG.info(CONFIDENTIAL, "{}", behandlinger);
@@ -164,20 +166,20 @@ public class InnsynTjeneste implements Innsyn {
     private Sak tilSak(SakDTO wrapper) {
         LOG.trace(CONFIDENTIAL, "Mapper sak fra {}", wrapper);
         var sak = Optional.ofNullable(wrapper)
-                .map(w -> new Sak(
-                        w.getSaksnummer(),
-                        w.getFagsakStatus(),
-                        w.getBehandlingTema(),
-                        w.getAktørId(),
-                        annenPart(w.getAktørIdAnnenPart()),
-                        w.getAktørIdBarna(),
-                        hentBehandlinger(
-                                w.getBehandlingsLenker(),
-                                w.getSaksnummer()),
-                        w.getOpprettetTidspunkt(),
-                        w.getEndretTidspunkt(),
-                        w.isMottattEndringssøknad()))
-                .orElse(null);
+            .map(w -> new Sak(
+                w.saksnummer(),
+                w.fagsakStatus(),
+                w.behandlingTema(),
+                w.aktørId(),
+                annenPart(w.aktørIdAnnenPart()),
+                w.aktørIdBarna(),
+                hentBehandlinger(
+                    w.behandlingsLenker(),
+                    w.saksnummer()),
+                w.opprettetTidspunkt(),
+                w.endretTidspunkt(),
+                w.mottattEndringssøknad()))
+            .orElse(null);
         LOG.trace(CONFIDENTIAL, "Mappet til sak {}", sak);
         return sak;
     }
@@ -195,99 +197,107 @@ public class InnsynTjeneste implements Innsyn {
     private Behandling tilBehandling(BehandlingDTO wrapper) {
         LOG.trace(CONFIDENTIAL, "Mapper behandling fra {}", wrapper);
         return Optional.ofNullable(wrapper)
-                .map(w -> Behandling.builder()
-                        .opprettetTidspunkt(w.getOpprettetTidspunkt())
-                        .endretTidspunkt(w.getEndretTidspunkt())
-                        .behandlendeEnhet(w.getBehandlendeEnhet())
-                        .behandlendeEnhetNavn(w.getBehandlendeEnhetNavn())
-                        .behandlingResultat(tilResultat(w.getBehandlingResultat()))
-                        .status(tilBehandlingStatus(w.getStatus()))
-                        .tema(tilTema(w.getTema()))
-                        .type(tilType(w.getType()))
-                        .inntektsmeldinger(w.getInntektsmeldinger())
-                        .build())
-                .orElse(null);
+            .map(w -> Behandling.builder()
+                .opprettetTidspunkt(w.opprettetTidspunkt())
+                .endretTidspunkt(w.endretTidspunkt())
+                .behandlendeEnhet(w.behandlendeEnhet())
+                .behandlendeEnhetNavn(w.behandlendeEnhetNavn())
+                .behandlingResultat(tilResultat(w.behandlingResultat()))
+                .status(tilBehandlingStatus(w.status()))
+                .tema(tilTema(w.tema()))
+                .type(tilType(w.type()))
+                .inntektsmeldinger(w.inntektsmeldinger())
+                .build())
+            .orElse(null);
     }
 
     private static BehandlingTema tilTema(String tema) {
         return Optional.ofNullable(tema)
-                .map(BehandlingTema::valueSafelyOf)
-                .orElse(null);
+            .map(BehandlingTema::valueSafelyOf)
+            .orElse(null);
     }
 
     private static BehandlingResultat tilResultat(String resultat) {
         return Optional.ofNullable(resultat)
-                .map(BehandlingResultat::valueSafelyOf)
-                .orElse(null);
+            .map(BehandlingResultat::valueSafelyOf)
+            .orElse(null);
     }
 
     private static BehandlingType tilType(String type) {
         return Optional.ofNullable(type)
-                .map(BehandlingType::valueSafelyOf)
-                .orElse(null);
+            .map(BehandlingType::valueSafelyOf)
+            .orElse(null);
     }
 
     private static BehandlingStatus tilBehandlingStatus(String status) {
         return Optional.ofNullable(status)
-                .map(BehandlingStatus::valueSafelyOf)
-                .orElse(null);
+            .map(BehandlingStatus::valueSafelyOf)
+            .orElse(null);
     }
 
-    private Uttaksplan tilUttaksplan(UttaksplanDTO dto) {
-        var grunnlag = new SøknadsGrunnlag(dto.getTermindato(), dto.getFødselsdato(),
-                dto.getOmsorgsovertakelsesdato(),
-                dto.getDekningsgrad(), dto.getAntallBarn(), dto.getSøkerErFarEllerMedmor(), dto.getMorErAleneOmOmsorg(),
-                dto.getMorHarRett(), dto.getMorErUfør(), dto.getFarMedmorErAleneOmOmsorg(), dto.getFarMedmorHarRett(),
-                dto.getAnnenForelderErInformert());
-        return new Uttaksplan(grunnlag, map(dto.getUttaksPerioder()));
+    private UttaksplanDto tilUttaksplan(UttaksplanDTO dto) {
+        var grunnlag = new SøknadsGrunnlagDto(
+            dto.termindato(),
+            dto.fødselsdato(),
+            dto.omsorgsovertakelsesdato(),
+            dto.dekningsgrad(),
+            dto.antallBarn(),
+            dto.søkerErFarEllerMedmor(),
+            dto.morErAleneOmOmsorg(),
+            dto.morHarRett(),
+            dto.morErUfør(),
+            dto.farMedmorErAleneOmOmsorg(),
+            dto.farMedmorHarRett(),
+            dto.annenForelderErInformert());
+        return new UttaksplanDto(grunnlag, map(dto.uttaksPerioder()));
     }
 
-    private List<UttaksPeriode> map(List<UttaksPeriodeDTO> perioder) {
+    private List<UttaksPeriodeDto> map(List<UttaksPeriodeDTO> perioder) {
         return safeStream(perioder)
-                .map(this::map)
-                .toList();
+            .map(this::map)
+            .toList();
     }
 
-    private UttaksPeriode map(UttaksPeriodeDTO periode) {
+    private UttaksPeriodeDto map(UttaksPeriodeDTO periode) {
         LOG.trace("Mapper periode {}", periode);
         return Optional.ofNullable(periode)
-                .map(p -> new UttaksPeriode(p.getOppholdAarsak(), p.getOverfoeringAarsak(),
-                        p.getGraderingAvslagAarsak(),
-                        p.getUtsettelsePeriodeType(),
-                        p.getPeriodeResultatType(),
-                        p.getGraderingInnvilget(),
-                        p.getSamtidigUttak(),
-                        p.getFom(),
-                        p.getTom(),
-                        p.getStønadskontotype(),
-                        tilDoubleFraBigDecimal(p.getTrekkDager()),
-                        p.getArbeidstidProsent(),
-                        p.getUtbetalingsprosent(),
-                        p.getGjelderAnnenPart(),
-                        p.getManueltBehandlet(),
-                        p.getSamtidigUttaksprosent(),
-                        p.getMorsAktivitet(),
-                        p.getFlerbarnsdager(),
-                        p.getUttakArbeidType(),
-                        map(periode.getArbeidsgiverAktoerId(), periode.getArbeidsgiverOrgnr()),
-                        p.getPeriodeResultatÅrsak()))
-                .orElse(null);
+            .map(p -> new UttaksPeriodeDto(
+                p.oppholdAarsak(),
+                p.overfoeringAarsak(),
+                p.graderingAvslagAarsak(),
+                p.utsettelsePeriodeType(),
+                p.periodeResultatType(),
+                p.graderingInnvilget(),
+                p.samtidigUttak(),
+                p.fom(),
+                p.tom(),
+                null, // Settes i konstructør
+                p.stønadskontotype(),
+                tilDoubleFraBigDecimal(p.trekkDager()),
+                p.arbeidstidProsent(),
+                p.utbetalingsprosent(),
+                p.gjelderAnnenPart(),
+                p.morsAktivitet(),
+                p.flerbarnsdager(),
+                p.manueltBehandlet(),
+                p.samtidigUttaksprosent(),
+                p.uttakArbeidType(),
+                map(periode.arbeidsgiverAktoerId(), periode.arbeidsgiverOrgnr()),
+                p.periodeResultatÅrsak()))
+            .orElse(null);
     }
 
-    private ArbeidsgiverInfo map(AktørId aktørId, String orgnr) {
+    private ArbeidsgiverInfoDto map(AktørId aktørId, Orgnummer orgnr) {
         LOG.trace("Lager arbeidsgiverInfo for  {} {}", aktørId, orgnr);
         return Optional.ofNullable(orgnr)
-                .map(o -> new ArbeidsgiverInfo(o, ORGANISASJON, organisasjon.navn(o)))
-                .orElse(new ArbeidsgiverInfo(Optional.ofNullable(aktørId)
-                        .map(AktørId::value)
-                        .orElse(null), PRIVAT,
-                        null));
+            .map(o -> new ArbeidsgiverInfoDto(o.value(), organisasjon.navn(o.value()), ORGANISASJON))
+            .orElse(new ArbeidsgiverInfoDto(Optional.ofNullable(aktørId).map(AktørId::value).orElse(null),null, PRIVAT));
     }
 
     private static Double tilDoubleFraBigDecimal(BigDecimal value) {
         return Optional.ofNullable(value)
-                .map(BigDecimal::doubleValue)
-                .orElse(null);
+            .map(BigDecimal::doubleValue)
+            .orElse(null);
     }
 
     @Override

@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Dekningsgrad;
 import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
-import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksplanDTO;
+import no.nav.foreldrepenger.mottak.innsyn.dto.UttaksplanDTO;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = JacksonConfiguration.class)

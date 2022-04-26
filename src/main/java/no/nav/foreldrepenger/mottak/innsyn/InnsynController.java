@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Sak;
+import no.nav.foreldrepenger.common.innsyn.uttaksplan.UttaksplanDto;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
-import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
@@ -49,12 +49,12 @@ public class InnsynController {
     }
 
     @GetMapping("/uttaksplan")
-    public Uttaksplan uttaksplan(@Pattern(regexp = FRITEKST) @RequestParam(name = "saksnummer") String saksnummer) {
+    public UttaksplanDto uttaksplan(@Pattern(regexp = FRITEKST) @RequestParam(name = "saksnummer") String saksnummer) {
         return innsyn.uttaksplan(saksnummer);
     }
 
     @GetMapping("/uttaksplanannen")
-    public Uttaksplan uttaksplan(@Valid @RequestParam(name = "annenPart") Fødselsnummer annenPart) {
+    public UttaksplanDto uttaksplan(@Valid @RequestParam(name = "annenPart") Fødselsnummer annenPart) {
         return innsyn.uttaksplan(oppslag.aktørId(), oppslag.aktørId(annenPart));
     }
 
