@@ -25,10 +25,9 @@ jobs:
       - name: Kompiler
         run: |
           mvn versions:set -DnewVersion=${TAG}
-          mvn jacoco:prepare-agent install jacoco:report sonar:sonar --quiet --batch-mode --settings .github/.m2/settings.xml -Dsonar.login=${SONAR_TOKEN}
+          mvn jacoco:prepare-agent install jacoco:report --quiet --batch-mode --settings .github/.m2/settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Login to GitHub Packages Docker Registry
         uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b # Use commit-sha1 instead of tag for security concerns
