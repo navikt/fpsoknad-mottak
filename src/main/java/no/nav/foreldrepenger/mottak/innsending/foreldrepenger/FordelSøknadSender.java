@@ -70,7 +70,7 @@ public class FordelSøknadSender implements SøknadSender {
         try {
             fordelKvittering = connection.send(konvolutt);
         } catch (UventetFpFordelResponseException e) {
-            LOG.warn("Uventet response fra forfordel. Returnerer kvittering uten saksnummer", e);
+            LOG.warn("Uventet response fra fpfordel. Returnerer kvittering uten saksnummer", e);
             return new Kvittering(mottattDato, null, pdfHovedDokument, infoskrivPdf);
         }
 
