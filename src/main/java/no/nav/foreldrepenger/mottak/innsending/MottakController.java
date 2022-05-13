@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.innsending;
 import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.validation.Valid;
 
@@ -20,6 +21,9 @@ import no.nav.foreldrepenger.common.domain.Ytelse;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.common.error.UnexpectedInputException;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
@@ -45,7 +49,7 @@ public class MottakController {
     @PostMapping("/send")
     public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
         var søknadEgenskap = Inspektør.inspiser(søknad);
-        validerFpSøknad(søknad.getYtelse());
+        validerFørstegangFpSøknad(søknad);
         return søknadSender.søk(søknad, oppslag.person(), søknadEgenskap);
     }
 
@@ -77,6 +81,24 @@ public class MottakController {
     public String toString() {
         return getClass().getSimpleName() + " [innsyn=" + innsyn + ", oppslag=" + oppslag + ", søknadSender="
                 + søknadSender +"]";
+    }
+
+    private void validerFørstegangFpSøknad(Søknad søknad) {
+        var ytelse = søknad.getYtelse();
+        validerFpSøknad(ytelse);
+        if (ytelse instanceof Foreldrepenger) {
+            var perioder = ((Foreldrepenger) ytelse).getFordeling().getPerioder();
+            //Allerede validert på minst en periode
+            if (perioder.stream().allMatch(this::erFriUtsettelse)) {
+                throw new UnexpectedInputException(
+                    "Søknad må inneholde minst en søknadsperiode som ikke" + "er fri utsettelse");
+            }
+        }
+    }
+
+    private boolean erFriUtsettelse(LukketPeriodeMedVedlegg p) {
+        return p instanceof UtsettelsesPeriode && Objects.equals(((UtsettelsesPeriode) p).getÅrsak(),
+            UtsettelsesÅrsak.FRI);
     }
 
     private void validerFpSøknad(Ytelse ytelse) {
