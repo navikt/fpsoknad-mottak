@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-
-    <appender name="stdout"
-        class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <Pattern>%d{yyyy-MM-dd HH:mm:ss} %X{Nav-CallId} [%thread] %-5level %logger{70} - %msg%n
             </Pattern>
         </layout>
     </appender>
 
+    <logger name="graphql.kickstart" level="trace" />
+    <logger name="no.nav.foreldrepenger" level="trace" />
     <root level="info">
         <appender-ref ref="stdout" />
     </root>
-    <springProfile name="dev,local">
-    <logger name="graphql.kickstart" level="trace" />
-        <logger name="no.nav.foreldrepenger" level="trace" />
-    </springProfile>
 </configuration>

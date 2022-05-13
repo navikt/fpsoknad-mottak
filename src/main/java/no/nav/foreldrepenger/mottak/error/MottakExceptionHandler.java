@@ -8,7 +8,6 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.ConstraintViolationException;
 
@@ -105,17 +104,11 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
             //quickfix, ikke log rejected value
             LOG.warn("[{} ({})] {}", req.getContextPath(), status, messages);
         } else if (tokenUtil.erAutentisert() && !tokenUtil.erUtløpt()) {
-            LOG.warn("[{} ({})] {} {}", req.getContextPath(), innloggetBruker(), status, apiError.getMessages(), e);
+            LOG.warn("[{}] {} {}", req.getContextPath(), status, apiError.getMessages(), e);
         } else {
             LOG.debug("[{}] {} {}", req.getContextPath(), status, apiError.getMessages(), e);
         }
         return handleExceptionInternal(e, apiError, headers, status, req);
-    }
-
-    private String innloggetBruker() {
-        return Optional.ofNullable(tokenUtil.autentisertBruker())
-            .map(fnr -> fnr + " (" + tokenUtil.getExpiration() + ")")
-            .orElse("Uautentisert");
     }
 
     private static ApiError apiErrorFra(HttpStatus status, Exception e, List<Object> messages) {

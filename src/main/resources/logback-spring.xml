@@ -1,24 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <appender name="stdout"
-        class="ch.qos.logback.core.ConsoleAppender">
-        <encoder
-            class="net.logstash.logback.encoder.LogstashEncoder" />
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
     </appender>
+
     <springProfile name="local">
-        <appender name="stdout"
-            class="ch.qos.logback.core.ConsoleAppender">
+        <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
             <layout class="ch.qos.logback.classic.PatternLayout">
-                <Pattern>
-                    %d{yyyy-MM-dd HH:mm:ss} %X{Nav-CallId} [%thread] %-5level %logger{70} - %msg%n
-                </Pattern>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} %X{Nav-CallId} [%thread] %-5level %logger{70} - %msg%n</Pattern>
             </layout>
         </appender>
     </springProfile>
-    <root level="info">
-        <appender-ref ref="stdout" />
-    </root>
-    <springProfile name="prod,test">
+
+    <springProfile name="prod | test">
         <turboFilter
             class="ch.qos.logback.classic.turbo.MarkerFilter">
             <Name>CONFIDENTIAL_FILTER</Name>
@@ -26,9 +20,14 @@
             <OnMatch>DENY</OnMatch>
         </turboFilter>
     </springProfile>
-    <logger name="org.apache.pdfbox.pdmodel.font" level="error" />
-    <springProfile name="dev,local">
+
+    <springProfile name="dev | local">
             <logger name="no.nav.foreldrepenger" level="trace" />
     </springProfile>
+
+    <logger name="org.apache.pdfbox.pdmodel.font" level="error" />
+    <root level="info">
+        <appender-ref ref="stdout" />
+    </root>
 </configuration>
 

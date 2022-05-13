@@ -2,7 +2,7 @@ arbeidsforhold:
   base-uri: ${aareg.rs.url}
 
 organisasjon:
-  base-uri: ${organisasjon.rs.url}
+  base-uri: ${organisasjon.rs.base.url}
 
 sts:
   base-uri: ${oidc.sts.issuer.url}
@@ -78,10 +78,10 @@ spring:
     producer:
       bootstrap-servers: ${bootstrap.servers}
 
-pdl:
-  base-uri: ${pdl.graphql.base.url}
 fppdfgen:
   enabled: false
+pdl:
+  base-uri: ${pdl.graphql.base.url}
 kontonummer:
   base-uri: ${oppslag.url}
 fpfordel:
