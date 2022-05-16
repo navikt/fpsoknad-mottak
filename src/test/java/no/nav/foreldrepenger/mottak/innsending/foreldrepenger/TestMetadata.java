@@ -1,18 +1,17 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedToVedlegg;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_FORELDREPENGER;
-import static no.nav.foreldrepenger.common.util.Versjon.DEFAULT_VERSJON;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.VEDLEGG3;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengesøknadMedEttOpplastetEttIkkeOpplastetVedlegg;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengesøknadMedToVedlegg;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.felles.TestUtils;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils;
 
 class TestMetadata {
 
@@ -22,7 +21,7 @@ class TestMetadata {
 
     @Test
     void testIgnorerIkkeLastetOpp() {
-        var søknad = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(DEFAULT_VERSJON);
+        var søknad = foreldrepengesøknadMedEttOpplastetEttIkkeOpplastetVedlegg();
         var metadata = new FordelMetadata(søknad, INITIELL_FORELDREPENGER, AKTOR_ID, REF);
         assertEquals(2, søknad.getVedlegg().size());
         assertEquals(3, metadata.getFiler().size());
@@ -31,7 +30,7 @@ class TestMetadata {
 
     @Test
     void test2LastetOpp() {
-        var søknad = søknadMedToVedlegg(DEFAULT_VERSJON);
+        var søknad = foreldrepengesøknadMedToVedlegg();
         var metadata = new FordelMetadata(søknad, ENDRING_FORELDREPENGER, AKTOR_ID, REF);
         assertEquals(2, søknad.getVedlegg().size());
         assertEquals(4, metadata.getFiler().size());
@@ -39,7 +38,7 @@ class TestMetadata {
 
     @Test
     void test2ES() {
-        var søknad = TestUtils.engangssøknad(ForeldrepengerTestUtils.V3);
+        var søknad = TestUtils.engangssøknad(VEDLEGG3);
         var metadata = new FordelMetadata(søknad, INITIELL_ENGANGSSTØNAD, AKTOR_ID, REF);
         assertEquals(1, søknad.getVedlegg().size());
         assertEquals(3, metadata.getFiler().size());

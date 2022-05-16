@@ -7,16 +7,15 @@ import static no.nav.foreldrepenger.common.domain.felles.TestUtils.norskForelder
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.person;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.termin;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.valgfrittVedlegg;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.V2;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.V3;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.VEDLEGG1;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.endringssøknad;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.søknad;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
-import static no.nav.foreldrepenger.common.util.Versjon.DEFAULT_VERSJON;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.VEDLEGG1;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.VEDLEGG2;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.VEDLEGG3;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.endringssøknad;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengesøknad;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -52,10 +51,10 @@ import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
+import no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
@@ -111,13 +110,13 @@ class TestFPFordelSerialization {
 
     @Test
     void testESFpFordel() {
-        var engangstønad = engangssøknad(false, termin(), norskForelder(), V3);
+        var engangstønad = engangssøknad(false, termin(), norskForelder(), VEDLEGG3);
         assertNotNull(domainMapper.tilXML(engangstønad, AKTØRID, SøknadEgenskap.of(INITIELL_ENGANGSSTØNAD)));
     }
 
     @Test
     void testKonvolutt() {
-        var søknad = søknad(DEFAULT_VERSJON, false, valgfrittVedlegg(ForeldrepengerTestUtils.ID142, LASTET_OPP));
+        var søknad = foreldrepengesøknad( false, valgfrittVedlegg(ForeldrepengerTestUtils.ID142, LASTET_OPP));
         var konvolutt = konvoluttGenerator.generer(søknad, person(),
                 SøknadEgenskap.of(INITIELL_FORELDREPENGER));
         assertNotNull(konvolutt.getMetadata());
@@ -131,7 +130,7 @@ class TestFPFordelSerialization {
 
     @Test
     void testKonvoluttEndring() {
-        var es = endringssøknad(DEFAULT_VERSJON, ForeldrepengerTestUtils.VEDLEGG1, ForeldrepengerTestUtils.V2);
+        var es = endringssøknad(ForeldrepengerTestUtils.VEDLEGG1, VEDLEGG2);
         var konvolutt = konvoluttGenerator.generer(es, person(),
                 SøknadEgenskap.of(ENDRING_FORELDREPENGER));
         assertNotNull(konvolutt.getMetadata());
@@ -144,7 +143,7 @@ class TestFPFordelSerialization {
 
     @Test
     void testKonvoluttEttersending() {
-        var es = new Ettersending(foreldrepenger, "42", VEDLEGG1, V2);
+        var es = new Ettersending(foreldrepenger, "42", VEDLEGG1, VEDLEGG2);
         var konvolutt = konvoluttGenerator.generer(es,
                 person(), SøknadEgenskap.ETTERSENDING_FORELDREPENGER);
         assertNotNull(konvolutt.getMetadata());

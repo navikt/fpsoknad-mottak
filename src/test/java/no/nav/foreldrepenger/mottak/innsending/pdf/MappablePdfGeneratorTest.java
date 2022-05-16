@@ -6,17 +6,16 @@ import static no.nav.foreldrepenger.common.domain.felles.TestUtils.engangssøkna
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.fødsel;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.hasPdfSignature;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.person;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.VEDLEGG1;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.endringssøknad;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepengeSøknad;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.svp;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg;
 import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.INITIELL_SVANGERSKAPSPENGER;
-import static no.nav.foreldrepenger.common.util.Versjon.DEFAULT_VERSJON;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.VEDLEGG1;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.endringssøknad;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengeSøknad;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengesøknadMedEttIkkeOpplastedVedlegg;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.svp;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -96,13 +95,13 @@ class MappablePdfGeneratorTest {
     @Test
     void signature() {
         assertTrue(hasPdfSignature(
-                gen.generer(foreldrepengeSøknad(DEFAULT_VERSJON), person(), INITIELL_FORELDREPENGER)));
+                gen.generer(foreldrepengeSøknad(), person(), INITIELL_FORELDREPENGER)));
     }
 
     @Test
     void førstegangssøknad() throws Exception {
         try (FileOutputStream fos = new FileOutputStream("søknad.pdf")) {
-            Søknad søknad = søknadMedEttIkkeOpplastedVedlegg(DEFAULT_VERSJON, true);
+            Søknad søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
             søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
             fos.write(gen.generer(søknad, person(), INITIELL_FORELDREPENGER));
         }
@@ -112,7 +111,7 @@ class MappablePdfGeneratorTest {
     void foreldrepengerFortsettUtenArbeidsforholdVedExceptionFraTjeneste() throws Exception {
         when(arbeidsforholdTjeneste.hentArbeidsforhold()).thenThrow(RuntimeException.class);
         try (FileOutputStream fos = new FileOutputStream("søknad_exception_fra_arbeidsforholdtjeneste.pdf")) {
-            Søknad søknad = søknadMedEttIkkeOpplastedVedlegg(DEFAULT_VERSJON, true);
+            Søknad søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
             søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
             fos.write(gen.generer(søknad, person(), INITIELL_FORELDREPENGER));
         }
@@ -121,7 +120,7 @@ class MappablePdfGeneratorTest {
     @Test
     void endring() throws Exception {
         try (FileOutputStream fos = new FileOutputStream("endring.pdf")) {
-            Endringssøknad endringssøknad = endringssøknad(DEFAULT_VERSJON, VEDLEGG1);
+            Endringssøknad endringssøknad = endringssøknad(VEDLEGG1);
             endringssøknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
             fos.write(gen.generer(endringssøknad, person(), ENDRING_FORELDREPENGER));
         }
@@ -145,7 +144,7 @@ class MappablePdfGeneratorTest {
     @Test
     void infoskrivSplitter() throws Exception {
         try (var fos = new FileOutputStream("infoskriv.pdf")) {
-            Søknad søknad = søknadMedEttIkkeOpplastedVedlegg(DEFAULT_VERSJON, true);
+            Søknad søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
             søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
             byte[] fullSøknadPdf = gen.generer(søknad, person(), INITIELL_FORELDREPENGER);
             byte[] infoskriv = pdfExtracter.infoskriv(fullSøknadPdf);

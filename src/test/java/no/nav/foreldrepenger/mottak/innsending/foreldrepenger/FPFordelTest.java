@@ -1,8 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.person;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepengeSøknad;
-import static no.nav.foreldrepenger.common.util.Versjon.DEFAULT_VERSJON;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengeSøknad;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -188,7 +187,7 @@ class FPFordelTest {
     void pollTwiceThenGosys() {
         when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class))).thenReturn(pollReceipt200,
                 goysReceipt);
-        Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
+        Kvittering kvittering = sender.søk(foreldrepengeSøknad(), person(),
                SøknadEgenskap.of(SøknadType.INITIELL_FORELDREPENGER));
         assertNull(kvittering.getSaksNr());
         verify(restOperations).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FordelKvittering.class));
@@ -199,7 +198,7 @@ class FPFordelTest {
     void poll3GivesUp() {
         when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class))).thenReturn(pollReceipt200,
                 pollReceipt200, pollReceipt200);
-        Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
+        Kvittering kvittering = sender.søk(foreldrepengeSøknad(), person(),
                 SøknadEgenskap.of(SøknadType.INITIELL_FORELDREPENGER));
         assertNull(kvittering.getSaksNr());
         verify(restOperations).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FordelKvittering.class));
@@ -212,7 +211,7 @@ class FPFordelTest {
 
         when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
-        Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
+        Kvittering kvittering = sender.søk(foreldrepengeSøknad(), person(),
                 SøknadEgenskap.of(SøknadType.INITIELL_FORELDREPENGER));
         assertEquals(kvittering.getSaksNr(), SAKSNR);
     }
@@ -221,7 +220,7 @@ class FPFordelTest {
     void pollNoLocation() {
         when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class))).thenReturn(pollReceipt202,
                 pollReceiptNoLocation());
-        sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(), SøknadEgenskap.of(SøknadType.INITIELL_FORELDREPENGER));
+        sender.søk(foreldrepengeSøknad(), person(), SøknadEgenskap.of(SøknadType.INITIELL_FORELDREPENGER));
         verify(restOperations).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FordelKvittering.class));
     }
 
@@ -229,7 +228,7 @@ class FPFordelTest {
     void unexpectedStatusCode() {
         when(restOperations.postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FordelKvittering.class)))
                 .thenReturn(fpfordelPollReceiptError());
-        Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
+        Kvittering kvittering = sender.søk(foreldrepengeSøknad(), person(),
                 SøknadEgenskap.of(SøknadType.INITIELL_FORELDREPENGER));
         assertNull(kvittering.getSaksNr());
         verify(restOperations, never()).getForEntity(eq(POSTURI), eq(FordelKvittering.class));
@@ -239,7 +238,7 @@ class FPFordelTest {
     void testNullBody() {
         when(restOperations.postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FordelKvittering.class)))
                 .thenReturn(nullBody());
-        Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
+        Kvittering kvittering = sender.søk(foreldrepengeSøknad(), person(),
                 SøknadEgenskap.of(SøknadType.INITIELL_FORELDREPENGER));
         assertNull(kvittering.getSaksNr());
         verify(restOperations, never()).getForEntity(eq(POSTURI), eq(FordelKvittering.class));
