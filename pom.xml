@@ -22,7 +22,7 @@
         <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <token-validation-version>2.0.16</token-validation-version>
+        <token-validation-version>2.0.20</token-validation-version>
         <pdfbox.version>2.0.26</pdfbox.version>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
