@@ -87,7 +87,7 @@ public class MottakController {
         var ytelse = søknad.getYtelse();
         validerFpSøknad(ytelse);
         if (ytelse instanceof Foreldrepenger) {
-            var perioder = ((Foreldrepenger) ytelse).getFordeling().getPerioder();
+            var perioder = ((Foreldrepenger) ytelse).fordeling().perioder();
             //Allerede validert på minst en periode
             if (perioder.stream().allMatch(this::erFriUtsettelse)) {
                 throw new UnexpectedInputException(
@@ -102,7 +102,7 @@ public class MottakController {
     }
 
     private void validerFpSøknad(Ytelse ytelse) {
-        if (ytelse instanceof Foreldrepenger && ((Foreldrepenger) ytelse).getFordeling().getPerioder().isEmpty()) {
+        if (ytelse instanceof Foreldrepenger && ((Foreldrepenger) ytelse).fordeling().perioder().isEmpty()) {
             throw new UnexpectedInputException("Søknad må inneholde minst en søknadsperiode");
         }
     }

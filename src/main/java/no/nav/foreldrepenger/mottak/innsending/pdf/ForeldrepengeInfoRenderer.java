@@ -144,7 +144,7 @@ public class ForeldrepengeInfoRenderer {
         y -= renderer.addLeftHeading(txt("annenopptjening"), cos, y);
         for (AnnenOpptjening annen : annenOpptjening) {
             y -= renderer.addLinesOfRegularText(INDENT, annen(annen), cos, y);
-            y = renderVedlegg(vedlegg, annen.getVedlegg(), "vedleggannenopptjening", cos, y);
+            y = renderVedlegg(vedlegg, annen.vedlegg(), "vedleggannenopptjening", cos, y);
             y -= PdfElementRenderer.BLANK_LINE;
         }
         return y;
@@ -152,8 +152,8 @@ public class ForeldrepengeInfoRenderer {
 
     public List<String> annen(AnnenOpptjening annen) {
         var attributter = new ArrayList<String>();
-        attributter.add(txt("type", cap(annen.getType().name())));
-        addIfSet(attributter, annen.getPeriode());
+        attributter.add(txt("type", cap(annen.type().name())));
+        addIfSet(attributter, annen.periode());
         return attributter;
     }
 
@@ -281,8 +281,8 @@ public class ForeldrepengeInfoRenderer {
     public float medlemsskap(Medlemsskap medlemsskap, RelasjonTilBarn relasjonTilBarn,
             FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
-        var tidligereOpphold = medlemsskap.getTidligereOppholdsInfo();
-        var framtidigeOpphold = medlemsskap.getFramtidigOppholdsInfo();
+        var tidligereOpphold = medlemsskap.tidligereUtenlandsopphold();
+        var framtidigeOpphold = medlemsskap.framtidigUtenlandsopphold();
         var land = textFormatter.countryName(medlemsskap.landVedDato(relasjonTilBarn.relasjonsDato()));
         if (relasjonTilBarn instanceof FremtidigFødsel) {
             y -= renderer.addLineOfRegularText(INDENT,
@@ -307,15 +307,15 @@ public class ForeldrepengeInfoRenderer {
             }
         }
         y -= renderer.addLineOfRegularText(INDENT, txt("siste12") +
-                (tidligereOpphold.isBoddINorge() ? " Norge" : ":"), cos, y);
-        if (!tidligereOpphold.getUtenlandsOpphold().isEmpty()) {
-            y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(tidligereOpphold.getUtenlandsOpphold()),
+                (medlemsskap.isBoddINorge() ? " Norge" : ":"), cos, y);
+        if (!tidligereOpphold.isEmpty()) {
+            y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(tidligereOpphold),
                     cos, y);
         }
         y -= renderer.addLineOfRegularText(INDENT, txt("neste12") +
-                (framtidigeOpphold.isNorgeNeste12() ? " Norge" : ":"), cos, y);
-        if (!framtidigeOpphold.getUtenlandsOpphold().isEmpty()) {
-            y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(framtidigeOpphold.getUtenlandsOpphold()),
+                (medlemsskap.isNorgeNeste12() ? " Norge" : ":"), cos, y);
+        if (!framtidigeOpphold.isEmpty()) {
+            y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(framtidigeOpphold),
                     cos,
                     y);
         }
@@ -346,7 +346,7 @@ public class ForeldrepengeInfoRenderer {
             y -= renderer.addLineOfRegularText(txt("dekningsgrad", dekningsgrad.kode()), cos, y);
         }
         var headerSize = 190F;
-        for (LukketPeriodeMedVedlegg periode : sorted(fordeling.getPerioder())) {
+        for (LukketPeriodeMedVedlegg periode : sorted(fordeling.perioder())) {
             if (periode.getClass().equals(UttaksPeriode.class)) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
@@ -563,7 +563,7 @@ public class ForeldrepengeInfoRenderer {
 
     private static double prosentFra(ProsentAndel prosent) {
         return Optional.ofNullable(prosent)
-                .map(ProsentAndel::getProsent)
+                .map(ProsentAndel::prosent)
                 .orElse(0d);
     }
 
@@ -846,9 +846,7 @@ public class ForeldrepengeInfoRenderer {
 
     private List<String> omsorgsovertakelse(Omsorgsovertakelse overtakelse) {
         List<String> attributter = new ArrayList<>();
-        addIfSet(attributter, "omsorgsovertakelsesårsak", cap(overtakelse.getÅrsak().name()));
         addIfSet(attributter, "omsorgsovertakelsesdato", overtakelse.getOmsorgsovertakelsesdato());
-        addIfSet(attributter, "omsorgsovertagelsebeskrivelse", overtakelse.getBeskrivelse());
         addIfSet(attributter, FØDSELSDATO, overtakelse.getFødselsdato());
         return attributter;
     }

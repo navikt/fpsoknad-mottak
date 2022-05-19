@@ -73,7 +73,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     @Override
     public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         var svp = Svangerskapspenger.class.cast(søknad.getYtelse());
-        var arbeidsforhold = aktiveArbeidsforhold(svp.getTermindato(), svp.getFødselsdato());
+        var arbeidsforhold = aktiveArbeidsforhold(svp.termindato(), svp.fødselsdato());
         try (var doc = new FontAwarePdfDocument(); var baos = new ByteArrayOutputStream()) {
             var page = newPage();
             doc.addPage(page);
@@ -83,11 +83,11 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             float headerSize = STARTY - y;
             y -= omBarn(svp, cos, y);
             y -= blankLine();
-            var opptjening = svp.getOpptjening();
-            if (!svp.getTilrettelegging().isEmpty()) {
+            var opptjening = svp.opptjening();
+            if (!svp.tilrettelegging().isEmpty()) {
                 y -= renderer.addLeftHeading(textFormatter.fromMessageSource("tilrettelegging"), cos, y);
                 var tilretteleggingsPerioder = tilretteleggingByArbeidsforhold(
-                        svp.getTilrettelegging());
+                        svp.tilrettelegging());
                 // type arbeidsforhold kommer i random rekkefølge
                 for (var arb : tilretteleggingsPerioder.entrySet()) {
                     var tilrettelagtArbeidsforhold = arb.getKey();
@@ -126,66 +126,66 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                     y = nesteSideStart(headerSize, behov);
                 }
             }
-            if (opptjening.getFrilans() != null) {
+            if (opptjening.frilans() != null) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY -= header(søker, doc, scratchcos, startY);
-                float size = infoRenderer.frilansOpptjening(svp.getOpptjening().getFrilans(), scratchcos, startY);
+                float size = infoRenderer.frilansOpptjening(svp.opptjening().frilans(), scratchcos, startY);
                 float behov = startY - size;
                 if (behov < y) {
                     scratchcos.close();
-                    y = infoRenderer.frilansOpptjening(svp.getOpptjening().getFrilans(), cos, y);
+                    y = infoRenderer.frilansOpptjening(svp.opptjening().frilans(), cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
                 }
             }
-            if (!opptjening.getEgenNæring().isEmpty()) {
+            if (!opptjening.egenNæring().isEmpty()) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY -= header(søker, doc, scratchcos, startY);
-                float size = infoRenderer.egneNæringerOpptjening(opptjening.getEgenNæring(), scratchcos, startY);
+                float size = infoRenderer.egneNæringerOpptjening(opptjening.egenNæring(), scratchcos, startY);
                 float behov = startY - size;
                 if (behov <= y) {
                     scratchcos.close();
-                    y = infoRenderer.egneNæringerOpptjening(opptjening.getEgenNæring(), cos, y);
+                    y = infoRenderer.egneNæringerOpptjening(opptjening.egenNæring(), cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
                 }
             }
-            if (!opptjening.getUtenlandskArbeidsforhold().isEmpty()) {
+            if (!opptjening.utenlandskArbeidsforhold().isEmpty()) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY -= header(søker, doc, scratchcos, startY);
                 float size = infoRenderer.utenlandskeArbeidsforholdOpptjening(
-                        opptjening.getUtenlandskArbeidsforhold(),
+                        opptjening.utenlandskArbeidsforhold(),
                         søknad.getVedlegg(),
                         scratchcos, startY);
                 float behov = startY - size;
                 if (behov <= y) {
                     scratchcos.close();
                     y = infoRenderer.utenlandskeArbeidsforholdOpptjening(
-                            opptjening.getUtenlandskArbeidsforhold(),
+                            opptjening.utenlandskArbeidsforhold(),
                             søknad.getVedlegg(), cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
                 }
             }
-            if (svp.getMedlemsskap() != null) {
+            if (svp.medlemsskap() != null) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY -= header(søker, doc, scratchcos, startY);
-                float size = renderMedlemskap(svp.getMedlemsskap(), scratchcos, startY);
+                float size = renderMedlemskap(svp.medlemsskap(), scratchcos, startY);
                 float behov = startY - size;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderMedlemskap(svp.getMedlemsskap(), cos, y);
+                    y = renderMedlemskap(svp.medlemsskap(), cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
@@ -213,7 +213,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             throws IOException {
         if (arbeidsforhold instanceof Virksomhet v) {
             y -= renderer.addLineOfRegularText(
-                    virksomhetsnavn(arbeidsgivere, v.getOrgnr()), cos, y);
+                    virksomhetsnavn(arbeidsgivere, v.orgnr()), cos, y);
             y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
             y -= blankLine();
         }
@@ -226,10 +226,10 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             y -= renderer.addLineOfRegularText(txt("svp.selvstendig"), cos, y);
             y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
             y -= renderer.addBulletPoint(INDENT, txt("svp.risikofaktorer",
-                    s.getRisikoFaktorer()),
+                    s.risikoFaktorer()),
                     cos, y);
             y -= renderer.addBulletPoint(INDENT, txt("svp.tiltak",
-                    s.getTilretteleggingstiltak()),
+                    s.tilretteleggingstiltak()),
                     cos, y);
             y -= blankLine();
         }
@@ -237,9 +237,9 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             y -= renderer.addLineOfRegularText(txt("svp.frilans"), cos, y);
             y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
             y -= renderer.addBulletPoint(INDENT, txt("svp.risikofaktorer",
-                    f.getRisikoFaktorer()), cos, y);
+                    f.risikoFaktorer()), cos, y);
             y -= renderer.addBulletPoint(INDENT, txt("svp.tiltak",
-                    f.getTilretteleggingstiltak()), cos, y);
+                    f.tilretteleggingstiltak()), cos, y);
             y -= blankLine();
         }
         return y;
@@ -256,18 +256,18 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private float renderMedlemskap(Medlemsskap medlemsskap, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
-        var tidligereOpphold = medlemsskap.getTidligereOppholdsInfo();
-        var framtidigeOpphold = medlemsskap.getFramtidigOppholdsInfo();
+        var tidligereOpphold = medlemsskap.tidligereUtenlandsopphold();
+        var framtidigeOpphold = medlemsskap.framtidigUtenlandsopphold();
         y -= renderer.addLineOfRegularText(txt("siste12") +
-                (tidligereOpphold.isBoddINorge() ? " Norge" : ":"), cos, y);
-        if (!tidligereOpphold.getUtenlandsOpphold().isEmpty()) {
-            y -= renderer.addBulletList(textFormatter.utenlandsOpphold(tidligereOpphold.getUtenlandsOpphold()),
+                (medlemsskap.isBoddINorge() ? " Norge" : ":"), cos, y);
+        if (!tidligereOpphold.isEmpty()) {
+            y -= renderer.addBulletList(textFormatter.utenlandsOpphold(tidligereOpphold),
                     cos, y);
         }
         y -= renderer.addLineOfRegularText(txt("neste12") +
-                (framtidigeOpphold.isNorgeNeste12() ? " Norge" : ":"), cos, y);
-        if (!framtidigeOpphold.getUtenlandsOpphold().isEmpty()) {
-            y -= renderer.addBulletList(textFormatter.utenlandsOpphold(framtidigeOpphold.getUtenlandsOpphold()),
+                (medlemsskap.isNorgeNeste12() ? " Norge" : ":"), cos, y);
+        if (!framtidigeOpphold.isEmpty()) {
+            y -= renderer.addBulletList(textFormatter.utenlandsOpphold(framtidigeOpphold),
                     cos,
                     y);
         }
@@ -326,7 +326,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private static double prosentFra(ProsentAndel prosent) {
         return Optional.ofNullable(prosent)
-                .map(ProsentAndel::getProsent)
+                .map(ProsentAndel::prosent)
                 .orElse(0d);
     }
 
@@ -380,14 +380,14 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private float omBarn(Svangerskapspenger svp, FontAwareCos cos, float y) throws IOException {
         float startY = y;
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("ombarn"), cos, y);
-        if (svp.getFødselsdato() != null) {
+        if (svp.fødselsdato() != null) {
             y -= renderer.addLineOfRegularText(
-                    txt("fødselsdato", DATEFMT.format(svp.getFødselsdato())), cos, y);
+                    txt("fødselsdato", DATEFMT.format(svp.fødselsdato())), cos, y);
             y -= renderer.addLineOfRegularText(
-                    txt("fødselmedtermin", DATEFMT.format(svp.getTermindato())), cos, y);
+                    txt("fødselmedtermin", DATEFMT.format(svp.termindato())), cos, y);
         } else {
             y -= renderer.addLineOfRegularText(
-                    txt("svp.termindato", DATEFMT.format(svp.getTermindato())), cos, y);
+                    txt("svp.termindato", DATEFMT.format(svp.termindato())), cos, y);
         }
         return startY - y;
     }

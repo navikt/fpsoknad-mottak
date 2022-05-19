@@ -46,7 +46,7 @@ public class FordelMetadata {
     private final String saksnummer;
 
     public FordelMetadata(Ettersending ettersending, AktørId aktorId, String ref) {
-        this(ettersendingsDeler(ettersending), aktorId, ref, ettersending.getSaksnr());
+        this(ettersendingsDeler(ettersending), aktorId, ref, ettersending.saksnr());
     }
 
     public FordelMetadata(Søknad søknad, SøknadType søknadType, AktørId aktorId, String ref) {
@@ -111,7 +111,7 @@ public class FordelMetadata {
 
     private static List<Del> ettersendingsDeler(Ettersending ettersending) {
         var id = new AtomicInteger(1);
-        return safeStream(ettersending.getVedlegg())
+        return safeStream(ettersending.vedlegg())
                 .map(s -> vedleggsDel(s, id))
                 .toList();
     }
@@ -141,7 +141,7 @@ public class FordelMetadata {
     }
 
     private static DokumentType dokumentTypeFraRelasjonForEngangsstønad(Søknad søknad) {
-        var relasjon = Engangsstønad.class.cast(søknad.getYtelse()).getRelasjonTilBarn();
+        var relasjon = Engangsstønad.class.cast(søknad.getYtelse()).relasjonTilBarn();
         if (relasjon instanceof Fødsel || relasjon instanceof FremtidigFødsel) {
             return I000003;
         }
@@ -152,7 +152,7 @@ public class FordelMetadata {
     }
 
     private static DokumentType dokumentTypeFraRelasjonForForeldrepenger(Søknad søknad) {
-        var relasjon = Foreldrepenger.class.cast(søknad.getYtelse()).getRelasjonTilBarn();
+        var relasjon = Foreldrepenger.class.cast(søknad.getYtelse()).relasjonTilBarn();
         if (relasjon instanceof Fødsel || relasjon instanceof FremtidigFødsel) {
             return I000005;
         }

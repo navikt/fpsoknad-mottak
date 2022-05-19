@@ -91,7 +91,7 @@ class FPFordelTest {
             .arbeidsgiverId("1234")
             .from(LocalDate.now().minusDays(200))
             .to(Optional.of(LocalDate.now()))
-            .stillingsprosent(new ProsentAndel(90)).arbeidsgiverNavn("El Bedrifto")
+            .stillingsprosent(ProsentAndel.valueOf(90)).arbeidsgiverNavn("El Bedrifto")
             .build());
 
     @Mock
