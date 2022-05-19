@@ -18,10 +18,6 @@ import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.common.domain.felles.Kjønn;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.common.domain.felles.annenforelder.AnnenForelder;
-import no.nav.foreldrepenger.common.domain.felles.annenforelder.NorskForelder;
-import no.nav.foreldrepenger.common.domain.felles.annenforelder.UkjentForelder;
-import no.nav.foreldrepenger.common.domain.felles.annenforelder.UtenlandskForelder;
 import no.nav.foreldrepenger.common.domain.felles.medlemskap.Medlemsskap;
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Adopsjon;
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.FremtidigFødsel;
@@ -33,7 +29,6 @@ import no.nav.foreldrepenger.common.util.StreamUtil;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.Blokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentBestilling;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentPerson;
-import no.nav.foreldrepenger.mottak.innsending.pdf.modell.FeltBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.FritekstBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.GruppeBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.ListeBlokk;
@@ -93,42 +88,6 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         grupper.add(tilknytning(medlemsskap, stønad));
 
         return grupper;
-    }
-
-    private TemaBlokk omAnnenForelder(AnnenForelder annenForelder) {
-        List<Blokk> farInfo = new ArrayList<>();
-        if (annenForelder instanceof NorskForelder a) {
-            farInfo.addAll(norskForelder(a));
-        }
-        if (annenForelder instanceof UtenlandskForelder a) {
-            farInfo.addAll(utenlandskForelder(a));
-        }
-        if (annenForelder instanceof UkjentForelder) {
-            farInfo.add(new FritekstBlokk(txt("annenforelderukjent")));
-        }
-        return TemaBlokk.builder()
-                .medOverskrift(txt("omannenforelder"))
-                .medUnderBlokker(farInfo)
-                .build();
-    }
-
-    private List<FeltBlokk> utenlandskForelder(UtenlandskForelder utenlandsForelder) {
-        List<FeltBlokk> info = new ArrayList<>();
-        info.add(new FeltBlokk(txt("nasjonalitet"),
-                textFormatter.countryName(utenlandsForelder.getLand(), utenlandsForelder.getLand().getName())));
-        info.add(new FeltBlokk(txt("navn"), utenlandsForelder.getNavn()));
-        if (utenlandsForelder.getId() != null) {
-            info.add(new FeltBlokk(txt("utenlandskid"), utenlandsForelder.getId()));
-        }
-        return info;
-    }
-
-    private List<FeltBlokk> norskForelder(NorskForelder norskForelder) {
-        List<FeltBlokk> info = new ArrayList<>();
-        info.add(new FeltBlokk(txt("nasjonalitet"), txt("nasjonalitet.norsk")));
-        info.add(new FeltBlokk(txt("navn"), norskForelder.getNavn()));
-        info.add(new FeltBlokk(txt("fødselsnummer"), norskForelder.getFnr().value()));
-        return info;
     }
 
     private TemaBlokk tilknytning(Medlemsskap medlemsskap, Engangsstønad stønad) {
