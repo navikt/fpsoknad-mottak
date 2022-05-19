@@ -33,7 +33,7 @@ final class Inspektør {
     }
 
     static SøknadEgenskap inspiser(Ettersending ettersending) {
-        return switch (ettersending.getType()) {
+        return switch (ettersending.type()) {
             case engangsstønad -> ETTERSENDING_ENGANGSSTØNAD;
             case foreldrepenger -> ETTERSENDING_FORELDREPENGER;
             case svangerskapspenger -> ETTERSENDING_SVANGERSKAPSPENGER;

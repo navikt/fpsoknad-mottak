@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 import static no.nav.foreldrepenger.common.domain.felles.EttersendingsType.foreldrepenger;
 import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.engangssøknad;
-import static no.nav.foreldrepenger.common.domain.felles.TestUtils.norskForelder;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.person;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.termin;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.valgfrittVedlegg;
@@ -110,7 +109,7 @@ class TestFPFordelSerialization {
 
     @Test
     void testESFpFordel() {
-        var engangstønad = engangssøknad(false, termin(), norskForelder(), VEDLEGG3);
+        var engangstønad = engangssøknad(false, termin(), VEDLEGG3);
         assertNotNull(domainMapper.tilXML(engangstønad, AKTØRID, SøknadEgenskap.of(INITIELL_ENGANGSSTØNAD)));
     }
 
@@ -143,7 +142,7 @@ class TestFPFordelSerialization {
 
     @Test
     void testKonvoluttEttersending() {
-        var es = new Ettersending(foreldrepenger, "42", VEDLEGG1, VEDLEGG2);
+        var es = new Ettersending("42", foreldrepenger, List.of(VEDLEGG1, VEDLEGG2), null);
         var konvolutt = konvoluttGenerator.generer(es,
                 person(), SøknadEgenskap.ETTERSENDING_FORELDREPENGER);
         assertNotNull(konvolutt.getMetadata());
@@ -160,7 +159,7 @@ class TestFPFordelSerialization {
                 .arbeidsgiverId("1234")
                 .from(LocalDate.now().minusDays(200))
                 .to(Optional.of(LocalDate.now()))
-                .stillingsprosent(new ProsentAndel(90))
+                .stillingsprosent(ProsentAndel.valueOf(90))
                 .arbeidsgiverNavn("El Bedrifto").build());
     }
 

@@ -290,7 +290,7 @@ public class SvangerskapspengerInfoRenderer {
 
     private static double prosentFra(ProsentAndel prosent) {
         return Optional.ofNullable(prosent)
-                .map(ProsentAndel::getProsent)
+                .map(ProsentAndel::prosent)
                 .orElse(0d);
     }
 }

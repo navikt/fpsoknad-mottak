@@ -90,7 +90,7 @@ public class InfoskrivRenderer {
         y -= renderer.addLinesOfRegularText(opplysninger, cos, y);
         y -= addBlankLine();
 
-        List<LukketPeriodeMedVedlegg> perioder = sorted(ytelse.getFordeling().getPerioder());
+        List<LukketPeriodeMedVedlegg> perioder = sorted(ytelse.fordeling().perioder());
         List<UtsettelsesPeriode> ferieArbeidsperioder = ferieOgArbeid(perioder);
 
         if (!ferieArbeidsperioder.isEmpty()) {
@@ -202,7 +202,7 @@ public class InfoskrivRenderer {
 
     private static String prosentFra(ProsentAndel prosent) {
         return Optional.ofNullable(prosent)
-                .map(ProsentAndel::getProsent)
+                .map(ProsentAndel::prosent)
                 .map(p -> p.intValue() + " %")
                 .orElse("Ukjent");
     }

@@ -160,7 +160,7 @@ class MappablePdfGeneratorTest {
                 .arbeidsgiverId("999263550")
                 .from(LocalDate.now().minusDays(200))
                 .to(Optional.of(LocalDate.now().plusDays(10)))
-                .stillingsprosent(new ProsentAndel(90))
+                .stillingsprosent(ProsentAndel.valueOf(90))
                 .arbeidsgiverNavn("Den Første Bedriften").build());
     }
 }

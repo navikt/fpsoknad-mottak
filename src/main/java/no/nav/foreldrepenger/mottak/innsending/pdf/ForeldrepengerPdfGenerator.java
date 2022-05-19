@@ -79,27 +79,27 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             y = fpRenderer.header(søker, doc, cos, false, y);
             float headerSize = yTop - y;
 
-            if (stønad.getRelasjonTilBarn() != null) {
+            if (stønad.relasjonTilBarn() != null) {
                 PDPage scratch1 = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                float size = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(), scratchcos,
+                float size = fpRenderer.relasjonTilBarn(stønad.relasjonTilBarn(), søknad.getVedlegg(), scratchcos,
                         startY);
                 float behov = startY - size;
                 if (behov <= y) {
                     scratchcos.close();
-                    y = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(), cos, y);
+                    y = fpRenderer.relasjonTilBarn(stønad.relasjonTilBarn(), søknad.getVedlegg(), cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
                 }
             }
 
-            var annenForelder = stønad.getAnnenForelder();
+            var annenForelder = stønad.annenForelder();
             if (annenForelder != null) {
-                y = fpRenderer.annenForelder(annenForelder, stønad.getFordeling().isErAnnenForelderInformert(),
-                        stønad.getRettigheter(), cos, y);
+                y = fpRenderer.annenForelder(annenForelder, stønad.fordeling().erAnnenForelderInformert(),
+                        stønad.rettigheter(), cos, y);
             }
 
             if (søknad.getTilleggsopplysninger() != null) {
@@ -119,8 +119,8 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                 }
             }
 
-            Opptjening opptjening = stønad.getOpptjening();
-            var arbeidsforhold = aktiveArbeidsforhold(stønad.getRelasjonTilBarn().relasjonsDato());
+            Opptjening opptjening = stønad.opptjening();
+            var arbeidsforhold = aktiveArbeidsforhold(stønad.relasjonTilBarn().relasjonsDato());
             if (opptjening != null) {
                 var scratch = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch);
@@ -135,20 +135,20 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                     cos = nySide(doc, cos, scratch, scratchcos);
                     y = nesteSideStart(headerSize, behov);
                 }
-                if (!opptjening.getUtenlandskArbeidsforhold().isEmpty()) {
+                if (!opptjening.utenlandskArbeidsforhold().isEmpty()) {
                     var scratch1 = newPage();
                     scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
                     size = fpRenderer.utenlandskeArbeidsforholdOpptjening(
-                            opptjening.getUtenlandskArbeidsforhold(),
+                            opptjening.utenlandskArbeidsforhold(),
                             søknad.getVedlegg(),
                             scratchcos, startY);
                     behov = startY - size;
                     if (behov <= y) {
                         scratchcos.close();
                         y = fpRenderer.utenlandskeArbeidsforholdOpptjening(
-                                opptjening.getUtenlandskArbeidsforhold(),
+                                opptjening.utenlandskArbeidsforhold(),
                                 søknad.getVedlegg(), cos, y);
                     } else {
                         cos = nySide(doc, cos, scratch1, scratchcos);
@@ -156,18 +156,18 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                     }
                 }
 
-                if (!opptjening.getAnnenOpptjening().isEmpty()) {
+                if (!opptjening.annenOpptjening().isEmpty()) {
                     var scratch1 = newPage();
                     scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                    size = fpRenderer.annenOpptjening(opptjening.getAnnenOpptjening(), søknad.getVedlegg(),
+                    size = fpRenderer.annenOpptjening(opptjening.annenOpptjening(), søknad.getVedlegg(),
                             scratchcos, startY);
                     behov = startY - size;
                     if (behov <= y) {
                         scratchcos.close();
                         y = fpRenderer.annenOpptjening(
-                                opptjening.getAnnenOpptjening(),
+                                opptjening.annenOpptjening(),
                                 søknad.getVedlegg(), cos, y);
                     } else {
                         cos = nySide(doc, cos, scratch1, scratchcos);
@@ -175,61 +175,61 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                     }
                 }
 
-                if (!opptjening.getEgenNæring().isEmpty()) {
+                if (!opptjening.egenNæring().isEmpty()) {
                     var scratch1 = newPage();
                     scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                    size = fpRenderer.egneNæringerOpptjening(opptjening.getEgenNæring(), scratchcos, startY);
+                    size = fpRenderer.egneNæringerOpptjening(opptjening.egenNæring(), scratchcos, startY);
                     behov = startY - size;
                     if (behov <= y) {
                         scratchcos.close();
-                        y = fpRenderer.egneNæringerOpptjening(opptjening.getEgenNæring(), cos, y);
+                        y = fpRenderer.egneNæringerOpptjening(opptjening.egenNæring(), cos, y);
                     } else {
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
                     }
                 }
 
-                if (opptjening.getFrilans() != null) {
+                if (opptjening.frilans() != null) {
                     var scratch1 = newPage();
                     scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                    size = fpRenderer.frilansOpptjening(opptjening.getFrilans(),
+                    size = fpRenderer.frilansOpptjening(opptjening.frilans(),
                             scratchcos, startY);
                     behov = startY - size;
                     if (behov <= y) {
                         scratchcos.close();
-                        y = fpRenderer.frilansOpptjening(opptjening.getFrilans(), cos, y);
+                        y = fpRenderer.frilansOpptjening(opptjening.frilans(), cos, y);
                     } else {
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
                     }
                 }
 
-                if (stønad.getMedlemsskap() != null) {
+                if (stønad.medlemsskap() != null) {
                     var scratch1 = newPage();
                     scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                    size = fpRenderer.medlemsskap(stønad.getMedlemsskap(), stønad.getRelasjonTilBarn(), scratchcos,
+                    size = fpRenderer.medlemsskap(stønad.medlemsskap(), stønad.relasjonTilBarn(), scratchcos,
                             startY);
                     behov = startY - size;
                     if (behov <= y) {
                         scratchcos.close();
-                        y = fpRenderer.medlemsskap(stønad.getMedlemsskap(), stønad.getRelasjonTilBarn(), cos, y);
+                        y = fpRenderer.medlemsskap(stønad.medlemsskap(), stønad.relasjonTilBarn(), cos, y);
                     } else {
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
                     }
                 }
 
-                if (stønad.getFordeling() != null) {
-                    cos = fpRenderer.fordeling(doc, søker, søknad.getSøker().getSøknadsRolle(), stønad.getFordeling(),
-                            stønad.getDekningsgrad(),
+                if (stønad.fordeling() != null) {
+                    cos = fpRenderer.fordeling(doc, søker, søknad.getSøker().getSøknadsRolle(), stønad.fordeling(),
+                            stønad.dekningsgrad(),
                             søknad.getVedlegg(),
-                            stønad.getRelasjonTilBarn().getAntallBarn(), false,
+                            stønad.relasjonTilBarn().getAntallBarn(), false,
                             cos, y);
                 }
 
@@ -269,18 +269,18 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                     y);
             float headerSize = yTop - y;
 
-            if (stønad.getRelasjonTilBarn() != null) {
+            if (stønad.relasjonTilBarn() != null) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY = fpRenderer.header(søker, doc, scratchcos,
                         true, startY);
-                float size = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(),
+                float size = fpRenderer.relasjonTilBarn(stønad.relasjonTilBarn(), søknad.getVedlegg(),
                         scratchcos, startY);
                 float behov = startY - size;
                 if (behov <= y) {
                     scratchcos.close();
-                    y = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(),
+                    y = fpRenderer.relasjonTilBarn(stønad.relasjonTilBarn(), søknad.getVedlegg(),
                             cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1,
@@ -289,10 +289,10 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                 }
             }
 
-            var annenForelder = stønad.getAnnenForelder();
+            var annenForelder = stønad.annenForelder();
             if (annenForelder != null) {
                 y = fpRenderer.annenForelder(annenForelder,
-                        stønad.getFordeling().isErAnnenForelderInformert(), stønad.getRettigheter(),
+                        stønad.fordeling().erAnnenForelderInformert(), stønad.rettigheter(),
                         cos, y);
             }
 
@@ -317,11 +317,11 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                 }
             }
 
-            if (stønad.getFordeling() != null) {
-                cos = fpRenderer.fordeling(doc, søker, søknad.getSøker().getSøknadsRolle(), stønad.getFordeling(),
-                        stønad.getDekningsgrad(),
+            if (stønad.fordeling() != null) {
+                cos = fpRenderer.fordeling(doc, søker, søknad.getSøker().getSøknadsRolle(), stønad.fordeling(),
+                        stønad.dekningsgrad(),
                         søknad.getVedlegg(),
-                        stønad.getRelasjonTilBarn().getAntallBarn(), true,
+                        stønad.relasjonTilBarn().getAntallBarn(), true,
                         cos, y);
             }
             cos.close();

@@ -95,7 +95,7 @@ public class KonvoluttGenerator {
         var id = new AtomicInteger(1);
         var builder = new MultipartBodyBuilder();
         builder.part(METADATA, metadataFor(ettersending, søker.aktørId()), APPLICATION_JSON);
-        safeStream(ettersending.getVedlegg())
+        safeStream(ettersending.vedlegg())
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
         return new Konvolutt(egenskap, ettersending, new HttpEntity<>(builder.build(), headers()),
                 opplastedeVedleggFra(ettersending), ikkeOpplastedeVedleggFra(ettersending));
@@ -167,11 +167,11 @@ public class KonvoluttGenerator {
     }
 
     private static List<String> opplastedeVedleggFra(Ettersending es) {
-        return vedleggMedTypeFra(es.getVedlegg(), LASTET_OPP);
+        return vedleggMedTypeFra(es.vedlegg(), LASTET_OPP);
     }
 
     private static List<String> ikkeOpplastedeVedleggFra(Ettersending es) {
-        return vedleggMedTypeFra(es.getVedlegg(), SEND_SENERE);
+        return vedleggMedTypeFra(es.vedlegg(), SEND_SENERE);
     }
 
     private static List<String> vedleggMedTypeFra(List<Vedlegg> vedlegg, InnsendingsType type) {

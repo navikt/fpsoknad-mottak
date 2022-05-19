@@ -50,7 +50,7 @@ public class FordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering ettersend(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
-        return send(konvolutt(ettersending, søker, egenskap), ettersending.getDialogId());
+        return send(konvolutt(ettersending, søker, egenskap), ettersending.dialogId());
     }
 
     @Override

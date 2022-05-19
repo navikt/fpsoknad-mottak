@@ -103,16 +103,16 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private List<TemaBlokk> lagInnhold(Søknad søknad) {
 
         var stønad = (Svangerskapspenger) søknad.getYtelse();
-        var aktiveArbeidsforhold = hentAktiveArbeidsforhold(stønad.getTermindato(), stønad.getFødselsdato());
-        var medlemsskap = stønad.getMedlemsskap();
+        var aktiveArbeidsforhold = hentAktiveArbeidsforhold(stønad.termindato(), stønad.fødselsdato());
+        var medlemsskap = stønad.medlemsskap();
         // var annenForelder = stønad.getAnnenForelder();
         List<TemaBlokk> temaer = new ArrayList<>();
 
         temaer.add(omBarn(søknad, stønad));
         temaer.add(tilretteleggingsbehov(stønad, søknad.getVedlegg()));
         arbeidsforhold(aktiveArbeidsforhold).ifPresent(temaer::add);
-        frilans(stønad.getOpptjening().getFrilans()).ifPresent(temaer::add);
-        egenNæring(stønad.getOpptjening().getEgenNæring()).ifPresent(temaer::add);
+        frilans(stønad.opptjening().frilans()).ifPresent(temaer::add);
+        egenNæring(stønad.opptjening().egenNæring()).ifPresent(temaer::add);
 //        grupper.add(egenNæring());
 //        grupper.add(utenlandskeArbeidsforhold());
 //        grupper.add(tilknytning(medlemsskap, stønad));
@@ -258,7 +258,7 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             List<Vedlegg> vedlegg) {
         List<GruppeBlokk> tabeller = new ArrayList<>();
 
-        perArbeidsforholdFra(stønad.getTilrettelegging())
+        perArbeidsforholdFra(stønad.tilrettelegging())
                 .forEach((arbeidsgiver, tiltak) -> tabeller.add(håndter(arbeidsgiver, tiltak, vedlegg)));
 
         return TemaBlokk.builder()
@@ -274,7 +274,7 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         List<Blokk> rader = new ArrayList<>();
         rader.add(behovFra(tiltak.stream().findAny().orElseThrow()));
         if (arbeidsgiver instanceof Virksomhet) {
-            builder.medOverskrift(virksomhetsnavn(((Virksomhet) arbeidsgiver).getOrgnr()));
+            builder.medOverskrift(virksomhetsnavn(((Virksomhet) arbeidsgiver).orgnr()));
             tiltak.stream().map(this::map).forEach(rader::addAll);
         } else if (arbeidsgiver instanceof PrivatArbeidsgiver) {
             builder.medOverskrift(txt("svp.privatarbeidsgiver"));
@@ -325,8 +325,8 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private List<FritekstBlokk> tiltakOgRisiko(Frilanser frilans) {
         return List.of(
-                new FritekstBlokk(txt("svp.risikofaktorer", frilans.getRisikoFaktorer())),
-                new FritekstBlokk(txt("svp.tiltak", frilans.getTilretteleggingstiltak())));
+                new FritekstBlokk(txt("svp.risikofaktorer", frilans.risikoFaktorer())),
+                new FritekstBlokk(txt("svp.tiltak", frilans.tilretteleggingstiltak())));
     }
 
     private List<TabellRad> map(Tilrettelegging tilrettelegging) {
@@ -353,7 +353,7 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private static String prosentFra(ProsentAndel prosent) {
         return Optional.ofNullable(prosent)
-                .map(ProsentAndel::getProsent)
+                .map(ProsentAndel::prosent)
                 .map(String::valueOf)
                 .orElse("0");
     }
@@ -397,10 +397,10 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private TemaBlokk omBarn(Søknad søknad, Svangerskapspenger stønad) {
         FritekstBlokk terminFødsel;
-        if (stønad.getFødselsdato() != null) {
-            terminFødsel = new FritekstBlokk(txt("svp.omfødsel", stønad.getFødselsdato(), DATEFMT.format(stønad.getTermindato())));
+        if (stønad.fødselsdato() != null) {
+            terminFødsel = new FritekstBlokk(txt("svp.omfødsel", stønad.fødselsdato(), DATEFMT.format(stønad.termindato())));
         } else {
-            terminFødsel = new FritekstBlokk(txt("svp.termindato", DATEFMT.format(stønad.getTermindato())));
+            terminFødsel = new FritekstBlokk(txt("svp.termindato", DATEFMT.format(stønad.termindato())));
         }
         return TemaBlokk.builder()
                 .medOverskrift(txt("ombarn"))
