@@ -70,8 +70,9 @@ public class PDLConnection implements PingEndpointAware {
     }
 
     public Person hentSøker() {
-        return Optional.ofNullable(oppslagSøker(tokenUtil.autentisertBruker().value()))
-                .map(s -> map(tokenUtil.autentisertBruker(), aktøridFor(tokenUtil.autentisertBruker()), målform(), kontonr(), barn(s), s))
+        var fnrSøker = tokenUtil.autentisertBrukerOrElseThrowException();
+        return Optional.ofNullable(oppslagSøker(fnrSøker))
+                .map(s -> map(fnrSøker, aktøridFor(fnrSøker), målform(), kontonr(), barn(s), s))
                 .orElse(null);
     }
 
@@ -111,9 +112,9 @@ public class PDLConnection implements PingEndpointAware {
                 .collect(toSet());
     }
 
-    private PDLSøker oppslagSøker(String id) {
-        return Optional.ofNullable(oppslag(() -> userClient.post(SØKER_QUERY, idFra(id), PDLSøker.class).block(), "søker"))
-                .map(s -> s.withId(id))
+    private PDLSøker oppslagSøker(Fødselsnummer fnr) {
+        return Optional.ofNullable(oppslag(() -> userClient.post(SØKER_QUERY, idFra(fnr.value()), PDLSøker.class).block(), "søker"))
+                .map(s -> s.withId(fnr.value()))
                 .orElse(null);
     }
 

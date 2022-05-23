@@ -169,7 +169,7 @@ public class WebClientConfiguration {
 
     private static ExchangeFilterFunction navPersonIdentFunction(TokenUtil tokenUtil) {
         return (req, next) -> next.exchange(ClientRequest.from(req)
-                .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker().value())
+                .header(NAV_PERSON_IDENT, tokenUtil.autentisertBrukerOrElseThrowException().value())
                 .build());
     }
 

@@ -79,7 +79,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         var medlemsskap = stønad.medlemsskap();
         List<TemaBlokk> grupper = new ArrayList<>();
 
-        var kjønn = tokenUtil.autentisertBruker().kjønn();
+        var kjønn = tokenUtil.autentisertBrukerOrElseThrowException().kjønn();
         LOG.info("KJØNN {}", kjønn);
         // info om barn
         grupper.add(omBarn(søknad, kjønn, stønad));

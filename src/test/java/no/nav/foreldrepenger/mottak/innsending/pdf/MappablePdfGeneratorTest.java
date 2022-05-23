@@ -128,7 +128,7 @@ class MappablePdfGeneratorTest {
 
     @Test
     void engangs() throws Exception {
-        when(tokenUtil.autentisertBruker()).thenReturn(new Fødselsnummer("010101010101"));
+        when(tokenUtil.autentisertBrukerOrElseThrowException()).thenReturn(new Fødselsnummer("010101010101"));
         try (var fos = new FileOutputStream("engangssøknad.pdf")) {
             fos.write(gen.generer(engangssøknad(fødsel(), true), person(), INITIELL_ENGANGSSTØNAD));
         }
