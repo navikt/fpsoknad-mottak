@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper.ALLE_FORELDREPENGER;
+import static no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper.FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.FORELDREPENGER_OUTLINE;
 import static no.nav.foreldrepenger.mottak.util.CollectionUtil.tryOrEmpty;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
@@ -50,7 +50,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
-        return ALLE_FORELDREPENGER;
+        return FORELDREPENGER;
     }
 
     @Override
