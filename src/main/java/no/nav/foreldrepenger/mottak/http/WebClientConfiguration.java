@@ -8,7 +8,7 @@ import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID2;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_TOKEN;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_PERSON_IDENT;
-import static no.nav.foreldrepenger.mottak.util.TokenUtil.BEARER;
+import static no.nav.foreldrepenger.common.util.TokenUtil.BEARER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.time.Duration;
@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.common.util.MDCUtil;
+import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConfig;
@@ -42,7 +43,6 @@ import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontonummerConfig;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig;
 import no.nav.foreldrepenger.mottak.oppslag.sts.STSConfig;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
-import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 import no.nav.security.token.support.client.spring.oauth2.ClientConfigurationPropertiesMatcher;

@@ -2,8 +2,8 @@ package no.nav.foreldrepenger.mottak.http;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import static no.nav.foreldrepenger.common.util.Constants.CLAIMS;
-import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
+import static no.nav.foreldrepenger.common.util.TokenUtil.CLAIMS;
+import static no.nav.foreldrepenger.common.util.TokenUtil.TOKENX;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.lang.annotation.Documented;

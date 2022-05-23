@@ -8,8 +8,8 @@ import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Navn;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
+import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
-import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Service
 @ConditionalOnProperty(name = "oppslag.stub", havingValue = "false", matchIfMissing = true)

@@ -26,6 +26,7 @@ import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.common.util.Pair;
 import no.nav.foreldrepenger.common.util.StreamUtil;
+import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.Blokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentBestilling;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentPerson;
@@ -36,7 +37,6 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.modell.MottattDato;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TabellRad;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TemaBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGenerator;
-import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
 public class EngangsstønadPdfGenerator implements MappablePdfGenerator {

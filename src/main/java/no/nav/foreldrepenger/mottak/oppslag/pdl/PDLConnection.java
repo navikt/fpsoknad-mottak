@@ -36,10 +36,10 @@ import no.nav.foreldrepenger.common.domain.Navn;
 import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
+import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConnection;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontonummerConnection;
-import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
 public class PDLConnection implements PingEndpointAware {
