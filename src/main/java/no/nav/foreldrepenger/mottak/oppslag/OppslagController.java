@@ -11,8 +11,8 @@ import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Navn;
 import no.nav.foreldrepenger.common.domain.felles.Person;
+import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
-import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.security.token.support.core.api.Unprotected;
 
 @ProtectedRestController(OppslagController.OPPSLAG)

@@ -54,10 +54,10 @@ import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils;
+import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
-import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @EnableConfigurationProperties
 @ExtendWith(MockitoExtension.class)

@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.sts;
 
-import static no.nav.foreldrepenger.mottak.util.TokenUtil.BEARER;
+import static no.nav.foreldrepenger.common.util.TokenUtil.BEARER;
 
 import no.nav.foreldrepenger.mottak.http.Pingable;
 

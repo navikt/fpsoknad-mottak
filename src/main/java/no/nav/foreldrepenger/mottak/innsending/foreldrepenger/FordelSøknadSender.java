@@ -12,9 +12,9 @@ import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfEkstraktor;
-import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Service
 public class FordelSøknadSender implements SøknadSender {

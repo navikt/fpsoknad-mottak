@@ -27,7 +27,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import no.nav.foreldrepenger.common.error.SøknadEgenskapException;
 import no.nav.foreldrepenger.common.error.UnexpectedInputException;
-import no.nav.foreldrepenger.mottak.util.TokenUtil;
+import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.security.token.support.core.exceptions.JwtTokenValidatorException;
 import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException;
 

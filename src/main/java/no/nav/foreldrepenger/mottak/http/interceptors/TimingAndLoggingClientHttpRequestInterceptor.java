@@ -22,7 +22,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Timer;
-import no.nav.foreldrepenger.mottak.util.TokenUtil;
+import no.nav.foreldrepenger.common.util.TokenUtil;
 
 @Component
 public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
