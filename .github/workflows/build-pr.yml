@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  kompiler:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -17,8 +17,32 @@ jobs:
           check-latest: true
           cache: 'maven'
 
-      - name: Kompiler
+      - name: Kompiler uten sonar
         run: |
-          mvn install -e --batch-mode --settings .github/.m2/settings.xml
+          mvn jacoco:prepare-agent install jacoco:report -e --batch-mode --settings .github/.m2/settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/upload-artifact@v3
+        if: github.actor != 'dependabot[bot]'
+        with:
+          name: jacoco-report
+          path: target/jacoco.exec
+
+  sonar:
+    if: github.actor != 'dependabot[bot]'
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: jacoco-report
+          path: target/jacoco.exec
+
+      - name: Kompiler med sonar
+        run: |
+          mvn sonar:sonar --settings .github/.m2/settings.xml -Dsonar.login=${SONAR_TOKEN}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
