@@ -16,16 +16,15 @@ jobs:
         with:
           java-version: 17
           distribution: 'temurin'
-          check-latest: true
           cache: 'maven'
 
       - name: Hent tag
         run: echo "TAG=$(date +%Y.%m.%d.%H%M%S)-$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
 
-      - name: Kompiler
+      - name: Bygger og tester
         run: |
           mvn versions:set -DnewVersion=${TAG}
-          mvn jacoco:prepare-agent install jacoco:report --quiet --batch-mode --settings .github/.m2/settings.xml
+          mvn install --quiet --batch-mode --settings .github/.m2/settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -95,3 +94,10 @@ jobs:
                       "version": "${{ env.TAG }}",
                       "issue_number": "${{ steps.createdeployissue.outputs.number }}"
                   }}'
+
+      - name: Sonar analyse
+        run: |
+          mvn jacoco:prepare-agent jacoco:report sonar:sonar --settings .github/.m2/settings.xml -Dsonar.login=${SONAR_TOKEN}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
