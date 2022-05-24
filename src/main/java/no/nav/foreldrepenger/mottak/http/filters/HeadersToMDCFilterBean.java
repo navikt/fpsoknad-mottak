@@ -18,7 +18,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
-import no.nav.foreldrepenger.common.domain.CallIdGenerator;
+import no.nav.foreldrepenger.common.util.CallIdGenerator;
+
 
 @Component
 public class HeadersToMDCFilterBean extends GenericFilterBean {
