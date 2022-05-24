@@ -27,15 +27,6 @@ jobs:
           mvn install --quiet --batch-mode --settings .github/.m2/settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      - name: Sonar analyse
-        if: github.actor != 'dependabot[bot]'
-        run: |
-          mvn jacoco:prepare-agent jacoco:report sonar:sonar --settings .github/.m2/settings.xml -Dsonar.login=${SONAR_TOKEN}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Login to GitHub Packages Docker Registry
         uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b # Use commit-sha1 instead of tag for security concerns
@@ -103,3 +94,10 @@ jobs:
                       "version": "${{ env.TAG }}",
                       "issue_number": "${{ steps.createdeployissue.outputs.number }}"
                   }}'
+
+      - name: Sonar analyse
+        run: |
+          mvn jacoco:prepare-agent jacoco:report sonar:sonar --settings .github/.m2/settings.xml -Dsonar.login=${SONAR_TOKEN}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
