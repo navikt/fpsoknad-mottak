@@ -60,7 +60,6 @@ jobs:
       with:
         java-version: 17
         distribution: 'adopt'
-        check-latest: true
         cache: 'maven'
     - run: |
        mvn  --quiet --settings .github/.m2/settings.xml package

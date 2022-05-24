@@ -14,12 +14,11 @@ jobs:
         with:
           java-version: 17
           distribution: 'temurin'
-          check-latest: true
           cache: 'maven'
 
       - name: Bygger og tester
         run: |
-          mvn jacoco:prepare-agent install jacoco:report -e --batch-mode --settings .github/.m2/settings.xml
+          mvn install -e --batch-mode --settings .github/.m2/settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
