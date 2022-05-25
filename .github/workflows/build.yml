@@ -4,6 +4,14 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - '**.md'
+      - '**.MD'
+      - '.gitignore'
+      - '.github/workflows/build-pr.yml'
+      - '.github/workflows/dispatch.yml'
+      - '.github/workflows/codeql-analysis.yml'
+      - '.github/dependabot.yml'
 env:
   IMAGE_BASE: ghcr.io/${{ github.repository }}
 
@@ -99,7 +107,7 @@ jobs:
 
       - name: Sonar analyse
         run: |
-          mvn jacoco:prepare-agent jacoco:report sonar:sonar --settings .github/.m2/settings.xml
+          mvn jacoco:report org.sonarsource.scanner.maven:sonar-maven-plugin:sonar --settings .github/.m2/settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
