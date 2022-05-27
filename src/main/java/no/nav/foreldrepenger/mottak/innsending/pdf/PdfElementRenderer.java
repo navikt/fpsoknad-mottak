@@ -118,13 +118,13 @@ public class PdfElementRenderer {
 
     private static String normalizeString(String str) {
         return Stream.of(str)
-                .map(s -> s.replaceAll("å", "xxxxxxxxxx"))
-                .map(s -> s.replaceAll("Å", "XXXXXXXXXX"))
+                .map(s -> s.replace("å", "xxxxxxxxxx"))
+                .map(s -> s.replace("Å", "XXXXXXXXXX"))
                 .map(s -> Normalizer.normalize(s, NFD))
                 .map(s -> s.replaceAll("[\\p{Blank}\u00A0]", " ")) // replace tab/no-break space with space
                 .map(s -> s.replaceAll("[\u202D\uFFFD]", "")) // strip left-to-right-operator/not defined
-                .map(s -> s.replaceAll("xxxxxxxxxx", "å"))
-                .map(s -> s.replaceAll("XXXXXXXXXX", "Å"))
+                .map(s -> s.replace("xxxxxxxxxx", "å"))
+                .map(s -> s.replace("XXXXXXXXXX", "Å"))
                 .collect(Collectors.joining());
     }
 

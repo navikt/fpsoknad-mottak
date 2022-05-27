@@ -15,12 +15,12 @@ import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
 import no.nav.security.token.support.core.api.Unprotected;
 
-@ProtectedRestController(OppslagController.OPPSLAG)
+@ProtectedRestController(OppslagController.OPPSLAG_PATH)
 public class OppslagController {
 
     public static final Logger LOG = LoggerFactory.getLogger(OppslagController.class);
 
-    public static final String OPPSLAG = "/oppslag";
+    public static final String OPPSLAG_PATH = "/oppslag";
 
     private final OppslagTjeneste oppslag;
     private final TokenUtil tokenUtil;

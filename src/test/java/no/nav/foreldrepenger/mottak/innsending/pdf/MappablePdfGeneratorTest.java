@@ -16,16 +16,23 @@ import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.endrings
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengeSøknad;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengesøknadMedEttIkkeOpplastedVedlegg;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.svp;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +47,6 @@ import org.springframework.web.client.RestTemplate;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.config.TestConfig;
@@ -87,43 +93,53 @@ class MappablePdfGeneratorTest {
     @MockBean
     TokenUtil tokenUtil;
 
+    private String ABSOLUTE_PATH;
+
     @BeforeEach
     void before() {
         when(arbeidsforholdTjeneste.hentArbeidsforhold()).thenReturn(ARB_FORHOLD);
+        var classLoader = getClass().getClassLoader();
+        var file = new File(classLoader.getResource(".").getFile());
+        ABSOLUTE_PATH = file.getAbsolutePath();
     }
 
     @Test
     void signature() {
-        assertTrue(hasPdfSignature(
-                gen.generer(foreldrepengeSøknad(), person(), INITIELL_FORELDREPENGER)));
+        assertTrue(hasPdfSignature(gen.generer(foreldrepengeSøknad(), person(), INITIELL_FORELDREPENGER)));
     }
 
     @Test
     void førstegangssøknad() throws Exception {
-        try (FileOutputStream fos = new FileOutputStream("søknad.pdf")) {
-            Søknad søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
+        var filNavn = ABSOLUTE_PATH +"/søknad.pdf";
+        try (var fos = new FileOutputStream(filNavn)) {
+            var søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
             søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
-            fos.write(gen.generer(søknad, person(), INITIELL_FORELDREPENGER));
+            assertDoesNotThrow(() -> fos.write(gen.generer(søknad, person(), INITIELL_FORELDREPENGER)));
         }
+        verifiserGenerertPDF(filNavn, 6, TILLEGGSOPPLYSNINGER);
     }
 
     @Test
     void foreldrepengerFortsettUtenArbeidsforholdVedExceptionFraTjeneste() throws Exception {
+        var filNavn = ABSOLUTE_PATH +"/søknad_exception_fra_arbeidsforholdtjeneste.pdf";
         when(arbeidsforholdTjeneste.hentArbeidsforhold()).thenThrow(RuntimeException.class);
-        try (FileOutputStream fos = new FileOutputStream("søknad_exception_fra_arbeidsforholdtjeneste.pdf")) {
-            Søknad søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
+        try (FileOutputStream fos = new FileOutputStream(filNavn)) {
+            var søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
             søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
-            fos.write(gen.generer(søknad, person(), INITIELL_FORELDREPENGER));
+            assertDoesNotThrow(() -> fos.write(gen.generer(søknad, person(), INITIELL_FORELDREPENGER)));
         }
+        verifiserGenerertPDF(filNavn, 5, TILLEGGSOPPLYSNINGER);
     }
 
     @Test
     void endring() throws Exception {
-        try (FileOutputStream fos = new FileOutputStream("endring.pdf")) {
-            Endringssøknad endringssøknad = endringssøknad(VEDLEGG1);
+        var filNavn = ABSOLUTE_PATH +"/endring.pdf";
+        try (FileOutputStream fos = new FileOutputStream(filNavn)) {
+            var endringssøknad = endringssøknad(VEDLEGG1);
             endringssøknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
-            fos.write(gen.generer(endringssøknad, person(), ENDRING_FORELDREPENGER));
+            assertDoesNotThrow(() -> fos.write(gen.generer(endringssøknad, person(), ENDRING_FORELDREPENGER)));
         }
+        verifiserGenerertPDF(filNavn, 3, TILLEGGSOPPLYSNINGER);
     }
 
     @Test
@@ -143,7 +159,8 @@ class MappablePdfGeneratorTest {
 
     @Test
     void infoskrivSplitter() throws Exception {
-        try (var fos = new FileOutputStream("infoskriv.pdf")) {
+        var filNavn = ABSOLUTE_PATH +"/infoskriv.pdf";
+        try (var fos = new FileOutputStream(filNavn)) {
             Søknad søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
             søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
             byte[] fullSøknadPdf = gen.generer(søknad, person(), INITIELL_FORELDREPENGER);
@@ -152,6 +169,18 @@ class MappablePdfGeneratorTest {
                 fos.write(infoskriv);
                 assertTrue(hasPdfSignature(infoskriv));
             }
+        }
+        verifiserGenerertPDF(filNavn, 1, "NAV trenger inntektsmelding så snart som mulig");
+    }
+
+    private void verifiserGenerertPDF(String filNavn, int antallSiderIPDFen, String forventetTekst) throws IOException {
+        try (var document = PDDocument.load(new FileInputStream(filNavn))) {
+            assertThat(document.getNumberOfPages()).isEqualTo(antallSiderIPDFen);
+            assertThat(document.isEncrypted()).isFalse();
+
+            PDFTextStripper pdfStripper = new PDFTextStripper();
+            String text = pdfStripper.getText(document);
+            assertThat(text).containsIgnoringWhitespaces(forventetTekst);
         }
     }
 

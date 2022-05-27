@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -185,6 +186,13 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
+    private static List<UtenlandskArbeidsforhold> sorterUtelandske(List<UtenlandskArbeidsforhold> arbeidsforhold) {
+        return safeStream(arbeidsforhold)
+            .filter(utenlandskArbeidsforhold -> utenlandskArbeidsforhold.getPeriode() != null)
+            .sorted(Comparator.comparing(utenlandskArbeidsforhold -> utenlandskArbeidsforhold.getPeriode().fom()))
+            .toList();
+    }
+
     private float renderVedlegg(List<Vedlegg> vedlegg, List<String> vedleggRefs, String keyIfAnnet,
             FontAwareCos cos,
             float y) throws IOException {
@@ -208,14 +216,14 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
-    public float arbeidsforholdOpptjening(List<EnkeltArbeidsforhold> arbeidsforhold, FontAwareCos cos, float y)
+    public float arbeidsforholdOpptjening(List<EnkeltArbeidsforhold> arbeidsforholdene, FontAwareCos cos, float y)
             throws IOException {
-        if (CollectionUtils.isEmpty(arbeidsforhold)) {
+        if (CollectionUtils.isEmpty(arbeidsforholdene)) {
             return y;
         }
         y -= renderer.addLeftHeading(txt("arbeidsforhold"), cos, y);
-        for (EnkeltArbeidsforhold forhold : sorterArbeidsforhold(arbeidsforhold)) {
-            y -= renderer.addLinesOfRegularText(INDENT, arbeidsforhold(forhold), cos, y);
+        for (EnkeltArbeidsforhold arbeidsforhold : arbeidsforholdene) {
+            y -= renderer.addLinesOfRegularText(INDENT, arbeidsforhold(arbeidsforhold), cos, y);
             y -= PdfElementRenderer.BLANK_LINE;
         }
         return y;
@@ -223,28 +231,6 @@ public class ForeldrepengeInfoRenderer {
 
     private static PDPage newPage() {
         return new PDPage(A4);
-    }
-
-    private static List<EnkeltArbeidsforhold> sorterArbeidsforhold(List<EnkeltArbeidsforhold> arbeidsforhold) {
-        arbeidsforhold.sort((o1, o2) -> {
-            if (o1.getFrom() != null && o2.getFrom() != null) {
-                return o1.getFrom().compareTo(o2.getFrom());
-            }
-            return 0;
-        });
-        return arbeidsforhold;
-    }
-
-    private static List<UtenlandskArbeidsforhold> sorterUtelandske(List<UtenlandskArbeidsforhold> arbeidsforhold) {
-        arbeidsforhold.sort((o1, o2) -> {
-            if (o1.getPeriode() != null && o2.getPeriode() != null
-                && o1.getPeriode().fom() != null
-                && o2.getPeriode().fom() != null) {
-                return o1.getPeriode().fom().compareTo(o2.getPeriode().fom());
-            }
-            return 0;
-        });
-        return arbeidsforhold;
     }
 
     public float frilans(Frilans frilans, FontAwareCos cos, float y) throws IOException {

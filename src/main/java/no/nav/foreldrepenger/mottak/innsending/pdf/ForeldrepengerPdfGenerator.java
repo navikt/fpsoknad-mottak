@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static java.util.Comparator.comparing;
 import static no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper.FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.FORELDREPENGER_OUTLINE;
 import static no.nav.foreldrepenger.mottak.util.CollectionUtil.tryOrEmpty;
@@ -56,14 +57,13 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
     public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         return switch (egenskap.getType()) {
             case INITIELL_FORELDREPENGER -> generer(søknad, søker);
-            case ENDRING_FORELDREPENGER -> generer(Endringssøknad.class.cast(søknad), søker);
+            case ENDRING_FORELDREPENGER -> generer((Endringssøknad) søknad, søker);
             default -> throw new UnexpectedInputException("Ukjent type " + egenskap.getType() + " for søknad, kan ikke lage PDF");
         };
-
     }
 
     private byte[] generer(Søknad søknad, Person søker) {
-        var stønad = Foreldrepenger.class.cast(søknad.getYtelse());
+        var stønad = (Foreldrepenger) søknad.getYtelse();
         float yTop = STARTY;
 
         try (var doc = new FontAwarePdfDocument();
@@ -251,6 +251,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
     private List<EnkeltArbeidsforhold> aktiveArbeidsforhold(LocalDate relasjonsdato) {
         return tryOrEmpty(arbeidsforhold::hentArbeidsforhold).stream()
                 .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsdato)))
+                .sorted(comparing(EnkeltArbeidsforhold::getFrom))
                 .toList();
     }
 

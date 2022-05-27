@@ -134,8 +134,8 @@ class FPFordelTest {
     private FordelSøknadSender sender() {
         var mottakConfig = new MottakConfiguration();
         var jalla1 = new PdfElementRenderer();
-        var jalla2 = new SøknadTextFormatter(mottakConfig.landkoder(),
-                mottakConfig.kvitteringstekster());
+        var jalla2 = new SøknadTextFormatter(mottakConfig.landkoderSource(),
+                mottakConfig.kvitteringsteksterSource());
         var jalla = new ForeldrepengeInfoRenderer(jalla1, jalla2);
         var infoskrivRenderer = new InfoskrivRenderer(jalla1, jalla2);
         var fp = new ForeldrepengerPdfGenerator(oppslag, arbeidsforhold, jalla,
