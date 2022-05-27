@@ -22,14 +22,15 @@ record InnsendingHendelse(AktørId aktørId,
 
     public InnsendingHendelse(AktørId aktørId,
                               Fødselsnummer fnr,
-                              String dialogId,
-                              Konvolutt konvolutt,
                               String journalId,
                               String referanseId,
-                              LocalDate førsteBehandlingsdato,
-                              String saksnummer) {
-        this(aktørId, fnr, journalId, referanseId, dialogId, saksnummer, konvolutt.getType(), konvolutt.getOpplastedeVedlegg(),
-            konvolutt.getIkkeOpplastedeVedlegg(), konvolutt.getOpprettet(), førsteBehandlingsdato);
+                              String dialogId,
+                              String saksnummer,
+                              Konvolutt konvolutt,
+                              LocalDate førsteBehandlingsdato) {
+        this(aktørId, fnr, journalId, referanseId, dialogId, saksnummer,
+            konvolutt.getType(), konvolutt.getOpplastedeVedlegg(), konvolutt.getIkkeOpplastedeVedlegg(),
+            konvolutt.getOpprettet(), førsteBehandlingsdato);
     }
 
 

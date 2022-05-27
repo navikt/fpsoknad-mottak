@@ -61,7 +61,7 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
     }
 
     UttaksplanDTO uttaksplan(String saksnummer) {
-        LOG.trace("Henter uttaksplan for sak {}", saksnummer);
+        LOG.trace("Henter uttaksplan");
         return getForObject(config.uttaksplanURI(saksnummer), UttaksplanDTO.class);
     }
 
@@ -76,13 +76,13 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
     }
 
     BehandlingDTO behandling(LenkeDTO lenke) {
-        return hent(lenke, BehandlingDTO.class);
+        return hent(lenke);
     }
 
-    private <T> T hent(LenkeDTO lenke, Class<T> clazz) {
+    private BehandlingDTO hent(LenkeDTO lenke) {
         return Optional.ofNullable(lenke)
             .map(LenkeDTO::href)
-            .map(l -> getForObject(config.createLink(l), clazz))
+            .map(l -> getForObject(config.createLink(l), BehandlingDTO.class))
             .orElse(null);
     }
 

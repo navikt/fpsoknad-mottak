@@ -9,7 +9,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -252,7 +251,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
     private List<EnkeltArbeidsforhold> aktiveArbeidsforhold(LocalDate relasjonsdato) {
         return tryOrEmpty(arbeidsforhold::hentArbeidsforhold).stream()
                 .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsdato)))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private byte[] generer(Endringssøknad søknad, Person søker) {

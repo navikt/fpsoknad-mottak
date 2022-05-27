@@ -185,8 +185,8 @@ class FPFordelTest {
 
     @Test
     void pollTwiceThenGosys() {
-        when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class))).thenReturn(pollReceipt200,
-                goysReceipt);
+        when(restOperations.getForEntity(FPFORDELPOLLURI, FordelKvittering.class))
+            .thenReturn(pollReceipt200, goysReceipt);
         Kvittering kvittering = sender.søk(foreldrepengeSøknad(), person(),
                SøknadEgenskap.of(SøknadType.INITIELL_FORELDREPENGER));
         assertNull(kvittering.getSaksNr());
@@ -196,8 +196,8 @@ class FPFordelTest {
 
     @Test
     void poll3GivesUp() {
-        when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class))).thenReturn(pollReceipt200,
-                pollReceipt200, pollReceipt200);
+        when(restOperations.getForEntity(FPFORDELPOLLURI, FordelKvittering.class))
+            .thenReturn(pollReceipt200, pollReceipt200, pollReceipt200);
         Kvittering kvittering = sender.søk(foreldrepengeSøknad(), person(),
                 SøknadEgenskap.of(SøknadType.INITIELL_FORELDREPENGER));
         assertNull(kvittering.getSaksNr());
@@ -207,10 +207,8 @@ class FPFordelTest {
 
     @Test
     void pollOnceThenOK() {
-        var value = new Kvittering(null, "42", null, null);
-
-        when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class))).thenReturn(pollReceipt200,
-                fordeltReceipt);
+        when(restOperations.getForEntity(FPFORDELPOLLURI, FordelKvittering.class))
+            .thenReturn(pollReceipt200, fordeltReceipt);
         Kvittering kvittering = sender.søk(foreldrepengeSøknad(), person(),
                 SøknadEgenskap.of(SøknadType.INITIELL_FORELDREPENGER));
         assertEquals(kvittering.getSaksNr(), SAKSNR);
@@ -218,8 +216,8 @@ class FPFordelTest {
 
     @Test
     void pollNoLocation() {
-        when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class))).thenReturn(pollReceipt202,
-                pollReceiptNoLocation());
+        when(restOperations.getForEntity(FPFORDELPOLLURI, FordelKvittering.class))
+            .thenReturn(pollReceipt202, pollReceiptNoLocation());
         sender.søk(foreldrepengeSøknad(), person(), SøknadEgenskap.of(SøknadType.INITIELL_FORELDREPENGER));
         verify(restOperations).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FordelKvittering.class));
     }

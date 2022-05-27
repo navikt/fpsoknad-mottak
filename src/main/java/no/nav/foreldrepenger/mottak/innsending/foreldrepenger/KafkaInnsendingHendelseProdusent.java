@@ -46,8 +46,8 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
     public void publiser(Fødselsnummer fnr, FordelResultat kvittering, String dialogId, Konvolutt konvolutt) {
         var callId = callId();
         var førsteBehandlingsdato = førsteInntektsmeldingDag(konvolutt).orElse(null);
-        var h = new InnsendingHendelse(oppslag.aktørId(), fnr, dialogId, konvolutt, kvittering.journalId(),
-            callId, førsteBehandlingsdato, kvittering.saksnummer());
+        var h = new InnsendingHendelse(oppslag.aktørId(), fnr, kvittering.journalId(), callId, dialogId,
+            kvittering.saksnummer(), konvolutt, førsteBehandlingsdato);
         LOG.info("Publiserer hendelse {} på topic {}", h, topic);
         send(MessageBuilder
                 .withPayload(mapper.writeValueAsString(h))

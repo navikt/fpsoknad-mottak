@@ -133,7 +133,7 @@ public class Konvolutt {
     }
 
     private static Predicate<? super HttpEntity<?>> mediaType(String type) {
-        return e -> e.getHeaders().getFirst(CONTENT_TYPE).equals(type);
+        return e -> type.equals(e.getHeaders().getFirst(CONTENT_TYPE));
     }
 
     @Override

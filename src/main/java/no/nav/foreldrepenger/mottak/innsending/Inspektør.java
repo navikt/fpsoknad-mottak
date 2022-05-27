@@ -18,6 +18,9 @@ import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 
 final class Inspektør {
 
+    private Inspektør() {
+    }
+
     static SøknadEgenskap inspiser(Søknad søknad) {
         Ytelse ytelse = søknad.getYtelse();
         if (ytelse instanceof Foreldrepenger) {
@@ -34,9 +37,9 @@ final class Inspektør {
 
     static SøknadEgenskap inspiser(Ettersending ettersending) {
         return switch (ettersending.type()) {
-            case engangsstønad -> ETTERSENDING_ENGANGSSTØNAD;
-            case foreldrepenger -> ETTERSENDING_FORELDREPENGER;
-            case svangerskapspenger -> ETTERSENDING_SVANGERSKAPSPENGER;
+            case FORELDREPENGER -> ETTERSENDING_FORELDREPENGER;
+            case ENGANGSSTØNAD -> ETTERSENDING_ENGANGSSTØNAD;
+            case SVANGERSKAPSPENGER -> ETTERSENDING_SVANGERSKAPSPENGER;
         };
     }
 }

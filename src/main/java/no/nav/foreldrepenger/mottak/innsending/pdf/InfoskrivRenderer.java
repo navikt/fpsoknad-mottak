@@ -16,7 +16,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.slf4j.Logger;
@@ -150,7 +149,7 @@ public class InfoskrivRenderer {
                 .filter(a -> virksomhetsnummer.contains(a.getArbeidsgiverId()))
                 .map(EnkeltArbeidsforhold::getArbeidsgiverNavn)
                 .map(s -> txt("arbeidsgiver", s))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private float renderFerieArbeidsperioder(List<UtsettelsesPeriode> ferieArbeidsperioder,
@@ -220,7 +219,7 @@ public class InfoskrivRenderer {
                 .filter(this::isGradertPeriode)
                 .map(GradertUttaksPeriode.class::cast)
                 .filter(GradertUttaksPeriode::isErArbeidstaker)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private boolean isGradertPeriode(LukketPeriodeMedVedlegg periode) {
@@ -231,12 +230,12 @@ public class InfoskrivRenderer {
         return periode.stream()
                 .filter(this::isFerieOrArbeid)
                 .map(UtsettelsesPeriode.class::cast)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private boolean isFerieOrArbeid(LukketPeriodeMedVedlegg periode) {
         if (periode instanceof UtsettelsesPeriode) {
-            UtsettelsesÅrsak årsak = UtsettelsesPeriode.class.cast(periode).getÅrsak();
+            UtsettelsesÅrsak årsak = ((UtsettelsesPeriode) periode).getÅrsak();
             return årsak.equals(LOVBESTEMT_FERIE) || årsak.equals(ARBEID);
         }
         return false;

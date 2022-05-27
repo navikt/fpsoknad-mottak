@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,6 @@ import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.FremtidigFøds
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Fødsel;
 import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.common.util.Pair;
 import no.nav.foreldrepenger.common.util.StreamUtil;
 import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.Blokk;
@@ -75,7 +74,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
     }
 
     private List<TemaBlokk> lagOverskrifter(Søknad søknad) {
-        var stønad = Engangsstønad.class.cast(søknad.getYtelse());
+        var stønad = (Engangsstønad) søknad.getYtelse();
         var medlemsskap = stønad.medlemsskap();
         List<TemaBlokk> grupper = new ArrayList<>();
 
@@ -111,8 +110,8 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
 
     private static List<TabellRad> tabellRader(List<Pair<String, String>> rader) {
         return rader.stream()
-                .map(r -> new TabellRad(r.getFirst(), r.getSecond(), null))
-                .collect(Collectors.toList());
+                .map(r -> new TabellRad(r.getLeft(), r.getRight(), null))
+                .toList();
     }
 
     private String fødselssted(Medlemsskap medlemsskap, Engangsstønad stønad) {
@@ -122,7 +121,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
                     stønad.relasjonTilBarn().getAntallBarn() > 1 ? "a" : "et");
         }
 
-        Fødsel fødsel = Fødsel.class.cast(stønad.relasjonTilBarn());
+        Fødsel fødsel = (Fødsel) stønad.relasjonTilBarn();
         var land = stønad.medlemsskap().landVedDato(fødsel.getFødselsdato().get(0));
         return textFormatter.fromMessageSource("fødtei",
                 textFormatter.countryName(land),
@@ -148,7 +147,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
     }
 
     private List<Blokk> adopsjon(Engangsstønad stønad, Kjønn kjønn, List<Vedlegg> v) {
-        var a = Adopsjon.class.cast(stønad.relasjonTilBarn());
+        var a = (Adopsjon) stønad.relasjonTilBarn();
         var blokker = new ArrayList<Blokk>();
         blokker.add(new FritekstBlokk(txt("adopsjonsdato", textFormatter.dato(a.getOmsorgsovertakelsesdato()))));
         blokker.add(new FritekstBlokk(txt("fødselsdato", textFormatter.datoer(a.getFødselsdato()))));
@@ -165,14 +164,14 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
     }
 
     private List<Blokk> født(Engangsstønad stønad) {
-        var ff = Fødsel.class.cast(stønad.relasjonTilBarn());
+        var ff = (Fødsel) stønad.relasjonTilBarn();
         var tekst = txt("gjelderfødselsdato", stønad.relasjonTilBarn().getAntallBarn(),
                 textFormatter.datoer(ff.getFødselsdato()));
         return List.of(new FritekstBlokk(tekst));
     }
 
     private List<Blokk> fødsel(Søknad søknad, Engangsstønad stønad) {
-        var ff = FremtidigFødsel.class.cast(stønad.relasjonTilBarn());
+        var ff = (FremtidigFødsel) stønad.relasjonTilBarn();
         var antallBarn = stønad.relasjonTilBarn().getAntallBarn();
         var termindato = textFormatter.dato(ff.getTerminDato());
         var barnInfo = new FritekstBlokk(txt("gjeldertermindato", antallBarn, termindato));

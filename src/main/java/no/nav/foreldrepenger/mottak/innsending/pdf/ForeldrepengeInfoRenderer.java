@@ -392,12 +392,12 @@ public class ForeldrepengeInfoRenderer {
             } else if (periode instanceof UtsettelsesPeriode) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                var x = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), rolle, vedlegg,
+                var x = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), vedlegg,
                         scratchcos, STARTY - 190);
                 var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), rolle, vedlegg,
+                    y = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), vedlegg,
                             cos,
                             y);
                 } else {
@@ -460,31 +460,25 @@ public class ForeldrepengeInfoRenderer {
         return attributter;
     }
 
-    public float renderUtsettelsesPeriode(UtsettelsesPeriode utsettelse, BrukerRolle rolle, List<Vedlegg> vedlegg,
-            FontAwareCos cos, float y) throws IOException {
+    public float renderUtsettelsesPeriode(UtsettelsesPeriode utsettelse, List<Vedlegg> vedlegg,
+                                          FontAwareCos cos, float y) throws IOException {
         y -= renderer.addBulletPoint(txt("utsettelse"), cos, y);
-        y -= renderer.addLinesOfRegularText(INDENT, uttaksData(utsettelse, rolle), cos, y);
+        y -= renderer.addLinesOfRegularText(INDENT, uttaksData(utsettelse), cos, y);
         y = renderVedlegg(vedlegg, utsettelse.getVedlegg(), DOKUMENTASJON, cos, y);
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
-    private List<String> uttaksData(UtsettelsesPeriode utsettelse, BrukerRolle rolle) {
+    private List<String> uttaksData(UtsettelsesPeriode utsettelse) {
         List<String> attributter = new ArrayList<>();
         addIfSet(attributter, "fom", utsettelse.getFom());
         addIfSet(attributter, "tom", utsettelse.getTom());
         addIfSet(attributter, DAGER, String.valueOf(utsettelse.dager()));
-        if (utsettelse.getUttaksperiodeType() != null) {
-            attributter
-                    .add(txt(UTTAKSPERIODETYPE, kontoTypeForRolle(utsettelse.getUttaksperiodeType(), rolle)));
-        }
 
-        if (utsettelse.getÅrsak() != null) {
-            if (utsettelse.getÅrsak().getKey() != null) {
-                attributter.add(txt("utsettelsesårsak", txt(utsettelse.getÅrsak().getKey())));
-            } else {
-                attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
-            }
+        if (utsettelse.getÅrsak().getKey() != null) {
+            attributter.add(txt("utsettelsesårsak", txt(utsettelse.getÅrsak().getKey())));
+        } else {
+            attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
         }
 
         // attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
