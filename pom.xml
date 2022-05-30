@@ -32,7 +32,7 @@
         <pdfbox.version>2.0.26</pdfbox.version>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
-        <springdoc.version>1.6.8</springdoc.version>
+        <springdoc.version>1.6.9</springdoc.version>
         <mottak-felles.version>0.8.8</mottak-felles.version>
     </properties>
     <scm>
