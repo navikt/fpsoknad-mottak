@@ -52,11 +52,11 @@ class PdfElementRendererTest {
         String dirtyText = "Left-to-right override strippes \u202D helt ut av teksten" +
                 "Tab\tog andre blanke tegn\u00A0erstattes med space" +
                 "ikke-eksisterende \u2f8a glypher erstattes med space" +
-                "Albert Åberg og/å Prøysen beholder sine nordiske tegn, mens replacement character fjernes\uFFFD";
+                "Albert Åberg og/å Prøysen beholder sine nordiske tegn, mens replacement character fjernes også\uFFFD";
         String cleanText = "Left-to-right override strippes  helt ut av teksten" +
                 "Tab og andre blanke tegn erstattes med space" +
                 "ikke-eksisterende  glypher erstattes med space" +
-                "Albert Åberg og/å Prøysen beholder sine nordiske tegn, mens replacement character fjernes";
+                "Albert Åberg og/å Prøysen beholder sine nordiske tegn, mens replacement character fjernes også";
 
         assertEquals(cleanText, renderer.normalizeAndRemoveNonencodableChars(dirtyText, font));
     }

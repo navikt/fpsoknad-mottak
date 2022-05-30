@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.common.domain.felles.EttersendingsType.foreldrepenger;
 import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.person;
@@ -49,6 +48,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
+import no.nav.foreldrepenger.common.domain.felles.EttersendingsType;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
@@ -142,7 +142,7 @@ class TestFPFordelSerialization {
 
     @Test
     void testKonvoluttEttersending() {
-        var es = new Ettersending("42", foreldrepenger, List.of(VEDLEGG1, VEDLEGG2), null);
+        var es = new Ettersending("42", EttersendingsType.FORELDREPENGER, List.of(VEDLEGG1, VEDLEGG2), null);
         var konvolutt = konvoluttGenerator.generer(es,
                 person(), SøknadEgenskap.ETTERSENDING_FORELDREPENGER);
         assertNotNull(konvolutt.getMetadata());

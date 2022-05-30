@@ -19,26 +19,10 @@ import no.nav.foreldrepenger.mottak.innsyn.dto.UttaksplanDTO;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = JacksonConfiguration.class)
-public class UttaksplanTest {
+class UttaksplanTest {
 
     @Autowired
     private ObjectMapper mapper;
-
-    String test0 = "{\n" +
-            "  \"termindato\" : \"2020-05-19\",\n" +
-            "  \"fødselsdato\" : \"2020-05-19\",\n" +
-            "  \"omsorgsovertakelsesdato\" : \"2020-05-19\",\n" +
-            "  \"dekningsgrad\" : \"GRAD100\",\n" +
-            "  \"antallBarn\" : 1,\n" +
-            "  \"søkerErFarEllerMedmor\" : false,\n" +
-            "  \"morErAleneOmOmsorg\" : false,\n" +
-            "  \"morHarRett\" : false,\n" +
-            "  \"morErUfør\" : false,\n" +
-            "  \"farMedmorErAleneOmOmsorg\" : false,\n" +
-            "  \"farMedmorHarRett\" : false,\n" +
-            "  \"annenForelderErInformert\" : false,\n" +
-            "  \"uttaksPerioder\" : [ ]\n" +
-            "}";
 
     String test1 = "{\n" +
             "  \"termindato\" : \"2020-05-19\",\n" +
@@ -74,11 +58,9 @@ public class UttaksplanTest {
     @Test
     public void testUttaksplanDTO() throws Exception {
         var dto = new UttaksplanDTO(LocalDate.of(2020, 5, 19), LocalDate.of(2020, 5, 19), LocalDate.of(2020, 5, 19),
-                Dekningsgrad.GRAD100,
+                Dekningsgrad.HUNDRE,
                 1, false,
                 false, false, false, false, false, false, Collections.emptyList());
-        var dto0 = mapper.readValue(test0, UttaksplanDTO.class);
-        assertEquals(dto, dto0);
         var dto1 = mapper.readValue(test1, UttaksplanDTO.class);
         assertEquals(dto, dto1);
         var dto2 = mapper.readValue(test2, UttaksplanDTO.class);

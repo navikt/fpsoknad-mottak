@@ -11,11 +11,11 @@ import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 
 public abstract class AbstractWebClientConnection implements RetryAware, PingEndpointAware {
     protected final WebClient webClient;
-    protected final AbstractConfig cfg;
+    protected final AbstractConfig config;
 
-    protected AbstractWebClientConnection(WebClient webClient, AbstractConfig cfg) {
+    protected AbstractWebClientConnection(WebClient webClient, AbstractConfig config) {
         this.webClient = webClient;
-        this.cfg = cfg;
+        this.config = config;
     }
 
     @Override
@@ -31,6 +31,6 @@ public abstract class AbstractWebClientConnection implements RetryAware, PingEnd
 
     @Override
     public URI pingEndpoint() {
-        return cfg.pingEndpoint();
+        return config.pingEndpoint();
     }
 }

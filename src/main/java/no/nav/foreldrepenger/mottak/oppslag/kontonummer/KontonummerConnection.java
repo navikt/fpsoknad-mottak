@@ -27,11 +27,11 @@ public class KontonummerConnection extends AbstractWebClientConnection {
         LOG.info("Henter kontonummer");
         return webClient
             .get()
-            .uri(cfg.getBaseUri())
+            .uri(config.getBaseUri())
             .accept(APPLICATION_JSON)
             .retrieve()
             .bodyToMono(Bankkonto.class)
-            .retryWhen(retrySpec(cfg.getBaseUri().toString()))
+            .retryWhen(retrySpec(config.getBaseUri().toString()))
             .block();
     }
 

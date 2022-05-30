@@ -33,7 +33,7 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
         <springdoc.version>1.6.8</springdoc.version>
-        <mottak-felles.version>0.8.7</mottak-felles.version>
+        <mottak-felles.version>0.8.8</mottak-felles.version>
     </properties>
     <scm>
         <connection>scm:git:https://github.com/navikt/fpsoknad-mottak.git</connection>

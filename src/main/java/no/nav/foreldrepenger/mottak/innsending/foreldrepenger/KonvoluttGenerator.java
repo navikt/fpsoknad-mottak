@@ -107,7 +107,7 @@ public class KonvoluttGenerator {
         } else {
             LOG.info("Legger til vedlegg av type {} og størrelse {}", vedlegg.getDokumentType(),
                     vedlegg.getStørrelse());
-            builder.part(VEDLEGG, vedlegg.getVedlegg(), APPLICATION_PDF)
+            builder.part(VEDLEGG, vedlegg.getInnhold(), APPLICATION_PDF)
                     .headers(headers(vedlegg, contentId));
         }
     }

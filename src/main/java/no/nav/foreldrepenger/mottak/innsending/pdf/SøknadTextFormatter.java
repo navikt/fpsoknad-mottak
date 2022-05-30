@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -28,7 +29,6 @@ import no.nav.foreldrepenger.common.domain.Navn;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.felles.medlemskap.Utenlandsopphold;
 import no.nav.foreldrepenger.common.domain.felles.ÅpenPeriode;
-import no.nav.foreldrepenger.common.util.Pair;
 
 @Component
 public class SøknadTextFormatter {
@@ -118,7 +118,7 @@ public class SøknadTextFormatter {
     }
 
     public String capitalize(String orig) {
-        String lowerWithSpace = orig.replaceAll("_", " ").toLowerCase();
+        String lowerWithSpace = orig.replace("_", " ").toLowerCase();
         return lowerWithSpace.substring(0, 1).toUpperCase() + lowerWithSpace.substring(1);
     }
 

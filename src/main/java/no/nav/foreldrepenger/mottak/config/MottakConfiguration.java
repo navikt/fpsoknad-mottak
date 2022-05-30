@@ -14,7 +14,7 @@ public class MottakConfiguration {
 
     @Bean
     @Qualifier(LANDKODER)
-    public MessageSource landkoder() {
+    public MessageSource landkoderSource() {
         var messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename(LANDKODER);
         return messageSource;
@@ -22,7 +22,7 @@ public class MottakConfiguration {
 
     @Bean
     @Qualifier(KVITTERINGSTEKSTER)
-    public MessageSource kvitteringstekster() {
+    public MessageSource kvitteringsteksterSource() {
         var messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename(KVITTERINGSTEKSTER);
         return messageSource;

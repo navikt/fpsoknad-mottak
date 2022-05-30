@@ -14,16 +14,16 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentBestilling;
 @Component
 public class PdfGeneratorConnection extends AbstractRestConnection implements PingEndpointAware {
     private static final Logger LOG = LoggerFactory.getLogger(PdfGeneratorConnection.class);
-    private final PdfGeneratorConfig config;
+    private final PdfGeneratorConfig cfg;
 
-    public PdfGeneratorConnection(RestOperations operations, PdfGeneratorConfig config) {
+    public PdfGeneratorConnection(RestOperations operations, PdfGeneratorConfig cfg) {
         super(operations);
-        this.config = config;
+        this.cfg = cfg;
     }
 
     byte[] genererPdf(DokumentBestilling dto) {
-        if (config.isEnabled()) {
-            return postForObject(config.pdfUri(), dto, byte[].class);
+        if (cfg.isEnabled()) {
+            return postForObject(cfg.pdfUri(), dto, byte[].class);
         }
         LOG.info("PdfGenerator er ikke aktivert");
         return new byte[0];
@@ -36,16 +36,16 @@ public class PdfGeneratorConnection extends AbstractRestConnection implements Pi
 
     @Override
     public URI pingEndpoint() {
-        return config.pingUri();
+        return cfg.pingUri();
     }
 
     @Override
     public String name() {
-        return config.name();
+        return cfg.name();
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[config=" + config + "]";
+        return getClass().getSimpleName() + "[config=" + cfg + "]";
     }
 }

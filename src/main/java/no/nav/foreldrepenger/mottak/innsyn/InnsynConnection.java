@@ -24,11 +24,11 @@ import no.nav.foreldrepenger.mottak.innsyn.dto.UttaksplanDTO;
 @Component
 public class InnsynConnection extends AbstractRestConnection implements PingEndpointAware {
     private static final Logger LOG = LoggerFactory.getLogger(InnsynConnection.class);
-    private final InnsynConfig config;
+    private final InnsynConfig cfg;
 
-    public InnsynConnection(RestOperations restOperations, InnsynConfig config) {
+    public InnsynConnection(RestOperations restOperations, InnsynConfig cfg) {
         super(restOperations);
-        this.config = config;
+        this.cfg = cfg;
     }
 
     @Override
@@ -38,37 +38,37 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
 
     @Override
     public URI pingEndpoint() {
-        return config.pingEndpoint();
+        return cfg.pingEndpoint();
     }
 
     @Override
     public String name() {
-        return config.name();
+        return cfg.name();
     }
 
     List<SakDTO> saker(String aktørId) {
         LOG.trace("Henter saker for {}", aktørId);
         return Optional.ofNullable(
-                getForObject(config.sakURI(aktørId), SakDTO[].class))
+                getForObject(cfg.sakURI(aktørId), SakDTO[].class))
                 .map(Arrays::asList)
                 .orElse(emptyList());
     }
 
     Saker sakerV2(String aktørId) {
         LOG.trace("Henter sakerV2 for {}", aktørId);
-        return Optional.ofNullable(getForObject(config.sakV2URI(aktørId), Saker.class))
+        return Optional.ofNullable(getForObject(cfg.sakV2URI(aktørId), Saker.class))
             .orElseThrow();
     }
 
     UttaksplanDTO uttaksplan(String saksnummer) {
-        LOG.trace("Henter uttaksplan for sak {}", saksnummer);
-        return getForObject(config.uttaksplanURI(saksnummer), UttaksplanDTO.class);
+        LOG.trace("Henter uttaksplan");
+        return getForObject(cfg.uttaksplanURI(saksnummer), UttaksplanDTO.class);
     }
 
     UttaksplanDTO uttaksplan(AktørId aktørId, AktørId annenPart) {
         LOG.trace("Henter uttaksplan for {} med annen part {}", aktørId, annenPart);
         try {
-            return getForObject(config.uttaksplanURI(aktørId, annenPart), UttaksplanDTO.class);
+            return getForObject(cfg.uttaksplanURI(aktørId, annenPart), UttaksplanDTO.class);
         } catch (Exception e) {
             LOG.warn("Kunne ikke hente uttaksplan for annen part {}", annenPart, e);
             return null;
@@ -76,19 +76,19 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
     }
 
     BehandlingDTO behandling(LenkeDTO lenke) {
-        return hent(lenke, BehandlingDTO.class);
+        return hent(lenke);
     }
 
-    private <T> T hent(LenkeDTO lenke, Class<T> clazz) {
+    private BehandlingDTO hent(LenkeDTO lenke) {
         return Optional.ofNullable(lenke)
             .map(LenkeDTO::href)
-            .map(l -> getForObject(config.createLink(l), clazz))
+            .map(l -> getForObject(cfg.createLink(l), BehandlingDTO.class))
             .orElse(null);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [config=" + config + "]";
+        return getClass().getSimpleName() + " [config=" + cfg + "]";
     }
 
 }

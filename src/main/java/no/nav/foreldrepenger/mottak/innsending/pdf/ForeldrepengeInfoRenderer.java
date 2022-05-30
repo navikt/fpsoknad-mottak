@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -185,6 +186,12 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
+    private static List<UtenlandskArbeidsforhold> sorterUtelandske(List<UtenlandskArbeidsforhold> arbeidsforhold) {
+        return safeStream(arbeidsforhold)
+            .sorted(Comparator.comparing(utenlandskArbeidsforhold -> utenlandskArbeidsforhold.getPeriode().fom()))
+            .toList();
+    }
+
     private float renderVedlegg(List<Vedlegg> vedlegg, List<String> vedleggRefs, String keyIfAnnet,
             FontAwareCos cos,
             float y) throws IOException {
@@ -208,14 +215,14 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
-    public float arbeidsforholdOpptjening(List<EnkeltArbeidsforhold> arbeidsforhold, FontAwareCos cos, float y)
+    public float arbeidsforholdOpptjening(List<EnkeltArbeidsforhold> arbeidsforholdene, FontAwareCos cos, float y)
             throws IOException {
-        if (CollectionUtils.isEmpty(arbeidsforhold)) {
+        if (CollectionUtils.isEmpty(arbeidsforholdene)) {
             return y;
         }
         y -= renderer.addLeftHeading(txt("arbeidsforhold"), cos, y);
-        for (EnkeltArbeidsforhold forhold : sorterArbeidsforhold(arbeidsforhold)) {
-            y -= renderer.addLinesOfRegularText(INDENT, arbeidsforhold(forhold), cos, y);
+        for (EnkeltArbeidsforhold arbeidsforhold : arbeidsforholdene) {
+            y -= renderer.addLinesOfRegularText(INDENT, arbeidsforhold(arbeidsforhold), cos, y);
             y -= PdfElementRenderer.BLANK_LINE;
         }
         return y;
@@ -223,28 +230,6 @@ public class ForeldrepengeInfoRenderer {
 
     private static PDPage newPage() {
         return new PDPage(A4);
-    }
-
-    private static List<EnkeltArbeidsforhold> sorterArbeidsforhold(List<EnkeltArbeidsforhold> arbeidsforhold) {
-        arbeidsforhold.sort((o1, o2) -> {
-            if (o1.getFrom() != null && o2.getFrom() != null) {
-                return o1.getFrom().compareTo(o2.getFrom());
-            }
-            return 0;
-        });
-        return arbeidsforhold;
-    }
-
-    private static List<UtenlandskArbeidsforhold> sorterUtelandske(List<UtenlandskArbeidsforhold> arbeidsforhold) {
-        arbeidsforhold.sort((o1, o2) -> {
-            if (o1.getPeriode() != null && o2.getPeriode() != null
-                && o1.getPeriode().fom() != null
-                && o2.getPeriode().fom() != null) {
-                return o1.getPeriode().fom().compareTo(o2.getPeriode().fom());
-            }
-            return 0;
-        });
-        return arbeidsforhold;
     }
 
     public float frilans(Frilans frilans, FontAwareCos cos, float y) throws IOException {
@@ -392,12 +377,12 @@ public class ForeldrepengeInfoRenderer {
             } else if (periode instanceof UtsettelsesPeriode) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                var x = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), rolle, vedlegg,
+                var x = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), vedlegg,
                         scratchcos, STARTY - 190);
                 var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), rolle, vedlegg,
+                    y = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), vedlegg,
                             cos,
                             y);
                 } else {
@@ -460,31 +445,25 @@ public class ForeldrepengeInfoRenderer {
         return attributter;
     }
 
-    public float renderUtsettelsesPeriode(UtsettelsesPeriode utsettelse, BrukerRolle rolle, List<Vedlegg> vedlegg,
-            FontAwareCos cos, float y) throws IOException {
+    public float renderUtsettelsesPeriode(UtsettelsesPeriode utsettelse, List<Vedlegg> vedlegg,
+                                          FontAwareCos cos, float y) throws IOException {
         y -= renderer.addBulletPoint(txt("utsettelse"), cos, y);
-        y -= renderer.addLinesOfRegularText(INDENT, uttaksData(utsettelse, rolle), cos, y);
+        y -= renderer.addLinesOfRegularText(INDENT, uttaksData(utsettelse), cos, y);
         y = renderVedlegg(vedlegg, utsettelse.getVedlegg(), DOKUMENTASJON, cos, y);
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
-    private List<String> uttaksData(UtsettelsesPeriode utsettelse, BrukerRolle rolle) {
+    private List<String> uttaksData(UtsettelsesPeriode utsettelse) {
         List<String> attributter = new ArrayList<>();
         addIfSet(attributter, "fom", utsettelse.getFom());
         addIfSet(attributter, "tom", utsettelse.getTom());
         addIfSet(attributter, DAGER, String.valueOf(utsettelse.dager()));
-        if (utsettelse.getUttaksperiodeType() != null) {
-            attributter
-                    .add(txt(UTTAKSPERIODETYPE, kontoTypeForRolle(utsettelse.getUttaksperiodeType(), rolle)));
-        }
 
-        if (utsettelse.getÅrsak() != null) {
-            if (utsettelse.getÅrsak().getKey() != null) {
-                attributter.add(txt("utsettelsesårsak", txt(utsettelse.getÅrsak().getKey())));
-            } else {
-                attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
-            }
+        if (utsettelse.getÅrsak().getKey() != null) {
+            attributter.add(txt("utsettelsesårsak", txt(utsettelse.getÅrsak().getKey())));
+        } else {
+            attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
         }
 
         // attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
