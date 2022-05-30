@@ -29,7 +29,6 @@ import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.GradertUttaksPeriode;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Component
@@ -55,7 +54,7 @@ public class InfoskrivRenderer {
 
         var navn = textFormatter.navn(søker);
         var datoInntektsmelding = søknad.getFørsteInntektsmeldingDag();
-        var ytelse = Foreldrepenger.class.cast(søknad.getYtelse());
+        var ytelse = (Foreldrepenger) søknad.getYtelse();
 
         var cos = førstesideInfoskriv(doc, cosOriginal);
 
@@ -234,8 +233,8 @@ public class InfoskrivRenderer {
     }
 
     private boolean isFerieOrArbeid(LukketPeriodeMedVedlegg periode) {
-        if (periode instanceof UtsettelsesPeriode) {
-            UtsettelsesÅrsak årsak = ((UtsettelsesPeriode) periode).getÅrsak();
+        if (periode instanceof UtsettelsesPeriode utsettelsesPeriode) {
+            var årsak = utsettelsesPeriode.getÅrsak();
             return årsak.equals(LOVBESTEMT_FERIE) || årsak.equals(ARBEID);
         }
         return false;

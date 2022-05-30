@@ -188,7 +188,6 @@ public class ForeldrepengeInfoRenderer {
 
     private static List<UtenlandskArbeidsforhold> sorterUtelandske(List<UtenlandskArbeidsforhold> arbeidsforhold) {
         return safeStream(arbeidsforhold)
-            .filter(utenlandskArbeidsforhold -> utenlandskArbeidsforhold.getPeriode() != null)
             .sorted(Comparator.comparing(utenlandskArbeidsforhold -> utenlandskArbeidsforhold.getPeriode().fom()))
             .toList();
     }
