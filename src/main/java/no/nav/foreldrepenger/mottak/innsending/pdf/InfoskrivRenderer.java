@@ -16,7 +16,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.function.Predicate;
 
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.*;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.TmpFørsteinntektsmeldingdagUtil;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +29,6 @@ import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.GradertUttaksPeriode;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Component
@@ -47,13 +47,13 @@ public class InfoskrivRenderer {
 
     FontAwareCos renderInfoskriv(List<EnkeltArbeidsforhold> arbeidsforhold, Person søker, Søknad søknad,
             FontAwareCos cosOriginal, FontAwarePdfDocument doc) throws IOException {
-        if (søknad.getFørsteInntektsmeldingDag() == null) {
+        if (TmpFørsteinntektsmeldingdagUtil.førsteInntektsmeldingDag(søknad) == null) {
             LOG.warn("Ingen førsteInntektsmeldingDag i søknad, dropper infoskriv til bruker.");
             return cosOriginal;
         }
 
         var navn = textFormatter.navn(søker);
-        var datoInntektsmelding = søknad.getFørsteInntektsmeldingDag();
+        var datoInntektsmelding = TmpFørsteinntektsmeldingdagUtil.førsteInntektsmeldingDag(søknad);
         var ytelse = (Foreldrepenger) søknad.getYtelse();
 
         var cos = førstesideInfoskriv(doc, cosOriginal);
@@ -84,7 +84,7 @@ public class InfoskrivRenderer {
         List<String> opplysninger = new ArrayList<>();
         opplysninger.add(txt("infoskriv.arbeidstaker", søker.fnr().value()));
         opplysninger.add(txt("infoskriv.ytelse"));
-        opplysninger.add(txt("infoskriv.startdato", formattertDato(søknad.getFørsteUttaksdag())));
+        opplysninger.add(txt("infoskriv.startdato", formattertDato(TmpFørsteinntektsmeldingdagUtil.førsteUttaksdag(søknad))));
         y -= renderer.addLinesOfRegularText(opplysninger, cos, y);
         y -= addBlankLine();
 
@@ -215,24 +215,20 @@ public class InfoskrivRenderer {
 
     private List<GradertUttaksPeriode> tilGradertePerioder(List<LukketPeriodeMedVedlegg> perioder) {
         return perioder.stream()
-                .filter(this::isGradertPeriode)
+                .filter(p -> p instanceof GradertUttaksPeriode)
                 .map(GradertUttaksPeriode.class::cast)
                 .filter(GradertUttaksPeriode::isErArbeidstaker)
                 .toList();
     }
 
-    private boolean isGradertPeriode(LukketPeriodeMedVedlegg periode) {
-        return periode instanceof GradertUttaksPeriode;
-    }
-
     private List<UtsettelsesPeriode> ferieOgArbeid(List<LukketPeriodeMedVedlegg> periode) {
         return periode.stream()
-                .filter(this::isFerieOrArbeid)
+                .filter(InfoskrivRenderer::isFerieOrArbeid)
                 .map(UtsettelsesPeriode.class::cast)
                 .toList();
     }
 
-    private boolean isFerieOrArbeid(LukketPeriodeMedVedlegg periode) {
+    private static boolean isFerieOrArbeid(LukketPeriodeMedVedlegg periode) {
         if (periode instanceof UtsettelsesPeriode utsettelsesPeriode) {
             var årsak = utsettelsesPeriode.getÅrsak();
             return årsak.equals(LOVBESTEMT_FERIE) || årsak.equals(ARBEID);
