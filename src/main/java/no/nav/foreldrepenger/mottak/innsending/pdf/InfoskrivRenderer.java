@@ -16,7 +16,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.*;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.TmpFørsteinntektsmeldingdagUtil;
