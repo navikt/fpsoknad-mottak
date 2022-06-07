@@ -1,12 +1,16 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import no.nav.foreldrepenger.boot.conditionals.Cluster;
-import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.*;
-
 import java.time.LocalDate;
 import java.util.Optional;
+
+import no.nav.boot.conditionals.Cluster;
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.FriUtsettelsesPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.OverføringsPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UttaksPeriode;
 
 // flytt logikk til fpsoknad-felles når test er ferdig
 public final class TmpFørsteinntektsmeldingdagUtil {
