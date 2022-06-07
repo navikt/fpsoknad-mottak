@@ -2,9 +2,9 @@ package no.nav.foreldrepenger.mottak.util;
 
 import static java.lang.management.ManagementFactory.getRuntimeMXBean;
 import static java.time.Instant.ofEpochMilli;
-import static no.nav.foreldrepenger.boot.conditionals.Cluster.NAIS_CLUSTER_NAME;
-import static no.nav.foreldrepenger.boot.conditionals.Cluster.NAIS_IMAGE_NAME;
-import static no.nav.foreldrepenger.boot.conditionals.Cluster.NAIS_NAMESPACE_NAME;
+import static no.nav.boot.conditionals.Cluster.NAIS_CLUSTER_NAME;
+import static no.nav.boot.conditionals.Cluster.NAIS_IMAGE_NAME;
+import static no.nav.boot.conditionals.Cluster.NAIS_NAMESPACE_NAME;
 
 import java.time.ZoneId;
 import java.util.Map;

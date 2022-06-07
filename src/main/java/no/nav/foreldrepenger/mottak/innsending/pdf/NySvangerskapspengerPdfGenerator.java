@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static java.util.stream.Collectors.joining;
-import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.DEV;
-import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.LOCAL;
-import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.TEST;
+import static no.nav.boot.conditionals.EnvUtil.DEV;
+import static no.nav.boot.conditionals.EnvUtil.LOCAL;
+import static no.nav.boot.conditionals.EnvUtil.TEST;
 import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000049;
 import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000060;
 import static no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper.SVANGERSKAPSPENGER;

@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.CONFIDENTIAL;
+import static no.nav.boot.conditionals.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.common.innsyn.uttaksplan.ArbeidsgiverType.ORGANISASJON;
 import static no.nav.foreldrepenger.common.innsyn.uttaksplan.ArbeidsgiverType.PRIVAT;
 import static no.nav.foreldrepenger.common.util.StreamUtil.distinctByKey;

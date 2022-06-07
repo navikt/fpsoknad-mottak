@@ -22,18 +22,20 @@
         <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+        <timestamp>${maven.build.timestamp}</timestamp>
 
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
         <sonar.projectKey>navikt_fpsoknad-mottak</sonar.projectKey>
         <sonar.organization>navikt</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-        <token-validation-version>2.0.21</token-validation-version>
-        <pdfbox.version>2.0.26</pdfbox.version>
-        <timestamp>${maven.build.timestamp}</timestamp>
-        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
-        <springdoc.version>1.6.9</springdoc.version>
+        <boot-conditionals.version>3.0.1</boot-conditionals.version>
+        <token-validation.version>2.0.21</token-validation.version>
         <mottak-felles.version>0.8.9</mottak-felles.version>
+
+        <pdfbox.version>2.0.26</pdfbox.version>
+        <springdoc.version>1.6.9</springdoc.version>
     </properties>
     <scm>
         <connection>scm:git:https://github.com/navikt/fpsoknad-mottak.git</connection>
@@ -192,7 +194,7 @@
         <dependency>
             <groupId>no.nav.security</groupId>
             <artifactId>token-validation-spring</artifactId>
-            <version>${token-validation-version}</version>
+            <version>${token-validation.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -307,14 +309,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>no.nav.foreldrepenger</groupId>
+            <groupId>no.nav.boot</groupId>
             <artifactId>boot-conditionals</artifactId>
-            <version>2.0.9</version>
+            <version>${boot-conditionals.version}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.security</groupId>
             <artifactId>token-client-spring</artifactId>
-            <version>${token-validation-version}</version>
+            <version>${token-validation.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

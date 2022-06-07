@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.LOCAL;
-import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.TEST;
+import static no.nav.boot.conditionals.EnvUtil.LOCAL;
+import static no.nav.boot.conditionals.EnvUtil.TEST;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.fødsel;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.hasPdfSignature;

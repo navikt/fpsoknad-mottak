@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste;
 
 import org.springframework.stereotype.Service;
 
-import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
+import no.nav.boot.conditionals.ConditionalOnK8s;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentBestilling;
 
 @Service

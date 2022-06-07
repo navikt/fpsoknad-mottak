@@ -4,8 +4,8 @@ import static no.nav.foreldrepenger.mottak.innsyn.InnsynControllerV2.INNSYNV2;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
-import no.nav.foreldrepenger.boot.conditionals.Cluster;
-import no.nav.foreldrepenger.boot.conditionals.ConditionalOnClusters;
+import no.nav.boot.conditionals.Cluster;
+import no.nav.boot.conditionals.ConditionalOnClusters;
 import no.nav.foreldrepenger.common.innsyn.v2.Saker;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;

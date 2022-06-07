@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.http;
 
-import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.isDevOrLocal;
+import static no.nav.boot.conditionals.EnvUtil.isDevOrLocal;
 import static no.nav.foreldrepenger.common.util.Constants.FORELDREPENGER;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID1;

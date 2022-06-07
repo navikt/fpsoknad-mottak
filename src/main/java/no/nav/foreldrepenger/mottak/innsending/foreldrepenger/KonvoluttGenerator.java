@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.CONFIDENTIAL;
+import static no.nav.boot.conditionals.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.SEND_SENERE;
 import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
