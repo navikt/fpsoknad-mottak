@@ -32,7 +32,7 @@
 
         <boot-conditionals.version>3.0.1</boot-conditionals.version>
         <token-validation.version>2.0.21</token-validation.version>
-        <mottak-felles.version>0.8.9</mottak-felles.version>
+        <fpsoknad-felles.version>0.8.12</fpsoknad-felles.version>
 
         <pdfbox.version>2.0.26</pdfbox.version>
         <springdoc.version>1.6.9</springdoc.version>
@@ -299,12 +299,12 @@
         <dependency>
             <groupId>no.nav.foreldrepenger</groupId>
             <artifactId>fpsoknad-felles</artifactId>
-            <version>${mottak-felles.version}</version>
+            <version>${fpsoknad-felles.version}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.foreldrepenger</groupId>
             <artifactId>fpsoknad-felles</artifactId>
-            <version>${mottak-felles.version}</version>
+            <version>${fpsoknad-felles.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
