@@ -11,11 +11,7 @@ import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.ENDRING_FORELD
 import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.INITIELL_SVANGERSKAPSPENGER;
-import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.VEDLEGG1;
-import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.endringssøknad;
-import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengeSøknad;
-import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengesøknadMedEttIkkeOpplastedVedlegg;
-import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.svp;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -105,7 +101,7 @@ class MappablePdfGeneratorTest {
 
     @Test
     void signature() {
-        assertTrue(hasPdfSignature(gen.generer(foreldrepengeSøknad(), person(), INITIELL_FORELDREPENGER)));
+        assertTrue(hasPdfSignature(gen.generer(foreldrepengesøknad(), person(), INITIELL_FORELDREPENGER)));
     }
 
     @Test

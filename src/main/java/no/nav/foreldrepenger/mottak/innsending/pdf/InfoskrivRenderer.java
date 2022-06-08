@@ -18,7 +18,6 @@ import java.util.Locale;
 import java.util.Optional;
 
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.*;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.TmpFørsteinntektsmeldingdagUtil;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,13 +45,13 @@ public class InfoskrivRenderer {
 
     FontAwareCos renderInfoskriv(List<EnkeltArbeidsforhold> arbeidsforhold, Person søker, Søknad søknad,
             FontAwareCos cosOriginal, FontAwarePdfDocument doc) throws IOException {
-        if (TmpFørsteinntektsmeldingdagUtil.førsteInntektsmeldingDag(søknad) == null) {
+        if (søknad.getFørsteInntektsmeldingDag() == null) {
             LOG.warn("Ingen førsteInntektsmeldingDag i søknad, dropper infoskriv til bruker.");
             return cosOriginal;
         }
 
         var navn = textFormatter.navn(søker);
-        var datoInntektsmelding = TmpFørsteinntektsmeldingdagUtil.førsteInntektsmeldingDag(søknad);
+        var datoInntektsmelding = søknad.getFørsteInntektsmeldingDag();
         var ytelse = (Foreldrepenger) søknad.getYtelse();
 
         var cos = førstesideInfoskriv(doc, cosOriginal);
@@ -83,7 +82,7 @@ public class InfoskrivRenderer {
         List<String> opplysninger = new ArrayList<>();
         opplysninger.add(txt("infoskriv.arbeidstaker", søker.fnr().value()));
         opplysninger.add(txt("infoskriv.ytelse"));
-        opplysninger.add(txt("infoskriv.startdato", formattertDato(TmpFørsteinntektsmeldingdagUtil.førsteUttaksdag(søknad))));
+        opplysninger.add(txt("infoskriv.startdato", formattertDato(søknad.getFørsteUttaksdag())));
         y -= renderer.addLinesOfRegularText(opplysninger, cos, y);
         y -= addBlankLine();
 

@@ -59,7 +59,7 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
     private Optional<LocalDate> førsteInntektsmeldingDag(Konvolutt konvolutt) {
         if (konvolutt.erInitiellForeldrepenger()) {
             var søknad = (Søknad) konvolutt.getInnsending();
-            return Optional.ofNullable(TmpFørsteinntektsmeldingdagUtil.førsteInntektsmeldingDag(søknad));
+            return Optional.ofNullable(søknad.getFørsteInntektsmeldingDag());
         }
         return Optional.empty();
     }
