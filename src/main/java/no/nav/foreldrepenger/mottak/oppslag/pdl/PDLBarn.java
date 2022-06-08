@@ -38,7 +38,7 @@ class PDLBarn {
     String annenPart(String fnrSøker) {
         return forelderBarnRelasjon.stream()
                 .filter(r -> r.minRolle().equals(BARN))
-                .filter(not(r -> r.id().equals(fnrSøker)))
+                .filter(not(r -> Objects.equals(r.id(), fnrSøker)))
                 .findFirst()
                 .map(PDLForelderBarnRelasjon::id)
                 .orElse(null);
