@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 
 import static java.util.function.Predicate.not;
 
-import no.nav.boot.conditionals.Cluster;
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.*;
@@ -18,17 +17,11 @@ public final class TmpFørsteinntektsmeldingdagUtil {
     }
 
     public static LocalDate førsteInntektsmeldingDag(Søknad søknad) {
-        var prod = Cluster.PROD_FSS == Cluster.currentCluster();
-        return prod
-            ? søknad.getFørsteInntektsmeldingDag()
-            : nyInntektsmeldingDag(søknad);
+        return nyInntektsmeldingDag(søknad);
     }
 
     public static LocalDate førsteUttaksdag(Søknad søknad) {
-        var prod = Cluster.PROD_FSS == Cluster.currentCluster();
-        return prod
-            ? søknad.getFørsteUttaksdag()
-            : kandidatFunksjonForFørsteUttaksdag(søknad);
+        return kandidatFunksjonForFørsteUttaksdag(søknad);
     }
 
     private static LocalDate kandidatFunksjonForFørsteUttaksdag(Søknad søknad) {
