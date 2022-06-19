@@ -11,9 +11,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.security.token.support.core.jwt.JwtToken;
 
 public record SystemToken(@JsonProperty("access_token") JwtToken accessToken,
-        @JsonProperty("expires_in") Long expiresIn,
-        @JsonProperty("token_type") String tokenType,
-        @JsonProperty("scope") String scope) {
+                          @JsonProperty("expires_in") Long expiresIn,
+                          @JsonProperty("token_type") String tokenType,
+                          @JsonProperty("scope") String scope) {
 
     boolean isExpired(Duration slack) {
         return LocalDateTime.now().isAfter(getExpiration().minus(slack));

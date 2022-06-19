@@ -1,32 +1,3 @@
-arbeidsforhold:
-  base-uri: ${aareg.rs.url}
-
-organisasjon:
-  base-uri: ${organisasjon.rs.base.url}
-
-sts:
-  base-uri: ${oidc.sts.issuer.url}
-  username: ${kafka.username}
-  password: ${kafka.password}
-
-sak:
-  securitytokenservice:
-    username: ${securitytokenservice.username}
-    password : ${securitytokenservice.password}
-    url: ${securitytokenservice.url}
-  saker:
-    url: ${sak.rs.url}
-
-securitytokenservice:
-  username: ${kafka.username}
-  password : ${kafka.password}
-  url: ${securitytokenservice.url}
-
-mottak:
-  sender:
-    domainevent:
-      enabled : false
-
 management:
   endpoints:
     web:
@@ -35,11 +6,22 @@ management:
   endpoint:
     health:
       enabled: false
-      show-details : always
+server:
+  port: 9001
+spring:
+  cloud:
+    vault:
+      enabled: false
+  mvc:
+    log-request-details : true
+  kafka:
+    consumer:
+      enable-auto-commit: false
+      bootstrap-servers: ${bootstrap.servers}
+    producer:
+      bootstrap-servers: ${bootstrap.servers}
 
-kafka:
-  username: ${kafka.username}
-  password : ${kafka.password}
+
 no.nav:
   security:
     jwt:
@@ -63,21 +45,12 @@ no.nav:
           digdir-krr-proxy:
             token-exchange:
               audience: lokal
-server:
-  port: 9001
-spring:
-  cloud:
-    vault:
-      enabled: false
-  mvc:
-    log-request-details : true
-  kafka:
-    consumer:
-      enable-auto-commit: false
-      bootstrap-servers: ${bootstrap.servers}
-    producer:
-      bootstrap-servers: ${bootstrap.servers}
-
+arbeidsforhold:
+  base-uri: ${aareg.rs.url}
+organisasjon:
+  base-uri: ${organisasjon.rs.base.url}
+sts:
+  base-uri: ${oidc.sts.issuer.url}
 fppdfgen:
   enabled: false
 pdl:
@@ -90,3 +63,8 @@ digdir:
   base-uri: ${digdir.base.url}
 innsyn:
   base-uri: ${fpinfo.base.url}
+
+mottak:
+  sender:
+    domainevent:
+      enabled : false # Konsumeres av fpinfo-historikk ifm meldinger for dittnav

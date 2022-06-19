@@ -129,8 +129,7 @@ public class PDLConnection implements PingEndpointAware {
     }
 
     private PDLIdenter oppslagId(String id, String type) {
-        return Optional.ofNullable(oppslag(() -> systemClient.post(IDENT_QUERY, idFra(id), PDLIdenter.class).block(), type))
-                .orElse(null);
+        return oppslag(() -> systemClient.post(IDENT_QUERY, idFra(id), PDLIdenter.class).block(), type);
     }
 
     private PDLBarn oppslagBarn(String fnrSøker, String id) {
@@ -148,8 +147,7 @@ public class PDLConnection implements PingEndpointAware {
 
     private PDLAnnenPart oppslagAnnenPart(String id) {
         return Optional
-                .ofNullable(oppslag(() -> systemClient.post(ANNEN_PART_QUERY, idFra(id), PDLAnnenPart.class)
-                        .block(), "annen part"))
+                .ofNullable(oppslag(() -> systemClient.post(ANNEN_PART_QUERY, idFra(id), PDLAnnenPart.class).block(), "annen part"))
                 .filter(not(PDLAnnenPart::erDød))
                 .filter(not(PDLAnnenPart::erBeskyttet))
                 .map(a -> a.withId(id))

@@ -14,11 +14,11 @@ import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 @ConfigurationProperties(prefix = "organisasjon")
 public class OrganisasjonConfig extends AbstractConfig {
 
-    private static final String HISTORIKK = "historikk";
+    private static final String DEFAULT_BASE_URI = "https://modapp.adeo.no/ereg/api";
     private static final String V1_ORGANISASJON = "/v1/organisasjon/{orgnr}";
+    private static final String HISTORIKK = "historikk";
     private static final String NAV = "998004993";
     private final String organisasjonPath;
-    private static final String DEFAULT_BASE_URI = "http://must.be.set";
 
     @ConstructorBinding
     public OrganisasjonConfig(@DefaultValue(DEFAULT_BASE_URI) URI baseUri,
