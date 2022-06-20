@@ -28,15 +28,14 @@ public class STSConnection extends AbstractWebClientConnection {
 
     SystemToken refresh() {
         LOG.trace("Refresh av system token");
-        var token = webClient
-            .post()
-            .uri(cfg::getStsURI)
+        var token = webClient.post()
+            .uri(cfg::getTokenPath)
             .accept(APPLICATION_JSON)
             .contentType(APPLICATION_FORM_URLENCODED)
             .body(cfg.stsBody())
             .retrieve()
             .bodyToMono(SystemToken.class)
-            .retryWhen(retrySpec(cfg.getStsPath()))
+            .retryWhen(retrySpec(cfg.getTokenPath()))
             .block();
         if (token == null) {
             throw new IllegalStateException("Tom body fra STS-tjenesten ble returnert. Noe er galt!");
@@ -45,7 +44,7 @@ public class STSConnection extends AbstractWebClientConnection {
         return token;
     }
 
-    public Duration getSlack() {
+    Duration getSlack() {
         return cfg.getSlack();
     }
 

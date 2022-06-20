@@ -6,35 +6,6 @@ management :
   endpoint:
     health:
       show-details : always
-no.nav:
-  security:
-    jwt:
-      client:
-        registration:
-          fpsoknad-oppslag:
-            token-exchange:
-              audience: dev-fss:teamforeldrepenger:fpsoknad-oppslag
-          fpinfo:
-            token-exchange:
-              audience: dev-fss:teamforeldrepenger:fpinfo
-          fpfordel:
-            token-exchange:
-              audience: dev-fss:teamforeldrepenger:fpfordel
-          pdl-api:
-            token-exchange:
-              audience: dev-fss:pdl:pdl-api
-          aareg-services-q1:
-            well-known-url: ${token.x.well.known.url}
-            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-            authentication:
-              client-id: ${token.x.client.id}
-              client-jwk: ${token.x.private.jwk}
-              client-auth-method: private_key_jwt
-            token-exchange:
-              audience: dev-fss:arbeidsforhold:aareg-services-nais-q1
-          digdir-krr-proxy:
-            token-exchange:
-              audience: dev-gcp:team-rocket:digdir-krr-proxy
 spring:
   config.import: vault://
   cloud:
@@ -71,7 +42,32 @@ organisasjon:
   base-uri: https://modapp-q1.adeo.no/ereg/api
 sts:
   base-uri: https://security-token-service.nais.preprod.local
-securitytokenservice:
-  url: https://sts-q1.preprod.local/SecurityTokenServiceProvider/
-
-
+no.nav:
+  security:
+    jwt:
+      client:
+        registration:
+          fpsoknad-oppslag:
+            token-exchange:
+              audience: dev-fss:teamforeldrepenger:fpsoknad-oppslag
+          fpinfo:
+            token-exchange:
+              audience: dev-fss:teamforeldrepenger:fpinfo
+          fpfordel:
+            token-exchange:
+              audience: dev-fss:teamforeldrepenger:fpfordel
+          pdl-api:
+            token-exchange:
+              audience: dev-fss:pdl:pdl-api
+          aareg-services-q1:
+            well-known-url: ${token.x.well.known.url}
+            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+            authentication:
+              client-id: ${token.x.client.id}
+              client-jwk: ${token.x.private.jwk}
+              client-auth-method: private_key_jwt
+            token-exchange:
+              audience: dev-fss:arbeidsforhold:aareg-services-nais-q1
+          digdir-krr-proxy:
+            token-exchange:
+              audience: dev-gcp:team-rocket:digdir-krr-proxy

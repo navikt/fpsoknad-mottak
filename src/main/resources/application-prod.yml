@@ -1,3 +1,21 @@
+spring:
+  config.import: vault://
+  cloud:
+    vault:
+      reactive:
+        enabled: false
+      enabled: true
+      uri: https://vault.adeo.no
+      authentication: KUBERNETES
+      kubernetes:
+        role: fpsoknad-mottak
+        kubernetes-path: kubernetes/prod/fss
+        service-account-token-file: /var/run/secrets/kubernetes.io/serviceaccount/token
+      kv:
+        enabled: true
+        backend: kv/prod/fss
+        application-name: fpsoknad-mottak/teamforeldrepenger
+        default-context: fpsoknad-mottak/teamforeldrepenger
 no.nav:
   security:
     jwt:
@@ -21,21 +39,3 @@ no.nav:
           digdir-krr-proxy:
             token-exchange:
               audience: prod-gcp:team-rocket:digdir-krr-proxy
-spring:
-  config.import: vault://
-  cloud:
-    vault:
-      reactive:
-        enabled: false
-      enabled: true
-      uri: https://vault.adeo.no
-      authentication: KUBERNETES
-      kubernetes:
-        role: fpsoknad-mottak
-        kubernetes-path: kubernetes/prod/fss
-        service-account-token-file: /var/run/secrets/kubernetes.io/serviceaccount/token
-      kv:
-        enabled: true
-        backend: kv/prod/fss
-        application-name: fpsoknad-mottak/teamforeldrepenger
-        default-context: fpsoknad-mottak/teamforeldrepenger

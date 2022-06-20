@@ -6,8 +6,6 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.time.Period;
 
-import javax.validation.constraints.NotNull;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
@@ -18,9 +16,11 @@ import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 @ConfigurationProperties(prefix = "arbeidsforhold")
 public class ArbeidsforholdConfig extends AbstractConfig {
 
-    private static final String DEFAULT_PING = "ping";
-    private static final String TREÅR = "3y";
+    private static final String DEFAULT_BASE_URI = "https://aareg-services.intern.nav.no/api";
     private static final String V1_ARBEIDSTAKER_ARBEIDSFORHOLD = "/v1/arbeidstaker/arbeidsforhold";
+    private static final String DEFAULT_PING = "ping";
+
+    private static final String TREÅR = "3y";
     private static final String FOM_NAVN = "ansettelsesperiodeFom";
     private static final String SPORINGSINFORMASJON_NAVN = "sporingsinformasjon";
     private static final String HISTORIKK_NAVN = "historikk";
@@ -31,8 +31,9 @@ public class ArbeidsforholdConfig extends AbstractConfig {
     private final boolean sporingsinformasjon;
 
     @ConstructorBinding
-    public ArbeidsforholdConfig(@NotNull URI baseUri, @DefaultValue(DEFAULT_PING) String pingPath,
+    public ArbeidsforholdConfig(@DefaultValue(DEFAULT_BASE_URI) URI baseUri,
                                 @DefaultValue(V1_ARBEIDSTAKER_ARBEIDSFORHOLD) String arbeidsforholdPath,
+                                @DefaultValue(DEFAULT_PING) String pingPath,
                                 @DefaultValue("true") boolean enabled, @DefaultValue(TREÅR) Period tidTilbake,
                                 @DefaultValue("true") boolean sporingsinformasjon) {
         super(baseUri, pingPath, enabled);

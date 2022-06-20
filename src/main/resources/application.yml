@@ -1,78 +1,3 @@
-arbeidsforhold:
-  base-uri: https://aareg-services.intern.nav.no/api
-
-organisasjon:
-  base-uri: https://modapp.adeo.no/ereg/api
-
-sts:
-  base-uri:  https://security-token-service.nais.adeo.no
-  username: ${kafka.username}
-  password: ${kafka.password}
-
-securitytokenservice:
-  username: ${kafka.username}
-  password : ${kafka.password}
-  url: https://sts.adeo.no/SecurityTokenServiceProvider/
-
-mottak:
-  sender:
-    domainevent:
-      enabled: true
-      topic: fpsoknad-mottak
-
-no.nav:
-  security:
-    jwt:
-      dont-propagate-bearertoken: true
-      client:
-        registration:
-          fpsoknad-oppslag:
-            well-known-url: ${token.x.well.known.url}
-            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-            authentication:
-              client-id: ${token.x.client.id}
-              client-jwk: ${token.x.private.jwk}
-              client-auth-method: private_key_jwt
-          fpinfo:
-            well-known-url: ${token.x.well.known.url}
-            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-            authentication:
-              client-id: ${token.x.client.id}
-              client-jwk: ${token.x.private.jwk}
-              client-auth-method: private_key_jwt
-          fpfordel:
-            well-known-url: ${token.x.well.known.url}
-            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-            authentication:
-              client-id: ${token.x.client.id}
-              client-jwk: ${token.x.private.jwk}
-              client-auth-method: private_key_jwt
-          pdl-api:
-            well-known-url: ${token.x.well.known.url}
-            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-            authentication:
-              client-id: ${token.x.client.id}
-              client-jwk: ${token.x.private.jwk}
-              client-auth-method: private_key_jwt
-          aareg-services:
-            well-known-url: ${token.x.well.known.url}
-            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-            authentication:
-              client-id: ${token.x.client.id}
-              client-jwk: ${token.x.private.jwk}
-              client-auth-method: private_key_jwt
-          digdir-krr-proxy:
-            well-known-url: ${token.x.well.known.url}
-            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-            authentication:
-              client-id: ${token.x.client.id}
-              client-jwk: ${token.x.private.jwk}
-              client-auth-method: private_key_jwt
-      issuer:
-        tokenx:
-          discovery-url: ${token.x.well.known.url}
-          accepted-audience: ${token.x.client.id}
-
 management:
   metrics:
     web:
@@ -131,3 +56,60 @@ springdoc:
   packages-to-scan: no.nav.foreldrepenger.mottak
   swagger-ui:
     disable-swagger-default-url: true
+
+mottak:
+  sender:
+    domainevent:
+      enabled: true
+      topic: fpsoknad-mottak
+no.nav.security:
+  jwt:
+    dont-propagate-bearertoken: true
+    client:
+      registration:
+        fpsoknad-oppslag:
+          well-known-url: ${token.x.well.known.url}
+          grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+          authentication:
+            client-id: ${token.x.client.id}
+            client-jwk: ${token.x.private.jwk}
+            client-auth-method: private_key_jwt
+        fpinfo:
+          well-known-url: ${token.x.well.known.url}
+          grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+          authentication:
+            client-id: ${token.x.client.id}
+            client-jwk: ${token.x.private.jwk}
+            client-auth-method: private_key_jwt
+        fpfordel:
+          well-known-url: ${token.x.well.known.url}
+          grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+          authentication:
+            client-id: ${token.x.client.id}
+            client-jwk: ${token.x.private.jwk}
+            client-auth-method: private_key_jwt
+        pdl-api:
+          well-known-url: ${token.x.well.known.url}
+          grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+          authentication:
+            client-id: ${token.x.client.id}
+            client-jwk: ${token.x.private.jwk}
+            client-auth-method: private_key_jwt
+        aareg-services:
+          well-known-url: ${token.x.well.known.url}
+          grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+          authentication:
+            client-id: ${token.x.client.id}
+            client-jwk: ${token.x.private.jwk}
+            client-auth-method: private_key_jwt
+        digdir-krr-proxy:
+          well-known-url: ${token.x.well.known.url}
+          grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+          authentication:
+            client-id: ${token.x.client.id}
+            client-jwk: ${token.x.private.jwk}
+            client-auth-method: private_key_jwt
+    issuer:
+      tokenx:
+        discovery-url: ${token.x.well.known.url}
+        accepted-audience: ${token.x.client.id}
