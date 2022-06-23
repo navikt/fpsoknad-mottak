@@ -37,6 +37,7 @@ import no.nav.foreldrepenger.common.innsyn.uttaksplan.UttaksplanDto;
 import no.nav.foreldrepenger.common.innsyn.v2.FpSak;
 import no.nav.foreldrepenger.common.innsyn.v2.PersonDetaljer;
 import no.nav.foreldrepenger.common.innsyn.v2.Saker;
+import no.nav.foreldrepenger.common.innsyn.v2.Saksnummer;
 import no.nav.foreldrepenger.common.innsyn.v2.persondetaljer.Kjønn;
 import no.nav.foreldrepenger.common.innsyn.v2.persondetaljer.Person;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
@@ -121,7 +122,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     @Override
-    public UttaksplanDto uttaksplan(String saksnummer) {
+    public UttaksplanDto uttaksplan(Saksnummer saksnummer) {
         return Optional.ofNullable(innsyn.uttaksplan(saksnummer))
             .map(this::tilUttaksplan)
             .orElse(null);

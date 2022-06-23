@@ -14,6 +14,7 @@ import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.innsyn.v2.Saker;
+import no.nav.foreldrepenger.common.innsyn.v2.Saksnummer;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
@@ -60,7 +61,7 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
             .orElseThrow();
     }
 
-    UttaksplanDTO uttaksplan(String saksnummer) {
+    UttaksplanDTO uttaksplan(Saksnummer saksnummer) {
         LOG.trace("Henter uttaksplan");
         return getForObject(cfg.uttaksplanURI(saksnummer), UttaksplanDTO.class);
     }

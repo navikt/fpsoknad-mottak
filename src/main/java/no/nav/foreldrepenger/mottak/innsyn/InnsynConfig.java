@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.innsyn.v2.Saksnummer;
 import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 
 @ConfigurationProperties(prefix = "innsyn")
@@ -38,8 +39,8 @@ public class InnsynConfig extends AbstractConfig {
         this.basePath = basePath;
     }
 
-    URI uttaksplanURI(String saksnummer) {
-        return uri(getBaseUri(), UTTAKSPLAN, queryParams(SAKSNUMMER, saksnummer));
+    URI uttaksplanURI(Saksnummer saksnummer) {
+        return uri(getBaseUri(), UTTAKSPLAN, queryParams(SAKSNUMMER, saksnummer.value()));
     }
 
     URI sakURI(String aktørId) {
