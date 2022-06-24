@@ -1,18 +1,17 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import static no.nav.foreldrepenger.common.domain.validation.InputValideringRegex.FRITEKST;
-
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Orgnummer;
 import no.nav.foreldrepenger.common.domain.Sak;
 import no.nav.foreldrepenger.common.innsyn.uttaksplan.UttaksplanDto;
+import no.nav.foreldrepenger.common.innsyn.v2.Saksnummer;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo;
@@ -44,12 +43,12 @@ public class InnsynController {
     }
 
     @GetMapping("/orgnavn")
-    public String orgnavn(@Pattern(regexp = FRITEKST) @RequestParam(name = "orgnr") String orgnr) {
+    public String orgnavn(@Valid @RequestParam(name = "orgnr") Orgnummer orgnr) {
         return arbeidsforhold.orgnavn(orgnr);
     }
 
     @GetMapping("/uttaksplan")
-    public UttaksplanDto uttaksplan(@Pattern(regexp = FRITEKST) @RequestParam(name = "saksnummer") String saksnummer) {
+    public UttaksplanDto uttaksplan(@Valid @RequestParam(name = "saksnummer") Saksnummer saksnummer) {
         return innsyn.uttaksplan(saksnummer);
     }
 

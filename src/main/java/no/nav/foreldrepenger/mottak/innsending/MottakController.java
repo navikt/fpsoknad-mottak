@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import no.nav.foreldrepenger.common.domain.Kvittering;
 import no.nav.foreldrepenger.common.domain.Sak;
@@ -64,11 +63,11 @@ public class MottakController {
         return søknadSender.endreSøknad(endringssøknad, oppslag.person(), ENDRING_FORELDREPENGER);
     }
 
-    @GetMapping("/ping")
     @Unprotected
-    public String ping(@RequestParam(name = "navn", defaultValue = "jordboer") String navn) {
+    @GetMapping("/ping")
+    public String ping() {
         LOG.info("Jeg ble pinget");
-        return "Hallo " + navn + " fra ubeskyttet ressurs";
+        return "pong";
     }
 
     @GetMapping("/saker")
