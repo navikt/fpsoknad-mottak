@@ -21,7 +21,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import no.nav.boot.conditionals.Cluster;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -125,8 +124,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private float morUfør(Rettigheter rettigheter, BrukerRolle brukerRolle, FontAwareCos cos, float y) throws IOException {
-        boolean erProd = Cluster.PROD_FSS == Cluster.currentCluster();
-        if (!erProd && !rettigheter.harAnnenForelderRett() && brukerRolle != BrukerRolle.MOR) {
+        if (!rettigheter.harAnnenForelderRett() && brukerRolle != BrukerRolle.MOR) {
             y -= renderer.addLineOfRegularText(INDENT, txt("harmorufor", jaNei(rettigheter.harMorUføretrygd())), cos,
                 y);
         }
