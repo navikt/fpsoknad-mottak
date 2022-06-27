@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.0</version>
+        <version>2.7.1</version>
         <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -30,8 +30,8 @@
         <sonar.organization>navikt</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-        <boot-conditionals.version>3.0.1</boot-conditionals.version>
-        <token-validation.version>2.0.21</token-validation.version>
+        <boot-conditionals.version>3.0.2</boot-conditionals.version>
+        <token-validation.version>2.1.1</token-validation.version>
         <fpsoknad-felles.version>0.8.13</fpsoknad-felles.version>
 
         <pdfbox.version>2.0.26</pdfbox.version>
@@ -153,11 +153,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-properties-migrator</artifactId>
             <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.ws</groupId>
-            <artifactId>jaxws-rt</artifactId>
-            <version>2.3.5</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.kafka</groupId>
