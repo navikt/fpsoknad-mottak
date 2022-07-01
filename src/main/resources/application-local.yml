@@ -36,7 +36,7 @@ kontonummer:
 fpfordel:
   base-uri: http://localhost:8090
 digdir:
-  base-uri: http://localhost:8060/rest/api
+  base-uri: http://localhost:8060/rest/api/digdir
 innsyn:
   base-uri: http://localhost:8040
 kafka:
