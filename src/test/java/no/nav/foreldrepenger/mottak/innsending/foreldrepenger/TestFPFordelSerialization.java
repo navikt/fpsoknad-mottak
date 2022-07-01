@@ -47,6 +47,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Saksnummer;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.felles.EttersendingsType;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
@@ -142,7 +143,7 @@ class TestFPFordelSerialization {
 
     @Test
     void testKonvoluttEttersending() {
-        var es = new Ettersending("42", EttersendingsType.FORELDREPENGER, List.of(VEDLEGG1, VEDLEGG2), null);
+        var es = new Ettersending(Saksnummer.valueOf("42"), EttersendingsType.FORELDREPENGER, List.of(VEDLEGG1, VEDLEGG2), null);
         var konvolutt = konvoluttGenerator.generer(es,
                 person(), SøknadEgenskap.ETTERSENDING_FORELDREPENGER);
         assertNotNull(konvolutt.getMetadata());

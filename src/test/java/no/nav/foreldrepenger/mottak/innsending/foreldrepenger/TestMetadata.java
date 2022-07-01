@@ -24,8 +24,8 @@ class TestMetadata {
         var søknad = foreldrepengesøknadMedEttOpplastetEttIkkeOpplastetVedlegg();
         var metadata = new FordelMetadata(søknad, INITIELL_FORELDREPENGER, AKTOR_ID, REF);
         assertEquals(2, søknad.getVedlegg().size());
-        assertEquals(3, metadata.getFiler().size());
-        assertEquals(ID, metadata.getBrukerId());
+        assertEquals(3, metadata.filer().size());
+        assertEquals(ID, metadata.brukerId());
     }
 
     @Test
@@ -33,7 +33,7 @@ class TestMetadata {
         var søknad = foreldrepengesøknadMedToVedlegg();
         var metadata = new FordelMetadata(søknad, ENDRING_FORELDREPENGER, AKTOR_ID, REF);
         assertEquals(2, søknad.getVedlegg().size());
-        assertEquals(4, metadata.getFiler().size());
+        assertEquals(4, metadata.filer().size());
     }
 
     @Test
@@ -41,6 +41,6 @@ class TestMetadata {
         var søknad = TestUtils.engangssøknad(VEDLEGG3);
         var metadata = new FordelMetadata(søknad, INITIELL_ENGANGSSTØNAD, AKTOR_ID, REF);
         assertEquals(1, søknad.getVedlegg().size());
-        assertEquals(3, metadata.getFiler().size());
+        assertEquals(3, metadata.filer().size());
     }
 }

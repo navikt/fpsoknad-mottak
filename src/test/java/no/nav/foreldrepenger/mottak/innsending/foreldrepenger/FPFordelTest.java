@@ -43,6 +43,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Kvittering;
+import no.nav.foreldrepenger.common.domain.Saksnummer;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.common.innsending.SøknadType;
 import no.nav.foreldrepenger.common.innsending.foreldrepenger.FPSakFordeltKvittering;
@@ -85,7 +86,7 @@ class FPFordelTest {
     private static final URI POSTURI = URI.create(FPFORDELURIBASE + "/fpfordel/api/dokumentforsendelse");
 
     private static final String JOURNALID = "999";
-    private static final String SAKSNR = "666";
+    private static final Saksnummer SAKSNR = Saksnummer.valueOf("666");
 
     private static final List<EnkeltArbeidsforhold> ARB_FORHOLD = List.of(EnkeltArbeidsforhold.builder()
             .arbeidsgiverId("1234")
@@ -211,7 +212,7 @@ class FPFordelTest {
             .thenReturn(pollReceipt200, fordeltReceipt);
         Kvittering kvittering = sender.søk(foreldrepengesøknad(), person(),
                 SøknadEgenskap.of(SøknadType.INITIELL_FORELDREPENGER));
-        assertEquals(kvittering.getSaksNr(), SAKSNR);
+        assertEquals(SAKSNR, kvittering.getSaksNr());
     }
 
     @Test

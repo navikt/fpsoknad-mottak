@@ -15,12 +15,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.validation.Valid;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.google.common.collect.Lists;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.Saksnummer;
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.common.domain.felles.DokumentType;
@@ -36,14 +38,13 @@ import no.nav.foreldrepenger.common.error.UnexpectedInputException;
 import no.nav.foreldrepenger.common.innsending.SøknadType;
 
 @JsonPropertyOrder({ "forsendelsesId", "saksnummer", "brukerId", "forsendelseMottatt", "filer" })
-public class FordelMetadata {
-    private final String forsendelsesId;
-    @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    private final LocalDateTime forsendelseMottatt;
-    private final String brukerId;
-    @JsonProperty("filer")
-    private final List<Del> deler;
-    private final String saksnummer;
+public record FordelMetadata(
+    String forsendelsesId,
+    @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS") LocalDateTime forsendelseMottatt,
+    String brukerId,
+    List<@Valid Del> filer,
+    @Valid Saksnummer saksnummer) {
+
 
     public FordelMetadata(Ettersending ettersending, AktørId aktorId, String ref) {
         this(ettersendingsDeler(ettersending), aktorId, ref, ettersending.saksnr());
@@ -57,36 +58,12 @@ public class FordelMetadata {
         this(endringssøknadsDeler(endringssøknad, søknadType), aktorId, ref, endringssøknad.getSaksnr());
     }
 
-    public FordelMetadata(Søknad søknad, SøknadType søknadType, AktørId aktorId, String ref, String saksnr) {
+    public FordelMetadata(Søknad søknad, SøknadType søknadType, AktørId aktorId, String ref, Saksnummer saksnr) {
         this(søknadsDeler(søknad, søknadType), aktorId, ref, saksnr);
     }
 
-    public FordelMetadata(List<Del> deler, AktørId aktorId, String ref, String saksnr) {
-        this.forsendelsesId = ref;
-        this.brukerId = aktorId.value();
-        this.forsendelseMottatt = LocalDateTime.now();
-        this.deler = deler;
-        this.saksnummer = saksnr;
-    }
-
-    public String getSaksnummer() {
-        return saksnummer;
-    }
-
-    public List<Del> getFiler() {
-        return deler;
-    }
-
-    public String getForsendelsesId() {
-        return forsendelsesId;
-    }
-
-    public LocalDateTime getForsendelseMottatt() {
-        return forsendelseMottatt;
-    }
-
-    public String getBrukerId() {
-        return brukerId;
+    public FordelMetadata(List<Del> deler, AktørId aktorId, String ref, Saksnummer saksnummer) {
+        this(ref, LocalDateTime.now(), aktorId.value(), deler, saksnummer);
     }
 
     private static List<Del> søknadsDeler(Søknad søknad, SøknadType type) {
@@ -161,13 +138,6 @@ public class FordelMetadata {
             return I000002;
         }
         throw new UnexpectedInputException("Ukjent relasjon %s", relasjon.getClass().getSimpleName());
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [forsendelsesId=" + forsendelsesId + ", forsendelseMottatt="
-                + forsendelseMottatt + ", brukerId=" + brukerId + ", deler=" + deler + ", saksnummer=" + saksnummer
-                + "]";
     }
 
 }

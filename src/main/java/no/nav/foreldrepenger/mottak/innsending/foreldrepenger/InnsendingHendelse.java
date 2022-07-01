@@ -6,6 +6,7 @@ import java.util.List;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Saksnummer;
 import no.nav.foreldrepenger.common.innsending.SøknadType;
 
 record InnsendingHendelse(AktørId aktørId,
@@ -13,7 +14,7 @@ record InnsendingHendelse(AktørId aktørId,
                           String journalId,
                           String referanseId,
                           String dialogId,
-                          String saksnummer,
+                          Saksnummer saksnummer,
                           SøknadType hendelse,
                           List<String> opplastedeVedlegg,
                           List<String> ikkeOpplastedeVedlegg,
@@ -25,7 +26,7 @@ record InnsendingHendelse(AktørId aktørId,
                               String journalId,
                               String referanseId,
                               String dialogId,
-                              String saksnummer,
+                              Saksnummer saksnummer,
                               Konvolutt konvolutt,
                               LocalDate førsteBehandlingsdato) {
         this(aktørId, fnr, journalId, referanseId, dialogId, saksnummer,
