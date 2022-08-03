@@ -4,6 +4,21 @@
         <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
     </appender>
 
+    <springProfile name="prod | dev">
+        <appender name="secureLogger" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>/secure-logs/secure.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+                <fileNamePattern>/secure-logs/secure.log.%i</fileNamePattern>
+                <minIndex>1</minIndex>
+                <maxIndex>1</maxIndex>
+            </rollingPolicy>
+            <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+                <maxFileSize>50MB</maxFileSize>
+            </triggeringPolicy>
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+        </appender>
+    </springProfile>
+
     <springProfile name="local">
         <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
             <layout class="ch.qos.logback.classic.PatternLayout">
@@ -24,7 +39,9 @@
     <springProfile name="dev | local">
             <logger name="no.nav.foreldrepenger" level="trace" />
     </springProfile>
-
+    <logger name="secureLogger" level="INFO" additivity="false">
+        <appender-ref ref="secureLogger" />
+    </logger>
     <logger name="org.apache.pdfbox.pdmodel.font" level="error" />
     <root level="info">
         <appender-ref ref="stdout" />

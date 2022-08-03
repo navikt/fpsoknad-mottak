@@ -29,6 +29,7 @@ import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
 public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdusent {
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaInnsendingHendelseProdusent.class);
+    private static final Logger SECURE_LOG = LoggerFactory.getLogger("secureLogger");
     private final String topic;
     private final KafkaOperations<String, String> kafkaOperations;
     private final Oppslag oppslag;
@@ -74,7 +75,8 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
 
             @Override
             public void onFailure(Throwable e) {
-                LOG.warn("Kunne ikke sende melding {}", melding, e);
+                LOG.warn("Kunne ikke sende melding til topic {}, se secure logs for detaljer.", topic, e);
+                SECURE_LOG.warn("Kunne ikke sende melding til topic {}. Melding: {}", topic, melding, e);
             }
         });
     }
