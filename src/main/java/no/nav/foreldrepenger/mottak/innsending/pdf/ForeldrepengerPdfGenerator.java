@@ -71,7 +71,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             doc.addPage(page);
             fpRenderer.addOutlineItem(doc, page, FORELDREPENGER_OUTLINE);
             var cos = new FontAwareCos(doc, page);
-            Function<CosyPair, Float> headerFn = uncheck(p -> fpRenderer.header(søker, doc, p.cos(), true, p.y()));
+            Function<CosyPair, Float> headerFn = uncheck(p -> fpRenderer.header(søker, doc, p.cos(), false, p.y()));
             float y = headerFn.apply(new CosyPair(cos, INITIAL_Y));
             var docParam = new DocParam(doc, søker, headerFn);
             var cosy = new CosyPair(cos, y);
