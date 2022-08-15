@@ -117,6 +117,7 @@ public class ForeldrepengeInfoRenderer {
             y -= renderer.addLineOfRegularText(INDENT, txt("harrett", jaNei(rettigheter.harAnnenForelderRett())), cos,
                     y);
             y = morUfør(rettigheter, brukerRolle, cos, y);
+            //TODO TFP-5012 eøs
             y -= renderer.addLineOfRegularText(INDENT, txt("informert", jaNei(erAnnenForlderInformert)), cos, y);
         }
         y -= PdfElementRenderer.BLANK_LINE;
