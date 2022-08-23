@@ -40,6 +40,7 @@ import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConfig;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontonummerConfig;
+import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConfig;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig;
 import no.nav.foreldrepenger.mottak.oppslag.sts.STSConfig;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
@@ -61,6 +62,7 @@ public class WebClientConfiguration {
     public static final String ARBEIDSFORHOLD = "ARBEIDSFORHOLD";
     public static final String ORGANISASJON = "ORGANISASJON";
     public static final String KONTONR = "KONTONR";
+    public static final String KONTOREGISTER = "KONTOREGISTER";
 
     @Value("${spring.application.name:fpsoknad-mottak}")
     private String consumer;
@@ -93,6 +95,15 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(KONTONR)
+    public WebClient webClientKontonummer(Builder builder, KontoregisterConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
+        return builder
+            .baseUrl(cfg.getBaseUri().toString())
+            .filter(tokenXFilterFunction)
+            .build();
+    }
+
+    @Bean
+    @Qualifier(KONTOREGISTER)
     public WebClient webClientKontonummer(Builder builder, KontonummerConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
             .baseUrl(cfg.getBaseUri().toString())

@@ -41,6 +41,7 @@ class RestClientConfigurationTest {
             "aareg-services", generellKlientProperties,
             "aareg-services-q1", generellKlientProperties,
             "digdir-krr-proxy", generellKlientProperties,
+            "sokos-kontoregister-person", generellKlientProperties,
             "fpfordel", generellKlientProperties);
         properties = new ClientConfigurationProperties(clientProperties);
     }
@@ -56,9 +57,17 @@ class RestClientConfigurationTest {
         var klientPropertyProd = matcher.findProperties(properties, aaregUriProd);
         assertThat(klientPropertyProd).isPresent();
     }
+
     @Test
     void sjekkAtViKlarerÅHenteUtConfigForDigdirKrrProxy() {
         var aaregUri = URI.create("https://digdir-krr-proxy.intern.nav.no/rest/v1/person");
+        var klientProperty = matcher.findProperties(properties, aaregUri);
+        assertThat(klientProperty).isPresent();
+    }
+
+    @Test
+    void sjekkAtViKlarerÅHenteUtConfigForKontonummer() {
+        var aaregUri = URI.create("https://sokos-kontoregister-person.dev.intern.nav.no/kontoregister/api/kontoregister/v1");
         var klientProperty = matcher.findProperties(properties, aaregUri);
         assertThat(klientProperty).isPresent();
     }

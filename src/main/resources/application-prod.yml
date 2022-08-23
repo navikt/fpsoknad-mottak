@@ -39,3 +39,5 @@ no.nav:
           digdir-krr-proxy:
             token-exchange:
               audience: prod-gcp:team-rocket:digdir-krr-proxy
+kontoregister:
+  enabled: false
