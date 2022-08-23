@@ -1,0 +1,50 @@
+package no.nav.foreldrepenger.mottak.oppslag.kontonummer;
+
+import static no.nav.foreldrepenger.common.util.MDCUtil.callId;
+import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retrySpec;
+import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.KONTONR;
+import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.KONTOREGISTER;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.util.StringUtils.capitalize;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
+import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.HentKonto;
+import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Kontoinformasjon;
+import reactor.core.publisher.Mono;
+
+@Component
+public class KontoregisterConnection extends AbstractWebClientConnection {
+
+    private static final Logger LOG = LoggerFactory.getLogger(KontoregisterConnection.class);
+    private final KontoregisterConfig cfg;
+
+    public KontoregisterConnection(@Qualifier(KONTOREGISTER) WebClient client, KontoregisterConfig cfg) {
+        super(client, cfg);
+        this.cfg = cfg;
+    }
+
+    public Kontoinformasjon kontonrFraNyTjeneste(Fødselsnummer fnr) {
+        LOG.info("Henter kontonummer fra {}", cfg.kontoregisterURI());
+        return webClient.post()
+            .uri(cfg.kontoregisterURI())
+            .accept(APPLICATION_JSON)
+            .header("nav-call-id", callId())
+            .body(Mono.just(new HentKonto(fnr, false)), HentKonto.class)
+            .retrieve()
+            .bodyToMono(Kontoinformasjon.class)
+            .retryWhen(retrySpec(config.getBaseUri().toString()))
+            .block();
+    }
+
+    @Override
+    public String name() {
+        return capitalize(KONTOREGISTER).toLowerCase();
+    }
+}

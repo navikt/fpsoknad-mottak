@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
+import static no.nav.boot.conditionals.EnvUtil.isDevOrLocal;
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_SYSTEM;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_USER;
@@ -26,6 +27,8 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
@@ -40,30 +43,37 @@ import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConnection;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontonummerConnection;
+import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConnection;
+import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.UtenlandskKontoInfo;
 
 @Component
-public class PDLConnection implements PingEndpointAware {
+public class PDLConnection implements PingEndpointAware, EnvironmentAware {
 
     private static final String IDENT = "ident";
-
     private static final Logger LOG = LoggerFactory.getLogger(PDLConnection.class);
+
     private final GraphQLWebClient userClient;
     private final GraphQLWebClient systemClient;
     private final PDLConfig cfg;
     private final DigdirKrrProxyConnection digdir;
     private final PDLErrorResponseHandler errorHandler;
     private final KontonummerConnection kontonr;
+    private final KontoregisterConnection kontoregister;
     private final TokenUtil tokenUtil;
+    private Environment env;
 
     PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient,
                   @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
                   PDLConfig cfg, DigdirKrrProxyConnection digdir,
-                  KontonummerConnection kontonr, TokenUtil tokenUtil,
+                  KontonummerConnection kontonr,
+                  KontoregisterConnection kontoregister,
+                  TokenUtil tokenUtil,
                   PDLErrorResponseHandler errorHandler) {
         this.userClient = userClient;
         this.systemClient = systemClient;
         this.digdir = digdir;
         this.kontonr = kontonr;
+        this.kontoregister = kontoregister;
         this.cfg = cfg;
         this.tokenUtil = tokenUtil;
         this.errorHandler = errorHandler;
@@ -72,7 +82,7 @@ public class PDLConnection implements PingEndpointAware {
     public Person hentSøker() {
         var fnrSøker = tokenUtil.autentisertBrukerOrElseThrowException();
         return Optional.ofNullable(oppslagSøker(fnrSøker))
-                .map(s -> map(fnrSøker, aktøridFor(fnrSøker), målform(), kontonr(), barn(s), s))
+                .map(s -> map(fnrSøker, aktøridFor(fnrSøker), målform(), kontonr(fnrSøker), barn(s), s))
                 .orElse(null);
     }
 
@@ -183,6 +193,42 @@ public class PDLConnection implements PingEndpointAware {
         }
     }
 
+    Bankkonto kontonr(Fødselsnummer fnr) {
+        final var bankkonto = kontonr();
+
+        if (isDevOrLocal(env)) {
+            var bankkontoFraNyttEndepunkt = hentBankkontoFraNyTjenesteFailSafe(fnr);
+            if (bankkonto != null && !bankkonto.equals(bankkontoFraNyttEndepunkt)) {
+                // toString() til Bankkonto sensurer kontonummer
+                LOG.warn("Fant avvvik mellom oppslag av kontonummer fra nytt og gammel tjeneste. " +
+                        "Fra oppsalg: kontonummer '{}' banknavn '{}' og fra " +
+                        "nytt endepunkt kontonummer '{}', banknavn '{}'",
+                    bankkonto.kontonummer(), bankkonto.banknavn(),
+                    Optional.ofNullable(bankkontoFraNyttEndepunkt).map(Bankkonto::kontonummer).orElse(""),
+                    Optional.ofNullable(bankkontoFraNyttEndepunkt).map(Bankkonto::banknavn).orElse(""));
+            }
+        }
+        return bankkonto;
+    }
+
+    private Bankkonto hentBankkontoFraNyTjenesteFailSafe(Fødselsnummer fnr) {
+        try {
+            var kontoinformasjon = kontoregister.kontonrFraNyTjeneste(fnr);
+            if (kontoinformasjon != null && kontoinformasjon.aktivKonto() != null) {
+                var kontonummer = kontoinformasjon.aktivKonto().kontonummer();
+                var banknavn = Optional.ofNullable(kontoinformasjon.aktivKonto().utenlandskKontoInfo())
+                    .map(UtenlandskKontoInfo::banknavn)
+                    .orElse(null);
+                return new Bankkonto(kontonummer, banknavn);
+            }
+            return Bankkonto.UKJENT;
+        } catch (Exception e) {
+            LOG.warn("Oppslag av kontonummer på nytt endepunkt i dev feilet", e);
+            return null;
+        }
+    }
+
+
     private Målform målform() {
         return digdir.målform();
     }
@@ -201,6 +247,11 @@ public class PDLConnection implements PingEndpointAware {
     @Override
     public String name() {
         return cfg.name();
+    }
+
+    @Override
+    public void setEnvironment(Environment env) {
+        this.env = env;
     }
 
     @Override

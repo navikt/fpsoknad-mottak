@@ -71,3 +71,12 @@ no.nav:
           digdir-krr-proxy:
             token-exchange:
               audience: dev-gcp:team-rocket:digdir-krr-proxy
+          sokos-kontoregister-person:
+            well-known-url: ${token.x.well.known.url}
+            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+            authentication:
+              client-id: ${token.x.client.id}
+              client-jwk: ${token.x.private.jwk}
+              client-auth-method: private_key_jwt
+            token-exchange:
+              audience: dev-gcp:okonomi:sokos-kontoregister-person
