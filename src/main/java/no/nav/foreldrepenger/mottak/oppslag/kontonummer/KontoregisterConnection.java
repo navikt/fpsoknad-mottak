@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.oppslag.kontonummer;
 
 import static no.nav.foreldrepenger.common.util.MDCUtil.callId;
 import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retrySpec;
-import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.KONTONR;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.KONTOREGISTER;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;

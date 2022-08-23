@@ -104,7 +104,7 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(KONTOREGISTER)
-    public WebClient webClientKontonummer(Builder builder, KontonummerConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
+    public WebClient webClientKontoregister(Builder builder, KontonummerConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
             .baseUrl(cfg.getBaseUri().toString())
             .filter(tokenXFilterFunction)
