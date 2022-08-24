@@ -14,6 +14,11 @@ spec:
         - application: fpinfo-historikk
         - application: foreldrepengesoknad-api
           cluster: {{ cluster_foreldrepengesoknad-api }}
+    outbound:
+      rules:
+        - application: sokos-kontoregister-person
+          namespace: okonomi
+          cluster: dev-gcp
   image: {{image}}
   port: 8080
   replicas:
