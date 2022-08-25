@@ -21,6 +21,7 @@ public record UttaksplanDTO(LocalDate termindato,
                             Boolean farMedmorErAleneOmOmsorg,
                             Boolean farMedmorHarRett,
                             Boolean annenForelderErInformert,
+                            Boolean ønskerJustertUttakVedFødsel,
                             List<UttaksPeriodeDTO> uttaksPerioder) {
     public UttaksplanDTO {
         uttaksPerioder = Optional.ofNullable(uttaksPerioder).orElse(emptyList());

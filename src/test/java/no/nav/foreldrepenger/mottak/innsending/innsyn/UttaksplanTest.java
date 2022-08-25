@@ -35,6 +35,7 @@ class UttaksplanTest {
             "  \"morHarRett\" : false,\n" +
             "  \"morErUfør\" : false,\n" +
             "  \"annenPartHarRettPåForeldrepengerIEØS\" : false,\n" +
+            "  \"ønskerJustertUttakVedFødsel\" : false,\n" +
             "  \"farMedmorErAleneOmOmsorg\" : false,\n" +
             "  \"farMedmorHarRett\" : false,\n" +
             "  \"annenForelderErInformert\" : false,\n" +
@@ -51,6 +52,7 @@ class UttaksplanTest {
             "  \"morHarRett\" : false,\n" +
             "  \"morErUfør\" : false,\n" +
             "  \"annenPartHarRettPåForeldrepengerIEØS\" : false,\n" +
+            "  \"ønskerJustertUttakVedFødsel\" : false,\n" +
             "  \"farMedmorErAleneOmOmsorg\" : false,\n" +
             "  \"farMedmorHarRett\" : false,\n" +
             "  \"annenForelderErInformert\" : false,\n" +
@@ -60,9 +62,8 @@ class UttaksplanTest {
     @Test
     public void testUttaksplanDTO() throws Exception {
         var dto = new UttaksplanDTO(LocalDate.of(2020, 5, 19), LocalDate.of(2020, 5, 19), LocalDate.of(2020, 5, 19),
-                Dekningsgrad.HUNDRE,
-                1, false,
-                false, false, false, false, false, false, false, Collections.emptyList());
+            Dekningsgrad.HUNDRE, 1, false, false, false, false, false, false, false, false, false,
+            Collections.emptyList());
         var dto1 = mapper.readValue(test1, UttaksplanDTO.class);
         assertEquals(dto, dto1);
         var dto2 = mapper.readValue(test2, UttaksplanDTO.class);

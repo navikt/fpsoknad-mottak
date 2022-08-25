@@ -333,6 +333,8 @@ public class ForeldrepengeInfoRenderer {
         if (dekningsgrad != null) {
             y -= renderer.addLineOfRegularText(txt("dekningsgrad", dekningsgrad.kode()), cos, y);
         }
+        //TODO 5145 ønskerJustertUttakVedFødsel
+
         var headerSize = 190F;
         for (LukketPeriodeMedVedlegg periode : sorted(fordeling.perioder())) {
             if (periode.getClass().equals(UttaksPeriode.class)) {
