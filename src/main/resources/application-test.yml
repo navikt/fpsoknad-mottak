@@ -67,4 +67,5 @@ innsyn:
 mottak:
   sender:
     domainevent:
-      enabled : false # Konsumeres av fpinfo-historikk ifm meldinger for dittnav
+      enabled : true # Konsumeres av fpinfo-historikk ifm meldinger for dittnav
+      topic: ${kafka.innsendinghendelse.topic}
