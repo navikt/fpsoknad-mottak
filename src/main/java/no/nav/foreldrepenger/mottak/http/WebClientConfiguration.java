@@ -100,6 +100,7 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(KONTOREGISTER)
+    // TODO: Erstatt med TokenX når dette er støttet!
     public WebClient webClientKontoregister(Builder builder, KontonummerConfig cfg, ClientConfigurationProperties configs, OAuth2AccessTokenService service) {
         return builder
             .baseUrl(cfg.getBaseUri().toString())
