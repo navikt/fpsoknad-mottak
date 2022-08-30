@@ -102,6 +102,22 @@ no.nav:
               client-id: fpsoknad-mottak
               client-jwk: src/test/resources/tokenx/jwk.json
               client-auth-method: private_key_jwt
+          client-credentials-pdl:
+            token-endpoint-url: http://localhost:8060/rest/AzureAd/aadb2b/oauth2/v2.0/token
+            grant-type: client_credentials
+            scope: api://lokal.pdl.pdl-api/.default
+            authentication:
+              client-id: lokal:teamforeldrepenger:fpsoknad-mottak
+              client-jwk: src/test/resources/tokenx/jwk.json
+              client-auth-method: private_key_jwt
+          client-credentials-sokos:
+            token-endpoint-url: http://localhost:8060/rest/AzureAd/aadb2b/oauth2/v2.0/token
+            grant-type: client_credentials
+            scope: api://lokal.okonomi.sokos-kontoregister-person/.default
+            authentication:
+              client-id: lokal:teamforeldrepenger:fpsoknad-mottak
+              client-jwk: src/test/resources/tokenx/jwk.json
+              client-auth-method: private_key_jwt
       issuer:
         tokenx:
           discovery-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
