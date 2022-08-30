@@ -58,7 +58,6 @@ import no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
-import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
 
 @EnableConfigurationProperties
 @ExtendWith(MockitoExtension.class)
@@ -78,9 +77,6 @@ import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
         "sts.username=un", "sts.password=pw" })
 @ComponentScan(basePackages = "no.nav.foreldrepenger.mottak")
 class TestFPFordelSerialization {
-
-    @MockBean
-    SystemTokenTjeneste userService;
 
     @MockBean
     private Oppslag oppslag;

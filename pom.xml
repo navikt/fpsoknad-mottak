@@ -31,7 +31,7 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
         <boot-conditionals.version>3.0.2</boot-conditionals.version>
-        <token-validation.version>2.1.2</token-validation.version>
+        <token-support.version>2.1.2</token-support.version>
         <fpsoknad-felles.version>0.8.20</fpsoknad-felles.version>
 
         <pdfbox.version>2.0.26</pdfbox.version>
@@ -187,11 +187,6 @@
             <artifactId>caffeine</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.security</groupId>
-            <artifactId>token-validation-spring</artifactId>
-            <version>${token-validation.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
@@ -310,8 +305,13 @@
         </dependency>
         <dependency>
             <groupId>no.nav.security</groupId>
+            <artifactId>token-validation-spring</artifactId>
+            <version>${token-support.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.security</groupId>
             <artifactId>token-client-spring</artifactId>
-            <version>${token-validation.version}</version>
+            <version>${token-support.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

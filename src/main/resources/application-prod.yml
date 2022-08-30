@@ -39,5 +39,9 @@ no.nav:
           digdir-krr-proxy:
             token-exchange:
               audience: prod-gcp:team-rocket:digdir-krr-proxy
+          client-credentials-pdl:
+            scope: api://prod-fss.pdl.pdl-api/.default
+#          client-credentials-sokos:
+#            scope: api://prod-gcp.okonomi.sokos-kontoregister-person/.default
 kontoregister:
   enabled: false

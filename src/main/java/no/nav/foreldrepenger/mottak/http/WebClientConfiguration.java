@@ -6,7 +6,6 @@ import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID1;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID2;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_ID;
-import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_TOKEN;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_PERSON_IDENT;
 import static no.nav.foreldrepenger.common.util.TokenUtil.BEARER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -42,8 +41,6 @@ import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConfig;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontonummerConfig;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConfig;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig;
-import no.nav.foreldrepenger.mottak.oppslag.sts.STSConfig;
-import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 import no.nav.security.token.support.client.spring.oauth2.ClientConfigurationPropertiesMatcher;
@@ -55,7 +52,6 @@ import reactor.netty.resources.ConnectionProvider;
 public class WebClientConfiguration {
 
     private static final String TEMA = "TEMA";
-    public static final String STS = "STS";
     public static final String PDL_USER = "PDL";
     public static final String PDL_SYSTEM = "PDL-RELASJON";
     public static final String KRR = "KRR";
@@ -104,19 +100,11 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(KONTOREGISTER)
-    public WebClient webClientKontoregister(Builder builder, KontonummerConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
+    // TODO: Erstatt med TokenX når dette er støttet!
+    public WebClient webClientKontoregister(Builder builder, KontonummerConfig cfg, ClientConfigurationProperties configs, OAuth2AccessTokenService service) {
         return builder
             .baseUrl(cfg.getBaseUri().toString())
-            .filter(tokenXFilterFunction)
-            .build();
-    }
-
-    @Bean
-    @Qualifier(STS)
-    public WebClient webClientSTS(Builder builder, STSConfig cfg) {
-        return builder
-            .baseUrl(cfg.getBaseUri().toString())
-            .defaultHeaders(h -> h.setBasicAuth(cfg.getUsername(), cfg.getPassword()))
+            .filter(azureADClientCredentailFilterFunction("client-credentials-sokos", configs, service))
             .build();
     }
 
@@ -153,10 +141,11 @@ public class WebClientConfiguration {
 
     @Qualifier(PDL_SYSTEM)
     @Bean
-    public WebClient webClientSystemPDL(Builder builder, PDLConfig cfg, SystemTokenTjeneste sts) {
+    public WebClient webClientSystemPDL(Builder builder, PDLConfig cfg, ClientConfigurationProperties configs, OAuth2AccessTokenService service) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
-                .filter(pdlSystemUserExchangeFilterFunction(sts))
+                .filter(temaFilterFunction())
+                .filter(azureADClientCredentailFilterFunction("client-credentials-pdl", configs, service))
                 .build();
     }
 
@@ -184,12 +173,10 @@ public class WebClientConfiguration {
                 .build());
     }
 
-    private static ExchangeFilterFunction pdlSystemUserExchangeFilterFunction(SystemTokenTjeneste sts) {
+    private static ExchangeFilterFunction azureADClientCredentailFilterFunction(String registrering, ClientConfigurationProperties configs, OAuth2AccessTokenService service) {
         return (req, next) -> next.exchange(ClientRequest.from(req)
-                .header(AUTHORIZATION, sts.bearerToken())
-                .header(TEMA, FORELDREPENGER)
-                .header(NAV_CONSUMER_TOKEN, sts.bearerToken())
-                .build());
+            .header(AUTHORIZATION, BEARER + service.getAccessToken(configs.getRegistration().get(registrering)).getAccessToken())
+            .build());
     }
 
     private ExchangeFilterFunction correlatingFilterFunction() {
