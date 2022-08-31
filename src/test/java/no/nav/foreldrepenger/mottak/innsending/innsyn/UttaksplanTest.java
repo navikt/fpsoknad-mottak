@@ -34,7 +34,7 @@ class UttaksplanTest {
             "  \"morErAleneOmOmsorg\" : false,\n" +
             "  \"morHarRett\" : false,\n" +
             "  \"morErUfør\" : false,\n" +
-            "  \"harAnnenForelderTilsvarendeRettEØS\" : false,\n" +
+            "  \"annenPartHarRettPåForeldrepengerIEØS\" : false,\n" +
             "  \"ønskerJustertUttakVedFødsel\" : false,\n" +
             "  \"farMedmorErAleneOmOmsorg\" : false,\n" +
             "  \"farMedmorHarRett\" : false,\n" +
@@ -51,7 +51,7 @@ class UttaksplanTest {
             "  \"morErAleneOmOmsorg\" : false,\n" +
             "  \"morHarRett\" : false,\n" +
             "  \"morErUfør\" : false,\n" +
-            "  \"harAnnenForelderTilsvarendeRettEØS\" : false,\n" +
+            "  \"annenPartHarRettPåForeldrepengerIEØS\" : false,\n" +
             "  \"ønskerJustertUttakVedFødsel\" : false,\n" +
             "  \"farMedmorErAleneOmOmsorg\" : false,\n" +
             "  \"farMedmorHarRett\" : false,\n" +

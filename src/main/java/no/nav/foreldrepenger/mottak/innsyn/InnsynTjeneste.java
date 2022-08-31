@@ -85,7 +85,7 @@ public class InnsynTjeneste implements Innsyn {
     private FpSak berikPerson(FpSak sak) {
         var søker = oppslag.person();
         return new FpSak(sak.saksnummer(), sak.sakAvsluttet(), sak.kanSøkeOmEndring(),
-            sak.sakTilhørerMor(), sak.gjelderAdopsjon(), sak.morUføretrygd(), sak.harAnnenForelderTilsvarendeRettEØS(),
+            sak.sakTilhørerMor(), sak.gjelderAdopsjon(), sak.morUføretrygd(), sak.annenPartHarRettPåForeldrepengerIEØS(),
             sak.ønskerJustertUttakVedFødsel(), sak.rettighetType(),
             berik(sak.annenPart()), sak.familiehendelse(), sak.gjeldendeVedtak(), sak.åpenBehandling(),
             barn(sak.barn(), søker.barn()), sak.dekningsgrad());
@@ -248,7 +248,7 @@ public class InnsynTjeneste implements Innsyn {
             dto.morErAleneOmOmsorg(),
             dto.morHarRett(),
             dto.morErUfør(),
-            dto.harAnnenForelderTilsvarendeRettEØS(),
+            dto.annenPartHarRettPåForeldrepengerIEØS(),
             dto.farMedmorErAleneOmOmsorg(),
             dto.farMedmorHarRett(),
             dto.annenForelderErInformert(),
