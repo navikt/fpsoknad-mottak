@@ -86,6 +86,6 @@ class KontoregisterConnectionTest {
         var kontoinformasjon = kontoregisterConnection.kontonrFraNyTjeneste();
         assertThat(kontoinformasjon).isNotNull();
         assertThat(kontoinformasjon.kontonummer()).isNull();
-        assertThat(kontoinformasjon.utenlandskKontoInfo()).isNull();
+        assertThat(kontoinformasjon.utenlandskKontoInfo()).isNotNull();
     }
 }
