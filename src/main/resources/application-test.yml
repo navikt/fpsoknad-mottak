@@ -66,6 +66,8 @@ pdl:
   base-uri: ${pdl.graphql.base.url}
 kontonummer:
   base-uri: ${oppslag.url}
+kontoregister:
+  base-uri: ${oppslag.url}
 fpfordel:
   base-uri: ${fpfordel.base.url}
 digdir:
