@@ -9,15 +9,14 @@ import javax.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import no.nav.boot.conditionals.Cluster;
-import no.nav.boot.conditionals.ConditionalOnClusters;
+import no.nav.boot.conditionals.ConditionalOnNotProd;
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.innsyn.v2.Saker;
 import no.nav.foreldrepenger.common.innsyn.v2.VedtakPeriode;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
 
-@ConditionalOnClusters(clusters = {Cluster.DEV_FSS, Cluster.LOCAL, Cluster.VTP, Cluster.TEST})
+@ConditionalOnNotProd
 @ProtectedRestController(INNSYNV2)
 public class InnsynControllerV2 {
 

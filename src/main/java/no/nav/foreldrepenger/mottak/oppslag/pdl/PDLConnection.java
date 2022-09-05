@@ -192,15 +192,18 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
             var bankkontoFraNyttEndepunkt = hentBankkontoFraNyTjenesteFailSafe();
             if (bankkonto != null && !bankkonto.equals(bankkontoFraNyttEndepunkt)) {
                 // toString() til Bankkonto sensurer kontonummer
-                LOG.warn("Fant avvvik mellom oppslag av kontonummer fra nytt og gammel tjeneste. " +
+                LOG.info("Fant avvvik mellom oppslag av kontonummer fra nytt og gammel tjeneste. " +
                         "Fra oppsalg: kontonummer '{}' banknavn '{}' og fra " +
                         "nytt endepunkt kontonummer '{}', banknavn '{}'",
                     bankkonto.kontonummer(), bankkonto.banknavn(),
                     Optional.ofNullable(bankkontoFraNyttEndepunkt).map(Bankkonto::kontonummer).orElse(""),
                     Optional.ofNullable(bankkontoFraNyttEndepunkt).map(Bankkonto::banknavn).orElse(""));
             } else {
-                LOG.info("Ingen avvik mellom TPS og nytt kontoregister!");
+                LOG.info("Ingen avvik mellom TPS og nytt kontoregister! Kontonummer: {}, bank: {}.",
+                    Optional.ofNullable(bankkontoFraNyttEndepunkt).map(Bankkonto::kontonummer).orElse(""),
+                    Optional.ofNullable(bankkontoFraNyttEndepunkt).map(Bankkonto::banknavn).orElse(""));
             }
+
         }
         return bankkonto;
     }
