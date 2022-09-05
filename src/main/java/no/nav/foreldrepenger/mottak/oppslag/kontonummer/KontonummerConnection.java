@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.kontonummer;
 
+import static no.nav.foreldrepenger.common.domain.felles.Bankkonto.UKJENT;
 import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retrySpec;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.KONTONR;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -24,7 +25,7 @@ public class KontonummerConnection extends AbstractWebClientConnection {
     }
 
     public Bankkonto kontonr() {
-        LOG.info("Henter kontonummer oppslag");
+        LOG.info("Henter kontonummer oppslag {}", config.getBaseUri());
         return webClient
             .get()
             .uri(config.getBaseUri())
@@ -32,6 +33,9 @@ public class KontonummerConnection extends AbstractWebClientConnection {
             .retrieve()
             .bodyToMono(Bankkonto.class)
             .retryWhen(retrySpec(config.getBaseUri().toString()))
+            .doOnError(throwable -> LOG.warn("Kontonummer oppslag feilet mot fpsoknad-oppslag! Forsetter uten kontonummer!", throwable))
+            .onErrorReturn(UKJENT)
+            .defaultIfEmpty(UKJENT)
             .block();
     }
 

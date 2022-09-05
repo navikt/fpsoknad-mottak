@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.kontonummer;
 
+import static no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto.UKJENT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
@@ -87,5 +88,39 @@ class KontoregisterConnectionTest {
         assertThat(kontoinformasjon).isNotNull();
         assertThat(kontoinformasjon.kontonummer()).isNull();
         assertThat(kontoinformasjon.utenlandskKontoInfo()).isNotNull();
+    }
+
+    @Test
+    void personIkkeFunnet() {
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(404)
+            .addHeader("Content-Type", "application/json"));
+
+        var kontoinformasjon = kontoregisterConnection.kontonrFraNyTjeneste();
+        assertThat(kontoinformasjon).isEqualTo(UKJENT);
+    }
+
+    @Test
+    void serverFeilHosKontoregister() {
+        mockWebServer.enqueue(new MockResponse()
+                .setBody("masse tull!$#")
+                .setResponseCode(500)
+            .addHeader("Content-Type", "application/json"));
+        mockWebServer.enqueue(new MockResponse()
+            .setBody("masse tull!$#")
+            .setResponseCode(500)
+            .addHeader("Content-Type", "application/json"));
+        mockWebServer.enqueue(new MockResponse()
+            .setBody("masse tull!$#")
+            .setResponseCode(500)
+            .addHeader("Content-Type", "application/json"));
+        mockWebServer.enqueue(new MockResponse()
+            .setBody("masse tull!$#")
+            .setResponseCode(500)
+            .addHeader("Content-Type", "application/json"));
+
+
+        var kontoinformasjon = kontoregisterConnection.kontonrFraNyTjeneste();
+        assertThat(kontoinformasjon).isEqualTo(UKJENT);
     }
 }
