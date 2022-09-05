@@ -82,7 +82,7 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
     public Person hentSøker() {
         var fnrSøker = tokenUtil.autentisertBrukerOrElseThrowException();
         return Optional.ofNullable(oppslagSøker(fnrSøker))
-                .map(s -> map(fnrSøker, aktøridFor(fnrSøker), målform(), kontonr(fnrSøker), barn(s), s))
+                .map(s -> map(fnrSøker, aktøridFor(fnrSøker), målform(), kontonr(), barn(s), s))
                 .orElse(null);
     }
 
@@ -184,7 +184,7 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
         return Map.of(IDENT, id);
     }
 
-    private Bankkonto kontonr() {
+    private Bankkonto kontonrFraFpsoknadOppslag() {
         try {
             return kontonr.kontonr();
         } catch (Exception e) {
@@ -193,11 +193,11 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
         }
     }
 
-    Bankkonto kontonr(Fødselsnummer fnr) {
-        final var bankkonto = kontonr();
+    Bankkonto kontonr() {
+        final var bankkonto = kontonrFraFpsoknadOppslag();
 
         if (isDevOrLocal(env)) {
-            var bankkontoFraNyttEndepunkt = hentBankkontoFraNyTjenesteFailSafe(fnr);
+            var bankkontoFraNyttEndepunkt = hentBankkontoFraNyTjenesteFailSafe();
             if (bankkonto != null && !bankkonto.equals(bankkontoFraNyttEndepunkt)) {
                 // toString() til Bankkonto sensurer kontonummer
                 LOG.warn("Fant avvvik mellom oppslag av kontonummer fra nytt og gammel tjeneste. " +
@@ -211,12 +211,12 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
         return bankkonto;
     }
 
-    private Bankkonto hentBankkontoFraNyTjenesteFailSafe(Fødselsnummer fnr) {
+    private Bankkonto hentBankkontoFraNyTjenesteFailSafe() {
         try {
-            var kontoinformasjon = kontoregister.kontonrFraNyTjeneste(fnr);
-            if (kontoinformasjon != null && kontoinformasjon.aktivKonto() != null) {
-                var kontonummer = kontoinformasjon.aktivKonto().kontonummer();
-                var banknavn = Optional.ofNullable(kontoinformasjon.aktivKonto().utenlandskKontoInfo())
+            var kontoinformasjon = kontoregister.kontonrFraNyTjeneste();
+            if (kontoinformasjon != null) {
+                var kontonummer = kontoinformasjon.kontonummer();
+                var banknavn = Optional.ofNullable(kontoinformasjon.utenlandskKontoInfo())
                     .map(UtenlandskKontoInfo::banknavn)
                     .orElse(null);
                 return new Bankkonto(kontonummer, banknavn);

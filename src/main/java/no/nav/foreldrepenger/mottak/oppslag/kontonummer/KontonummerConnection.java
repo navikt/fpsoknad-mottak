@@ -24,7 +24,7 @@ public class KontonummerConnection extends AbstractWebClientConnection {
     }
 
     public Bankkonto kontonr() {
-        LOG.info("Henter kontonummer");
+        LOG.info("Henter kontonummer oppslag");
         return webClient
             .get()
             .uri(config.getBaseUri())

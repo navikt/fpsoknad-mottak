@@ -90,6 +90,7 @@ public class WebClientConfiguration {
     }
 
     @Bean
+    @Deprecated
     @Qualifier(KONTONR)
     public WebClient webClientKontonummer(Builder builder, KontoregisterConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
@@ -100,11 +101,10 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(KONTOREGISTER)
-    // TODO: Erstatt med TokenX når dette er støttet!
-    public WebClient webClientKontoregister(Builder builder, KontonummerConfig cfg, ClientConfigurationProperties configs, OAuth2AccessTokenService service) {
+    public WebClient webClientKontoregister(Builder builder, KontoregisterConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
             .baseUrl(cfg.getBaseUri().toString())
-            .filter(azureADClientCredentailFilterFunction("client-credentials-sokos", configs, service))
+            .filter(tokenXFilterFunction)
             .build();
     }
 

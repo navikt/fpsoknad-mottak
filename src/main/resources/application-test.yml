@@ -45,6 +45,12 @@ no.nav:
           digdir-krr-proxy:
             token-exchange:
               audience: lokal
+          sokos-kontoregister-person: # TODO: Legg inn i application.yml
+            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+            token-exchange:
+              audience: lokal
+            authentication:
+              client-auth-method: private_key_jwt
 arbeidsforhold:
   base-uri: ${aareg.rs.url}
 organisasjon:
