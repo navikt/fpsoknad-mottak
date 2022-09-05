@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
+import static no.nav.foreldrepenger.mottak.util.URIUtil.headers;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.queryParams;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
@@ -29,6 +30,7 @@ public class InnsynConfig extends AbstractConfig {
 
     private static final String DEFAULT_BASE_V2_PATH = "fpinfo/api/v2/";
     private static final String SAKV2 = DEFAULT_BASE_V2_PATH + "saker";
+    private static final String ANNEN_FORELDER_VEDTAKSPERIODER = DEFAULT_BASE_V2_PATH + "annenForeldersVedtaksperioder";
 
     @ConstructorBinding
     public InnsynConfig(@DefaultValue(DEFAULT_PING_PATH) String pingPath,
@@ -60,10 +62,17 @@ public class InnsynConfig extends AbstractConfig {
         return uri(getBaseUri(), SAKV2, queryParams(AKTOR_ID, aktørId));
     }
 
+    URI annenPartsVedtaksperioderURI(String søker, String annenForelder, String barn) {
+        var headers = headers();
+        headers.add("sokersAktorId", søker);
+        headers.add("annenPartAktorId", annenForelder);
+        headers.add("barnAktorId", barn);
+        return uri(getBaseUri(), ANNEN_FORELDER_VEDTAKSPERIODER, headers);
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [pingPath=" + getPingPath() + ", enabled=" + isEnabled() + ", uri=" + getBaseUri()
                 + ", basePath=" + basePath + "]";
     }
-
 }

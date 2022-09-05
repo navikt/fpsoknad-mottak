@@ -38,6 +38,7 @@ import no.nav.foreldrepenger.common.innsyn.v2.FpSak;
 import no.nav.foreldrepenger.common.innsyn.v2.PersonDetaljer;
 import no.nav.foreldrepenger.common.innsyn.v2.Saker;
 import no.nav.foreldrepenger.common.innsyn.v2.Saksnummer;
+import no.nav.foreldrepenger.common.innsyn.v2.VedtakPeriode;
 import no.nav.foreldrepenger.common.innsyn.v2.persondetaljer.Kjønn;
 import no.nav.foreldrepenger.common.innsyn.v2.persondetaljer.Person;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
@@ -69,10 +70,20 @@ public class InnsynTjeneste implements Innsyn {
     @Override
     public Saker sakerV2(AktørId aktørId) {
         LOG.info("Henter sakerV2 for aktørId {}", partialMask(aktørId.value(), 13));
-        var saker = innsyn.sakerV2(aktørId.value());
+        var saker = innsyn.sakerV2(aktørId);
         var beriketSaker = berikPerson(saker);
         LOG.info(CONFIDENTIAL, "{}", beriketSaker);
         return beriketSaker;
+    }
+
+    @Override
+    public List<VedtakPeriode> annenPartsVedtaksperioder(AktørId søker,
+                                                         AktørId annenForelder,
+                                                         AktørId barn) {
+        LOG.info("Henter annen parts vedtaksperioder");
+        var perioder = innsyn.annenPartsVedtaksperioder(søker, annenForelder, barn);
+        LOG.info("Returnerer annen parts vedtaksperioder. Antall perioder {}", perioder.size());
+        return perioder;
     }
 
     private Saker berikPerson(Saker saker) {

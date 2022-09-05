@@ -33,16 +33,20 @@ public final class URIUtil {
     }
 
     public static HttpHeaders queryParams(String key, String value) {
-        var queryParams = new HttpHeaders();
-        queryParams.add(key, taint(value));
-        return queryParams;
+        var httpHeaders = headers();
+        httpHeaders.add(key, taint(value));
+        return httpHeaders;
     }
 
     public static HttpHeaders queryParams(String key, String value, String key1, String value1) {
-        var queryParams = new HttpHeaders();
-        queryParams.add(key, taint(value));
-        queryParams.add(key1, taint(value1));
-        return queryParams;
+        var httpHeaders = headers();
+        httpHeaders.add(key, taint(value));
+        httpHeaders.add(key1, taint(value1));
+        return httpHeaders;
+    }
+
+    public static HttpHeaders headers() {
+        return new HttpHeaders();
     }
 
     public static URI uri(URI base, HttpHeaders queryParams) {
