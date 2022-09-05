@@ -65,7 +65,7 @@ class KontonummerHentTest {
             .setBody(bodyFraNyttEndepunkt)
             .addHeader("Content-Type", "application/json"));
 
-        var bankkonto = pdlConnection.kontonr(new Fødselsnummer("12312312311"));
+        var bankkonto = pdlConnection.kontonr();
         assertThat(bankkonto.kontonummer()).isEqualTo("123456789");
         assertThat(bankkonto.banknavn()).isEqualTo("DNB FAKE");
     }
@@ -80,7 +80,7 @@ class KontonummerHentTest {
             .addHeader("Content-Type", "application/json"));
 
 
-        var bankkonto = pdlConnection.kontonr(new Fødselsnummer("12312312311"));
+        var bankkonto = pdlConnection.kontonr();
         assertThat(bankkonto).isEqualTo(Bankkonto.UKJENT);
     }
 
@@ -89,53 +89,26 @@ class KontonummerHentTest {
         mockWebServer.enqueue(new MockResponse().setResponseCode(404));
         mockWebServer.enqueue(new MockResponse().setResponseCode(404));
 
-        var bankkonto = pdlConnection.kontonr(new Fødselsnummer("12312312311"));
+        var bankkonto = pdlConnection.kontonr();
         assertThat(bankkonto).isEqualTo(Bankkonto.UKJENT);
     }
 
     private String happyCaseBodyFraNyttEndepunkt() {
         return """
-            {
-              "aktivKonto": {
-                "kontohaver": "12312312311",
-                "kontonummer": "123456789",
-                "utenlandskKontoInfo": {
-                  "banknavn": "DNB",
-                  "bankkode": "CC123456789",
-                  "bankLandkode": "SE",
-                  "valutakode": "SEK",
-                  "swiftBicKode": "SHEDNO22",
-                  "bankadresse1": "string",
-                  "bankadresse2": "string",
-                  "bankadresse3": "string"
-                },
-                "gyldigFom": "2020-01-01T10:00:00",
-                "gyldigTom": "2020-01-01T10:00:00",
-                "endretAv": "string",
-                "opprettetAv": "string"
-              },
-              "kontohistorikk": [
-                {
-                  "kontohaver": "12312312311",
-                  "kontonummer": "string",
-                  "utenlandskKontoInfo": {
-                    "banknavn": "string",
-                    "bankkode": "CC123456789",
-                    "bankLandkode": "SE",
-                    "valutakode": "SEK",
-                    "swiftBicKode": "SHEDNO22",
-                    "bankadresse1": "string",
-                    "bankadresse2": "string",
-                    "bankadresse3": "string"
-                  },
-                  "gyldigFom": "2020-01-01T10:00:00",
-                  "gyldigTom": "2020-01-01T10:00:00",
-                  "endretAv": "string",
-                  "opprettetAv": "string"
-                }
-              ]
-            }
-                        """;
+                  {
+                      "kontonummer": "8361347234732292",
+                      "utenlandskKontoInfo": {
+                        "banknavn": "DNB",
+                        "bankkode": "CC123456789",
+                        "bankLandkode": "SE",
+                        "valutakode": "SEK",
+                        "swiftBicKode": "SHEDNO22",
+                        "bankadresse1": "string",
+                        "bankadresse2": "string",
+                        "bankadresse3": "string"
+                      }
+                    }
+                    """;
     }
 
 }

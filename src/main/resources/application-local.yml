@@ -33,6 +33,8 @@ fppdfgen:
   enabled: false
 kontonummer:
   base-uri: http://localhost:8060/rest/dummy/oppslag
+kontoregister:
+  base-uri: http://localhost:8060/rest/dummy/oppslag
 fpfordel:
   base-uri: http://localhost:8090
 digdir:
@@ -93,6 +95,15 @@ no.nav:
             authentication:
               client-id: fpsoknad-mottak
               client-jwk: src/test/resources/tokenx/jwk.json
+          sokos-kontoregister-person: # TODO: Legg inn i application.yml
+            well-known-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
+            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+            token-exchange:
+              audience: local:okonomi:sokos-kontoregister-person
+            authentication:
+              client-id: fpsoknad-mottak
+              client-jwk: src/test/resources/tokenx/jwk.json
+              client-auth-method: private_key_jwt
           localhost:
             well-known-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
             grant-type: urn:ietf:params:oauth:grant-type:token-exchange
@@ -106,14 +117,6 @@ no.nav:
             token-endpoint-url: http://localhost:8060/rest/AzureAd/aadb2b/oauth2/v2.0/token
             grant-type: client_credentials
             scope: api://lokal.pdl.pdl-api/.default
-            authentication:
-              client-id: lokal:teamforeldrepenger:fpsoknad-mottak
-              client-jwk: src/test/resources/tokenx/jwk.json
-              client-auth-method: private_key_jwt
-          client-credentials-sokos:
-            token-endpoint-url: http://localhost:8060/rest/AzureAd/aadb2b/oauth2/v2.0/token
-            grant-type: client_credentials
-            scope: api://lokal.okonomi.sokos-kontoregister-person/.default
             authentication:
               client-id: lokal:teamforeldrepenger:fpsoknad-mottak
               client-jwk: src/test/resources/tokenx/jwk.json

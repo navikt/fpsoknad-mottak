@@ -12,11 +12,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
-import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.HentKonto;
-import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Kontoinformasjon;
-import reactor.core.publisher.Mono;
+import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto;
 
 @Component
 public class KontoregisterConnection extends AbstractWebClientConnection {
@@ -29,15 +26,14 @@ public class KontoregisterConnection extends AbstractWebClientConnection {
         this.cfg = cfg;
     }
 
-    public Kontoinformasjon kontonrFraNyTjeneste(Fødselsnummer fnr) {
+    public Konto kontonrFraNyTjeneste() {
         LOG.info("Henter kontonummer fra {}", cfg.kontoregisterURI());
-        return webClient.post()
+        return webClient.get()
             .uri(cfg.kontoregisterURI())
             .accept(APPLICATION_JSON)
             .header("nav-call-id", callId())
-            .body(Mono.just(new HentKonto(fnr, false)), HentKonto.class)
             .retrieve()
-            .bodyToMono(Kontoinformasjon.class)
+            .bodyToMono(Konto.class)
             .retryWhen(retrySpec(config.getBaseUri().toString()))
             .block();
     }
