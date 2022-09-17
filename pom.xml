@@ -31,7 +31,7 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
         <boot-conditionals.version>3.1.0</boot-conditionals.version>
-        <token-support.version>2.1.2</token-support.version>
+        <token-support.version>2.1.4</token-support.version>
         <fpsoknad-felles.version>0.8.24</fpsoknad-felles.version>
 
         <pdfbox.version>2.0.26</pdfbox.version>
