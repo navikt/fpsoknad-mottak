@@ -15,6 +15,7 @@ import org.springframework.web.client.RestOperations;
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.innsyn.v2.Saker;
 import no.nav.foreldrepenger.common.innsyn.v2.Saksnummer;
+import no.nav.foreldrepenger.common.innsyn.v2.VedtakPeriode;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
@@ -55,10 +56,19 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
                 .orElse(emptyList());
     }
 
-    Saker sakerV2(String aktørId) {
+    Saker sakerV2(AktørId aktørId) {
         LOG.trace("Henter sakerV2 for {}", aktørId);
-        return Optional.ofNullable(getForObject(cfg.sakV2URI(aktørId), Saker.class))
+        return Optional.ofNullable(getForObject(cfg.sakV2URI(aktørId.value()), Saker.class))
             .orElseThrow();
+    }
+
+    public List<VedtakPeriode> annenPartsVedtaksperioder(AktørId søker,
+                                                         AktørId annenForelder,
+                                                         AktørId barn) {
+        return Optional.ofNullable(getForObject(cfg.annenPartsVedtaksperioderURI(søker.value(), annenForelder.value(),
+                barn.value()), VedtakPeriode[].class))
+            .map(Arrays::asList)
+            .orElse(emptyList());
     }
 
     UttaksplanDTO uttaksplan(Saksnummer saksnummer) {
@@ -91,5 +101,4 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
     public String toString() {
         return getClass().getSimpleName() + " [config=" + cfg + "]";
     }
-
 }

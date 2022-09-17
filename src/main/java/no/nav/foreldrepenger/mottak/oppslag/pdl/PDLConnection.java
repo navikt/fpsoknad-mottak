@@ -44,6 +44,7 @@ import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConnection;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontonummerConnection;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConnection;
+import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.UtenlandskKontoInfo;
 
 @Component
@@ -57,7 +58,7 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
     private final PDLConfig cfg;
     private final DigdirKrrProxyConnection digdir;
     private final PDLErrorResponseHandler errorHandler;
-    private final KontonummerConnection kontonr;
+    private final KontonummerConnection kontonrTPS;
     private final KontoregisterConnection kontoregister;
     private final TokenUtil tokenUtil;
     private Environment env;
@@ -65,14 +66,14 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
     PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient,
                   @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
                   PDLConfig cfg, DigdirKrrProxyConnection digdir,
-                  KontonummerConnection kontonr,
+                  KontonummerConnection kontonrTPS,
                   KontoregisterConnection kontoregister,
                   TokenUtil tokenUtil,
                   PDLErrorResponseHandler errorHandler) {
         this.userClient = userClient;
         this.systemClient = systemClient;
         this.digdir = digdir;
-        this.kontonr = kontonr;
+        this.kontonrTPS = kontonrTPS;
         this.kontoregister = kontoregister;
         this.cfg = cfg;
         this.tokenUtil = tokenUtil;
@@ -82,7 +83,7 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
     public Person hentSøker() {
         var fnrSøker = tokenUtil.autentisertBrukerOrElseThrowException();
         return Optional.ofNullable(oppslagSøker(fnrSøker))
-                .map(s -> map(fnrSøker, aktøridFor(fnrSøker), målform(), kontonr(fnrSøker), barn(s), s))
+                .map(s -> map(fnrSøker, aktøridFor(fnrSøker), målform(), kontonr(), barn(s), s))
                 .orElse(null);
     }
 
@@ -184,48 +185,39 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
         return Map.of(IDENT, id);
     }
 
-    private Bankkonto kontonr() {
-        try {
-            return kontonr.kontonr();
-        } catch (Exception e) {
-            LOG.warn("Kontonummer oppslag feilet", e);
-            return Bankkonto.UKJENT;
-        }
-    }
-
-    Bankkonto kontonr(Fødselsnummer fnr) {
-        final var bankkonto = kontonr();
+    Bankkonto kontonr() {
+        final var bankkonto = kontonrTPS.kontonr();
 
         if (isDevOrLocal(env)) {
-            var bankkontoFraNyttEndepunkt = hentBankkontoFraNyTjenesteFailSafe(fnr);
+            var bankkontoFraNyttEndepunkt = hentBankkontoFraNyTjenesteFailSafe();
             if (bankkonto != null && !bankkonto.equals(bankkontoFraNyttEndepunkt)) {
                 // toString() til Bankkonto sensurer kontonummer
-                LOG.warn("Fant avvvik mellom oppslag av kontonummer fra nytt og gammel tjeneste. " +
+                LOG.info("Fant avvvik mellom oppslag av kontonummer fra nytt og gammel tjeneste. " +
                         "Fra oppsalg: kontonummer '{}' banknavn '{}' og fra " +
                         "nytt endepunkt kontonummer '{}', banknavn '{}'",
                     bankkonto.kontonummer(), bankkonto.banknavn(),
                     Optional.ofNullable(bankkontoFraNyttEndepunkt).map(Bankkonto::kontonummer).orElse(""),
                     Optional.ofNullable(bankkontoFraNyttEndepunkt).map(Bankkonto::banknavn).orElse(""));
+            } else {
+                LOG.info("Ingen avvik mellom TPS og nytt kontoregister! Kontonummer: {}, bank: {}.",
+                    Optional.ofNullable(bankkontoFraNyttEndepunkt).map(Bankkonto::kontonummer).orElse(""),
+                    Optional.ofNullable(bankkontoFraNyttEndepunkt).map(Bankkonto::banknavn).orElse(""));
             }
+
         }
         return bankkonto;
     }
 
-    private Bankkonto hentBankkontoFraNyTjenesteFailSafe(Fødselsnummer fnr) {
-        try {
-            var kontoinformasjon = kontoregister.kontonrFraNyTjeneste(fnr);
-            if (kontoinformasjon != null && kontoinformasjon.aktivKonto() != null) {
-                var kontonummer = kontoinformasjon.aktivKonto().kontonummer();
-                var banknavn = Optional.ofNullable(kontoinformasjon.aktivKonto().utenlandskKontoInfo())
-                    .map(UtenlandskKontoInfo::banknavn)
-                    .orElse(null);
-                return new Bankkonto(kontonummer, banknavn);
-            }
-            return Bankkonto.UKJENT;
-        } catch (Exception e) {
-            LOG.warn("Oppslag av kontonummer på nytt endepunkt i dev feilet", e);
-            return null;
+    private Bankkonto hentBankkontoFraNyTjenesteFailSafe() {
+        var kontoinformasjon = kontoregister.kontonrFraNyTjeneste();
+        if (!Konto.UKJENT.equals(kontoinformasjon)) {
+            var kontonummer = kontoinformasjon.kontonummer();
+            var banknavn = Optional.ofNullable(kontoinformasjon.utenlandskKontoInfo())
+                .map(UtenlandskKontoInfo::banknavn)
+                .orElse(null);
+            return new Bankkonto(kontonummer, banknavn);
         }
+        return Bankkonto.UKJENT;
     }
 
 

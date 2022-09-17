@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.kontonummer;
 
+import static no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto.UKJENT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
@@ -12,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
@@ -41,90 +41,86 @@ class KontoregisterConnectionTest {
     @Test
     void happycase() {
         var body = """
-            {
-              "aktivKonto": {
-                "kontohaver": "12312312311",
-                "kontonummer": "123456789",
-                "utenlandskKontoInfo": {
-                  "banknavn": "string",
-                  "bankkode": "CC123456789",
-                  "bankLandkode": "SE",
-                  "valutakode": "SEK",
-                  "swiftBicKode": "SHEDNO22",
-                  "bankadresse1": "string",
-                  "bankadresse2": "string",
-                  "bankadresse3": "string"
-                },
-                "gyldigFom": "2020-01-01T10:00:00",
-                "gyldigTom": "2020-01-01T10:00:00",
-                "endretAv": "string",
-                "opprettetAv": "string"
-              },
-              "kontohistorikk": [
-                {
-                  "kontohaver": "12312312311",
-                  "kontonummer": "string",
-                  "utenlandskKontoInfo": {
-                    "banknavn": "string",
-                    "bankkode": "CC123456789",
-                    "bankLandkode": "SE",
-                    "valutakode": "SEK",
-                    "swiftBicKode": "SHEDNO22",
-                    "bankadresse1": "string",
-                    "bankadresse2": "string",
-                    "bankadresse3": "string"
-                  },
-                  "gyldigFom": "2020-01-01T10:00:00",
-                  "gyldigTom": "2020-01-01T10:00:00",
-                  "endretAv": "string",
-                  "opprettetAv": "string"
-                }
-              ]
-            }
+                  {
+                      "kontonummer": "8361347234732292",
+                      "utenlandskKontoInfo": {
+                        "banknavn": "string",
+                        "bankkode": "CC123456789",
+                        "bankLandkode": "SE",
+                        "valutakode": "SEK",
+                        "swiftBicKode": "SHEDNO22",
+                        "bankadresse1": "string",
+                        "bankadresse2": "string",
+                        "bankadresse3": "string"
+                      }
+                    }
                         """;
         mockWebServer.enqueue(new MockResponse()
             .setBody(body)
             .addHeader("Content-Type", "application/json"));
 
-        var kontoinformasjon = kontoregisterConnection.kontonrFraNyTjeneste(new Fødselsnummer("12312312311"));
+        var kontoinformasjon = kontoregisterConnection.kontonrFraNyTjeneste();
         assertThat(kontoinformasjon).isNotNull();
-        assertThat(kontoinformasjon.aktivKonto().kontonummer()).isEqualTo("123456789");
+        assertThat(kontoinformasjon.kontonummer()).isEqualTo("8361347234732292");
     }
 
     @Test
-    void ingenAktiveKontoer_bareEldreKontoerSomIkkeErGyldigLenger() {
+    void ingenAktiveKontoerBareUtenlandskInfo() {
         var body = """
-            {
-              "aktivKonto": {
-              },
-              "kontohistorikk": [
-                {
-                  "kontohaver": "12312312311",
-                  "kontonummer": "string",
-                  "utenlandskKontoInfo": {
-                    "banknavn": "string",
-                    "bankkode": "CC123456789",
-                    "bankLandkode": "SE",
-                    "valutakode": "SEK",
-                    "swiftBicKode": "SHEDNO22",
-                    "bankadresse1": "string",
-                    "bankadresse2": "string",
-                    "bankadresse3": "string"
-                  },
-                  "gyldigFom": "2020-01-01T10:00:00",
-                  "gyldigTom": "2020-01-01T10:00:00",
-                  "endretAv": "string",
-                  "opprettetAv": "string"
-                }
-              ]
-            }
+                  {
+                      "utenlandskKontoInfo": {
+                        "banknavn": "string",
+                        "bankkode": "CC123456789",
+                        "bankLandkode": "SE",
+                        "valutakode": "SEK",
+                        "swiftBicKode": "SHEDNO22",
+                        "bankadresse1": "string",
+                        "bankadresse2": "string",
+                        "bankadresse3": "string"
+                      }
+                    }
                         """;
         mockWebServer.enqueue(new MockResponse()
             .setBody(body)
             .addHeader("Content-Type", "application/json"));
 
-        var kontoinformasjon = kontoregisterConnection.kontonrFraNyTjeneste(new Fødselsnummer("12312312311"));
+        var kontoinformasjon = kontoregisterConnection.kontonrFraNyTjeneste();
         assertThat(kontoinformasjon).isNotNull();
-        assertThat(kontoinformasjon.aktivKonto().kontonummer()).isNull();
+        assertThat(kontoinformasjon.kontonummer()).isNull();
+        assertThat(kontoinformasjon.utenlandskKontoInfo()).isNotNull();
+    }
+
+    @Test
+    void personIkkeFunnet() {
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(404)
+            .addHeader("Content-Type", "application/json"));
+
+        var kontoinformasjon = kontoregisterConnection.kontonrFraNyTjeneste();
+        assertThat(kontoinformasjon).isEqualTo(UKJENT);
+    }
+
+    @Test
+    void serverFeilHosKontoregister() {
+        mockWebServer.enqueue(new MockResponse()
+                .setBody("masse tull!$#")
+                .setResponseCode(500)
+            .addHeader("Content-Type", "application/json"));
+        mockWebServer.enqueue(new MockResponse()
+            .setBody("masse tull!$#")
+            .setResponseCode(500)
+            .addHeader("Content-Type", "application/json"));
+        mockWebServer.enqueue(new MockResponse()
+            .setBody("masse tull!$#")
+            .setResponseCode(500)
+            .addHeader("Content-Type", "application/json"));
+        mockWebServer.enqueue(new MockResponse()
+            .setBody("masse tull!$#")
+            .setResponseCode(500)
+            .addHeader("Content-Type", "application/json"));
+
+
+        var kontoinformasjon = kontoregisterConnection.kontonrFraNyTjeneste();
+        assertThat(kontoinformasjon).isEqualTo(UKJENT);
     }
 }

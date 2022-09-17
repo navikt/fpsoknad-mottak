@@ -45,6 +45,15 @@ no.nav:
           digdir-krr-proxy:
             token-exchange:
               audience: lokal
+          sokos-kontoregister-person: # TODO: Legg inn i application.yml
+            token-exchange:
+              audience: lokal
+            well-known-url: ${token.x.well.known.url}
+            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+            authentication:
+              client-id: ${token.x.client.id}
+              client-jwk: ${token.x.private.jwk}
+              client-auth-method: private_key_jwt
 arbeidsforhold:
   base-uri: ${aareg.rs.url}
 organisasjon:
@@ -56,6 +65,8 @@ fppdfgen:
 pdl:
   base-uri: ${pdl.graphql.base.url}
 kontonummer:
+  base-uri: ${oppslag.url}
+kontoregister:
   base-uri: ${oppslag.url}
 fpfordel:
   base-uri: ${fpfordel.base.url}
