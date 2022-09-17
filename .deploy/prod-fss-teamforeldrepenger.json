@@ -1,9 +1,9 @@
 {
     "cluster_foreldrepengesoknad-api": "prod-gcp",
     "ingresses":  [
-        "https://fpsoknad-mottak.adeo.no",
-        "https://fpsoknad-mottak.nais.adeo.no",
         "https://fpsoknad-mottak.intern.nav.no",
         "https://fpsoknad-mottak.prod-fss-pub.nais.io"
-    ]
+    ],
+    "minReplicas": "2",
+    "maxReplicas": "3"
 }
