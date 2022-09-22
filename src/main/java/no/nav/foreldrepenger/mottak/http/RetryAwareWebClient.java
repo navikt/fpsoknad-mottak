@@ -17,8 +17,7 @@ public final class RetryAwareWebClient {
 
     public static RetryBackoffSpec retrySpec(String name) {
         return Retry.fixedDelay(3, Duration.ofSeconds(1))
-            .filter(ex -> (ex instanceof WebClientResponseException webClientResponseException) &&
-                webClientResponseException.getStatusCode().is5xxServerError())
+            .filter(ex -> ex instanceof WebClientResponseException webClientResponseException && webClientResponseException.getStatusCode().is5xxServerError())
             .doBeforeRetry(retrySignal -> LOG.info("Kall mot {} kastet exception {} for {}. gang", name, retrySignal.failure(), retrySignal.totalRetriesInARow() + 1));
     }
 }

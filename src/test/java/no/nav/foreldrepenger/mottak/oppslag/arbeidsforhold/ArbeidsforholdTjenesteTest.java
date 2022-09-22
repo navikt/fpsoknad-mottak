@@ -332,6 +332,27 @@ class ArbeidsforholdTjenesteTest {
     }
 
     @Test
+    void verifiserAtWebclientReturnererTomListeVed404BodyFraAareg() {
+        mockWebServer.enqueue(new MockResponse()
+            .setResponseCode(404)
+            .setBody("Fant ikke forespurt(e) ressurs(er)")
+            .addHeader("Content-Type", "application/json"));
+        var arbeidsforhold = arbeidsforholdTjeneste.hentArbeidsforhold();
+        assertThat(arbeidsforhold)
+            .isNotNull()
+            .isEmpty();
+    }
+
+    @Test
+    void verifiserAtWebclientHiverExceptionVedGenerell404feil() {
+        mockWebServer.enqueue(new MockResponse()
+            .setResponseCode(404)
+            .setBody("Generell")
+            .addHeader("Content-Type", "application/json"));
+        assertThrows(WebClientResponseException.NotFound.class, () -> arbeidsforholdTjeneste.hentArbeidsforhold());
+    }
+
+    @Test
     void verifiserAtWebclientPropagerer4xxExceptions() {
         mockWebServer.enqueue(new MockResponse()
             .setResponseCode(403)
