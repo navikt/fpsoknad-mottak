@@ -105,7 +105,6 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                         opptjening.utenlandskArbeidsforhold(),
                         søknad.getVedlegg(), p.cos, p.y));
                     cosy = render(docParam, utenlandsArbeidsforholdFn, cosy);
-
                 }
 
                 if (!opptjening.annenOpptjening().isEmpty()) {
