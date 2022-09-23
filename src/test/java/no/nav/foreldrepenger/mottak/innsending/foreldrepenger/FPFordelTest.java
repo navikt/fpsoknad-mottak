@@ -78,12 +78,12 @@ import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
 class FPFordelTest {
 
     private static final AktørId AKTØRID = new AktørId("1111111111");
-    private static final String FPFORDELURIBASE = "http://some.host.for.fpfordel";
+    private static final String FPFORDELURIBASE = "http://some.host.for.fpfordel/fpfordel";
     private static final String FPFORDELPOLLURISTRING = FPFORDELURIBASE + "/poll/id";
-    private static final String FPINFOURISTRING = "http://some.host.for.fpinfo/status";
+    private static final String FPINFOURISTRING = "http://some.host.for.fpinfo/fpinfo/status";
 
     private static final URI FPFORDELPOLLURI = URI.create(FPFORDELPOLLURISTRING);
-    private static final URI POSTURI = URI.create(FPFORDELURIBASE + "/fpfordel/api/dokumentforsendelse");
+    private static final URI POSTURI = URI.create(FPFORDELURIBASE + "/api/dokumentforsendelse");
 
     private static final String JOURNALID = "999";
     private static final Saksnummer SAKSNR = Saksnummer.valueOf("666");

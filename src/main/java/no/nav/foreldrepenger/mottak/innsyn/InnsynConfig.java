@@ -16,21 +16,23 @@ import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 
 @ConfigurationProperties(prefix = "innsyn")
 public class InnsynConfig extends AbstractConfig {
-    private static final String DEFAULT_URI = "http://fpinfo";
-    private static final String DEFAULT_BASE_PATH = "fpinfo/api/dokumentforsendelse/";
-    private static final String DEFAULT_PING_PATH = "fpinfo/internal/health/isAlive";
+    private static final String DEFAULT_URI = "http://fpinfo/fpinfo";
+    private static final String DEFAULT_BASE_PATH = "api/dokumentforsendelse/";
+    private static final String DEFAULT_PING_PATH = "internal/health/isAlive";
+    private static final String SAK = DEFAULT_BASE_PATH + "sak";
+    private static final String ANNENFORELDERPLAN = DEFAULT_BASE_PATH + "annenforelderplan";
+    private static final String UTTAKSPLAN = DEFAULT_BASE_PATH + "uttaksplan";
+
+    private static final String DEFAULT_BASE_V2_PATH = "api/v2/";
+    private static final String SAKV2 = DEFAULT_BASE_V2_PATH + "saker";
+    private static final String ANNEN_FORELDER_VEDTAKSPERIODER = DEFAULT_BASE_V2_PATH + "annenForeldersVedtaksperioder";
+
     private static final String AKTOR_ID = "aktorId";
     private static final String SAKSNUMMER = "saksnummer";
     private static final String ANNENPART = "aktorIdAnnenPart";
     private static final String BRUKER = "aktorIdBruker";
-    private static final String SAK = DEFAULT_BASE_PATH + "sak";
-    private static final String ANNENFORELDERPLAN = DEFAULT_BASE_PATH + "annenforelderplan";
-    private static final String UTTAKSPLAN = DEFAULT_BASE_PATH + "uttaksplan";
-    private final String basePath;
 
-    private static final String DEFAULT_BASE_V2_PATH = "fpinfo/api/v2/";
-    private static final String SAKV2 = DEFAULT_BASE_V2_PATH + "saker";
-    private static final String ANNEN_FORELDER_VEDTAKSPERIODER = DEFAULT_BASE_V2_PATH + "annenForeldersVedtaksperioder";
+    private final String basePath;
 
     @ConstructorBinding
     public InnsynConfig(@DefaultValue(DEFAULT_PING_PATH) String pingPath,
