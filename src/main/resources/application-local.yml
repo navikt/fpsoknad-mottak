@@ -36,11 +36,11 @@ kontonummer:
 kontoregister:
   base-uri: http://localhost:8060/rest/dummy/oppslag
 fpfordel:
-  base-uri: http://localhost:8090
+  base-uri: http://localhost:8090/fpfordel
 digdir:
   base-uri: http://localhost:8060/rest/api/digdir
 innsyn:
-  base-uri: http://localhost:8040
+  base-uri: http://localhost:8040/fpinfo
 kafka:
   username: vtp
   password: vtp

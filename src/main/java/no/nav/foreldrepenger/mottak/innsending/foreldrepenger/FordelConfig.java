@@ -13,10 +13,10 @@ import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 @ConfigurationProperties(prefix = "fpfordel")
 public class FordelConfig extends AbstractConfig {
 
-    private static final String DEFAULT_PING_PATH = "fpfordel/internal/health/isAlive";
-    private static final String DEFAULT_BASE_PATH = "fpfordel/api/dokumentforsendelse";
+    private static final String DEFAULT_PING_PATH = "internal/health/isAlive";
+    private static final String DEFAULT_BASE_PATH = "api/dokumentforsendelse";
 
-    private static final String DEFAULT_URI = "http://fpfordel";
+    private static final String DEFAULT_URI = "http://fpfordel/fpfordel";
 
     private final String basePath;
 

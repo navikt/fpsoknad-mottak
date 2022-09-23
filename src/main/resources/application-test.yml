@@ -69,11 +69,11 @@ kontonummer:
 kontoregister:
   base-uri: ${oppslag.url}
 fpfordel:
-  base-uri: ${fpfordel.base.url}
+  base-uri: ${fpfordel.override.url}
 digdir:
   base-uri: ${digdir.base.url}
 innsyn:
-  base-uri: ${fpinfo.base.url}
+  base-uri: ${fpinfo.override.url}
 
 mottak:
   sender:
