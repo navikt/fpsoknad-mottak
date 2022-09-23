@@ -93,7 +93,7 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
     private BehandlingDTO hent(LenkeDTO lenke) {
         return Optional.ofNullable(lenke)
             .map(LenkeDTO::href)
-            .map(l -> getForObject(cfg.createLink(l), BehandlingDTO.class))
+            .map(l -> getForObject(cfg.createLink(l), BehandlingDTO.class, true))
             .orElse(null);
     }
 
