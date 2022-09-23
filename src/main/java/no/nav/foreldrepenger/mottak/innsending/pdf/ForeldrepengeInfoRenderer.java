@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import no.nav.boot.conditionals.Cluster;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -125,6 +126,9 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private float annenForelderTilsvarendeRettEøs(Rettigheter rettigheter, FontAwareCos cos, float y) throws IOException {
+        if (Cluster.currentCluster() == Cluster.PROD_FSS) {
+            return y;
+        }
         boolean besvartAvSøker = !rettigheter.harAnnenForelderRett();
         if (besvartAvSøker) {
             y -= renderer.addLineOfRegularText(INDENT, txt("annenforelderTilsvarendeEosRett",
