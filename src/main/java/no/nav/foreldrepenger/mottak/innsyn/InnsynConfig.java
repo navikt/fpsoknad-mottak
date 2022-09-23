@@ -57,7 +57,12 @@ public class InnsynConfig extends AbstractConfig {
     }
 
     URI createLink(String l) {
-        return URI.create(getBaseUri().toString().replaceAll(getBaseUri().getPath()+"$", "") + l);
+        var base = getBaseUri().getScheme() + "://" + getBaseUri().getHost();
+        var port = getBaseUri().getPort();
+        if (port != -1) {
+            base += ":" + port;
+        }
+        return URI.create(base + l);
     }
 
     URI sakV2URI(String aktørId) {
