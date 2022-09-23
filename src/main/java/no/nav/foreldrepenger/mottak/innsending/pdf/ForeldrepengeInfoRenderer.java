@@ -116,16 +116,27 @@ public class ForeldrepengeInfoRenderer {
         if (!(annenForelder instanceof UkjentForelder)) {
             y -= renderer.addLineOfRegularText(INDENT, txt("harrett", jaNei(rettigheter.harAnnenForelderRett())), cos,
                     y);
+            y = annenForelderTilsvarendeRettEøs(rettigheter, cos, y);
             y = morUfør(rettigheter, brukerRolle, cos, y);
-            //TODO TFP-5012 eøs
             y -= renderer.addLineOfRegularText(INDENT, txt("informert", jaNei(erAnnenForlderInformert)), cos, y);
         }
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
+    private float annenForelderTilsvarendeRettEøs(Rettigheter rettigheter, FontAwareCos cos, float y) throws IOException {
+        boolean besvartAvSøker = !rettigheter.harAnnenForelderRett();
+        if (besvartAvSøker) {
+            y -= renderer.addLineOfRegularText(INDENT, txt("annenforelderTilsvarendeEosRett",
+                jaNei(rettigheter.harAnnenForelderTilsvarendeRettEØS())), cos, y);
+        }
+        return y;
+    }
+
     private float morUfør(Rettigheter rettigheter, BrukerRolle brukerRolle, FontAwareCos cos, float y) throws IOException {
-        if (!rettigheter.harAnnenForelderRett() && brukerRolle != BrukerRolle.MOR) {
+        boolean besvartAvSøker = !rettigheter.harAnnenForelderRett() && brukerRolle != BrukerRolle.MOR
+            && !rettigheter.harAnnenForelderTilsvarendeRettEØS();
+        if (besvartAvSøker) {
             y -= renderer.addLineOfRegularText(INDENT, txt("harmorufor", jaNei(rettigheter.harMorUføretrygd())), cos,
                 y);
         }
