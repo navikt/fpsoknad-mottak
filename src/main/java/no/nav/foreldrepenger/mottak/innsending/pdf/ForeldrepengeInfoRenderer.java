@@ -119,7 +119,10 @@ public class ForeldrepengeInfoRenderer {
                     y);
             y = annenForelderTilsvarendeRettEøs(rettigheter, cos, y);
             y = morUfør(rettigheter, brukerRolle, cos, y);
-            y -= renderer.addLineOfRegularText(INDENT, txt("informert", jaNei(erAnnenForlderInformert)), cos, y);
+            boolean søkerSpurtOmAnnenPartInformert = rettigheter.harAnnenForelderRett();
+            if (søkerSpurtOmAnnenPartInformert) {
+                y -= renderer.addLineOfRegularText(INDENT, txt("informert", jaNei(erAnnenForlderInformert)), cos, y);
+            }
         }
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
