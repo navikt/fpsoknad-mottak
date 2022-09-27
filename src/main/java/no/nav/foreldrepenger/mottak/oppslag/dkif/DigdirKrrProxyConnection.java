@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.dkif;
 
-import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retrySpec;
+import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retryOnlyOn5xxFailures;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.KRR;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;
@@ -31,7 +31,7 @@ public class DigdirKrrProxyConnection extends AbstractWebClientConnection {
             .accept(APPLICATION_JSON)
             .retrieve()
             .bodyToMono(Kontaktinformasjon.class)
-            .retryWhen(retrySpec(cfg.kontaktUri().toString()))
+            .retryWhen(retryOnlyOn5xxFailures(cfg.kontaktUri().toString()))
             .mapNotNull(Kontaktinformasjon::målform)
             .defaultIfEmpty(Målform.standard())
             .doOnError(throwable -> LOG.warn("DKIF oppslag målform feilet. Bruker default Målform", throwable))

@@ -19,7 +19,6 @@ import lombok.Data;
 
 @Data
 class PDLBarn {
-
     private static final Logger LOG = LoggerFactory.getLogger(PDLBarn.class);
     @JsonProperty("foedsel")
     private final Set<PDLFødsel> fødselsdato;
@@ -64,14 +63,14 @@ class PDLBarn {
                 .filter(Objects::nonNull)
                 .anyMatch(d -> d.isAfter(LocalDate.now().minusMonths(måneder)));
 
-        LOG.info("Barn er {} nylig dødt", nylig ? "" : "IKKE");
+        LOG.info("Barn er {}nylig dødt", nylig ? "" : "IKKE ");
         return nylig;
     }
 
     boolean erNyligFødt(int måneder) {
         var dato = onlyElem(getFødselsdato()).fødselsdato();
         var nylig = dato.isAfter(LocalDate.now().minusMonths(måneder));
-        LOG.info("Barn er {} født for mindre enn {} måneder siden ({})", nylig ? "" : "IKKE", måneder, dato);
+        LOG.info("Barn er {}født for mindre enn {} måneder siden ({})", nylig ? "" : "IKKE ", måneder, dato);
         return nylig;
 
     }
@@ -79,7 +78,7 @@ class PDLBarn {
     boolean erBeskyttet() {
         var b = onlyElem(getBeskyttelse());
         var beskyttet = b != null ? !UGRADERT.equals(b.gradering()) : false;
-        LOG.info("Barn er {} beskyttet", beskyttet ? "" : "IKKE");
+        LOG.info("Barn er {}beskyttet", beskyttet ? "" : "IKKE ");
         return beskyttet;
     }
 }

@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import static java.time.LocalDate.now;
-import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retrySpec;
+import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retryOnlyOn5xxFailures;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ARBEIDSFORHOLD;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;
@@ -47,7 +47,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
                     LOG.info("Personen har ikke arbeidsforhold i Aareg");
                     return Mono.empty();
                 })
-            .retryWhen(retrySpec(cfg.getBaseUri().toString()))
+            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
             .collectList()
             .blockOptional()
             .orElse(List.of());

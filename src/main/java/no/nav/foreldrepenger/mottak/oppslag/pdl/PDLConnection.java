@@ -2,8 +2,10 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
+import static no.nav.boot.conditionals.EnvUtil.CONFIDENTIAL;
 import static no.nav.boot.conditionals.EnvUtil.isDevOrLocal;
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
+import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retryOnlyOn5xxFailures;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_SYSTEM;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_USER;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig.ANNEN_PART_QUERY;
@@ -88,7 +90,7 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
     }
 
     public Navn navnFor(String id) {
-        return Optional.ofNullable(oppslag(() -> systemClient.post(NAVN_QUERY, idFra(id), PDLWrappedNavn.class).block(), "navn"))
+        return Optional.ofNullable(oppslag(() -> postClientCredential(NAVN_QUERY, id, PDLWrappedNavn.class), "navn"))
                 .flatMap(navn -> safeStream(navn.navn())
                         .findFirst()
                         .map(n -> new Navn(n.fornavn(), n.mellomnavn(), n.etternavn())))
@@ -126,7 +128,7 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
     }
 
     private PDLSøker oppslagSøker(Fødselsnummer fnr) {
-        return Optional.ofNullable(oppslag(() -> userClient.post(SØKER_QUERY, idFra(fnr.value()), PDLSøker.class).block(), "søker"))
+        return Optional.ofNullable(oppslag(() -> postOnBehalfOf(SØKER_QUERY, fnr.value(), PDLSøker.class), "søker"))
                 .map(s -> s.withId(fnr.value()))
                 .orElse(null);
     }
@@ -140,11 +142,11 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
     }
 
     private PDLIdenter oppslagId(String id, String type) {
-        return oppslag(() -> systemClient.post(IDENT_QUERY, idFra(id), PDLIdenter.class).block(), type);
+        return oppslag(() -> postClientCredential(IDENT_QUERY, id, PDLIdenter.class), type);
     }
 
     private PDLBarn oppslagBarn(String fnrSøker, String id) {
-        return Optional.ofNullable(oppslag(() -> systemClient.post(BARN_QUERY, idFra(id), PDLBarn.class).block(), "barn"))
+        return Optional.ofNullable(oppslag(() -> postClientCredential(BARN_QUERY, id, PDLBarn.class), "barn"))
                 .map(b -> medAnnenPart(b, fnrSøker))
                 .map(b -> b.withId(id))
                 .orElse(null);
@@ -157,28 +159,42 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
     }
 
     private PDLAnnenPart oppslagAnnenPart(String id) {
-        return Optional
-                .ofNullable(oppslag(() -> systemClient.post(ANNEN_PART_QUERY, idFra(id), PDLAnnenPart.class).block(), "annen part"))
+        return Optional.ofNullable(oppslag(() -> postClientCredential(ANNEN_PART_QUERY, id, PDLAnnenPart.class), "annenpart"))
                 .filter(not(PDLAnnenPart::erDød))
                 .filter(not(PDLAnnenPart::erBeskyttet))
                 .map(a -> a.withId(id))
                 .orElse(null);
     }
 
-    private <T> T oppslag(Supplier<T> oppslag, String type) {
-        try {
-            LOG.info("PDL oppslag {}", type);
-            var res = oppslag.get();
-            LOG.trace("PDL oppslag {} respons={}", type, res);
-            LOG.info("PDL oppslag {} OK", type);
-            return res;
-        } catch (GraphQLErrorsException e) {
-            LOG.warn("PDL oppslag {} feilet", type, e);
-            return errorHandler.handleError(e);
-        } catch (Exception e) {
-            LOG.warn("PDL oppslag {} feilet med uventet feil", type, e);
-            throw e;
+    private <T> T postOnBehalfOf(String query, String id, Class<T> responseType) {
+        return post(userClient, query, id, responseType);
+    }
+
+    private <T> T postClientCredential(String query, String id, Class<T> responseType) {
+        return post(systemClient, query, id, responseType);
+    }
+
+    private <T> T post(GraphQLWebClient client, String query, String id, Class<T> responseType) {
+        return client.post(query, idFra(id), responseType)
+            .onErrorMap(this::mapTilKjentGraphQLException)
+            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
+            .block();
+    }
+
+    private Throwable mapTilKjentGraphQLException(Throwable throwable) {
+        if (throwable instanceof GraphQLErrorsException graphQLErrorsException) {
+            return errorHandler.handleError(graphQLErrorsException);
+        } else {
+            return throwable;
         }
+    }
+
+    private <T> T oppslag(Supplier<T> oppslag, String type) {
+        LOG.info("PDL oppslag {}", type);
+        var res = oppslag.get();
+        LOG.trace(CONFIDENTIAL, "PDL oppslag {} respons={}", type, res);
+        LOG.info("PDL oppslag {} OK", type);
+        return res;
     }
 
     private static Map<String, Object> idFra(String id) {

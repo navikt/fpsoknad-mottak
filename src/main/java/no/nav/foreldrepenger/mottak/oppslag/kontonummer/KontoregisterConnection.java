@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag.kontonummer;
 
 import static no.nav.foreldrepenger.common.util.MDCUtil.callId;
-import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retrySpec;
+import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retryOnlyOn5xxFailures;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.KONTOREGISTER;
 import static no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto.UKJENT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -42,7 +42,7 @@ public class KontoregisterConnection extends AbstractWebClientConnection {
                     return Mono.empty();
                 })
             .bodyToMono(Konto.class)
-            .retryWhen(retrySpec(cfg.kontoregisterURI().toString()))
+            .retryWhen(retryOnlyOn5xxFailures(cfg.kontoregisterURI().toString()))
             .doOnError(throwable -> LOG.warn("Oppslag av kontonummer feilet! Forsetter uten kontonummer!", throwable))
             .onErrorReturn(UKJENT)
             .defaultIfEmpty(UKJENT)

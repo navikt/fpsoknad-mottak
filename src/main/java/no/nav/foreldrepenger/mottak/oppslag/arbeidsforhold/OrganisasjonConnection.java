@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import static no.nav.foreldrepenger.common.domain.Orgnummer.MAGIC;
-import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retrySpec;
+import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retryOnlyOn5xxFailures;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ORGANISASJON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;
@@ -62,7 +62,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
             .accept(APPLICATION_JSON)
             .retrieve()
             .bodyToMono(OrganisasjonsNavnDTO.class)
-            .retryWhen(retrySpec(cfg.getBaseUri().toString()))
+            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
             .mapNotNull(OrganisasjonsNavnDTO::tilOrganisasjonsnavn)
             .defaultIfEmpty(orgnr.value())
             .doOnError(throwable -> LOG.warn("Fant ikke organisasjonsnavn for {}. Returnerer orgnummer som navn.", orgnr.maskert(), throwable))
