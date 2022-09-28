@@ -29,10 +29,10 @@ spec:
     max: {{maxReplicas}}
   liveness:
     path: /api/actuator/health/liveness
-    initialDelay: 60
+    initialDelay: 15
   readiness:
     path: /api/actuator/health/readiness
-    initialDelay: 60
+    initialDelay: 15
   prometheus:
     enabled: true
     path: /api/actuator/prometheus
