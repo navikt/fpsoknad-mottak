@@ -10,7 +10,6 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static org.springframework.web.client.HttpClientErrorException.create;
 
 import java.util.Objects;
 
@@ -18,8 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLError;
 import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
@@ -39,20 +37,20 @@ public class PDLExceptionGeneratingResponseHander implements PDLErrorResponseHan
                 .filter(Objects::nonNull)
                 .map(String.class::cast)
                 .map(k -> exceptionFra(k, e.getMessage()))
-                .orElse(new HttpServerErrorException(INTERNAL_SERVER_ERROR, e.getMessage(), null, null, null));
+                .orElse(new WebClientResponseException(INTERNAL_SERVER_ERROR.value(), e.getMessage(), null, null, null));
     }
 
-    private static HttpStatusCodeException exceptionFra(String kode, String msg) {
+    private static WebClientResponseException exceptionFra(String kode, String msg) {
         return switch (kode) {
             case UAUTENTISERT -> exception(UNAUTHORIZED, msg);
             case FORBUDT -> exception(FORBIDDEN, msg);
             case UGYLDIG -> exception(BAD_REQUEST, msg);
             case IKKEFUNNET -> exception(NOT_FOUND, msg);
-            default -> new HttpServerErrorException(INTERNAL_SERVER_ERROR, msg);
+            default -> exception(INTERNAL_SERVER_ERROR, msg);
         };
     }
 
-    static HttpStatusCodeException exception(HttpStatus status, String msg) {
-        return create(status, msg, null, null, null);
+    static WebClientResponseException exception(HttpStatus status, String msg) {
+        return WebClientResponseException.create(status.value(), msg, null, null, null);
     }
 }

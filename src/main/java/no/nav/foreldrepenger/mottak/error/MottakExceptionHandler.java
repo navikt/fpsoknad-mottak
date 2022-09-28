@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import no.nav.foreldrepenger.common.error.SøknadEgenskapException;
@@ -51,6 +52,11 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e,
                                                                   HttpHeaders headers, HttpStatus status, WebRequest req) {
         return logAndHandle(UNPROCESSABLE_ENTITY, e, req, headers);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Object> handleWebClientResponseException(WebClientResponseException e, WebRequest request) {
+        return logAndHandle(e.getStatusCode(), e, request);
     }
 
     @ExceptionHandler
@@ -101,8 +107,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
                                                 List<Object> messages) {
         var apiError = apiErrorFra(status, e, messages);
         if (e instanceof MethodArgumentNotValidException) {
-            //quickfix, ikke log rejected value
-            LOG.warn("[{} ({})] {}", req.getContextPath(), status, messages);
+            LOG.warn("[{} ({})] {}", req.getContextPath(), status, messages); // quickfix, ikke log rejected value
         } else if (tokenUtil.erAutentisert() && !tokenUtil.erUtløpt()) {
             LOG.warn("[{}] {} {}", req.getContextPath(), status, apiError.getMessages(), e);
         } else {
