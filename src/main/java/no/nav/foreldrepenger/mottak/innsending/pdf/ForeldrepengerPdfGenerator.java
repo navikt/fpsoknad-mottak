@@ -89,7 +89,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                 cosy = render(docParam, annenForelderFn, cosy);
             }
 
-            if (søknad.getTilleggsopplysninger() != null) {
+            if (søknad.getTilleggsopplysninger() != null && !søknad.getTilleggsopplysninger().isBlank()) {
                 Function<CosyPair, Float> tilleggsopplysningerFn = uncheck(p -> fpRenderer.renderTilleggsopplysninger(søknad.getTilleggsopplysninger(), p.cos, p.y));
                 cosy = render(docParam, tilleggsopplysningerFn, cosy);
             }
@@ -179,7 +179,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             }
 
             var tilleggsopplysninger = søknad.getTilleggsopplysninger();
-            if (tilleggsopplysninger != null && !"".equals(tilleggsopplysninger)) {
+            if (tilleggsopplysninger != null && !tilleggsopplysninger.isBlank()) {
                 Function<CosyPair, Float> tilleggsopplysningerFn = uncheck(p -> fpRenderer.renderTilleggsopplysninger(søknad.getTilleggsopplysninger(), p.cos, p.y));
                 cosy = render(docParam, tilleggsopplysningerFn, cosy);
             }
