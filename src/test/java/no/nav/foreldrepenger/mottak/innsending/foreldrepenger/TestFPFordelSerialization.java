@@ -8,17 +8,19 @@ import static no.nav.foreldrepenger.common.domain.felles.TestUtils.valgfrittVedl
 import static no.nav.foreldrepenger.common.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.VEDLEGG1;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.VEDLEGG2;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.VEDLEGG3;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.endringssøknad;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengesøknad;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.svp;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.MULTIPART_MIXED_VALUE;
@@ -27,22 +29,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpEntity;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
@@ -52,63 +47,85 @@ import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.felles.EttersendingsType;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
+import no.nav.foreldrepenger.common.innsending.mappers.V1SvangerskapspengerDomainMapper;
+import no.nav.foreldrepenger.common.innsending.mappers.V3EngangsstønadDomainMapper;
+import no.nav.foreldrepenger.common.innsending.mappers.V3ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils;
-import no.nav.foreldrepenger.common.util.TokenUtil;
+import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
+import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.pdf.MappablePdfGenerator;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
+import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
 
-@EnableConfigurationProperties
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
-@AutoConfigureJsonTesters
-@Disabled
-@TestPropertySource(properties = { "sak.saker.url=http://sak",
-        "token.x.well.known.url=http//www.localhost",
-        "token.x.client.id=123",
-        "token.x.private.jwk=123",
-        "sak.securitytokenservice.password=pw",
-        "sak.securitytokenservice.username=user",
-        "sak.securitytokenservice.url=http://sts",
-        "sts.uri=http://www.sts.no",
-        "spring.cloud.vault.enabled=false",
-        "sts.username=un", "sts.password=pw" })
-@ComponentScan(basePackages = "no.nav.foreldrepenger.mottak")
+@ContextConfiguration(classes = {
+    JacksonConfiguration.class,
+    JacksonWrapper.class,
+    MetdataGenerator.class,
+    KonvoluttGenerator.class,
+    DelegerendeDomainMapper.class,
+    V3ForeldrepengerDomainMapper.class,
+    V3EngangsstønadDomainMapper.class,
+    V1SvangerskapspengerDomainMapper.class
+})
 class TestFPFordelSerialization {
+    private static final AktørId AKTØRID = new AktørId("1111111111");
+    private static final Fødselsnummer FNR = new Fødselsnummer("11111111111");
+    private static final List<EnkeltArbeidsforhold> ARB_FORHOLD = arbeidsforhold();
+
 
     @MockBean
     private Oppslag oppslag;
     @MockBean
-    TokenUtil tokenUtil;
-
+    @Qualifier(DELEGERENDE)
+    private MappablePdfGenerator mappablePdfGenerator;
     @MockBean
     private ArbeidsforholdTjeneste arbeidsforhold;
 
-    @Inject
+    @Autowired
     private KonvoluttGenerator konvoluttGenerator;
-
-    @Inject
+    @Autowired
     @Qualifier(DELEGERENDE)
     private DomainMapper domainMapper;
 
-    private static final AktørId AKTØRID = new AktørId("1111111111");
-    private static final Fødselsnummer FNR = new Fødselsnummer("01010111111");
-    private static final List<EnkeltArbeidsforhold> ARB_FORHOLD = arbeidsforhold();
-
     @BeforeEach
     void before() {
-        when(oppslag.aktørId(eq(FNR))).thenReturn(AKTØRID);
-        when(oppslag.fnr(eq(AKTØRID))).thenReturn(FNR);
+        when(oppslag.aktørId(FNR)).thenReturn(AKTØRID);
+        when(oppslag.fnr(AKTØRID)).thenReturn(FNR);
         when(arbeidsforhold.hentArbeidsforhold()).thenReturn(ARB_FORHOLD);
+        when(mappablePdfGenerator.generer(any(), any(), any())).thenReturn(new byte[0]);
     }
 
     @Test
-    void testESFpFordel() {
+    void testESXMLKonverteringOK() {
         var engangstønad = engangssøknad(false, termin(), VEDLEGG3);
         assertNotNull(domainMapper.tilXML(engangstønad, AKTØRID, SøknadEgenskap.of(INITIELL_ENGANGSSTØNAD)));
+
     }
+
+    @Test
+    void testSVPXMLKonverteringOK() {
+        var svp = svp();
+        assertNotNull(domainMapper.tilXML(svp, AKTØRID, SøknadEgenskap.of(INITIELL_SVANGERSKAPSPENGER)));
+    }
+
+    @Test
+    void testFPXMLKonverteringOK() {
+        var foreldrepengesøknad = foreldrepengesøknad();
+        assertNotNull(domainMapper.tilXML(foreldrepengesøknad, AKTØRID, SøknadEgenskap.of(INITIELL_FORELDREPENGER)));
+    }
+
+    @Test
+    void testFPEndringXMLKonverteringOK() {
+        var endringssøknad = endringssøknad(VEDLEGG2);
+        assertNotNull(domainMapper.tilXML(endringssøknad, AKTØRID, SøknadEgenskap.of(ENDRING_FORELDREPENGER)));
+    }
+
+
 
     @Test
     void testKonvolutt() {
