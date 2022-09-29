@@ -32,7 +32,7 @@
 
         <boot-conditionals.version>3.1.0</boot-conditionals.version>
         <token-support.version>2.1.4</token-support.version>
-        <fpsoknad-felles.version>0.8.24</fpsoknad-felles.version>
+        <fpsoknad-felles.version>0.8.26</fpsoknad-felles.version>
 
         <pdfbox.version>2.0.26</pdfbox.version>
         <springdoc.version>1.6.11</springdoc.version>
