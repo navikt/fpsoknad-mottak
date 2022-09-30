@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000049;
 import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000060;
 import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
 import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
+import static no.nav.foreldrepenger.common.util.LangUtil.toBoolean;
 import static no.nav.foreldrepenger.common.util.StreamUtil.distinct;
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
@@ -97,20 +98,24 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
-    public float annenForelder(AnnenForelder annenForelder, boolean erAnnenForlderInformert,
+    public float annenForelder(AnnenForelder annenForelder, Boolean erAnnenForlderInformert,
             Rettigheter rettigheter, BrukerRolle brukerRolle,
             FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("omannenforelder"), cos, y);
         switch (annenForelder) {
             case NorskForelder norskForelder -> {
                 y -= renderer.addLinesOfRegularText(INDENT, norskForelder(norskForelder), cos, y);
-                y -= renderer.addLineOfRegularText(INDENT,
-                    txt(ALENESORG_KEY, jaNei(rettigheter.harAleneOmsorgForBarnet())), cos, y);
+                if (rettigheter.harAleneOmsorgForBarnet() != null) {
+                    y -= renderer.addLineOfRegularText(INDENT,
+                        txt(ALENESORG_KEY, jaNei(rettigheter.harAleneOmsorgForBarnet())), cos, y);
+                }
             }
             case UtenlandskForelder utenlandskForelder -> {
                 y -= renderer.addLinesOfRegularText(INDENT, utenlandskForelder(utenlandskForelder), cos, y);
-                y -= renderer.addLineOfRegularText(INDENT,
-                    txt(ALENESORG_KEY, jaNei(rettigheter.harAleneOmsorgForBarnet())), cos, y);
+                if (rettigheter.harAleneOmsorgForBarnet() != null) {
+                    y -= renderer.addLineOfRegularText(INDENT,
+                        txt(ALENESORG_KEY, jaNei(rettigheter.harAleneOmsorgForBarnet())), cos, y);
+                }
             }
             default -> y -= renderer.addLineOfRegularText(INDENT, "Jeg kan ikke oppgi navnet til den andre forelderen", cos, y);
         }
@@ -119,8 +124,8 @@ public class ForeldrepengeInfoRenderer {
                     y);
             y = annenForelderTilsvarendeRettEøs(rettigheter, cos, y);
             y = morUfør(rettigheter, brukerRolle, cos, y);
-            boolean søkerSpurtOmAnnenPartInformert = rettigheter.harAnnenForelderRett();
-            if (søkerSpurtOmAnnenPartInformert) {
+            boolean søkerSpurtOmAnnenPartInformertExpand = rettigheter.harAnnenForelderRett();
+            if (søkerSpurtOmAnnenPartInformertExpand && erAnnenForlderInformert != null) {
                 y -= renderer.addLineOfRegularText(INDENT, txt("informert", jaNei(erAnnenForlderInformert)), cos, y);
             }
         }
@@ -132,8 +137,8 @@ public class ForeldrepengeInfoRenderer {
         if (Cluster.currentCluster() == Cluster.PROD_FSS) {
             return y;
         }
-        boolean besvartAvSøker = !rettigheter.harAnnenForelderRett();
-        if (besvartAvSøker) {
+        boolean besvartAvSøkerExpand = !rettigheter.harAnnenForelderRett();
+        if (besvartAvSøkerExpand && rettigheter.harAnnenForelderTilsvarendeRettEØS() != null) {
             y -= renderer.addLineOfRegularText(INDENT, txt("annenforelderTilsvarendeEosRett",
                 jaNei(rettigheter.harAnnenForelderTilsvarendeRettEØS())), cos, y);
         }
@@ -141,9 +146,11 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private float morUfør(Rettigheter rettigheter, BrukerRolle brukerRolle, FontAwareCos cos, float y) throws IOException {
-        boolean besvartAvSøker = !rettigheter.harAnnenForelderRett() && brukerRolle != BrukerRolle.MOR
-            && !rettigheter.harAnnenForelderTilsvarendeRettEØS();
-        if (besvartAvSøker) {
+        boolean tilsvarendeRettEØSExpand = rettigheter.harAnnenForelderTilsvarendeRettEØS() != null && rettigheter.harAnnenForelderTilsvarendeRettEØS();
+        boolean besvartAvSøkerExpand = !rettigheter.harAnnenForelderRett()
+            && brukerRolle != BrukerRolle.MOR
+            && !tilsvarendeRettEØSExpand;
+        if (besvartAvSøkerExpand && rettigheter.harMorUføretrygd() != null) {
             y -= renderer.addLineOfRegularText(INDENT, txt("harmorufor", jaNei(rettigheter.harMorUføretrygd())), cos,
                 y);
         }
@@ -794,6 +801,10 @@ public class ForeldrepengeInfoRenderer {
         if (sum != null) {
             attributter.add(txt(key, String.valueOf(sum)));
         }
+    }
+
+    private String jaNei(Boolean value) {
+        return jaNei(toBoolean(value));
     }
 
     private String jaNei(boolean value) {
