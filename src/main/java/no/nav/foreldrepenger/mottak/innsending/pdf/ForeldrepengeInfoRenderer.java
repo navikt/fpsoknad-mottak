@@ -22,7 +22,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import no.nav.boot.conditionals.Cluster;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -124,8 +123,7 @@ public class ForeldrepengeInfoRenderer {
                     y);
             y = annenForelderTilsvarendeRettEøs(rettigheter, cos, y);
             y = morUfør(rettigheter, brukerRolle, cos, y);
-            boolean søkerSpurtOmAnnenPartInformertExpand = rettigheter.harAnnenForelderRett();
-            if (søkerSpurtOmAnnenPartInformertExpand && erAnnenForlderInformert != null) {
+            if (erAnnenForlderInformert != null) {
                 y -= renderer.addLineOfRegularText(INDENT, txt("informert", jaNei(erAnnenForlderInformert)), cos, y);
             }
         }
@@ -134,11 +132,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private float annenForelderTilsvarendeRettEøs(Rettigheter rettigheter, FontAwareCos cos, float y) throws IOException {
-        if (Cluster.currentCluster() == Cluster.PROD_FSS) {
-            return y;
-        }
-        boolean besvartAvSøkerExpand = !rettigheter.harAnnenForelderRett();
-        if (besvartAvSøkerExpand && rettigheter.harAnnenForelderTilsvarendeRettEØS() != null) {
+        if (rettigheter.harAnnenForelderTilsvarendeRettEØS() != null) {
             y -= renderer.addLineOfRegularText(INDENT, txt("annenforelderTilsvarendeEosRett",
                 jaNei(rettigheter.harAnnenForelderTilsvarendeRettEØS())), cos, y);
         }
@@ -146,11 +140,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private float morUfør(Rettigheter rettigheter, BrukerRolle brukerRolle, FontAwareCos cos, float y) throws IOException {
-        boolean tilsvarendeRettEØSExpand = rettigheter.harAnnenForelderTilsvarendeRettEØS() != null && rettigheter.harAnnenForelderTilsvarendeRettEØS();
-        boolean besvartAvSøkerExpand = !rettigheter.harAnnenForelderRett()
-            && brukerRolle != BrukerRolle.MOR
-            && !tilsvarendeRettEØSExpand;
-        if (besvartAvSøkerExpand && rettigheter.harMorUføretrygd() != null) {
+        if (rettigheter.harMorUføretrygd() != null) {
             y -= renderer.addLineOfRegularText(INDENT, txt("harmorufor", jaNei(rettigheter.harMorUføretrygd())), cos,
                 y);
         }
