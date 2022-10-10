@@ -45,6 +45,8 @@ no.nav:
           digdir-krr-proxy:
             token-exchange:
               audience: lokal
+          client-credentials-pdl:
+            scope: ${pdl.scopes}
           sokos-kontoregister-person: # TODO: Legg inn i application.yml
             token-exchange:
               audience: lokal
