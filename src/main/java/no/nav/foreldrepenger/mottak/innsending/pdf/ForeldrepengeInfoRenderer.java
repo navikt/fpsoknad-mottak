@@ -17,11 +17,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -338,18 +338,17 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
-    public FontAwareCos fordeling(FontAwarePdfDocument doc, Person søker, BrukerRolle rolle, Fordeling fordeling,
-            Dekningsgrad dekningsgrad,
-            List<Vedlegg> vedlegg,
-            int antallBarn,
-            boolean erEndring, FontAwareCos cos, float y)
+    public FontAwareCos fordeling(FontAwarePdfDocument doc, Person søker, BrukerRolle rolle, Foreldrepenger stønad,
+            List<Vedlegg> vedlegg, boolean erEndring, FontAwareCos cos, float y)
             throws IOException {
+        var fordeling = stønad.fordeling();
+        var dekningsgrad = stønad.dekningsgrad();
+        var antallBarn = stønad.relasjonTilBarn().getAntallBarn();
+
         y -= renderer.addLeftHeading(txt("perioder"), cos, y);
         if (dekningsgrad != null) {
             y -= renderer.addLineOfRegularText(txt("dekningsgrad", dekningsgrad.kode()), cos, y);
         }
-        //TODO 5145 ønskerJustertUttakVedFødsel
-
         var headerSize = 190F;
         for (LukketPeriodeMedVedlegg periode : sorted(fordeling.perioder())) {
             if (periode.getClass().equals(UttaksPeriode.class)) {
@@ -424,6 +423,10 @@ public class ForeldrepengeInfoRenderer {
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (headerSize + behov);
                 }
+            }
+            if (fordeling.ønskerJustertUttakVedFødsel() != null) {
+                y -= renderer.addLineOfRegularText(txt("fp.justeruttak",
+                    jaNei(toBoolean(fordeling.ønskerJustertUttakVedFødsel())), pluralize(antallBarn)), cos, y);
             }
         }
         return cos;
@@ -544,6 +547,7 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "tom", gradert.getTom());
         addIfSet(attributter, DAGER, String.valueOf(gradert.dager()));
         attributter.add(txt(UTTAKSPERIODETYPE, kontoTypeForRolle(gradert.getUttaksperiodeType(), rolle)));
+        addIfSet(attributter, "fp.justeresvedfødsel", gradert.getJusteresVedFødsel());
         addListIfSet(attributter, ARBEIDSGIVER, gradert.getVirksomhetsnummer());
         attributter.add(txt("skalgraderes", jaNei(gradert.isArbeidsForholdSomskalGraderes())));
         attributter.add(txt("erarbeidstaker", jaNei(gradert.isErArbeidstaker())));
@@ -578,6 +582,7 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "tom", uttak.getTom());
         addIfSet(attributter, DAGER, String.valueOf(uttak.dager()));
         attributter.add(txt(UTTAKSPERIODETYPE, kontoTypeForRolle(uttak.getUttaksperiodeType(), rolle)));
+        addIfSet(attributter, "fp.justeresvedfødsel", uttak.getJusteresVedFødsel());
         addIfSet(attributter, uttak.getMorsAktivitetsType());
         if (antallBarn > 1) {
             attributter.add(txt("ønskerflerbarnsdager", jaNei(uttak.isØnskerFlerbarnsdager())));
@@ -596,8 +601,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private static List<LukketPeriodeMedVedlegg> sorted(List<LukketPeriodeMedVedlegg> perioder) {
-        Collections.sort(perioder,
-                (o1, o2) -> o1.getFom().compareTo(o2.getFom()));
+        perioder.sort(Comparator.comparing(LukketPeriodeMedVedlegg::getFom));
         return perioder;
     }
 

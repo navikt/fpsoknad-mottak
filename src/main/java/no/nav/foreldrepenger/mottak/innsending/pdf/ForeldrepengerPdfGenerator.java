@@ -132,11 +132,8 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                 }
 
                 if (stønad.fordeling() != null) {
-                    var forCos = fpRenderer.fordeling(doc, søker, søknad.getSøker().getSøknadsRolle(), stønad.fordeling(),
-                            stønad.dekningsgrad(),
-                            søknad.getVedlegg(),
-                            stønad.relasjonTilBarn().getAntallBarn(), false,
-                            cosy.cos(), cosy.y());
+                    var forCos = fpRenderer.fordeling(doc, søker, søknad.getSøker().getSøknadsRolle(), stønad,
+                            søknad.getVedlegg(), false, cosy.cos(), cosy.y());
                     cosy = new CosyPair(forCos, -1);
                 }
 
@@ -185,11 +182,8 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             }
 
             if (ytelse.fordeling() != null) {
-                var fordelCos = fpRenderer.fordeling(doc, søker, søknad.getSøker().getSøknadsRolle(), ytelse.fordeling(),
-                    ytelse.dekningsgrad(),
-                    søknad.getVedlegg(),
-                    ytelse.relasjonTilBarn().getAntallBarn(), true,
-                    cosy.cos(), cosy.y());
+                var fordelCos = fpRenderer.fordeling(doc, søker, søknad.getSøker().getSøknadsRolle(), ytelse,
+                    søknad.getVedlegg(), true, cosy.cos(), cosy.y());
                 cosy = new CosyPair(fordelCos, -1);
             }
             cosy.cos().close();
