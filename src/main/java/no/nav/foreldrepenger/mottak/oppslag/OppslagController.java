@@ -32,6 +32,7 @@ public class OppslagController {
 
     @GetMapping("/aktoer")
     public AktørId aktør() {
+        LOG.info("Tjeneste kalles aktoer");
         return oppslag.aktørId(tokenUtil.autentisertBrukerOrElseThrowException());
     }
 
@@ -43,16 +44,19 @@ public class OppslagController {
 
     @GetMapping("/fnr")
     public Fødselsnummer fnr(@Valid @RequestParam(name = "aktorId") AktørId aktorId) {
+        LOG.info("Tjeneste kalles fnr");
         return oppslag.fnr(aktorId);
     }
 
     @GetMapping("/navn")
     public Navn navn(@Valid @RequestParam(name = "aktorId") AktørId aktorId) {
+        LOG.info("Tjeneste kalles navn");
         return oppslag.navn(aktorId.value());
     }
 
     @GetMapping("/navnfnr")
     public Navn navnfnr(@Valid @RequestParam(name = "fnr") Fødselsnummer fnr) {
+        LOG.info("Tjeneste kalles navnfnr");
         return oppslag.navn(fnr.value());
     }
 
