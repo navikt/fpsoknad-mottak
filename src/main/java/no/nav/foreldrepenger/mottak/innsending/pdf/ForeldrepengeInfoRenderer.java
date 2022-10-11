@@ -424,9 +424,21 @@ public class ForeldrepengeInfoRenderer {
                     y = STARTY - (headerSize + behov);
                 }
             }
-            if (fordeling.ønskerJustertUttakVedFødsel() != null) {
-                y -= renderer.addLineOfRegularText(txt("fp.justeruttak",
+        }
+        if (fordeling.ønskerJustertUttakVedFødsel() != null) {
+            var scratch1 = newPage();
+            var scratchcos = new FontAwareCos(doc, scratch1);
+            var x = STARTY - 190;
+            x -= renderer.addLineOfRegularText(txt("fp.justeruttak",
+                jaNei(toBoolean(fordeling.ønskerJustertUttakVedFødsel())), pluralize(antallBarn)), scratchcos, STARTY - 190);
+            var behov = STARTY - 190 - x;
+            if (behov < y) {
+                scratchcos.close();
+                y = renderer.addLineOfRegularText(txt("fp.justeruttak",
                     jaNei(toBoolean(fordeling.ønskerJustertUttakVedFødsel())), pluralize(antallBarn)), cos, y);
+            } else {
+                cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
+                y = STARTY - (headerSize + behov);
             }
         }
         return cos;
@@ -568,6 +580,14 @@ public class ForeldrepengeInfoRenderer {
         return Optional.ofNullable(prosent)
                 .map(ProsentAndel::prosent)
                 .orElse(0d);
+    }
+
+    private static String prosentUtenDesimaler(ProsentAndel prosent) {
+        return Optional.ofNullable(prosent)
+            .map(ProsentAndel::prosent)
+            .map(Double::intValue)
+            .map(String::valueOf)
+            .orElse("0");
     }
 
     private void addIfSet(List<String> attributter, String key, Boolean value) {
