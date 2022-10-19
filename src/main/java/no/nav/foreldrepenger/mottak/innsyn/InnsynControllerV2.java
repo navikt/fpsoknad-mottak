@@ -7,10 +7,10 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import no.nav.boot.conditionals.ConditionalOnNotProd;
-import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.innsyn.v2.Saker;
 import no.nav.foreldrepenger.common.innsyn.v2.VedtakPeriode;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
@@ -34,9 +34,8 @@ public class InnsynControllerV2 {
         return innsyn.sakerV2(oppslag.aktørId());
     }
 
-    @GetMapping("/annenForeldersVedtaksperioder")
-    public List<VedtakPeriode> annenPartsVedtaksperioder(@Valid @RequestParam("annenPartAktorId") AktørId annenPartAktørId,
-                                                         @Valid @RequestParam("barnAktorId") AktørId barnAktorId) {
-        return innsyn.annenPartsVedtaksperioder(oppslag.aktørId(), annenPartAktørId, barnAktorId);
+    @PostMapping("/annenForeldersVedtaksperioder")
+    public List<VedtakPeriode> annenPartsVedtaksperioder(@Valid @RequestBody AnnenPartVedtakIdentifikator annenPartVedtakIdentifikator) {
+        return innsyn.annenPartsVedtaksperioder(oppslag.aktørId(), annenPartVedtakIdentifikator);
     }
 }

@@ -62,11 +62,9 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
             .orElseThrow();
     }
 
-    public List<VedtakPeriode> annenPartsVedtaksperioder(AktørId søker,
-                                                         AktørId annenForelder,
-                                                         AktørId barn) {
-        return Optional.ofNullable(getForObject(cfg.annenPartsVedtaksperioderURI(søker.value(), annenForelder.value(),
-                barn.value()), VedtakPeriode[].class))
+    public List<VedtakPeriode> annenPartsVedtaksperioder(AnnenPartVedtakRequest annenPartVedtakRequest) {
+        var uri = cfg.annenPartsVedtaksperioderURI();
+        return Optional.ofNullable(postForObject(uri, annenPartVedtakRequest, VedtakPeriode[].class))
             .map(Arrays::asList)
             .orElse(emptyList());
     }

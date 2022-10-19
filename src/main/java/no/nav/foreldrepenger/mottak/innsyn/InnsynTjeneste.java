@@ -78,10 +78,11 @@ public class InnsynTjeneste implements Innsyn {
 
     @Override
     public List<VedtakPeriode> annenPartsVedtaksperioder(AktørId søker,
-                                                         AktørId annenForelder,
-                                                         AktørId barn) {
+                                                         AnnenPartVedtakIdentifikator annenPartVedtakIdentifikator) {
         LOG.info("Henter annen parts vedtaksperioder");
-        var perioder = innsyn.annenPartsVedtaksperioder(søker, annenForelder, barn);
+        var request = new AnnenPartVedtakRequest(søker, annenPartVedtakIdentifikator.annenPartAktørId(),
+            annenPartVedtakIdentifikator.barnAktørId(), annenPartVedtakIdentifikator.familiehendelse());
+        var perioder = innsyn.annenPartsVedtaksperioder(request);
         LOG.info("Returnerer annen parts vedtaksperioder. Antall perioder {}", perioder.size());
         return perioder;
     }
