@@ -19,5 +19,5 @@ public interface Innsyn extends Pingable {
 
     Saker sakerV2(AktørId aktørId);
 
-    List<VedtakPeriode> annenPartsVedtaksperioder(AktørId søker, AktørId annenForelder, AktørId barn);
+    List<VedtakPeriode> annenPartsVedtaksperioder(AktørId aktørId, AnnenPartVedtakIdentifikator annenPartVedtakIdentifikator);
 }

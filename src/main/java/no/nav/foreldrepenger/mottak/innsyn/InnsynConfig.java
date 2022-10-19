@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import static no.nav.foreldrepenger.mottak.util.URIUtil.headers;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.queryParams;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
@@ -69,12 +68,8 @@ public class InnsynConfig extends AbstractConfig {
         return uri(getBaseUri(), SAKV2, queryParams(AKTOR_ID, aktørId));
     }
 
-    URI annenPartsVedtaksperioderURI(String søker, String annenForelder, String barn) {
-        var headers = headers();
-        headers.add("sokersAktorId", søker);
-        headers.add("annenPartAktorId", annenForelder);
-        headers.add("barnAktorId", barn);
-        return uri(getBaseUri(), ANNEN_FORELDER_VEDTAKSPERIODER, headers);
+    URI annenPartsVedtaksperioderURI() {
+        return uri(getBaseUri(), ANNEN_FORELDER_VEDTAKSPERIODER);
     }
 
     @Override
