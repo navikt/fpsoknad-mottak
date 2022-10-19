@@ -9,6 +9,8 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
@@ -64,9 +66,18 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
 
     public List<VedtakPeriode> annenPartsVedtaksperioder(AnnenPartVedtakRequest annenPartVedtakRequest) {
         var uri = cfg.annenPartsVedtaksperioderURI();
-        return Optional.ofNullable(postForObject(uri, annenPartVedtakRequest, VedtakPeriode[].class))
-            .map(Arrays::asList)
-            .orElse(emptyList());
+
+        var response = postForEntity(uri, new HttpEntity<>(annenPartVedtakRequest), VedtakPeriode[].class);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            return Optional.ofNullable(response.getBody())
+                .map(Arrays::asList)
+                .orElse(emptyList());
+        } else if (response.getStatusCode() == HttpStatus.FORBIDDEN) {
+            //Forventet oppførsel hvis annen part er beskyttet
+            LOG.info("Kall for å hente annen parts vedtaksperioder feiler med " + response.getStatusCode());
+            return List.of();
+        }
+        throw new IllegalStateException("Kall for å hente annen parts vedtaksperioder feiler med " + response.getStatusCode());
     }
 
     UttaksplanDTO uttaksplan(Saksnummer saksnummer) {

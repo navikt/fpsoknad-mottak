@@ -80,8 +80,9 @@ public class InnsynTjeneste implements Innsyn {
     public List<VedtakPeriode> annenPartsVedtaksperioder(AktørId søker,
                                                          AnnenPartVedtakIdentifikator annenPartVedtakIdentifikator) {
         LOG.info("Henter annen parts vedtaksperioder");
-        var request = new AnnenPartVedtakRequest(søker, annenPartVedtakIdentifikator.annenPartAktørId(),
-            annenPartVedtakIdentifikator.barnAktørId(), annenPartVedtakIdentifikator.familiehendelse());
+        var annenPartAktørId = oppslag.aktørId(annenPartVedtakIdentifikator.annenPartFødselsnummer());
+        var barnAktørId = oppslag.aktørId(annenPartVedtakIdentifikator.barnFødselsnummer());
+        var request = new AnnenPartVedtakRequest(søker, annenPartAktørId, barnAktørId, annenPartVedtakIdentifikator.familiehendelse());
         var perioder = innsyn.annenPartsVedtaksperioder(request);
         LOG.info("Returnerer annen parts vedtaksperioder. Antall perioder {}", perioder.size());
         return perioder;
