@@ -38,7 +38,6 @@ import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConfig;
-import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontonummerConfig;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConfig;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
@@ -134,7 +133,7 @@ public class WebClientConfiguration {
     public WebClient webClientPDL(Builder builder, PDLConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
-                .filter(temaFilterFunction())
+                .defaultHeader(TEMA, FORELDREPENGER)
                 .filter(tokenXFilterFunction)
                 .build();
     }
@@ -144,7 +143,7 @@ public class WebClientConfiguration {
     public WebClient webClientSystemPDL(Builder builder, PDLConfig cfg, ClientConfigurationProperties configs, OAuth2AccessTokenService service) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
-                .filter(temaFilterFunction())
+                .defaultHeader(TEMA, FORELDREPENGER)
                 .filter(azureADClientCredentailFilterFunction("client-credentials-pdl", configs, service))
                 .build();
     }
@@ -159,12 +158,6 @@ public class WebClientConfiguration {
     @Bean
     public GraphQLWebClient pdlSystemWebClient(@Qualifier(PDL_SYSTEM) WebClient client, ObjectMapper mapper) {
         return GraphQLWebClient.newInstance(client, mapper);
-    }
-
-    private static ExchangeFilterFunction temaFilterFunction() {
-        return (req, next) -> next.exchange(ClientRequest.from(req)
-                .header(TEMA, FORELDREPENGER)
-                .build());
     }
 
     private static ExchangeFilterFunction navPersonIdentFunction(TokenUtil tokenUtil) {
