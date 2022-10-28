@@ -2,6 +2,7 @@ FROM ghcr.io/navikt/fp-baseimages/java:17-appdynamics
 
 LABEL org.opencontainers.image.source=https://github.com/navikt/fpsoknad-mottak
 
+ENV JAVA_OPTS --enable-preview
 ENV APP_NAME=fpsoknad-mottak
 ENV APPD_ENABLED=true
 ENV APPDYNAMICS_CONTROLLER_HOST_NAME=appdynamics.adeo.no
