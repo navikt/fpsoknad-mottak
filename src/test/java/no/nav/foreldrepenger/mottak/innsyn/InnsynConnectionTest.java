@@ -32,7 +32,7 @@ class InnsynConnectionTest {
 
         var baseUrl = String.format("http://localhost:%s", mockWebServer.getPort());
         var webClient = WebClient.create();
-        var innsynConfig = new InnsynConfig("rest/ping", true,  URI.create(baseUrl), "/api/dokumentforsendelse/");
+        var innsynConfig = new InnsynConfig("rest/ping", true,  URI.create(baseUrl));
         innsynConnection = new InnsynConnection(webClient, innsynConfig);
     }
 
