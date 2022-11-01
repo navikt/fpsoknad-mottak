@@ -137,14 +137,14 @@ public class InnsynTjeneste implements Innsyn {
 
     @Override
     public UttaksplanDto uttaksplan(Saksnummer saksnummer) {
-        return Optional.ofNullable(innsyn.uttaksplan(saksnummer))
+        return innsyn.uttaksplan(saksnummer)
             .map(this::tilUttaksplan)
             .orElse(null);
     }
 
     @Override
     public UttaksplanDto uttaksplan(AktørId aktørId, AktørId annenPart) {
-        return Optional.ofNullable(innsyn.uttaksplan(aktørId, annenPart))
+        return innsyn.uttaksplan(aktørId, annenPart)
             .map(this::tilUttaksplan)
             .orElse(null);
     }
