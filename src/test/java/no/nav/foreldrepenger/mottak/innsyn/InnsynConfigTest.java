@@ -13,7 +13,7 @@ class InnsynConfigTest {
     @Test
     void verifiserKorrektLinkVedServiceDiscovery() {
         URI baseUri = URI.create("http://fpinfo/fpinfo");
-        InnsynConfig innsynConfig = new InnsynConfig(null, true, baseUri, null);
+        InnsynConfig innsynConfig = new InnsynConfig(null, true, baseUri);
         URI link = innsynConfig.createLink("/fpinfo/api/dokumentforsendelse/behandling?behandlingId=1733259");
         assertThat(link).isEqualTo(URI.create("http://fpinfo/fpinfo/api/dokumentforsendelse/behandling?behandlingId=1733259"));
     }
@@ -21,7 +21,7 @@ class InnsynConfigTest {
     @Test
     void verifiserKorrektLinkNårDetIkkeErServiceDiscovery() {
         URI baseUri = URI.create("http://fpinfo:8080/fpinfo");
-        InnsynConfig innsynConfig = new InnsynConfig(null, true, baseUri, null);
+        InnsynConfig innsynConfig = new InnsynConfig(null, true, baseUri);
         URI link = innsynConfig.createLink("/fpinfo/api/dokumentforsendelse/behandling?behandlingId=1733259");
         assertThat(link).isEqualTo(URI.create("http://fpinfo:8080/fpinfo/api/dokumentforsendelse/behandling?behandlingId=1733259"));
     }

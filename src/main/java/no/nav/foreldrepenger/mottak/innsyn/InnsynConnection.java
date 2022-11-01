@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retryOnlyOn5xxFailures;
-import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.KRR;
+import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.FPINFO;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +31,7 @@ public class InnsynConnection extends AbstractWebClientConnection {
     private static final Logger LOG = LoggerFactory.getLogger(InnsynConnection.class);
     private final InnsynConfig cfg;
 
-    public InnsynConnection(@Qualifier(KRR) WebClient client, InnsynConfig cfg) {
+    public InnsynConnection(@Qualifier(FPINFO) WebClient client, InnsynConfig cfg) {
         super(client, cfg);
         this.cfg = cfg;
     }
@@ -70,6 +70,7 @@ public class InnsynConnection extends AbstractWebClientConnection {
         return webClient.post()
             .uri(cfg.annenPartVedtakURI())
             .body(Mono.just(annenPartVedtakRequest), AnnenPartVedtakRequest.class)
+            .accept(MediaType.APPLICATION_JSON)
             .retrieve()
             .bodyToMono(AnnenPartVedtak.class)
             .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))

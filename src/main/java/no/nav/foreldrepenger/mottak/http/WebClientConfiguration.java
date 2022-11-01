@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.common.util.MDCUtil;
 import no.nav.foreldrepenger.common.util.TokenUtil;
+import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorConfig;
 import no.nav.foreldrepenger.mottak.innsyn.InnsynConfig;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
@@ -56,6 +57,7 @@ public class WebClientConfiguration {
     public static final String PDL_SYSTEM = "PDL-RELASJON";
     public static final String KRR = "KRR";
     public static final String FPINFO = "FPINFO";
+    public static final String PDF_GENERATOR = "PDF_GENERATOR";
     public static final String ARBEIDSFORHOLD = "ARBEIDSFORHOLD";
     public static final String ORGANISASJON = "ORGANISASJON";
     public static final String KONTONR = "KONTONR";
@@ -76,6 +78,15 @@ public class WebClientConfiguration {
         return webClientBuilder -> webClientBuilder
             .clientConnector(new ReactorClientHttpConnector(HttpClient.create(provider).wiretap(isDevOrLocal(env))))
             .filter(correlatingFilterFunction())
+            .build();
+    }
+
+    @Bean
+    @Qualifier(PDF_GENERATOR)
+    public WebClient webClientPdfGenerator(Builder builder, PdfGeneratorConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
+        return builder
+            .baseUrl(cfg.getBaseUri().toString())
+            .filter(tokenXFilterFunction)
             .build();
     }
 
