@@ -74,7 +74,7 @@ public class InnsynConnection extends AbstractWebClientConnection {
             .bodyToMono(AnnenPartVedtak.class)
             .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
             .onErrorResume(WebClientResponseException.Forbidden.class, forbidden -> {
-                LOG.info("Kall for å hente annen parts vedtak feiler med {}", forbidden.getRawStatusCode());
+                LOG.info("Kall for å hente annenparts vedtak feiler med {}", forbidden.getRawStatusCode(), forbidden);
                 return Mono.empty();
             })
             .blockOptional();
