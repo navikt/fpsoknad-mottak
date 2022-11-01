@@ -15,9 +15,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.innsyn.v2.AnnenPartVedtak;
 import no.nav.foreldrepenger.common.innsyn.v2.Saker;
 import no.nav.foreldrepenger.common.innsyn.v2.Saksnummer;
-import no.nav.foreldrepenger.common.innsyn.v2.VedtakPeriode;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
@@ -64,20 +64,18 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
             .orElseThrow();
     }
 
-    public List<VedtakPeriode> annenPartsVedtaksperioder(AnnenPartVedtakRequest annenPartVedtakRequest) {
-        var uri = cfg.annenPartsVedtaksperioderURI();
+    public Optional<AnnenPartVedtak> annenPartVedtak(AnnenPartVedtakRequest annenPartVedtakRequest) {
+        var uri = cfg.annenPartVedtakURI();
 
-        var response = postForEntity(uri, new HttpEntity<>(annenPartVedtakRequest), VedtakPeriode[].class);
+        var response = postForEntity(uri, new HttpEntity<>(annenPartVedtakRequest), AnnenPartVedtak.class);
         if (response.getStatusCode().is2xxSuccessful()) {
-            return Optional.ofNullable(response.getBody())
-                .map(Arrays::asList)
-                .orElse(emptyList());
+            return Optional.ofNullable(response.getBody());
         } else if (response.getStatusCode() == HttpStatus.FORBIDDEN) {
             //Forventet oppførsel hvis annen part er beskyttet
-            LOG.info("Kall for å hente annen parts vedtaksperioder feiler med " + response.getStatusCode());
-            return List.of();
+            LOG.info("Kall for å hente annen parts vedtak feiler med " + response.getStatusCode());
+            return Optional.empty();
         }
-        throw new IllegalStateException("Kall for å hente annen parts vedtaksperioder feiler med " + response.getStatusCode());
+        throw new IllegalStateException("Kall for å hente annen parts vedtak feiler med " + response.getStatusCode());
     }
 
     UttaksplanDTO uttaksplan(Saksnummer saksnummer) {

@@ -24,7 +24,7 @@ public class InnsynConfig extends AbstractConfig {
 
     private static final String DEFAULT_BASE_V2_PATH = "api/v2/";
     private static final String SAKV2 = DEFAULT_BASE_V2_PATH + "saker";
-    private static final String ANNEN_FORELDER_VEDTAKSPERIODER = DEFAULT_BASE_V2_PATH + "annenForeldersVedtaksperioder";
+    private static final String ANNEN_PART_VEDTAK = DEFAULT_BASE_V2_PATH + "annenPartVedtak";
 
     private static final String AKTOR_ID = "aktorId";
     private static final String SAKSNUMMER = "saksnummer";
@@ -68,8 +68,8 @@ public class InnsynConfig extends AbstractConfig {
         return uri(getBaseUri(), SAKV2, queryParams(AKTOR_ID, aktørId));
     }
 
-    URI annenPartsVedtaksperioderURI() {
-        return uri(getBaseUri(), ANNEN_FORELDER_VEDTAKSPERIODER);
+    URI annenPartVedtakURI() {
+        return uri(getBaseUri(), ANNEN_PART_VEDTAK);
     }
 
     @Override

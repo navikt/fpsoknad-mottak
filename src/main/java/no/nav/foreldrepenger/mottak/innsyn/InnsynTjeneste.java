@@ -34,11 +34,11 @@ import no.nav.foreldrepenger.common.innsyn.uttaksplan.ArbeidsgiverInfoDto;
 import no.nav.foreldrepenger.common.innsyn.uttaksplan.SøknadsGrunnlagDto;
 import no.nav.foreldrepenger.common.innsyn.uttaksplan.UttaksPeriodeDto;
 import no.nav.foreldrepenger.common.innsyn.uttaksplan.UttaksplanDto;
+import no.nav.foreldrepenger.common.innsyn.v2.AnnenPartVedtak;
 import no.nav.foreldrepenger.common.innsyn.v2.FpSak;
 import no.nav.foreldrepenger.common.innsyn.v2.PersonDetaljer;
 import no.nav.foreldrepenger.common.innsyn.v2.Saker;
 import no.nav.foreldrepenger.common.innsyn.v2.Saksnummer;
-import no.nav.foreldrepenger.common.innsyn.v2.VedtakPeriode;
 import no.nav.foreldrepenger.common.innsyn.v2.persondetaljer.Kjønn;
 import no.nav.foreldrepenger.common.innsyn.v2.persondetaljer.Person;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
@@ -77,15 +77,15 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     @Override
-    public List<VedtakPeriode> annenPartsVedtaksperioder(AktørId søker,
-                                                         AnnenPartVedtakIdentifikator annenPartVedtakIdentifikator) {
-        LOG.info("Henter annen parts vedtaksperioder");
+    public Optional<AnnenPartVedtak> annenPartVedtak(AktørId søker,
+                                                     AnnenPartVedtakIdentifikator annenPartVedtakIdentifikator) {
+        LOG.info("Henter annen parts vedtak");
         var annenPartAktørId = oppslag.aktørId(annenPartVedtakIdentifikator.annenPartFødselsnummer());
         var barnAktørId = oppslag.aktørId(annenPartVedtakIdentifikator.barnFødselsnummer());
         var request = new AnnenPartVedtakRequest(søker, annenPartAktørId, barnAktørId, annenPartVedtakIdentifikator.familiehendelse());
-        var perioder = innsyn.annenPartsVedtaksperioder(request);
-        LOG.info("Returnerer annen parts vedtaksperioder. Antall perioder {}", perioder.size());
-        return perioder;
+        var vedtak = innsyn.annenPartVedtak(request);
+        LOG.info("Returnerer annen parts vedtak. Antall perioder {}", vedtak.map(v -> v.perioder().size()).orElse(0));
+        return vedtak;
     }
 
     private Saker berikPerson(Saker saker) {
