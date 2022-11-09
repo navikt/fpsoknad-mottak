@@ -31,15 +31,11 @@ public class InnsynConfig extends AbstractConfig {
     private static final String ANNENPART = "aktorIdAnnenPart";
     private static final String BRUKER = "aktorIdBruker";
 
-    private final String basePath;
-
     @ConstructorBinding
     public InnsynConfig(@DefaultValue(DEFAULT_PING_PATH) String pingPath,
             @DefaultValue("true") boolean enabled,
-            @DefaultValue(DEFAULT_URI) URI baseUri,
-            @DefaultValue(DEFAULT_BASE_PATH) String basePath) {
+            @DefaultValue(DEFAULT_URI) URI baseUri) {
         super(baseUri, pingPath, enabled);
-        this.basePath = basePath;
     }
 
     URI uttaksplanURI(Saksnummer saksnummer) {
@@ -74,7 +70,6 @@ public class InnsynConfig extends AbstractConfig {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [pingPath=" + getPingPath() + ", enabled=" + isEnabled() + ", uri=" + getBaseUri()
-                + ", basePath=" + basePath + "]";
+        return getClass().getSimpleName() + " [pingPath=" + getPingPath() + ", enabled=" + isEnabled() + ", uri=" + getBaseUri() + "]";
     }
 }
