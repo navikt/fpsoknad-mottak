@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.boot.conditionals.EnvUtil.CONFIDENTIAL;
-import static no.nav.boot.conditionals.EnvUtil.isDevOrLocal;
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retryOnlyOn5xxFailures;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_SYSTEM;
@@ -203,10 +202,9 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
 
     Bankkonto kontonr() {
         final var bankkonto = kontonrTPS.kontonr();
-
-        if (isDevOrLocal(env)) {
+        try {
             var bankkontoFraNyttEndepunkt = hentBankkontoFraNyTjenesteFailSafe();
-            if (bankkonto != null && !bankkonto.equals(bankkontoFraNyttEndepunkt)) {
+            if (!erBankkontoLik(bankkonto, bankkontoFraNyttEndepunkt)) {
                 // toString() til Bankkonto sensurer kontonummer
                 LOG.info("Fant avvvik mellom oppslag av kontonummer fra nytt og gammel tjeneste. " +
                         "Fra oppsalg: kontonummer '{}' banknavn '{}' og fra " +
@@ -219,9 +217,20 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
                     Optional.ofNullable(bankkontoFraNyttEndepunkt).map(Bankkonto::kontonummer).orElse(""),
                     Optional.ofNullable(bankkontoFraNyttEndepunkt).map(Bankkonto::banknavn).orElse(""));
             }
-
+        } catch (Exception e) {
+            LOG.info("Noe gikk galt med kall mot nytt kontonummer register", e);
         }
         return bankkonto;
+    }
+
+    private static boolean erBankkontoLik(Bankkonto bankkonto, Bankkonto bankkontoFraNyttEndepunkt) {
+        if (bankkonto == null && bankkontoFraNyttEndepunkt == null) {
+            return true;
+        }
+        if (bankkonto == null || bankkontoFraNyttEndepunkt == null) {
+            return false;
+        }
+        return bankkonto.equals(bankkontoFraNyttEndepunkt);
     }
 
     private Bankkonto hentBankkontoFraNyTjenesteFailSafe() {
