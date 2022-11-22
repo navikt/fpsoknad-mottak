@@ -204,7 +204,7 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
         final var bankkonto = kontonrTPS.kontonr();
         try {
             var bankkontoFraNyttEndepunkt = hentBankkontoFraNyTjenesteFailSafe();
-            if (bankkonto != null && !bankkonto.equals(bankkontoFraNyttEndepunkt)) {
+            if (!erBankkontoLik(bankkonto, bankkontoFraNyttEndepunkt)) {
                 // toString() til Bankkonto sensurer kontonummer
                 LOG.info("Fant avvvik mellom oppslag av kontonummer fra nytt og gammel tjeneste. " +
                         "Fra oppsalg: kontonummer '{}' banknavn '{}' og fra " +
@@ -221,6 +221,16 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
             LOG.info("Noe gikk galt med kall mot nytt kontonummer register", e);
         }
         return bankkonto;
+    }
+
+    private static boolean erBankkontoLik(Bankkonto bankkonto, Bankkonto bankkontoFraNyttEndepunkt) {
+        if (bankkonto == null && bankkontoFraNyttEndepunkt == null) {
+            return true;
+        }
+        if (bankkonto == null || bankkontoFraNyttEndepunkt == null) {
+            return false;
+        }
+        return bankkonto.equals(bankkontoFraNyttEndepunkt);
     }
 
     private Bankkonto hentBankkontoFraNyTjenesteFailSafe() {
