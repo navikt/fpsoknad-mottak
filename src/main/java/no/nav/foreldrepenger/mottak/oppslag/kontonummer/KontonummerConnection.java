@@ -33,7 +33,7 @@ public class KontonummerConnection extends AbstractWebClientConnection {
             .retrieve()
             .bodyToMono(Bankkonto.class)
             .retryWhen(retryOnlyOn5xxFailures(config.getBaseUri().toString()))
-            .doOnError(throwable -> LOG.info("Kontonummer oppslag feilet mot fpsoknad-oppslag! Forsetter uten kontonummer!", throwable))
+            .doOnError(throwable -> LOG.warn("Kontonummer oppslag feilet mot fpsoknad-oppslag! Forsetter uten kontonummer!", throwable))
             .onErrorReturn(UKJENT)
             .defaultIfEmpty(UKJENT)
             .block();
