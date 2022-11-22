@@ -14,7 +14,7 @@ import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 @ConfigurationProperties(prefix = "kontoregister")
 public class KontoregisterConfig extends AbstractConfig {
     private static final String DEFAULT_PING_PATH = "/";
-    private static final String DEFAULT_URI = "https://sokos-kontoregister-person.dev.intern.nav.no";
+    private static final String DEFAULT_URI = "https://sokos-kontoregister-person.intern.nav.no";
     private static final String DEFAULT_BASE_PATH = "/api/borger/v1/hent-aktiv-konto";
 
     @ConstructorBinding

@@ -40,6 +40,8 @@ digdir:
   base-uri: https://digdir-krr-proxy.dev.intern.nav.no
 organisasjon:
   base-uri: https://modapp-q1.adeo.no/ereg/api
+kontoregister:
+  base-uri: https://sokos-kontoregister-person.dev.intern.nav.no
 sts:
   base-uri: https://security-token-service.nais.preprod.local
 no.nav:
