@@ -53,6 +53,7 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
 
     private static final String IDENT = "ident";
     private static final Logger LOG = LoggerFactory.getLogger(PDLConnection.class);
+    private static final Logger SECURE_LOG = LoggerFactory.getLogger("secureLogger");
 
     private final GraphQLWebClient userClient;
     private final GraphQLWebClient systemClient;
@@ -206,16 +207,14 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
             var bankkontoFraNyttEndepunkt = hentBankkontoFraNyTjenesteFailSafe();
             if (!erBankkontoLik(bankkonto, bankkontoFraNyttEndepunkt)) {
                 // toString() til Bankkonto sensurer kontonummer
-                LOG.info("Fant avvvik mellom oppslag av kontonummer fra nytt og gammel tjeneste. " +
-                        "Fra oppsalg: kontonummer '{}' banknavn '{}' og fra " +
+                LOG.info("Fant avvvik mellom oppslag av kontonummer fra nytt og gammel tjeneste.");
+                SECURE_LOG.info("AVVIK: Fra oppsalg: kontonummer '{}' banknavn '{}' og fra " +
                         "nytt endepunkt kontonummer '{}', banknavn '{}'",
                     bankkonto.kontonummer(), bankkonto.banknavn(),
                     Optional.ofNullable(bankkontoFraNyttEndepunkt).map(Bankkonto::kontonummer).orElse(""),
                     Optional.ofNullable(bankkontoFraNyttEndepunkt).map(Bankkonto::banknavn).orElse(""));
             } else {
-                LOG.info("Ingen avvik mellom TPS og nytt kontoregister! Kontonummer: {}, bank: {}.",
-                    Optional.ofNullable(bankkontoFraNyttEndepunkt).map(Bankkonto::kontonummer).orElse(""),
-                    Optional.ofNullable(bankkontoFraNyttEndepunkt).map(Bankkonto::banknavn).orElse(""));
+                LOG.info("Ingen avvik mellom TPS og nytt kontoregister!");
             }
         } catch (Exception e) {
             LOG.info("Noe gikk galt med kall mot nytt kontonummer register", e);
