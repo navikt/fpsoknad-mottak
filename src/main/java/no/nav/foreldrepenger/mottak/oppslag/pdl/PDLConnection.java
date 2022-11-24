@@ -28,8 +28,6 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.EnvironmentAware;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
@@ -49,7 +47,7 @@ import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.UtenlandskKontoInfo;
 
 @Component
-public class PDLConnection implements PingEndpointAware, EnvironmentAware {
+public class PDLConnection implements PingEndpointAware {
 
     private static final String IDENT = "ident";
     private static final Logger LOG = LoggerFactory.getLogger(PDLConnection.class);
@@ -63,7 +61,6 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
     private final KontonummerConnection kontonrTPS;
     private final KontoregisterConnection kontoregister;
     private final TokenUtil tokenUtil;
-    private Environment env;
 
     PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient,
                   @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
@@ -265,11 +262,6 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
     @Override
     public String name() {
         return cfg.name();
-    }
-
-    @Override
-    public void setEnvironment(Environment env) {
-        this.env = env;
     }
 
     @Override
