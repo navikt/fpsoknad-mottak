@@ -9,7 +9,6 @@ import static no.nav.foreldrepenger.common.util.StringUtil.endelse;
 import static no.nav.foreldrepenger.common.util.StringUtil.partialMask;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -39,7 +38,6 @@ import no.nav.foreldrepenger.common.innsyn.v2.FpSak;
 import no.nav.foreldrepenger.common.innsyn.v2.PersonDetaljer;
 import no.nav.foreldrepenger.common.innsyn.v2.Saker;
 import no.nav.foreldrepenger.common.innsyn.v2.Saksnummer;
-import no.nav.foreldrepenger.common.innsyn.v2.persondetaljer.Kjønn;
 import no.nav.foreldrepenger.common.innsyn.v2.persondetaljer.Person;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.LenkeDTO;
@@ -113,12 +111,8 @@ public class InnsynTjeneste implements Innsyn {
                     .filter(sb -> sb.fnr().equals(fødselsnummer))
                     .findFirst()
                     .map(bb -> new Person(new Fødselsnummer(bb.fnr().value()), bb.navn().fornavn(),
-                        bb.navn().mellomnavn(), bb.navn().etternavn(), Kjønn.U, bb.fødselsdato()))
-                    .orElseGet(() -> {
-                        LOG.warn("Barn med aktørId {} ikke i resultat fra pdl query basert på knytning til søker", aktørId.value());
-                        return new Person(new Fødselsnummer(fødselsnummer.value()),
-                            "Barn", "", "Barnesen", Kjønn.U, LocalDate.now());
-                    });
+                        bb.navn().mellomnavn(), bb.navn().etternavn(), null, null))
+                    .orElseThrow(() -> new IllegalArgumentException("Barn med aktørId " + aktørId.value() +  " ikke i resultat fra pdl query basert på knytning til søker"));
             })
             .collect(Collectors.toSet());
     }
