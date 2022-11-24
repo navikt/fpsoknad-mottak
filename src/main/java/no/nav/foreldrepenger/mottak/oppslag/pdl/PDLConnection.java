@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.slf4j.Logger;
@@ -80,10 +81,18 @@ public class PDLConnection implements PingEndpointAware {
     }
 
     public Person hentSøker() {
+        return hentSøkerInternal(b -> b.erNyligFødt(cfg.getBarnFødtInnen()) && !b.erNyligDød(cfg.getDødSjekk()));
+    }
+
+    public Person hentSøkerMedAlleBarn() {
+        return hentSøkerInternal(b -> true);
+    }
+
+    private Person hentSøkerInternal(Predicate<PDLBarn> filter) {
         var fnrSøker = tokenUtil.autentisertBrukerOrElseThrowException();
         return Optional.ofNullable(oppslagSøker(fnrSøker))
-                .map(s -> map(fnrSøker, aktøridFor(fnrSøker), målform(), kontonr(), barn(s), s))
-                .orElse(null);
+            .map(s -> map(fnrSøker, aktøridFor(fnrSøker), målform(), kontonr(), barn(s, filter), s))
+            .orElse(null);
     }
 
     public Navn navnFor(String id) {
@@ -111,15 +120,14 @@ public class PDLConnection implements PingEndpointAware {
 
     }
 
-    private Set<PDLBarn> barn(PDLSøker søker) {
+    private Set<PDLBarn> barn(PDLSøker søker, Predicate<PDLBarn> filter) {
         return safeStream(søker.getForelderBarnRelasjon())
                 .filter(b -> b.relatertPersonsrolle().equals(BARN))
                 .map(PDLForelderBarnRelasjon::id)
                 .filter(Objects::nonNull)
                 .map(b -> oppslagBarn(søker.getId(), b))
                 .filter(Objects::nonNull)
-                .filter(b -> b.erNyligFødt(cfg.getBarnFødtInnen()))
-                .filter(not(b -> b.erNyligDød(cfg.getDødSjekk())))
+                .filter(filter)
                 .collect(toSet());
     }
 
