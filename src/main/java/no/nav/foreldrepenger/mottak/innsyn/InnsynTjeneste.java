@@ -94,7 +94,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private FpSak berikPerson(FpSak sak) {
-        var søker = oppslag.person();
+        var søker = oppslag.personMedAlleBarn();
         return new FpSak(sak.saksnummer(), sak.sakAvsluttet(), sak.sisteSøknadMottattDato(), sak.kanSøkeOmEndring(),
             sak.sakTilhørerMor(), sak.gjelderAdopsjon(), sak.morUføretrygd(), sak.harAnnenForelderTilsvarendeRettEØS(),
             sak.ønskerJustertUttakVedFødsel(), sak.rettighetType(),

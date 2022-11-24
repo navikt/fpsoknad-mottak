@@ -32,6 +32,10 @@ public class OppslagTjeneste implements Oppslag {
         return pdl.hentSøker();
     }
 
+    public Person personMedAlleBarn() {
+        return pdl.hentSøkerMedAlleBarn();
+    }
+
     @Override
     public AktørId aktørId() {
         return aktørId(tokenHelper.autentisertBrukerOrElseThrowException());
