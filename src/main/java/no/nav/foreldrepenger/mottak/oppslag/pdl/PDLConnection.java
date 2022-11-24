@@ -119,7 +119,6 @@ public class PDLConnection implements PingEndpointAware {
                 .map(b -> oppslagBarn(søker.getId(), b))
                 .filter(Objects::nonNull)
                 .filter(b -> b.erNyligFødt(cfg.getBarnFødtInnen()))
-                .filter(not(PDLBarn::erBeskyttet))
                 .filter(not(b -> b.erNyligDød(cfg.getDødSjekk())))
                 .collect(toSet());
     }
@@ -144,9 +143,10 @@ public class PDLConnection implements PingEndpointAware {
 
     private PDLBarn oppslagBarn(String fnrSøker, String id) {
         return Optional.ofNullable(oppslag(() -> postClientCredential(BARN_QUERY, id, PDLBarn.class), "barn"))
-                .map(b -> medAnnenPart(b, fnrSøker))
-                .map(b -> b.withId(id))
-                .orElse(null);
+            .filter(b -> !b.erBeskyttet())
+            .map(b -> medAnnenPart(b, fnrSøker))
+            .map(b -> b.withId(id))
+            .orElse(null);
     }
 
     private PDLBarn medAnnenPart(PDLBarn barn, String fnrSøker) {
