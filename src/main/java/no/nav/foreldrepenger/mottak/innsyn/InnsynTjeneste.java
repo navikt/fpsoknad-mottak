@@ -111,7 +111,7 @@ public class InnsynTjeneste implements Innsyn {
                     .filter(sb -> sb.fnr().equals(fødselsnummer))
                     .findFirst()
                     .map(bb -> new Person(new Fødselsnummer(bb.fnr().value()), bb.navn().fornavn(),
-                        bb.navn().mellomnavn(), bb.navn().etternavn(), null, null))
+                        bb.navn().mellomnavn(), bb.navn().etternavn(), null, bb.fødselsdato()))
                     .orElseThrow(() -> new IllegalArgumentException("Barn med aktørId " + aktørId.value() +  " ikke i resultat fra pdl query basert på knytning til søker"));
             })
             .collect(Collectors.toSet());
