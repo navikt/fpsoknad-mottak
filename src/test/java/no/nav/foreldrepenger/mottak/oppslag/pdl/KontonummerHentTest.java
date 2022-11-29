@@ -48,7 +48,6 @@ class KontonummerHentTest {
         mockWebServer.enqueue(new MockResponse()
             .setBody(happyCaseBodyFraNyttEndepunkt())
             .addHeader("Content-Type", "application/json"));
-
         var bankkonto = pdlConnection.kontonr();
         assertThat(bankkonto.kontonummer()).isEqualTo("8361347234732292");
         assertThat(bankkonto.banknavn()).isEqualTo("DNB");
@@ -56,22 +55,8 @@ class KontonummerHentTest {
 
 
     @Test
-    void oppslagFeiler() {
-        var body = happyCaseBodyFraNyttEndepunkt();
-        mockWebServer.enqueue(new MockResponse().setResponseCode(404));
-        mockWebServer.enqueue(new MockResponse()
-            .setBody(body)
-            .addHeader("Content-Type", "application/json"));
-
-
-        var bankkonto = pdlConnection.kontonr();
-        assertThat(bankkonto).isEqualTo(Bankkonto.UKJENT);
-    }
-
-    @Test
-    void bådeFpsoknadOppslagOgNyttEndepunktFeiler() {
-        mockWebServer.enqueue(new MockResponse().setResponseCode(404));
-
+    void oppslagFeilerVerifiserAtFailSafe() {
+        mockWebServer.enqueue(new MockResponse().setResponseCode(400));
         var bankkonto = pdlConnection.kontonr();
         assertThat(bankkonto).isEqualTo(Bankkonto.UKJENT);
     }
