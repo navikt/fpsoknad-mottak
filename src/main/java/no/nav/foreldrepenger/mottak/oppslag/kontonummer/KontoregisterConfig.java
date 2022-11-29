@@ -10,7 +10,9 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 
-// Swagger: https://sokos-kontoregister-person.dev.intern.nav.no/api/borger/v1/docs/#/kontoregister.v1/kontooppslag%20med%20get
+/**
+ * Swagger: https://sokos-kontoregister-person.dev.intern.nav.no/api/borger/v1/docs/#/kontoregister.v1/kontooppslag%20med%20get
+ */
 @ConfigurationProperties(prefix = "kontoregister")
 public class KontoregisterConfig extends AbstractConfig {
     private static final String DEFAULT_PING_PATH = "/";

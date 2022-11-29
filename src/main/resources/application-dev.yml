@@ -49,9 +49,6 @@ no.nav:
     jwt:
       client:
         registration:
-          fpsoknad-oppslag:
-            token-exchange:
-              audience: dev-fss:teamforeldrepenger:fpsoknad-oppslag
           fpinfo:
             token-exchange:
               audience: dev-fss:teamforeldrepenger:fpinfo

@@ -22,14 +22,12 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
-import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.common.domain.felles.Kjønn;
 import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
 import no.nav.foreldrepenger.mottak.http.WebClientConfiguration;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConnection;
-import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontonummerConnection;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConnection;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto;
 import okhttp3.mockwebserver.MockResponse;
@@ -50,8 +48,6 @@ class PDLConnectionTest {
 
     @Mock
     private DigdirKrrProxyConnection digdir;
-    @Mock
-    private KontonummerConnection kontonrTPS;
     @Mock
     private KontoregisterConnection kontoregister;
     @Mock
@@ -76,7 +72,6 @@ class PDLConnectionTest {
     void setup() {
         pdlConnection = new PDLConnection(userClient, systemClient, cfg,
             digdir,
-            kontonrTPS,
             kontoregister,
             tokenUtil,
             new PDLExceptionGeneratingResponseHander());
@@ -92,7 +87,6 @@ class PDLConnectionTest {
     void hentPersonBarnNyligFødtIkkeDødEllerSkjermetAdresse() {
         when(tokenUtil.autentisertBrukerOrElseThrowException()).thenReturn(FØDSELSNUMMER_SØKER);
         when(digdir.målform()).thenReturn(Målform.NB);
-        when(kontonrTPS.kontonr()).thenReturn(Bankkonto.UKJENT);
         when(kontoregister.kontonrFraNyTjeneste()).thenReturn(Konto.UKJENT);
 
         var fnrBarn = new Fødselsnummer("987654321");
@@ -136,7 +130,6 @@ class PDLConnectionTest {
     void hentPersonBarnSkalIkkeReturnerOpplysningerOmBarnetVedFORTROLIGAdresse() {
         when(tokenUtil.autentisertBrukerOrElseThrowException()).thenReturn(FØDSELSNUMMER_SØKER);
         when(digdir.målform()).thenReturn(Målform.NB);
-        when(kontonrTPS.kontonr()).thenReturn(Bankkonto.UKJENT);
         when(kontoregister.kontonrFraNyTjeneste()).thenReturn(Konto.UKJENT);
 
         var fnrBarn = new Fødselsnummer("987654321");
@@ -179,7 +172,6 @@ class PDLConnectionTest {
     void hentPersonBarnSkalIkkeReturnerOpplysningerOmBarnetITilfelleAvDød() {
         when(tokenUtil.autentisertBrukerOrElseThrowException()).thenReturn(FØDSELSNUMMER_SØKER);
         when(digdir.målform()).thenReturn(Målform.NB);
-        when(kontonrTPS.kontonr()).thenReturn(Bankkonto.UKJENT);
         when(kontoregister.kontonrFraNyTjeneste()).thenReturn(Konto.UKJENT);
 
         var fnrBarn = new Fødselsnummer("987654321");
