@@ -12,10 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
-import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontonummerConfig;
-import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontonummerConnection;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConfig;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConnection;
 import okhttp3.mockwebserver.MockResponse;
@@ -37,11 +34,8 @@ class KontonummerHentTest {
         var kontoregisterConfig = new KontoregisterConfig(URI.create(baseUrl), "/", true);
         var kontoregisterConnection = new KontoregisterConnection(webClient, kontoregisterConfig);
 
-        var kontonummerConfig = new KontonummerConfig("/", true,URI.create(baseUrl));
-        var kontonummerConnection = new KontonummerConnection(webClient, kontonummerConfig);
-
         pdlConnection = new PDLConnection(null, null, null, null,
-            kontonummerConnection, kontoregisterConnection, null, null);
+            kontoregisterConnection, null, null);
     }
 
     @AfterAll
@@ -51,44 +45,18 @@ class KontonummerHentTest {
 
     @Test
     void happycase() {
-        String bodyFraNyttEndepunkt = happyCaseBodyFraNyttEndepunkt();
-        var bodyFpsoknadOppslag = """
-            {
-              "kontonummer": "123456789",
-              "banknavn": "DNB FAKE"
-            }
-                        """;
         mockWebServer.enqueue(new MockResponse()
-            .setBody(bodyFpsoknadOppslag)
+            .setBody(happyCaseBodyFraNyttEndepunkt())
             .addHeader("Content-Type", "application/json"));
-        mockWebServer.enqueue(new MockResponse()
-            .setBody(bodyFraNyttEndepunkt)
-            .addHeader("Content-Type", "application/json"));
-
         var bankkonto = pdlConnection.kontonr();
-        assertThat(bankkonto.kontonummer()).isEqualTo("123456789");
-        assertThat(bankkonto.banknavn()).isEqualTo("DNB FAKE");
+        assertThat(bankkonto.kontonummer()).isEqualTo("8361347234732292");
+        assertThat(bankkonto.banknavn()).isEqualTo("DNB");
     }
 
 
     @Test
-    void oppslagFeiler() {
-        var body = happyCaseBodyFraNyttEndepunkt();
-        mockWebServer.enqueue(new MockResponse().setResponseCode(404));
-        mockWebServer.enqueue(new MockResponse()
-            .setBody(body)
-            .addHeader("Content-Type", "application/json"));
-
-
-        var bankkonto = pdlConnection.kontonr();
-        assertThat(bankkonto).isEqualTo(Bankkonto.UKJENT);
-    }
-
-    @Test
-    void bådeFpsoknadOppslagOgNyttEndepunktFeiler() {
-        mockWebServer.enqueue(new MockResponse().setResponseCode(404));
-        mockWebServer.enqueue(new MockResponse().setResponseCode(404));
-
+    void oppslagFeilerVerifiserAtFailSafe() {
+        mockWebServer.enqueue(new MockResponse().setResponseCode(400));
         var bankkonto = pdlConnection.kontonr();
         assertThat(bankkonto).isEqualTo(Bankkonto.UKJENT);
     }

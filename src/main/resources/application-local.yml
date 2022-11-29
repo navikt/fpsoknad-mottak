@@ -53,13 +53,6 @@ no.nav:
     jwt:
       client:
         registration:
-          fpsoknad-oppslag:
-            well-known-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
-            token-exchange:
-              audience: local:teamforeldrepenger:fpsoknad-oppslag
-            authentication:
-              client-id: fpsoknad-mottak
-              client-jwk: src/test/resources/tokenx/jwk.json
           fpinfo:
             well-known-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
             token-exchange:

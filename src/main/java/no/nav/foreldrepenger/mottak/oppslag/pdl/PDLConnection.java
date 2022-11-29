@@ -42,7 +42,6 @@ import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConnection;
-import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontonummerConnection;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConnection;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.UtenlandskKontoInfo;
@@ -52,28 +51,24 @@ public class PDLConnection implements PingEndpointAware {
 
     private static final String IDENT = "ident";
     private static final Logger LOG = LoggerFactory.getLogger(PDLConnection.class);
-    private static final Logger SECURE_LOG = LoggerFactory.getLogger("secureLogger");
 
     private final GraphQLWebClient userClient;
     private final GraphQLWebClient systemClient;
     private final PDLConfig cfg;
     private final DigdirKrrProxyConnection digdir;
     private final PDLErrorResponseHandler errorHandler;
-    private final KontonummerConnection kontonrTPS;
     private final KontoregisterConnection kontoregister;
     private final TokenUtil tokenUtil;
 
     PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient,
                   @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
                   PDLConfig cfg, DigdirKrrProxyConnection digdir,
-                  KontonummerConnection kontonrTPS,
                   KontoregisterConnection kontoregister,
                   TokenUtil tokenUtil,
                   PDLErrorResponseHandler errorHandler) {
         this.userClient = userClient;
         this.systemClient = systemClient;
         this.digdir = digdir;
-        this.kontonrTPS = kontonrTPS;
         this.kontoregister = kontoregister;
         this.cfg = cfg;
         this.tokenUtil = tokenUtil;
@@ -207,41 +202,11 @@ public class PDLConnection implements PingEndpointAware {
     }
 
     Bankkonto kontonr() {
-        final var bankkonto = kontonrTPS.kontonr();
-        try {
-            var bankkontoFraNyttEndepunkt = hentBankkontoFraNyTjenesteFailSafe();
-            if (!erBankkontoLik(bankkonto, bankkontoFraNyttEndepunkt)) {
-                // toString() til Bankkonto sensurer kontonummer
-                LOG.info("Fant avvvik mellom oppslag av kontonummer fra nytt og gammel tjeneste.");
-                SECURE_LOG.info("AVVIK funnet: " +
-                        "Fpsoknad-oppslag/TPS: Kontonummer {} med banknavn {}" +
-                        "Sokos-kontoregister-person: Kontonummer {} med banknavn {}",
-                    Optional.ofNullable(bankkonto).map(Bankkonto::kontonummer).orElse(null),
-                    Optional.ofNullable(bankkonto).map(Bankkonto::banknavn).orElse(null),
-                    Optional.ofNullable(bankkontoFraNyttEndepunkt).map(Bankkonto::kontonummer).orElse(null),
-                    Optional.ofNullable(bankkontoFraNyttEndepunkt).map(Bankkonto::banknavn).orElse(null));
-            } else {
-                LOG.info("Ingen avvik mellom TPS og nytt kontoregister!");
-            }
-        } catch (Exception e) {
-            LOG.info("Noe gikk galt med kall mot nytt kontonummer register", e);
-        }
-        return bankkonto;
+        return tilBankkonto(kontoregister.kontonrFraNyTjeneste());
     }
 
-    private static boolean erBankkontoLik(Bankkonto bankkonto, Bankkonto bankkontoFraNyttEndepunkt) {
-        if (bankkonto == null && bankkontoFraNyttEndepunkt == null) {
-            return true;
-        }
-        if (bankkonto == null || bankkontoFraNyttEndepunkt == null) {
-            return false;
-        }
-        return bankkonto.equals(bankkontoFraNyttEndepunkt);
-    }
-
-    private Bankkonto hentBankkontoFraNyTjenesteFailSafe() {
-        var kontoinformasjon = kontoregister.kontonrFraNyTjeneste();
-        if (!Konto.UKJENT.equals(kontoinformasjon)) {
+    private static Bankkonto tilBankkonto(Konto kontoinformasjon) {
+        if (kontoinformasjon != null && !Konto.UKJENT.equals(kontoinformasjon)) {
             var kontonummer = kontoinformasjon.kontonummer();
             var banknavn = Optional.ofNullable(kontoinformasjon.utenlandskKontoInfo())
                 .map(UtenlandskKontoInfo::banknavn)
@@ -250,7 +215,6 @@ public class PDLConnection implements PingEndpointAware {
         }
         return Bankkonto.UKJENT;
     }
-
 
     private Målform målform() {
         return digdir.målform();
