@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.common.util.MDCUtil.callId;
+import static org.springframework.kafka.support.KafkaHeaders.MESSAGE_KEY;
 import static org.springframework.kafka.support.KafkaHeaders.TOPIC;
 
 import java.time.LocalDate;
@@ -53,6 +54,7 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
         send(MessageBuilder
                 .withPayload(mapper.writeValueAsString(h))
                 .setHeader(TOPIC, topic)
+                .setHeader(MESSAGE_KEY, h.aktørId().value())
                 .setHeader(NAV_CALL_ID, callId)
                 .build());
     }
