@@ -17,19 +17,6 @@ spring:
         application-name: fpsoknad-mottak/teamforeldrepenger
         default-context: fpsoknad-mottak/teamforeldrepenger
   kafka:
-    properties:
-      basic:
-        auth:
-          user:
-            info: ${kafka.schema.registry.user}:${kafka.schema.registry.password}
-          credentials:
-            source: USER_INFO
-      schema:
-        registry:
-          url: ${kafka.schema.registry}
-      endpoint:
-        identification:
-          algorithm: ''
     security:
       protocol: SSL
     ssl:
