@@ -33,7 +33,7 @@ spring:
     name: fpsoknad-mottak
   kafka:
     producer:
-      bootstrap-servers: ${bootstrap.servers}
+      bootstrap-servers: ${kafka.brokers}
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
   main:
