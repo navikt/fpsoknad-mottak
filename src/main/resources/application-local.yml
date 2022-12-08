@@ -15,12 +15,14 @@ spring:
   mvc:
     log-request-details : true
   kafka:
-    consumer:
-      enable-auto-commit: false
-      bootstrap-servers: localhost:9093
-    producer:
-      bootstrap-servers: localhost:9093
-
+    bootstrap-servers: localhost:9093
+    properties:
+      security:
+        protocol: SASL_SSL
+      sasl:
+        mechanism: PLAIN
+        jaas:
+          config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${kafka.username}" password="${kafka.password}";
 arbeidsforhold:
   base-uri: http://localhost:8060/rest/aareg-services/api
 organisasjon:
@@ -47,7 +49,7 @@ kafka:
 mottak:
   sender:
     domainevent:
-      enabled : false
+      enabled: false
 no.nav:
   security:
     jwt:

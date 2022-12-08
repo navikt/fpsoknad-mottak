@@ -12,6 +12,8 @@ spec:
   azure:
     application:
       enabled: true
+  kafka:
+    pool: {{kafkaPool}}
   webproxy: true
   tokenx:
     enabled: true
