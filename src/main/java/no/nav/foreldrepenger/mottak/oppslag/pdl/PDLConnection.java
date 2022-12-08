@@ -158,6 +158,11 @@ public class PDLConnection implements PingEndpointAware {
                 .orElse(barn);
     }
 
+    public Optional<Navn> annenPart(String id) {
+        var pdlAnnenPart = oppslagAnnenPart(id);
+        return Optional.ofNullable(pdlAnnenPart).map(ap -> PDLMapper.navnFra(ap.getNavn()));
+    }
+
     private PDLAnnenPart oppslagAnnenPart(String id) {
         return Optional.ofNullable(oppslag(() -> postClientCredential(ANNEN_PART_QUERY, id, PDLAnnenPart.class), "annenpart"))
                 .filter(not(PDLAnnenPart::erDød))
