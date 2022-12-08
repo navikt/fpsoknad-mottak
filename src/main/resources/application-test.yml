@@ -15,13 +15,13 @@ spring:
   mvc:
     log-request-details : true
   kafka:
-    consumer:
-      enable-auto-commit: false
-      bootstrap-servers: ${bootstrap.servers}
-    producer:
-      bootstrap-servers: ${bootstrap.servers}
-
-
+    properties:
+      security:
+        protocol: SASL_SSL
+      sasl:
+        mechanism: PLAIN
+        jaas:
+          config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${kafka.username}" password="${kafka.password}";
 no.nav:
   security:
     jwt:
