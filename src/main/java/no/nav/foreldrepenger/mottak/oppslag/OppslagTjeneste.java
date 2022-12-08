@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
+import java.util.Optional;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
@@ -46,14 +48,27 @@ public class OppslagTjeneste implements Oppslag {
         return pdl.aktøridFor(fnr);
     }
 
+    /**
+     * Ubeskyttet
+     */
     @Override
     public Fødselsnummer fnr(AktørId aktørId) {
         return pdl.fødselsnummerFor(aktørId);
     }
 
+    /**
+     * Ubeskyttet
+     */
     @Override
     public Navn navn(String id) {
         return pdl.navnFor(id);
+    }
+
+    /**
+     * @return empty hvis person beskyttet/ikke finnes
+     */
+    public Optional<Navn> annenPartNavn(String id) {
+        return pdl.annenPart(id);
     }
 
     @Override

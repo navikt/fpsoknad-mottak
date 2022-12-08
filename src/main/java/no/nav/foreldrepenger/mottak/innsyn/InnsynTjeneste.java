@@ -123,7 +123,12 @@ public class InnsynTjeneste implements Innsyn {
         }
         var aktørId = (no.nav.foreldrepenger.common.innsyn.v2.persondetaljer.AktørId) annenPart.personDetaljer();
         var fødselsnummer = oppslag.fnr(new AktørId(aktørId.value()));
-        var navn = oppslag.navn(fødselsnummer.value());
+        var navnOpt = oppslag.annenPartNavn(fødselsnummer.value());
+        if (navnOpt.isEmpty()) {
+            //Har fnr, men finner ikke navn. Mulig adressebeskyttelse
+            return null;
+        }
+        var navn = navnOpt.get();
         var person = new Person(new Fødselsnummer(fødselsnummer.value()),
             navn.fornavn(), navn.mellomnavn(), navn.etternavn(), null, null);
         return new no.nav.foreldrepenger.common.innsyn.v2.AnnenPart(person);
