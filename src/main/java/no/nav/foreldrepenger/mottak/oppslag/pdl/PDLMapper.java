@@ -67,7 +67,7 @@ class PDLMapper {
 
     static Barn barnFra(PDLBarn barn) {
         return Optional.ofNullable(barn)
-            .map(b -> new Barn(new Fødselsnummer(b.getId()), fødselsdatoFra(b.getFødselsdato()),
+            .map(b -> new Barn(new Fødselsnummer(b.getId()), fødselsdatoFra(b.getFødselsdato()), dødsdatoFra(b.getDødsfall()),
                 navnFra(b.getNavn()), kjønnFra(barn.getKjønn()),  annenPartFra(b.getAnnenPart())))
             .orElse(null);
     }
@@ -88,6 +88,13 @@ class PDLMapper {
             .map(PDLStatsborgerskap::land)
             .map(CountryCode::getByAlpha3Code)
             .orElse(CountryCode.NO);
+    }
+
+    private static LocalDate dødsdatoFra(Set<PDLDødsfall> datoer) {
+        if (datoer == null || datoer.isEmpty()) {
+            return null;
+        }
+        return onlyElem(datoer).dødsdato();
     }
 
     private static LocalDate fødselsdatoFra(Set<PDLFødsel> datoer) {

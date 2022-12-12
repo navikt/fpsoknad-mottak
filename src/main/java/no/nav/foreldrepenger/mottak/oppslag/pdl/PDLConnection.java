@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.boot.conditionals.EnvUtil.CONFIDENTIAL;
+import static no.nav.boot.conditionals.EnvUtil.isDevOrLocal;
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retryOnlyOn5xxFailures;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_SYSTEM;
@@ -29,6 +30,8 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
@@ -47,7 +50,7 @@ import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.UtenlandskKontoInfo;
 
 @Component
-public class PDLConnection implements PingEndpointAware {
+public class PDLConnection implements PingEndpointAware, EnvironmentAware {
 
     private static final String IDENT = "ident";
     private static final Logger LOG = LoggerFactory.getLogger(PDLConnection.class);
@@ -59,6 +62,7 @@ public class PDLConnection implements PingEndpointAware {
     private final PDLErrorResponseHandler errorHandler;
     private final KontoregisterConnection kontoregister;
     private final TokenUtil tokenUtil;
+    private Environment env;
 
     PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient,
                   @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
@@ -80,6 +84,9 @@ public class PDLConnection implements PingEndpointAware {
             var nyligFødt = b.erNyligFødt(cfg.getBarnFødtInnen());
             if (!nyligFødt) {
                 return false;
+            }
+            if (isDevOrLocal(env)) {
+                return true;
             }
             return b.getDødsfall() == null || b.getDødsfall().isEmpty() || b.erNyligDød(cfg.getDødSjekk());
         });
@@ -252,4 +259,8 @@ public class PDLConnection implements PingEndpointAware {
         return getClass().getSimpleName() + " [userClient=" + userClient + ", systemClient=" + systemClient + ", cfg=" + cfg + "]";
     }
 
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.env = environment;
+    }
 }

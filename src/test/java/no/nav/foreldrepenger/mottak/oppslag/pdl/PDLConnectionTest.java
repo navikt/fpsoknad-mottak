@@ -23,7 +23,6 @@ import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.felles.Kjønn;
-import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
@@ -166,61 +165,6 @@ class PDLConnectionTest {
         assertThat(person.fødselsdato()).isEqualTo(fødselsdatoFar);
 
         assertThat(person.barn()).isEmpty();
-    }
-
-    @Test
-    void skalReturnereBarnVedNyligDødsfall() {
-        var person = hentPersonMedDødsdatoBarn(LocalDate.now().minusWeeks(1));
-        assertThat(person.barn()).hasSize(1);
-    }
-
-    @Test
-    void skalIkkeReturnereBarnVedEldreDødsfall() {
-        var person1 = hentPersonMedDødsdatoBarn(LocalDate.now().minusMonths(5));
-        assertThat(person1.barn()).isEmpty();
-
-        var person2 = hentPersonMedDødsdatoBarn(LocalDate.now().minusYears(5));
-        assertThat(person2.barn()).isEmpty();
-    }
-
-    @Test
-    void skalReturnereBarnUtenDødsfall() {
-        var person = hentPersonMedDødsdatoBarn(null);
-        assertThat(person.barn()).hasSize(1);
-    }
-
-    private Person hentPersonMedDødsdatoBarn(LocalDate dødsdato) {
-        when(tokenUtil.autentisertBrukerOrElseThrowException()).thenReturn(FØDSELSNUMMER_SØKER);
-        when(digdir.målform()).thenReturn(Målform.NB);
-        when(kontoregister.kontonrFraNyTjeneste()).thenReturn(Konto.UKJENT);
-
-        var fnrBarn = new Fødselsnummer("987654321");
-        var fødselsdatoFar = LocalDate.now().minusYears(25);
-        var personFar = personOpplysningFar("MANN", fnrBarn, fødselsdatoFar);
-        // Hent personopplysninger om far (søker)
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
-            .setBody(personFar)
-            .addHeader("Content-Type", "application/json")
-        );
-        // Hent aktørid for far
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
-            .setBody(hentIdentRespons(FØDSELSNUMMER_SØKER, AKTØRID_SØKER))
-            .addHeader("Content-Type", "application/json")
-        );
-
-        var fødselsdatoBarn = LocalDate.now().minusDays(6);
-        var personBarn = personOpplysningerBarnResponse(fødselsdatoBarn, dødsdato, null);
-        // Hent personopplysninger om barnet
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
-            .setBody(personBarn)
-            .addHeader("Content-Type", "application/json")
-        );
-
-
-        return pdlConnection.hentSøker();
     }
 
     @Test
