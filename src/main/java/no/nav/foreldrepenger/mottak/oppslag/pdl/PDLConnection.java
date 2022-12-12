@@ -76,7 +76,13 @@ public class PDLConnection implements PingEndpointAware {
     }
 
     public Person hentSøker() {
-        return hentSøkerInternal(b -> b.erNyligFødt(cfg.getBarnFødtInnen()) && !b.erNyligDød(cfg.getDødSjekk()));
+        return hentSøkerInternal(b -> {
+            var nyligFødt = b.erNyligFødt(cfg.getBarnFødtInnen());
+            if (!nyligFødt) {
+                return false;
+            }
+            return b.getDødsfall() == null || b.getDødsfall().isEmpty() || b.erNyligDød(cfg.getDødSjekk());
+        });
     }
 
     public Person hentSøkerMedAlleBarn() {
