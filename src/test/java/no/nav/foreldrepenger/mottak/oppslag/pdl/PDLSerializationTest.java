@@ -53,6 +53,7 @@ class PDLSerializationTest {
     private static final Fødselsnummer FNR_ANNEN = new Fødselsnummer(ID_ANNEN);
 
     private static final LocalDate BARNFØDT = LocalDate.now().minusYears(1);
+    private static final LocalDate BARNDØDT= LocalDate.now().minusYears(1);
     private static final LocalDate ANNENFØDT = LocalDate.now().minusYears(30);
     private static final LocalDate MORFØDT = LocalDate.now().minusYears(29);
 
@@ -210,7 +211,7 @@ class PDLSerializationTest {
     }
 
     private static Barn barn() {
-        return new Barn(FNR_BARN, BARNFØDT, barnsNavn(), Kjønn.M, annenPart());
+        return new Barn(FNR_BARN, BARNFØDT, BARNDØDT, barnsNavn(), Kjønn.M, annenPart());
     }
 
     private static PDLAdresseBeskyttelse beskyttelse() {
