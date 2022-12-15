@@ -12,12 +12,15 @@ query($ident: ID!){
         land
     },
     foedsel {
-        foedselsdato 
+        foedselsdato
+    },
+    doedfoedtBarn {
+       dato
     },
     forelderBarnRelasjon {
         relatertPersonsIdent
         relatertPersonsRolle
         minRolleForPerson
     }
-  }  
+  }
 }
