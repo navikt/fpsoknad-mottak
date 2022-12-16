@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +86,7 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
             if (!nyligFødt) {
                 return false;
             }
-            if (isDevOrLocal(env)) {
+            if (isV2Søknad()) {
                 return true;
             }
             return b.getDødsfall() == null || b.getDødsfall().isEmpty() || b.erNyligDød(cfg.getDødSjekk());
@@ -125,18 +126,33 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
                 .map(id -> mapIdent(id, FOLKEREGISTERIDENT))
                 .map(Fødselsnummer::new)
                 .orElse(null);
-
     }
 
     private Set<PDLBarn> barn(PDLSøker søker, Predicate<PDLBarn> filter) {
-        return safeStream(søker.getForelderBarnRelasjon())
-                .filter(b -> b.relatertPersonsrolle().equals(BARN))
-                .map(PDLForelderBarnRelasjon::id)
-                .filter(Objects::nonNull)
-                .map(b -> oppslagBarn(søker.getId(), b))
-                .filter(Objects::nonNull)
+        var barn = safeStream(søker.getForelderBarnRelasjon()).filter(
+                b -> b.relatertPersonsrolle().equals(BARN))
+            .map(PDLForelderBarnRelasjon::id)
+            .filter(Objects::nonNull)
+            .map(b -> oppslagBarn(søker.getId(), b))
+            .filter(Objects::nonNull);
+        if (isV2Søknad()) {
+            var dødFødtBarn = safeStream(søker.getDødfødtBarn())
+                .filter(dfb -> dfb.dato() != null)
+                .map(PDLConnection::mapDødfødte);
+            barn = Stream.concat(barn, dødFødtBarn);
+        }
+        return barn
                 .filter(filter)
                 .collect(toSet());
+    }
+
+    private boolean isV2Søknad() {
+        return isDevOrLocal(env);
+    }
+
+    private static PDLBarn mapDødfødte(PDLDødfødtBarn dfb) {
+        return new PDLBarn(Set.of(new PDLFødsel(dfb.dato())), Set.of(), Set.of(), Set.of(), Set.of(),
+            Set.of(new PDLDødsfall(dfb.dato())));
     }
 
     private PDLSøker oppslagSøker(Fødselsnummer fnr) {

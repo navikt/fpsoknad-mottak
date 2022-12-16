@@ -15,6 +15,8 @@ class PDLSøker {
     @JsonProperty("foedsel")
     private final Set<PDLFødsel> fødselsdato;
     private final Set<PDLForelderBarnRelasjon> forelderBarnRelasjon;
+    @JsonProperty("doedfoedtBarn")
+    private final Set<PDLDødfødtBarn> dødfødtBarn;
     private String id;
 
     PDLSøker withId(String id) {

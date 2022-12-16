@@ -67,8 +67,15 @@ class PDLMapper {
 
     static Barn barnFra(PDLBarn barn) {
         return Optional.ofNullable(barn)
-            .map(b -> new Barn(new Fødselsnummer(b.getId()), fødselsdatoFra(b.getFødselsdato()), dødsdatoFra(b.getDødsfall()),
-                navnFra(b.getNavn()), kjønnFra(barn.getKjønn()),  annenPartFra(b.getAnnenPart())))
+            .map(b -> {
+                var fnr = b.getId() == null ? null : new Fødselsnummer(b.getId());
+                var fødselsdato = fødselsdatoFra(b.getFødselsdato());
+                var dødsdato = dødsdatoFra(b.getDødsfall());
+                var navn = b.getNavn() == null || b.getNavn().isEmpty() ? null : navnFra(b.getNavn());
+                var kjønn = b.getKjønn() == null || b.getKjønn().isEmpty() ? null : kjønnFra(barn.getKjønn());
+                var annenPart = b.getAnnenPart() == null ? null : annenPartFra(b.getAnnenPart());
+                return new Barn(fnr, fødselsdato, dødsdato, navn, kjønn, annenPart);
+            })
             .orElse(null);
     }
 
