@@ -10,6 +10,7 @@ import static no.nav.foreldrepenger.common.util.StringUtil.partialMask;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -112,8 +113,10 @@ public class InnsynTjeneste implements Innsyn {
                     .findFirst()
                     .map(bb -> new Person(new Fødselsnummer(bb.fnr().value()), bb.navn().fornavn(),
                         bb.navn().mellomnavn(), bb.navn().etternavn(), null, bb.fødselsdato()))
-                    .orElseThrow(() -> new IllegalArgumentException("Barn med aktørId " + aktørId.value() +  " ikke i resultat fra pdl query basert på knytning til søker"));
+                    //Null her kan være adressebeskyttet barn, de er filtrert ut  i søkerBarn
+                    .orElse(null);
             })
+            .filter(Objects::nonNull)
             .collect(Collectors.toSet());
     }
 
