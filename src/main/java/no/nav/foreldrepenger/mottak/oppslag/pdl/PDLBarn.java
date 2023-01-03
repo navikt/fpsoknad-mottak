@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import static java.util.function.Predicate.not;
 import static no.nav.foreldrepenger.common.util.StreamUtil.onlyElem;
-import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLAdresseBeskyttelse.PDLAdresseGradering.UGRADERT;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLForelderBarnRelasjon.PDLRelasjonsRolle.BARN;
 
@@ -55,16 +54,6 @@ class PDLBarn {
 
     String getId() {
         return id;
-    }
-
-    boolean erNyligDød(int måneder) {
-        var nylig = safeStream(getDødsfall())
-                .map(PDLDødsfall::dødsdato)
-                .filter(Objects::nonNull)
-                .anyMatch(d -> d.isAfter(LocalDate.now().minusMonths(måneder)));
-
-        LOG.info("Barn er {}nylig dødt", nylig ? "" : "IKKE ");
-        return nylig;
     }
 
     boolean erNyligFødt(int måneder) {

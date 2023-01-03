@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.boot.conditionals.EnvUtil.CONFIDENTIAL;
-import static no.nav.boot.conditionals.EnvUtil.isDevOrLocal;
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retryOnlyOn5xxFailures;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_SYSTEM;
@@ -31,8 +30,6 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.EnvironmentAware;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
@@ -51,7 +48,7 @@ import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.UtenlandskKontoInfo;
 
 @Component
-public class PDLConnection implements PingEndpointAware, EnvironmentAware {
+public class PDLConnection implements PingEndpointAware {
 
     private static final String IDENT = "ident";
     private static final Logger LOG = LoggerFactory.getLogger(PDLConnection.class);
@@ -63,7 +60,6 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
     private final PDLErrorResponseHandler errorHandler;
     private final KontoregisterConnection kontoregister;
     private final TokenUtil tokenUtil;
-    private Environment env;
 
     PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient,
                   @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
@@ -81,16 +77,7 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
     }
 
     public Person hentSøker() {
-        return hentSøkerInternal(b -> {
-            var nyligFødt = b.erNyligFødt(cfg.getBarnFødtInnen());
-            if (!nyligFødt) {
-                return false;
-            }
-            if (isV2Søknad()) {
-                return true;
-            }
-            return b.getDødsfall() == null || b.getDødsfall().isEmpty() || b.erNyligDød(cfg.getDødSjekk());
-        });
+        return hentSøkerInternal(b -> b.erNyligFødt(cfg.getBarnFødtInnen()));
     }
 
     public Person hentSøkerMedAlleBarn() {
@@ -135,19 +122,12 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
             .filter(Objects::nonNull)
             .map(b -> oppslagBarn(søker.getId(), b))
             .filter(Objects::nonNull);
-        if (isV2Søknad()) {
-            var dødFødtBarn = safeStream(søker.getDødfødtBarn())
-                .filter(dfb -> dfb.dato() != null)
-                .map(PDLConnection::mapDødfødte);
-            barn = Stream.concat(barn, dødFødtBarn);
-        }
-        return barn
+        var dødFødtBarn = safeStream(søker.getDødfødtBarn())
+            .filter(dfb -> dfb.dato() != null)
+            .map(PDLConnection::mapDødfødte);
+        return Stream.concat(barn, dødFødtBarn)
                 .filter(filter)
                 .collect(toSet());
-    }
-
-    private boolean isV2Søknad() {
-        return isDevOrLocal(env);
     }
 
     private static PDLBarn mapDødfødte(PDLDødfødtBarn dfb) {
@@ -273,10 +253,5 @@ public class PDLConnection implements PingEndpointAware, EnvironmentAware {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [userClient=" + userClient + ", systemClient=" + systemClient + ", cfg=" + cfg + "]";
-    }
-
-    @Override
-    public void setEnvironment(Environment environment) {
-        this.env = environment;
     }
 }
