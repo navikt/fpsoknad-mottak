@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste;
 
-import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retryOnlyOn5xxFailures;
+import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClientConfiguration.retryOnlyOn5xxFailures;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDF_GENERATOR;
 
 import org.slf4j.Logger;

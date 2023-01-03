@@ -69,6 +69,7 @@ kontoregister:
   base-uri: ${oppslag.url}
 fpfordel:
   base-uri: ${fpfordel.override.url}
+  fpfordel-max: ${fpfordel.max}
 digdir:
   base-uri: ${digdir.base.url}
 innsyn:
