@@ -78,8 +78,18 @@ public class InnsynTjeneste implements Innsyn {
     @Override
     public Optional<AnnenPartVedtak> annenPartVedtak(AktørId søker,
                                                      AnnenPartVedtakIdentifikator annenPartVedtakIdentifikator) {
+        if (annenPartVedtakIdentifikator.annenPartFødselsnummer() == null || annenPartVedtakIdentifikator.annenPartFødselsnummer().value().isBlank()) {
+            LOG.warn("Feil input annen parts fnr {}. Returnerer tomt resultat", annenPartVedtakIdentifikator.annenPartFødselsnummer());
+            return Optional.empty();
+        }
         LOG.info("Henter annen parts vedtak");
-        var annenPartAktørId = oppslag.aktørId(annenPartVedtakIdentifikator.annenPartFødselsnummer());
+        AktørId annenPartAktørId;
+        try {
+            annenPartAktørId = oppslag.aktørId(annenPartVedtakIdentifikator.annenPartFødselsnummer());
+        } catch (Exception e) {
+            LOG.warn("Feil ved mapping fra fnr til aktørid for annen part. Returnerer tomt resultat", e);
+            return Optional.empty();
+        }
         var barnAktørId = oppslag.aktørId(annenPartVedtakIdentifikator.barnFødselsnummer());
         var request = new AnnenPartVedtakRequest(søker, annenPartAktørId, barnAktørId, annenPartVedtakIdentifikator.familiehendelse());
         var vedtak = innsyn.annenPartVedtak(request);
