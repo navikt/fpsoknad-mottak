@@ -5,10 +5,9 @@ import static org.springframework.http.HttpStatus.Series.CLIENT_ERROR;
 import static org.springframework.http.HttpStatus.Series.SERVER_ERROR;
 
 import java.io.IOException;
-import java.net.URI;
 import java.time.Duration;
+import java.time.Instant;
 
-import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpRequest;
@@ -40,8 +39,8 @@ public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpR
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
             throws IOException {
 
-        URI uri = UriComponentsBuilder.fromHttpRequest(request).replaceQuery(null).build().toUri();
-        Timer t = Timer.builder("rest.calls")
+        var uri = UriComponentsBuilder.fromHttpRequest(request).replaceQuery(null).build().toUri();
+        var t = Timer.builder("rest.calls")
                 .tags("uri", uri.getPath(), "method", request.getMethodValue(), "host", uri.getHost())
                 .publishPercentiles(0.5, 0.95) // median and 95th percentile
                 .publishPercentileHistogram()
@@ -50,20 +49,20 @@ public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpR
                 .maximumExpectedValue(Duration.ofSeconds(1))
                 .register(registry);
         LOG.info("{} - {}", request.getMethodValue(), uri);
-        StopWatch timer = new StopWatch();
-        timer.start();
+        var start = Instant.now();
         var respons = execution.execute(request, body);
         Metrics.counter("url", "endpoint", uri.toString(), "method", request.getMethodValue(), "status",
                 String.valueOf(respons.getRawStatusCode()))
                 .increment();
-        timer.stop();
-        t.record(timer.getTime(), MILLISECONDS);
+        var finish = Instant.now();
+        var ms = Duration.between(start, finish).toMillis();
+        t.record(ms, MILLISECONDS);
         if (hasError(respons.getStatusCode())) {
             LOG.warn("{} - {} - ({}). Dette tok {}ms. ({})", request.getMethodValue(), request.getURI(),
-                    respons.getRawStatusCode(), timer.getTime(MILLISECONDS), tokenUtil.getExpiration());
+                    respons.getRawStatusCode(), ms, tokenUtil.getExpiration());
         } else {
             LOG.info("{} - {} - ({}). Dette tok {}ms", request.getMethodValue(), uri,
-                    respons.getStatusCode(), timer.getTime(MILLISECONDS));
+                    respons.getStatusCode(), ms);
         }
         return respons;
     }

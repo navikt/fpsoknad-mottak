@@ -1,21 +1,13 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public record OrganisasjonsNavnDTO(NavnDTO navn) {
 
     public String tilOrganisasjonsnavn() {
-        var builder = new StringBuilder();
-        leggTilNavnelinje(builder, navn.navnelinje1());
-        leggTilNavnelinje(builder, navn.navnelinje2());
-        leggTilNavnelinje(builder, navn.navnelinje3());
-        leggTilNavnelinje(builder, navn.navnelinje4());
-        leggTilNavnelinje(builder, navn.navnelinje5());
-        return builder.toString();
-    }
-
-    private static void leggTilNavnelinje(StringBuilder stringBuilder, String navnelinje) {
-        if (navnelinje != null && !navnelinje.isEmpty()) {
-            if (!stringBuilder.isEmpty()) stringBuilder.append(", ");
-            stringBuilder.append(navnelinje);
-        }
+        return Stream.of(navn.navnelinje1(), navn.navnelinje2(), navn.navnelinje3(), navn.navnelinje4(), navn.navnelinje5())
+            .filter(s -> s != null && !s.isEmpty())
+            .collect(Collectors.joining(", "));
     }
 }
