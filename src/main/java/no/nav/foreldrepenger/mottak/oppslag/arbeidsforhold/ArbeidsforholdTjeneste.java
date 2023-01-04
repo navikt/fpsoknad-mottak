@@ -11,13 +11,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.common.domain.Orgnummer;
-import no.nav.foreldrepenger.mottak.http.RetryAware;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.ArbeidsforholdDTO;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.ArbeidsgiverDTO;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.ArbeidsgiverType;
 
 @Service
-public class ArbeidsforholdTjeneste implements RetryAware, ArbeidsInfo {
+public class ArbeidsforholdTjeneste implements ArbeidsInfo {
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdTjeneste.class);
     private final ArbeidsforholdConnection connection;
     private final OrganisasjonConnection orgConnection;

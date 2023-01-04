@@ -31,10 +31,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.Builder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Splitter;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.common.util.MDCUtil;
 import no.nav.foreldrepenger.common.util.TokenUtil;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelConfig;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorConfig;
 import no.nav.foreldrepenger.mottak.innsyn.InnsynConfig;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
@@ -51,16 +53,17 @@ import reactor.netty.resources.ConnectionProvider;
 
 @Configuration
 public class WebClientConfiguration {
+    private static final Logger LOG = LoggerFactory.getLogger(WebClientConfiguration.class);
 
     private static final String TEMA = "TEMA";
     public static final String PDL_USER = "PDL";
     public static final String PDL_SYSTEM = "PDL-RELASJON";
     public static final String KRR = "KRR";
     public static final String FPINFO = "FPINFO";
+    public static final String FPFORDEL = "FPFORDEL";
     public static final String PDF_GENERATOR = "PDF_GENERATOR";
     public static final String ARBEIDSFORHOLD = "ARBEIDSFORHOLD";
     public static final String ORGANISASJON = "ORGANISASJON";
-    public static final String KONTONR = "KONTONR";
     public static final String KONTOREGISTER = "KONTOREGISTER";
 
     @Value("${spring.application.name:fpsoknad-mottak}")
@@ -91,6 +94,15 @@ public class WebClientConfiguration {
     }
 
     @Bean
+    @Qualifier(FPFORDEL)
+    public WebClient webClientFpfordel(Builder builder, FordelConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
+        return builder
+            .baseUrl(cfg.getBaseUri().toString())
+            .filter(tokenXFilterFunction)
+            .build();
+    }
+
+    @Bean
     @Qualifier(FPINFO)
     public WebClient webClientFpinfo(Builder builder, InnsynConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
@@ -105,16 +117,6 @@ public class WebClientConfiguration {
         return builder
             .baseUrl(cfg.getBaseUri().toString())
             .filter(navPersonIdentFunction(tokenUtil))
-            .filter(tokenXFilterFunction)
-            .build();
-    }
-
-    @Bean
-    @Deprecated
-    @Qualifier(KONTONR)
-    public WebClient webClientKontonummer(Builder builder, KontoregisterConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
-        return builder
-            .baseUrl(cfg.getBaseUri().toString())
             .filter(tokenXFilterFunction)
             .build();
     }
@@ -205,6 +207,20 @@ public class WebClientConfiguration {
     private String consumerId() {
         return Optional.ofNullable(MDCUtil.consumerId())
                 .orElse(consumer);
+    }
+
+    @Bean
+    public ClientConfigurationPropertiesMatcher tokenxClientConfigMatcher() {
+        return (properties, uri) -> {
+            LOG.trace("Oppslag token X konfig for {}", uri.getHost());
+            var cfg = properties.getRegistration().get(Splitter.on(".").splitToList(uri.getHost()).get(0));
+            if (cfg != null) {
+                LOG.trace("Oppslag token X konfig for {} OK", uri.getHost());
+            } else {
+                LOG.trace("Oppslag token X konfig for {} fant ingenting", uri.getHost());
+            }
+            return Optional.ofNullable(cfg);
+        };
     }
 
     @Component

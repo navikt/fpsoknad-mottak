@@ -58,7 +58,7 @@ public class FordelSøknadSender implements SøknadSender {
         return connection.ping();
     }
 
-    private Kvittering send(Konvolutt konvolutt) {
+    Kvittering send(Konvolutt konvolutt) {
         return send(konvolutt, null);
     }
 
@@ -70,7 +70,7 @@ public class FordelSøknadSender implements SøknadSender {
         try {
             fordelKvittering = connection.send(konvolutt);
         } catch (UventetFpFordelResponseException e) {
-            LOG.warn("Uventet response fra fpfordel. Returnerer kvittering uten saksnummer", e);
+            LOG.warn("Uventet kvittering ved polling på status for innseding fra fpfordel. Returnerer kvittering uten saksnummer", e);
             return new Kvittering(mottattDato, null, pdfHovedDokument, infoskrivPdf);
         }
 

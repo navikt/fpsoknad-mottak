@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retryOnlyOn5xxFailures;
+import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClientConfiguration.retryOnlyOn5xxFailures;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.FPINFO;
 
 import java.util.List;

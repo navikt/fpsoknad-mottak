@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag.kontonummer;
 
 import static no.nav.foreldrepenger.common.util.MDCUtil.callId;
-import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClient.retryOnlyOn5xxFailures;
+import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClientConfiguration.retryOnlyOn5xxFailures;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.KONTOREGISTER;
 import static no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto.UKJENT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;

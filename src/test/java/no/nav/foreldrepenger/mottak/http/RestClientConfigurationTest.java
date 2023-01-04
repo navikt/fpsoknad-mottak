@@ -21,7 +21,7 @@ import no.nav.security.token.support.client.spring.oauth2.ClientConfigurationPro
 @ExtendWith(SpringExtension.class)
 class RestClientConfigurationTest {
 
-    private static ClientConfigurationPropertiesMatcher matcher = new RestClientConfiguration().tokenxClientConfigMatcher();
+    private static ClientConfigurationPropertiesMatcher matcher = new WebClientConfiguration().tokenxClientConfigMatcher();
     private static ClientConfigurationProperties properties;
 
     @BeforeAll

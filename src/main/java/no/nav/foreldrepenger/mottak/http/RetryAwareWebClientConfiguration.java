@@ -9,10 +9,10 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.util.retry.Retry;
 import reactor.util.retry.RetryBackoffSpec;
 
-public final class RetryAwareWebClient {
-    private static final Logger LOG = LoggerFactory.getLogger(RetryAwareWebClient.class);
+public final class RetryAwareWebClientConfiguration {
+    private static final Logger LOG = LoggerFactory.getLogger(RetryAwareWebClientConfiguration.class);
 
-    private RetryAwareWebClient() {
+    private RetryAwareWebClientConfiguration() {
     }
 
     public static RetryBackoffSpec retryOnlyOn5xxFailures(String name) {
