@@ -31,7 +31,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.Builder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Splitter;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.common.util.MDCUtil;
@@ -213,7 +212,7 @@ public class WebClientConfiguration {
     public ClientConfigurationPropertiesMatcher tokenxClientConfigMatcher() {
         return (properties, uri) -> {
             LOG.trace("Oppslag token X konfig for {}", uri.getHost());
-            var cfg = properties.getRegistration().get(Splitter.on(".").splitToList(uri.getHost()).get(0));
+            var cfg = properties.getRegistration().get(uri.getHost().split("\\.")[0]);
             if (cfg != null) {
                 LOG.trace("Oppslag token X konfig for {} OK", uri.getHost());
             } else {

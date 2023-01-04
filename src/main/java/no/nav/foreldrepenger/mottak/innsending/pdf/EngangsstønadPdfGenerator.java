@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.common.domain.Navn;
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.common.domain.felles.Kjønn;
@@ -200,8 +199,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
     }
 
     private DokumentPerson personFra(Person person) {
-        var navn = textFormatter.sammensattNavn(
-            new Navn(person.getFornavn(), person.getMellomnavn(), person.getEtternavn()));
+        var navn = textFormatter.sammensattNavn(person);
         return DokumentPerson.builder().navn(navn).id(person.fnr().value()).build();
     }
 

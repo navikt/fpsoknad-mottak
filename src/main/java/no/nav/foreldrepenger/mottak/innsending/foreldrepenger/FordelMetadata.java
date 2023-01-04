@@ -12,6 +12,7 @@ import static no.nav.foreldrepenger.common.innsending.SøknadType.ENDRING_FORELD
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -19,7 +20,6 @@ import javax.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.google.common.collect.Lists;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Saksnummer;
@@ -68,21 +68,25 @@ public record FordelMetadata(
 
     private static List<Del> søknadsDeler(Søknad søknad, SøknadType type) {
         var id = new AtomicInteger(1);
-        var dokumenter = Lists.newArrayList(søknadsDel(id, søknad, type), søknadsDel(id, søknad, type));
-        dokumenter.addAll(safeStream(søknad.getVedlegg())
-                .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
-                .map(s -> vedleggsDel(s, id))
-                .toList());
+        var dokumenter = new ArrayList<Del>();
+        dokumenter.add(søknadsDel(id, søknad, type));
+        dokumenter.add(søknadsDel(id, søknad, type));
+        safeStream(søknad.getVedlegg())
+            .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
+            .map(s -> vedleggsDel(s, id))
+            .forEach(dokumenter::add);
         return dokumenter;
     }
 
     private static List<Del> endringssøknadsDeler(Endringssøknad endringssøknad, SøknadType type) {
         var id = new AtomicInteger(1);
-        var dokumenter = Lists.newArrayList(endringsøknadsDel(id, type), endringsøknadsDel(id, type));
-        dokumenter.addAll(safeStream(endringssøknad.getVedlegg())
-                .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
-                .map(s -> vedleggsDel(s, id))
-                .toList());
+        var dokumenter = new ArrayList<Del>();
+        dokumenter.add(endringsøknadsDel(id, type));
+        dokumenter.add(endringsøknadsDel(id, type));
+        safeStream(endringssøknad.getVedlegg())
+            .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
+            .map(s -> vedleggsDel(s, id))
+            .forEach(dokumenter::add);
         return dokumenter;
     }
 

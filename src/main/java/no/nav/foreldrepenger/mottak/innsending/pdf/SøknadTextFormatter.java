@@ -22,7 +22,6 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import com.google.common.base.Joiner;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.common.domain.Navn;
@@ -66,23 +65,38 @@ public class SøknadTextFormatter {
     }
 
     public String navn(Navn navn) {
-        String sammensattnavn = Joiner.on(' ')
-                .skipNulls()
-                .join(navn.fornavn(), navn.mellomnavn(), navn.etternavn());
+        var sammensattnavn = sammensattNavn(navn);
         return sammensattnavn.isEmpty() ? "" : fromMessageSource("navninline", sammensattnavn);
-    }
-
-    public String sammensattNavn(Navn navn) {
-        return Joiner.on(' ')
-                .skipNulls()
-                .join(navn.fornavn(), navn.mellomnavn(), navn.etternavn());
     }
 
     public String navn(Person søker) {
         return Optional.ofNullable(søker)
-                .map(s -> Joiner.on(' ').skipNulls().join(s.getFornavn(), s.getMellomnavn(), s.getEtternavn()))
+                .map(this::sammensattNavn)
                 .map(String::trim)
                 .orElse("Ukjent");
+    }
+
+    public String sammensattNavn(Navn navn) {
+        return sammensattNavn(navn.fornavn(), navn.mellomnavn(), navn.etternavn());
+    }
+
+    public String sammensattNavn(Person person) {
+        return sammensattNavn(person.getFornavn(), person.getMellomnavn(), person.getEtternavn());
+    }
+
+    private String sammensattNavn(String fornavn, String mellomnavn, String etternavn) {
+        var builder = new StringBuilder();
+        leggTilNavn(builder, fornavn);
+        leggTilNavn(builder, mellomnavn);
+        leggTilNavn(builder, etternavn);
+        return builder.toString();
+    }
+
+    private static void leggTilNavn(StringBuilder stringBuilder, String navn) {
+        if (navn != null && !navn.isEmpty()) {
+            if (!stringBuilder.isEmpty()) stringBuilder.append(' ');
+            stringBuilder.append(navn);
+        }
     }
 
     public String dato(LocalDate localDate) {
