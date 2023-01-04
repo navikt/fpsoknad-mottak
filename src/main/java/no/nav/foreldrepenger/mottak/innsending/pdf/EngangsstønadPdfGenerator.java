@@ -7,7 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -107,9 +106,9 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
                 .build();
     }
 
-    private static List<TabellRad> tabellRader(List<Pair<String, String>> rader) {
+    private static List<TabellRad> tabellRader(List<UtenlandsoppholdFormatert> rader) {
         return rader.stream()
-                .map(r -> new TabellRad(r.getLeft(), r.getRight(), null))
+                .map(r -> new TabellRad(r.land(), r.datointervall(), null))
                 .toList();
     }
 

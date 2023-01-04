@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -85,18 +85,9 @@ public class SøknadTextFormatter {
     }
 
     private String sammensattNavn(String fornavn, String mellomnavn, String etternavn) {
-        var builder = new StringBuilder();
-        leggTilNavn(builder, fornavn);
-        leggTilNavn(builder, mellomnavn);
-        leggTilNavn(builder, etternavn);
-        return builder.toString();
-    }
-
-    private static void leggTilNavn(StringBuilder stringBuilder, String navn) {
-        if (navn != null && !navn.isEmpty()) {
-            if (!stringBuilder.isEmpty()) stringBuilder.append(' ');
-            stringBuilder.append(navn);
-        }
+        return Stream.of(fornavn, mellomnavn, etternavn)
+            .filter(s -> s != null && !s.isEmpty())
+            .collect(Collectors.joining(" "));
     }
 
     public String dato(LocalDate localDate) {
@@ -161,12 +152,12 @@ public class SøknadTextFormatter {
         return messages.getMessage(key, values, defaultValue, locale);
     }
 
-    public List<Pair<String, String>> utenlandsPerioder(List<Utenlandsopphold> opphold) {
+    public List<UtenlandsoppholdFormatert> utenlandsPerioder(List<Utenlandsopphold> opphold) {
         if (CollectionUtils.isEmpty(opphold)) {
-            return Collections.singletonList(Pair.of(countryName(CountryCode.NO), null));
+            return Collections.singletonList(new UtenlandsoppholdFormatert(countryName(CountryCode.NO), null));
         }
         return safeStream(opphold)
-                .map(o -> Pair.of(countryName(o.land(), o.land().getName()), dato(o.fom(), o.tom())))
+                .map(o -> new UtenlandsoppholdFormatert(countryName(o.land(), o.land().getName()), dato(o.fom(), o.tom())))
                 .collect(Collectors.toList());
     }
 
