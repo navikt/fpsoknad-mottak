@@ -21,6 +21,10 @@ import org.springframework.web.filter.GenericFilterBean;
 import no.nav.foreldrepenger.common.util.CallIdGenerator;
 
 
+/**
+ * Brukes ved innkommende requester for å sette MDC fra headere
+ *  - callid
+ */
 @Component
 public class HeadersToMDCFilterBean extends GenericFilterBean {
     private static final Logger LOG = LoggerFactory.getLogger(HeadersToMDCFilterBean.class);
@@ -44,8 +48,7 @@ public class HeadersToMDCFilterBean extends GenericFilterBean {
             toMDC(NAV_CONSUMER_ID, request.getHeader(NAV_CONSUMER_ID), applicationName);
             toMDC(NAV_CALL_ID, request.getHeader(NAV_CALL_ID), generator.create());
         } catch (Exception e) {
-            LOG.warn("Noe gikk galt ved setting av MDC-verdier for request {}, MDC-verdier er inkomplette",
-                    request.getRequestURI(), e);
+            LOG.warn("Noe gikk galt ved setting av MDC-verdier for request {}, MDC-verdier er inkomplette", request.getRequestURI(), e);
         }
     }
 
