@@ -288,7 +288,7 @@ class FordelConnectionTest {
 
         // Act
         assertThatThrownBy(() -> fordelConnection.send(defaultRequestKonvolutt))
-            .isInstanceOf(UventetFpFordelResponseException.class);
+            .isInstanceOf(UventetPollingStatusFpFordelException.class);
     }
 
     @Test
@@ -304,7 +304,7 @@ class FordelConnectionTest {
 
         // Act
         assertThatThrownBy(() -> fordelConnection.send(defaultRequestKonvolutt))
-            .isInstanceOf(UventetFpFordelResponseException.class);
+            .isInstanceOf(UventetPollingStatusFpFordelException.class);
     }
 
 
@@ -374,7 +374,7 @@ class FordelConnectionTest {
 
         // Act
         assertThatThrownBy(() -> fordelConnection.send(defaultRequestKonvolutt))
-            .isInstanceOf(UventetFpFordelResponseException.class);
+            .isInstanceOf(UventetPollingStatusFpFordelException.class);
     }
 
     @Test
@@ -394,7 +394,7 @@ class FordelConnectionTest {
 
         // Act
         assertThatThrownBy(() -> fordelConnection.send(defaultRequestKonvolutt))
-            .isInstanceOf(UventetFpFordelResponseException.class);
+            .isInstanceOf(UventetPollingStatusFpFordelException.class);
     }
 
     private Konvolutt lagDefaultKonvolutt() {

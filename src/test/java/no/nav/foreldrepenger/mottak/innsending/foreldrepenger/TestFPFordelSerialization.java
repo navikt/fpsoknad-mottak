@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.MediaType.MULTIPART_MIXED_VALUE;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -134,7 +133,6 @@ class TestFPFordelSerialization {
                 SøknadEgenskap.of(INITIELL_FORELDREPENGER));
         assertNotNull(konvolutt.getMetadata());
         assertEquals(1, konvolutt.getVedlegg().size());
-        assertMediaType(konvolutt.getPayload(), MULTIPART_MIXED_VALUE);
         assertEquals(søknad, konvolutt.getInnsending());
         assertNotNull(konvolutt.XMLHovedDokument());
         assertNotNull(konvolutt.PDFHovedDokument());

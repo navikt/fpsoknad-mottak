@@ -69,8 +69,8 @@ public class FordelSøknadSender implements SøknadSender {
         FordelResultat fordelKvittering;
         try {
             fordelKvittering = connection.send(konvolutt);
-        } catch (UventetFpFordelResponseException e) {
-            LOG.warn("Uventet kvittering ved polling på status for innseding fra fpfordel. Returnerer kvittering uten saksnummer", e);
+        } catch (UventetPollingStatusFpFordelException e) {
+            LOG.info("Uventet kvittering ved polling på status for innsendt dokument fra fpfordel. Returnerer kvittering uten saksnummer", e);
             return new Kvittering(mottattDato, null, pdfHovedDokument, infoskrivPdf);
         }
 
