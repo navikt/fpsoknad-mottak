@@ -240,16 +240,17 @@ public class WebClientConfiguration {
         @Override
         public Mono<ClientResponse> filter(ClientRequest req, ExchangeFunction next) {
             var url = req.url();
-            LOG.trace("Sjekker token exchange for {}", url);
+            var urlUtenQueryParam = url.toString().split("\\?")[0];
+            LOG.trace("Sjekker token exchange for {}", urlUtenQueryParam);
             var config = matcher.findProperties(configs, url);
             if (config.isPresent()) {
-                LOG.trace("Gjør token exchange for {} med konfig {}", url, config);
+                LOG.trace("Gjør token exchange for {} med konfig {}", urlUtenQueryParam, config);
                 var token = service.getAccessToken(config.get()).getAccessToken();
-                LOG.info("Token exchange for {} OK", url);
+                LOG.info("Token exchange for {} OK", urlUtenQueryParam);
                 return next.exchange(ClientRequest.from(req).header(AUTHORIZATION, BEARER + token)
                     .build());
             }
-            LOG.trace("Ingen token exchange for {}", url);
+            LOG.trace("Ingen token exchange for {}", urlUtenQueryParam);
             return next.exchange(ClientRequest.from(req).build());
         }
 
