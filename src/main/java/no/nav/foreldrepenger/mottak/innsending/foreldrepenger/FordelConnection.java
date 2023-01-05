@@ -48,6 +48,8 @@ public class FordelConnection extends AbstractWebClientConnection {
             var kvittering = sendSøknad(konvolutt);
             LOG.info("Sendte {} til {}, fikk kvittering {}", name(konvolutt.getType()), name(), kvittering);
             return kvittering;
+        } catch (UventetPollingStatusFpFordelException e) {
+            throw e;
         } catch (Exception e) {
             LOG.info("Feil ved sending av {}", konvolutt.getMetadata());
             FP_SENDFEIL.increment();
@@ -59,7 +61,7 @@ public class FordelConnection extends AbstractWebClientConnection {
         var leveranseRespons = webClient.post()
             .uri(cfg.fordelEndpoint())
             .contentType(MULTIPART_MIXED)
-            .bodyValue(konvolutt.getPayload().getBody())
+            .bodyValue(konvolutt.getPayload())
             .accept(APPLICATION_JSON)
             .retrieve()
             .toEntity(FordelKvittering.class)
@@ -118,7 +120,7 @@ public class FordelConnection extends AbstractWebClientConnection {
             if (kvittering == null || kvittering.getBody() == null) {
                 FEILET_KVITTERINGER.increment();
                 var httpStatus = kvittering != null ? kvittering.getStatusCode() : null;
-                throw new UventetFpFordelResponseException(httpStatus, "Tom respons fra fpfordel ved polling på status.");
+                throw new UventetPollingStatusFpFordelException(httpStatus, "Tom respons fra fpfordel ved polling på status.");
             }
 
             var fordelResultat = switch (kvittering.getBody()) {
@@ -130,8 +132,7 @@ public class FordelConnection extends AbstractWebClientConnection {
                 }
                 default -> {
                     FEILET_KVITTERINGER.increment();
-                    LOG.warn("Uventet kvitteringer etter leveranse av søknad, gir opp");
-                    throw uventetFordelException(kvittering);
+                    throw new UventetPollingStatusFpFordelException(kvittering.getStatusCode(), "Uventet kvitteringer etter leveranse av søknad, gir opp");
                 }
             };
 
@@ -141,7 +142,7 @@ public class FordelConnection extends AbstractWebClientConnection {
         }
         LOG.info("Pollet FPFordel {} ganger, uten å få svar, gir opp", cfg.maxPollingForsøk());
         GITTOPP_KVITTERING.increment();
-        throw new UventetFpFordelResponseException("Forsendelser er mottatt, men ikke fordel. ");
+        throw new UventetPollingStatusFpFordelException("Forsendelser er mottatt, men ikke fordel. ");
     }
 
     private ResponseEntity<FordelKvittering> status(URI pollingURL, Duration delay) {
@@ -154,7 +155,7 @@ public class FordelConnection extends AbstractWebClientConnection {
             .retryWhen(retryOnlyOn5xxFailures(cfg.fordelEndpoint().toString()))
             .onErrorResume(e -> {
                 FEILET_KVITTERINGER.increment();
-                return Mono.error(new UventetFpFordelResponseException(e));
+                return Mono.error(new UventetPollingStatusFpFordelException(e));
             })
             .block();
     }
@@ -162,12 +163,7 @@ public class FordelConnection extends AbstractWebClientConnection {
     private static URI locationFra(ResponseEntity<FordelKvittering> respons) {
         return Optional.ofNullable(respons.getHeaders().getFirst(LOCATION))
             .map(URI::create)
-            .orElseThrow(() -> new UventetFpFordelResponseException("Respons innehold ingen location header for å sjekke på status!"));
-    }
-
-
-    private static UventetFpFordelResponseException uventetFordelException(ResponseEntity<FordelKvittering> leveranseRespons) {
-        return new UventetFpFordelResponseException(leveranseRespons.getStatusCode());
+            .orElseThrow(() -> new UventetPollingStatusFpFordelException("Respons innehold ingen location header for å sjekke på status!"));
     }
 
     @Override

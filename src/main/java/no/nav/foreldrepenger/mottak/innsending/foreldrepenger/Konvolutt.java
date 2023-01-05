@@ -25,15 +25,14 @@ import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 
 public class Konvolutt {
     private final SøknadEgenskap egenskap;
-    private final HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload;
+    private final MultiValueMap<String, HttpEntity<?>> payload;
     private final List<String> opplastedeVedlegg;
     private final List<String> ikkeOpplastedeVedlegg;
     private static final Logger LOG = LoggerFactory.getLogger(Konvolutt.class);
     private final Object innsending;
     private final LocalDateTime opprettet;
 
-    public Konvolutt(SøknadEgenskap egenskap, Object innsending,
-            HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload,
+    public Konvolutt(SøknadEgenskap egenskap, Object innsending, MultiValueMap<String, HttpEntity<?>> payload,
             List<String> opplastedeVedlegg, List<String> ikkeOpplastedeVedlegg) {
         this.egenskap = egenskap;
         this.innsending = innsending;
@@ -80,7 +79,7 @@ public class Konvolutt {
         return innsending;
     }
 
-    HttpEntity<MultiValueMap<String, HttpEntity<?>>> getPayload() {
+    MultiValueMap<String, HttpEntity<?>> getPayload() {
         return payload;
     }
 
@@ -125,8 +124,6 @@ public class Konvolutt {
 
     private Stream<HttpEntity<?>> get(String key) {
         return Optional.ofNullable(payload)
-                .filter(HttpEntity::hasBody)
-                .map(HttpEntity::getBody)
                 .map(v -> v.get(key))
                 .orElse(emptyList())
                 .stream();

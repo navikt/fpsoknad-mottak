@@ -10,7 +10,6 @@ import static org.springframework.http.HttpHeaders.CONTENT_ENCODING;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_PDF;
 import static org.springframework.http.MediaType.APPLICATION_XML;
-import static org.springframework.http.MediaType.MULTIPART_MIXED;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,7 +18,6 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Component;
@@ -70,7 +68,7 @@ public class KonvoluttGenerator {
         safeStream(søknad.getVedlegg())
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
-        return new Konvolutt(egenskap, søknad, new HttpEntity<>(builder.build(), headers()),
+        return new Konvolutt(egenskap, søknad, builder.build(),
                 opplastedeVedleggFra(søknad), ikkeOpplastedeVedleggFra(søknad));
     }
 
@@ -87,7 +85,7 @@ public class KonvoluttGenerator {
         safeStream(endringsøknad.getVedlegg())
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
-        return new Konvolutt(egenskap, endringsøknad, new HttpEntity<>(builder.build(), headers()),
+        return new Konvolutt(egenskap, endringsøknad, builder.build(),
                 opplastedeVedleggFra(endringsøknad), ikkeOpplastedeVedleggFra(endringsøknad));
     }
 
@@ -97,7 +95,7 @@ public class KonvoluttGenerator {
         builder.part(METADATA, metadataFor(ettersending, søker.aktørId()), APPLICATION_JSON);
         safeStream(ettersending.vedlegg())
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
-        return new Konvolutt(egenskap, ettersending, new HttpEntity<>(builder.build(), headers()),
+        return new Konvolutt(egenskap, ettersending, builder.build(),
                 opplastedeVedleggFra(ettersending), ikkeOpplastedeVedleggFra(ettersending));
     }
 
@@ -118,12 +116,6 @@ public class KonvoluttGenerator {
 
     private static String id(AtomicInteger id) {
         return String.valueOf(id.getAndIncrement());
-    }
-
-    private static HttpHeaders headers() {
-        var headers = new HttpHeaders();
-        headers.setContentType(MULTIPART_MIXED);
-        return headers;
     }
 
     private String metadataFor(Endringssøknad endringssøknad, SøknadType type, AktørId aktørId) {

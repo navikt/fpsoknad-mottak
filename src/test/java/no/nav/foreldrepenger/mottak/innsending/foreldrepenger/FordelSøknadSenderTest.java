@@ -37,7 +37,7 @@ class FordelSøknadSenderTest {
 
     @Test
     void returnerKvitteringUtenSaksnummerVedUventetFpFordelResponseException() {
-        when(connection.send(any())).thenThrow(new UventetFpFordelResponseException("Feil"));
+        when(connection.send(any())).thenThrow(new UventetPollingStatusFpFordelException("Feil"));
         var konvolutt = new Konvolutt(SøknadEgenskap.INITIELL_FORELDREPENGER, null, null, null, null);
 
         var kvittering = fordelSøknadSender.send(konvolutt);
