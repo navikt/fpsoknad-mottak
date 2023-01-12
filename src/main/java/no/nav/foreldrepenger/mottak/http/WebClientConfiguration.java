@@ -8,6 +8,7 @@ import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID2;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_PERSON_IDENT;
 import static no.nav.foreldrepenger.common.util.TokenUtil.BEARER;
+import static no.nav.foreldrepenger.mottak.http.filters.HeadersToMDCFilterBean.JTI;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.time.Duration;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.reactive.function.client.WebClientCustomizer;
@@ -200,6 +202,7 @@ public class WebClientConfiguration {
                 .header(NAV_CALL_ID, MDCUtil.callId())
                 .header(NAV_CALL_ID1, MDCUtil.callId())
                 .header(NAV_CALL_ID2, MDCUtil.callId())
+                .header(JTI, MDC.get(JTI))
                 .build());
     }
 

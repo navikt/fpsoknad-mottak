@@ -22,12 +22,15 @@ import no.nav.foreldrepenger.common.util.CallIdGenerator;
 
 
 /**
- * Brukes ved innkommende requester for å sette MDC fra headere
- *  - callid
+ * Brukes ved innkommende requester for å hente ut headere fra request og sette tilsvarende MDC verdier
+ *  -   Nav-Consumer-Id
+ *  -   callid
+ *  -   JTI
  */
 @Component
 public class HeadersToMDCFilterBean extends GenericFilterBean {
     private static final Logger LOG = LoggerFactory.getLogger(HeadersToMDCFilterBean.class);
+    public static final String JTI = "JTI";
 
     private final CallIdGenerator generator = new CallIdGenerator();
     private final String applicationName;
@@ -47,6 +50,7 @@ public class HeadersToMDCFilterBean extends GenericFilterBean {
         try {
             toMDC(NAV_CONSUMER_ID, request.getHeader(NAV_CONSUMER_ID), applicationName);
             toMDC(NAV_CALL_ID, request.getHeader(NAV_CALL_ID), generator.create());
+            toMDC(JTI, request.getHeader(JTI), "ikke satt");
         } catch (Exception e) {
             LOG.warn("Noe gikk galt ved setting av MDC-verdier for request {}, MDC-verdier er inkomplette", request.getRequestURI(), e);
         }
