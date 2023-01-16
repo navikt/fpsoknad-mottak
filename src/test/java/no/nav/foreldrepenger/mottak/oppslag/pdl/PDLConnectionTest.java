@@ -32,7 +32,6 @@ import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConnection;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import reactor.core.Exceptions;
 
 @ExtendWith(SpringExtension.class)
 class PDLConnectionTest {
@@ -322,9 +321,7 @@ class PDLConnectionTest {
 
         var currentRequestcount = mockWebServer.getRequestCount();
 
-        var err = assertThrows(Exception.class, () -> pdlConnection.aktøridFor(FØDSELSNUMMER_SØKER));
-        assertThat(Exceptions.isRetryExhausted(err)).isTrue();
-        assertThat(err.getCause()).isInstanceOf(WebClientResponseException.InternalServerError.class);
+        assertThrows(WebClientResponseException.InternalServerError.class, () -> pdlConnection.aktøridFor(FØDSELSNUMMER_SØKER));
 
         assertThat(mockWebServer.getRequestCount()).isEqualTo(currentRequestcount + 4);
 

@@ -372,8 +372,7 @@ class ArbeidsforholdTjenesteTest {
             .setResponseCode(500)
             .addHeader("Content-Type", "application/json"));
 
-        var err = assertThrows(IllegalStateException.class, () -> arbeidsforholdTjeneste.hentArbeidsforhold());
-        assertThat(err.getCause()).isInstanceOf(WebClientResponseException.InternalServerError.class);
+        assertThrows(WebClientResponseException.InternalServerError.class, () -> arbeidsforholdTjeneste.hentArbeidsforhold());
     }
 
     @Test
