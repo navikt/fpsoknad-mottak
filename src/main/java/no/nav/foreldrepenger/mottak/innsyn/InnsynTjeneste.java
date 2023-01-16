@@ -119,7 +119,7 @@ public class InnsynTjeneste implements Innsyn {
                 var aktørId = (no.nav.foreldrepenger.common.innsyn.v2.persondetaljer.AktørId) b;
                 var fødselsnummer = oppslag.fnr(new AktørId(aktørId.value()));
                 return søkerBarn.stream()
-                    .filter(sb -> sb.fnr().equals(fødselsnummer))
+                    .filter(sb -> Objects.equals(sb.fnr(), fødselsnummer))
                     .findFirst()
                     .map(bb -> new Person(new Fødselsnummer(bb.fnr().value()), bb.navn().fornavn(),
                         bb.navn().mellomnavn(), bb.navn().etternavn(), null, bb.fødselsdato()))
