@@ -18,6 +18,10 @@ public final class RetryAwareWebClientConfiguration {
     public static RetryBackoffSpec retryOnlyOn5xxFailures(String name) {
         return Retry.fixedDelay(3, Duration.ofSeconds(1))
             .filter(ex -> ex instanceof WebClientResponseException webClientResponseException && webClientResponseException.getStatusCode().is5xxServerError())
-            .doBeforeRetry(retrySignal -> LOG.info("Kall mot {} kastet exception {} for {}. gang", name, retrySignal.failure(), retrySignal.totalRetriesInARow() + 1));
+            .doBeforeRetry(retrySignal -> LOG.info("Kall mot {} kastet exception {} for {}. gang", name, retrySignal.failure(), retrySignal.totalRetriesInARow() + 1))
+            .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
+                LOG.warn("Retry mot {} gir opp etter {} forsøk", name, retrySignal.totalRetriesInARow());
+                return retrySignal.failure();
+            });
     }
 }
