@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.5</version>
+        <version>2.7.8</version>
         <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -30,8 +30,8 @@
         <sonar.organization>navikt</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-        <boot-conditionals.version>3.1.0</boot-conditionals.version>
-        <token-support.version>2.1.6</token-support.version>
+        <boot-conditionals.version>5.0.2</boot-conditionals.version>
+        <token-support.version>2.1.9</token-support.version>
         <fpsoknad-felles.version>0.8.37</fpsoknad-felles.version>
 
         <pdfbox.version>2.0.27</pdfbox.version>
