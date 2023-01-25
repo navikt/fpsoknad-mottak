@@ -5,8 +5,8 @@ on:
 
 jobs:
   build:
-    name: Utfør testene til fpsak
-    runs-on: ubuntu-latest-8-cores
+    name: bygg og scan docker image
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
