@@ -45,7 +45,6 @@ jobs:
           image-ref: 'ghcr.io/navikt/fpsoknad-mottak:latest'
           format: 'sarif'
           output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
