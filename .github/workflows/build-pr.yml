@@ -39,7 +39,7 @@ jobs:
           docker build --tag ghcr.io/navikt/fpsoknad-mottak:ny .
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.8.0
         with:
           timeout: '10m0s'
           hide-progress: 'false'
