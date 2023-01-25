@@ -113,7 +113,7 @@ public class InnsynTjeneste implements Innsyn {
             barn(sak.barn(), søker.barn()), sak.dekningsgrad());
     }
 
-    private Set<PersonDetaljer> barn(Set<PersonDetaljer> barn, Set<Barn> søkerBarn) {
+    private Set<PersonDetaljer> barn(Set<PersonDetaljer> barn, List<Barn> søkerBarn) {
         return barn.stream()
             .map(b -> {
                 var aktørId = (no.nav.foreldrepenger.common.innsyn.v2.persondetaljer.AktørId) b;

@@ -10,11 +10,10 @@ import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLExceptionGeneratingRes
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.neovisionaries.i18n.CountryCode;
 
@@ -34,7 +33,7 @@ class PDLMapper {
     private PDLMapper() {
     }
 
-    static Person map(Fødselsnummer fnrSøker, AktørId aktørId, Målform målform, Bankkonto bankkonto, Set<PDLBarn> barn, PDLSøker søker) {
+    static Person map(Fødselsnummer fnrSøker, AktørId aktørId, Målform målform, Bankkonto bankkonto, List<PDLBarn> barn, PDLSøker søker) {
         return Person.builder()
             .fnr(fnrSøker)
             .aktørId(aktørId)
@@ -57,12 +56,12 @@ class PDLMapper {
         return kjønnFra(onlyElem(kjønn));
     }
 
-    private static Set<Barn> barnFra(Set<PDLBarn> barn) {
+    private static List<Barn> barnFra(List<PDLBarn> barn) {
         return safeStream(barn)
             .map(PDLMapper::barnFra)
             .filter(Objects::nonNull)
             .sorted(comparing(Barn::fødselsdato))
-            .collect(Collectors.toCollection(LinkedHashSet::new));
+            .toList();
     }
 
     static Barn barnFra(PDLBarn barn) {
