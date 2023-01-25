@@ -42,7 +42,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           timeout: '10m0s'
-          hide-progress: false
+          hide-progress: 'false'
           security-checks: 'vuln'
           image-ref: 'ghcr.io/navikt/fpsoknad-mottak:latest'
           format: 'sarif'
