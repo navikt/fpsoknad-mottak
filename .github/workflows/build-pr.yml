@@ -1,4 +1,4 @@
-name: Kjører Autotestene for verdikjeden PR
+name: Bygg og scan docker image
 
 on:
   pull_request:
