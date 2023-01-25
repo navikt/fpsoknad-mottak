@@ -170,7 +170,7 @@ class PDLSerializationTest {
 
     private static PDLSøker pdlSøker() {
         return new PDLSøker(Set.of(kvinnePDLNavn()), pdlKvinne(), norsk(), fødsel(MORFØDT), familierelasjoner(),
-            Set.of(new PDLDødfødtBarn(LocalDate.now())));
+            List.of(new PDLDødfødtBarn(LocalDate.now())));
     }
 
     private static PDLFødsel fødsel() {
