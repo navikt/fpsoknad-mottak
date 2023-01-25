@@ -41,6 +41,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
+          timeout: '10m0s'
           image-ref: 'ghcr.io/navikt/fpsoknad-mottak:latest'
           format: 'sarif'
           output: 'trivy-results.sarif'
