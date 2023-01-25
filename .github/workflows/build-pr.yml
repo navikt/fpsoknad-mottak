@@ -39,14 +39,15 @@ jobs:
           docker build --tag ghcr.io/navikt/fpsoknad-mottak:ny .
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.8.0
+        uses: aquasecurity/trivy-action@master
         with:
-          timeout: '10m0s'
           hide-progress: 'false'
           security-checks: 'vuln'
           image-ref: 'ghcr.io/navikt/fpsoknad-mottak:ny'
           format: 'sarif'
           output: 'trivy-results.sarif'
+        env:
+          TRIVY_OFFLINE_SCAN: true
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
