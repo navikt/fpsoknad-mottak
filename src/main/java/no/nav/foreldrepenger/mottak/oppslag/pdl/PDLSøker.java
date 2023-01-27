@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
+import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,7 +17,7 @@ class PDLSøker {
     private final Set<PDLFødsel> fødselsdato;
     private final Set<PDLForelderBarnRelasjon> forelderBarnRelasjon;
     @JsonProperty("doedfoedtBarn")
-    private final Set<PDLDødfødtBarn> dødfødtBarn;
+    private final List<PDLDødfødtBarn> dødfødtBarn;
     private String id;
 
     PDLSøker withId(String id) {

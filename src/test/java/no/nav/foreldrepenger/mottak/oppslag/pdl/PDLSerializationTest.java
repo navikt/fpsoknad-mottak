@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -145,7 +146,7 @@ class PDLSerializationTest {
     @Test
     void testSøkerDTO() {
         assertEquals(søker(), PDLMapper
-            .map(FNR_SØKER, AKTØR_SØKER, BOKMÅL, bankkonto(), Set.of(pdlBarn().withId(ID_BARN)), pdlSøker()));
+            .map(FNR_SØKER, AKTØR_SØKER, BOKMÅL, bankkonto(), List.of(pdlBarn().withId(ID_BARN)), pdlSøker()));
     }
 
     @Test
@@ -159,7 +160,7 @@ class PDLSerializationTest {
             .aktørId(AKTØR_SØKER)
             .målform(BOKMÅL)
             .bankkonto(bankkonto())
-            .barn(Set.of(barn()))
+            .barn(List.of(barn()))
             .fødselsdato(MORFØDT)
             .kjønn(K)
             .land(CountryCode.NO)
@@ -169,7 +170,7 @@ class PDLSerializationTest {
 
     private static PDLSøker pdlSøker() {
         return new PDLSøker(Set.of(kvinnePDLNavn()), pdlKvinne(), norsk(), fødsel(MORFØDT), familierelasjoner(),
-            Set.of(new PDLDødfødtBarn(LocalDate.now())));
+            List.of(new PDLDødfødtBarn(LocalDate.now())));
     }
 
     private static PDLFødsel fødsel() {
