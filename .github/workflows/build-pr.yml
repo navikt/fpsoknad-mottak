@@ -38,8 +38,27 @@ jobs:
         run: |
           docker build --tag ghcr.io/navikt/fpsoknad-mottak:ny .
 
+      - name: Run Snyk to check Docker image for vulnerabilities
+        # Snyk can be used to break the build when it detects vulnerabilities.
+        # In this case we want to upload the issues to GitHub Code Scanning
+        continue-on-error: true
+        uses: snyk/actions/docker@master
+        env:
+          # In order to use the Snyk Action you will need to have a Snyk API token.
+          # More details in https://github.com/snyk/actions#getting-your-snyk-token
+          # or you can signup for free at https://snyk.io/login
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: your/image-to-test
+          args: --file=Dockerfile
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk.sarif
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
+
         with:
           security-checks: 'vuln'
           image-ref: 'ghcr.io/navikt/fpsoknad-mottak:ny'
@@ -52,3 +71,5 @@ jobs:
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
+
+
