@@ -41,7 +41,6 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          security-checks: 'vuln'
           image-ref: 'ghcr.io/navikt/fpsoknad-mottak:ny'
           format: 'sarif'
           output: 'trivy-results.sarif'
