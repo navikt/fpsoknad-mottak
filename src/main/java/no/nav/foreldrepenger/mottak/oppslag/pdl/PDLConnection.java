@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import static java.util.function.Predicate.not;
-import static java.util.stream.Collectors.toSet;
 import static no.nav.boot.conditionals.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClientConfiguration.retryOnlyOn5xxFailures;
@@ -19,6 +18,7 @@ import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.map;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.mapIdent;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -115,19 +115,20 @@ public class PDLConnection implements PingEndpointAware {
                 .orElse(null);
     }
 
-    private Set<PDLBarn> barn(PDLSøker søker, Predicate<PDLBarn> filter) {
+    private List<PDLBarn> barn(PDLSøker søker, Predicate<PDLBarn> filter) {
         var barn = safeStream(søker.getForelderBarnRelasjon()).filter(
                 b -> b.relatertPersonsrolle().equals(BARN))
             .map(PDLForelderBarnRelasjon::id)
             .filter(Objects::nonNull)
             .map(b -> oppslagBarn(søker.getId(), b))
-            .filter(Objects::nonNull);
+            .filter(Objects::nonNull)
+            .distinct();
         var dødFødtBarn = safeStream(søker.getDødfødtBarn())
             .filter(dfb -> dfb.dato() != null)
             .map(PDLConnection::mapDødfødte);
         return Stream.concat(barn, dødFødtBarn)
                 .filter(filter)
-                .collect(toSet());
+                .toList();
     }
 
     private static PDLBarn mapDødfødte(PDLDødfødtBarn dfb) {
