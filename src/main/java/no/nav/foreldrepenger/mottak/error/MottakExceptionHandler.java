@@ -21,8 +21,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -34,39 +34,28 @@ import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnaut
 
 @ControllerAdvice
 public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
-
     private final TokenUtil tokenUtil;
     private static final Logger LOG = LoggerFactory.getLogger(MottakExceptionHandler.class);
+    private static final Logger SECURE_LOG = LoggerFactory.getLogger("secureLogger");
 
     public MottakExceptionHandler(TokenUtil tokenUtil) {
         this.tokenUtil = tokenUtil;
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e,
-                                                                  HttpHeaders headers, HttpStatus status, WebRequest req) {
-        return logAndHandle(UNPROCESSABLE_ENTITY, e, req, headers, validationErrors(e));
-    }
-
-    @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e,
-                                                                  HttpHeaders headers, HttpStatus status, WebRequest req) {
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e, HttpHeaders headers, HttpStatus status, WebRequest req) {
         return logAndHandle(UNPROCESSABLE_ENTITY, e, req, headers);
     }
 
-    @ExceptionHandler
-    public ResponseEntity<Object> handleWebClientResponseException(WebClientResponseException e, WebRequest request) {
-        return logAndHandle(e.getStatusCode(), e, request);
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e, HttpHeaders headers, HttpStatus status, WebRequest req) {
+        return logAndHandle(UNPROCESSABLE_ENTITY, e, req, headers, validationErrors(e));
     }
 
-    @ExceptionHandler
-    public ResponseEntity<Object> handleHttpStatusCodeException(HttpStatusCodeException e, WebRequest request) {
-        return logAndHandle(e.getStatusCode(), e, request);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<Object> handleUnauthorizedException(JwtTokenUnauthorizedException e, WebRequest req) {
-        return logAndHandle(UNAUTHORIZED, e, req);
+    private static List<String> validationErrors(MethodArgumentNotValidException e) {
+        return e.getBindingResult().getFieldErrors().stream()
+            .map(FieldError::getField)
+            .toList();
     }
 
     @ExceptionHandler
@@ -80,34 +69,57 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler
+    protected ResponseEntity<Object> handleValidationException(ConstraintViolationException e, WebRequest req) {
+        return logAndHandle(BAD_REQUEST, e, req);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Object> handleUnauthorizedException(JwtTokenUnauthorizedException e, WebRequest req) {
+        return logAndHandle(UNAUTHORIZED, e, req);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<Object> handleUnauthenticatedJwtException(JwtTokenValidatorException e, WebRequest req) {
         return logAndHandle(FORBIDDEN, e, req);
     }
 
+
+    /**
+     * Håndtering av klient exceptions
+     */
     @ExceptionHandler
-    protected ResponseEntity<Object> handleUncaught(Exception e, WebRequest req) {
-        return logAndHandle(INTERNAL_SERVER_ERROR, e, req);
+    public ResponseEntity<Object> handleWebClientResponseException(WebClientRequestException e, WebRequest request) {
+        return logAndHandle(BAD_REQUEST, e, request);
     }
 
     @ExceptionHandler
-    protected ResponseEntity<Object> handleValidationException(ConstraintViolationException e, WebRequest req) {
-        return logAndHandle(BAD_REQUEST, e, req);
+    public ResponseEntity<Object> handleWebClientResponseException(WebClientResponseException e, WebRequest request) {
+        return logAndHandle(e.getStatusCode(), e, request);
+    }
+
+
+    /**
+     * Håndtering av exceptions ikke definert over
+     */
+    @ExceptionHandler
+    protected ResponseEntity<Object> handleUncaught(Exception e, WebRequest req) {
+        return logAndHandle(INTERNAL_SERVER_ERROR, e, req);
     }
 
     private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, Object... messages) {
         return logAndHandle(status, e, req, new HttpHeaders(), messages);
     }
 
-    private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, HttpHeaders headers,
-                                                Object... messages) {
+    private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, HttpHeaders headers, Object... messages) {
         return logAndHandle(status, e, req, headers, asList(messages));
     }
 
     private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, HttpHeaders headers,
                                                 List<Object> messages) {
         var apiError = apiErrorFra(status, e, messages);
-        if (e instanceof MethodArgumentNotValidException) {
-            LOG.warn("[{} ({})] {}", req.getContextPath(), status, messages); // quickfix, ikke log rejected value
+        if (ikkeLoggExceptionsMedSensitiveOpplysnignerTilVanligLogg(e)) {
+            LOG.warn("[{} ({})] {}", req.getContextPath(), status, apiError.getMessages());
+            SECURE_LOG.warn("[{}] {} {}", req.getContextPath(), status, apiError.getMessages(), e);
         } else if (tokenUtil.erAutentisert() && !tokenUtil.erUtløpt()) {
             LOG.warn("[{}] {} {}", req.getContextPath(), status, apiError.getMessages(), e);
         } else {
@@ -120,11 +132,10 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return new ApiError(status, e, messages);
     }
 
-    private static List<String> validationErrors(MethodArgumentNotValidException e) {
-        return e.getBindingResult().getFieldErrors()
-            .stream()
-            .map(FieldError::getField)
-            .toList();
+    private boolean ikkeLoggExceptionsMedSensitiveOpplysnignerTilVanligLogg(Exception e) {
+        if (e instanceof MethodArgumentNotValidException) return true;
+        if (e instanceof ConstraintViolationException) return true;
+        return false;
     }
 
 }
