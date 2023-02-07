@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
 import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
-
-import java.util.Objects;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerFpSøknad;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerFørstegangFpSøknad;
 
 import javax.validation.Valid;
 
@@ -14,14 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import no.nav.foreldrepenger.common.domain.Kvittering;
 import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.domain.Ytelse;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
-import no.nav.foreldrepenger.common.error.UnexpectedInputException;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
 import no.nav.security.token.support.core.api.Unprotected;
@@ -70,27 +64,5 @@ public class MottakController {
                 + søknadSender +"]";
     }
 
-    private void validerFørstegangFpSøknad(Søknad søknad) {
-        var ytelse = søknad.getYtelse();
-        validerFpSøknad(ytelse);
-        if (ytelse instanceof Foreldrepenger foreldrepenger) {
-            var perioder = foreldrepenger.fordeling().perioder();
-            //Allerede validert på minst en periode
-            if (perioder.stream().allMatch(this::erFriUtsettelse)) {
-                throw new UnexpectedInputException(
-                    "Søknad må inneholde minst en søknadsperiode som ikke" + "er fri utsettelse");
-            }
-        }
-    }
 
-    private boolean erFriUtsettelse(LukketPeriodeMedVedlegg p) {
-        return p instanceof UtsettelsesPeriode utsettelsesPeriode && Objects.equals(utsettelsesPeriode.getÅrsak(),
-            UtsettelsesÅrsak.FRI);
-    }
-
-    private void validerFpSøknad(Ytelse ytelse) {
-        if (ytelse instanceof Foreldrepenger foreldrepenger && foreldrepenger.fordeling().perioder().isEmpty()) {
-            throw new UnexpectedInputException("Søknad må inneholde minst en søknadsperiode");
-        }
-    }
 }
