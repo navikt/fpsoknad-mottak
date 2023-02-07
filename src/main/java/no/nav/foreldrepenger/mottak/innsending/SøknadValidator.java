@@ -3,9 +3,6 @@ package no.nav.foreldrepenger.mottak.innsending;
 import java.util.List;
 import java.util.Objects;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.Ytelse;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
@@ -15,8 +12,6 @@ import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Utsettelses�
 import no.nav.foreldrepenger.common.error.UnexpectedInputException;
 
 final class SøknadValidator {
-
-    private static final Logger LOG = LoggerFactory.getLogger(SøknadValidator.class);
 
     static void validerFørstegangFpSøknad(Søknad søknad) {
         var ytelse = søknad.getYtelse();
@@ -37,13 +32,8 @@ final class SøknadValidator {
             if (perioder.isEmpty()) {
                 throw new UnexpectedInputException("Søknad må inneholde minst en søknadsperiode");
             }
-            try {
-                if (finnesOverlapp(perioder)) {
-                    LOG.info("Finner overlapp i perioder fra søknad");
-                    //                throw new UnexpectedInputException("Søknad inneholder overlappende søknadsperioder");
-                }
-            } catch (Exception e) {
-                LOG.info("Feil ved utleding av overlapp", e);
+            if (finnesOverlapp(perioder)) {
+                throw new UnexpectedInputException("Søknad inneholder overlappende søknadsperioder");
             }
         }
     }
