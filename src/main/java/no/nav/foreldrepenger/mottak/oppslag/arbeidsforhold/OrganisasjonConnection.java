@@ -8,6 +8,7 @@ import static org.springframework.util.StringUtils.capitalize;
 
 import java.util.Optional;
 
+import no.nav.foreldrepenger.mottak.http.WebClientRetryAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -55,6 +56,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
         return nr != null && nr.length() == 9 && !nr.equals(MAGIC);
     }
 
+    @WebClientRetryAware
     private String orgNavn(Orgnummer orgnr) {
         LOG.info("Henter organisasjonsnavn for {}", orgnr.maskert());
         var navn = webClient.get()
@@ -62,7 +64,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
             .accept(APPLICATION_JSON)
             .retrieve()
             .bodyToMono(OrganisasjonsNavnDTO.class)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
             .mapNotNull(OrganisasjonsNavnDTO::tilOrganisasjonsnavn)
             .defaultIfEmpty(orgnr.value())
             .doOnError(throwable -> LOG.warn("Fant ikke organisasjonsnavn for {}. Returnerer orgnummer som navn.", orgnr.maskert(), throwable))

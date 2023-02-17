@@ -1,12 +1,12 @@
 package no.nav.foreldrepenger.mottak.oppslag.kontonummer;
 
 import static no.nav.foreldrepenger.common.util.MDCUtil.callId;
-import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClientConfiguration.retryOnlyOn5xxFailures;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.KONTOREGISTER;
 import static no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto.UKJENT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;
 
+import no.nav.foreldrepenger.mottak.http.WebClientRetryAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,7 +29,8 @@ public class KontoregisterConnection extends AbstractWebClientConnection {
         this.cfg = cfg;
     }
 
-    public Konto kontonrFraNyTjeneste() {
+    @WebClientRetryAware
+    public Konto kontonummer() {
         LOG.info("Henter kontonummer fra {}", cfg.kontoregisterURI());
         return webClient.get()
             .uri(cfg.kontoregisterURI())
@@ -42,7 +43,7 @@ public class KontoregisterConnection extends AbstractWebClientConnection {
                     return Mono.empty();
                 })
             .bodyToMono(Konto.class)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.kontoregisterURI().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.kontoregisterURI().toString()))
             .doOnError(throwable -> LOG.info("Oppslag av kontonummer feilet! Forsetter uten kontonummer!", throwable))
             .onErrorReturn(UKJENT)
             .defaultIfEmpty(UKJENT)

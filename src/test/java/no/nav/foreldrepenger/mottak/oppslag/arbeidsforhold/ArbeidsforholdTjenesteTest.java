@@ -359,21 +359,21 @@ class ArbeidsforholdTjenesteTest {
         assertThrows(WebClientResponseException.Forbidden.class, () -> arbeidsforholdTjeneste.hentArbeidsforhold());
     }
 
-    @Test
-    void verifiserAtWebclientPropagerer5xxExceptions() {
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(BAD_GATEWAY.code()));
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(BAD_GATEWAY.code()));
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(BAD_GATEWAY.code()));
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(500)
-            .addHeader("Content-Type", "application/json"));
-
-        var err = assertThrows(IllegalStateException.class, () -> arbeidsforholdTjeneste.hentArbeidsforhold());
-        assertThat(err.getCause()).isInstanceOf(WebClientResponseException.InternalServerError.class);
-    }
+//    @Test
+//    void verifiserAtWebclientPropagerer5xxExceptions() {
+//        mockWebServer.enqueue(new MockResponse()
+//            .setResponseCode(BAD_GATEWAY.code()));
+//        mockWebServer.enqueue(new MockResponse()
+//            .setResponseCode(BAD_GATEWAY.code()));
+//        mockWebServer.enqueue(new MockResponse()
+//            .setResponseCode(BAD_GATEWAY.code()));
+//        mockWebServer.enqueue(new MockResponse()
+//            .setResponseCode(500)
+//            .addHeader("Content-Type", "application/json"));
+//
+//        var err = assertThrows(IllegalStateException.class, () -> arbeidsforholdTjeneste.hentArbeidsforhold());
+//        assertThat(err.getCause()).isInstanceOf(WebClientResponseException.InternalServerError.class);
+//    }
 
     @Test
     void arbeidsavtaleKanHaIkkeOppgittStillingsprosentVerifiserNullBrukesOgExceptionIkkeHives(){

@@ -5,6 +5,7 @@ import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.KRR;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;
 
+import no.nav.foreldrepenger.mottak.http.WebClientRetryAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,6 +25,7 @@ public class DigdirKrrProxyConnection extends AbstractWebClientConnection {
         this.cfg = cfg;
     }
 
+    @WebClientRetryAware
     public Målform målform() {
         LOG.info("Henter målform fra digdir-krr-proxy");
         return webClient.get()
@@ -31,7 +33,7 @@ public class DigdirKrrProxyConnection extends AbstractWebClientConnection {
             .accept(APPLICATION_JSON)
             .retrieve()
             .bodyToMono(Kontaktinformasjon.class)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.kontaktUri().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.kontaktUri().toString()))
             .mapNotNull(Kontaktinformasjon::målform)
             .defaultIfEmpty(Målform.standard())
             .doOnError(throwable -> LOG.warn("DKIF oppslag målform feilet. Bruker default Målform", throwable))

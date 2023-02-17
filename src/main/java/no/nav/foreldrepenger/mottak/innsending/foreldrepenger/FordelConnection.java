@@ -15,10 +15,12 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.Optional;
 
+import no.nav.foreldrepenger.mottak.http.WebClientRetryAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -31,6 +33,7 @@ import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
 import reactor.core.publisher.Mono;
 
 @Component
+@EnableRetry
 public class FordelConnection extends AbstractWebClientConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(FordelConnection.class);
@@ -57,6 +60,7 @@ public class FordelConnection extends AbstractWebClientConnection {
         }
     }
 
+    @WebClientRetryAware
     private FordelResultat sendSøknad(Konvolutt konvolutt) {
         var leveranseRespons = webClient.post()
             .uri(cfg.fordelEndpoint())
@@ -66,7 +70,7 @@ public class FordelConnection extends AbstractWebClientConnection {
             .retrieve()
             .toEntity(FordelKvittering.class)
             .doOnRequest(va -> konvolutt.getType().count()) // Skal kjøres hver gang, uavhengig om OK elelr feilet respons!
-            .retryWhen(retryOnlyOn5xxFailures(cfg.fordelEndpoint().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.fordelEndpoint().toString()))
             .onErrorResume(e -> Mono.error(new InnsendingFeiletFpFordelException(e)))
             .defaultIfEmpty(ResponseEntity.noContent().build())
             .block();
@@ -145,6 +149,7 @@ public class FordelConnection extends AbstractWebClientConnection {
         throw new UventetPollingStatusFpFordelException("Forsendelser er mottatt, men ikke fordel. ");
     }
 
+    @WebClientRetryAware
     private ResponseEntity<FordelKvittering> status(URI pollingURL, Duration delay) {
         return webClient.get()
             .uri(pollingURL)
@@ -152,7 +157,7 @@ public class FordelConnection extends AbstractWebClientConnection {
             .retrieve()
             .toEntity(FordelKvittering.class)
             .delayElement(delay)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.fordelEndpoint().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.fordelEndpoint().toString()))
             .onErrorResume(e -> {
                 FEILET_KVITTERINGER.increment();
                 return Mono.error(new UventetPollingStatusFpFordelException(e));

@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste;
 import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClientConfiguration.retryOnlyOn5xxFailures;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDF_GENERATOR;
 
+import no.nav.foreldrepenger.mottak.http.WebClientRetryAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,6 +24,7 @@ public class PdfGeneratorConnection extends AbstractWebClientConnection {
         this.cfg = cfg;
     }
 
+    @WebClientRetryAware
     byte[] genererPdf(DokumentBestilling dto) {
         if (cfg.isEnabled()) {
             return webClient.post()
@@ -30,7 +32,7 @@ public class PdfGeneratorConnection extends AbstractWebClientConnection {
                 .body(Mono.just(dto), DokumentBestilling.class)
                 .retrieve()
                 .bodyToMono(byte[].class)
-                .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
+//                .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
                 .block();
         }
         LOG.info("PdfGenerator er ikke aktivert");

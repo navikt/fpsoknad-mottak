@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 import static java.util.function.Predicate.not;
 import static no.nav.boot.conditionals.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
-import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClientConfiguration.retryOnlyOn5xxFailures;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_SYSTEM;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_USER;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig.ANNEN_PART_QUERY;
@@ -27,6 +26,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import no.nav.foreldrepenger.mottak.http.WebClientRetryAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -189,10 +189,11 @@ public class PDLConnection implements PingEndpointAware {
         return post(systemClient, query, id, responseType);
     }
 
+    @WebClientRetryAware
     private <T> T post(GraphQLWebClient client, String query, String id, Class<T> responseType) {
         return client.post(query, idFra(id), responseType)
             .onErrorMap(this::mapTilKjentGraphQLException)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
             .block();
     }
 
@@ -217,7 +218,7 @@ public class PDLConnection implements PingEndpointAware {
     }
 
     Bankkonto kontonr() {
-        return tilBankkonto(kontoregister.kontonrFraNyTjeneste());
+        return tilBankkonto(kontoregister.kontonummer());
     }
 
     private static Bankkonto tilBankkonto(Konto kontoinformasjon) {

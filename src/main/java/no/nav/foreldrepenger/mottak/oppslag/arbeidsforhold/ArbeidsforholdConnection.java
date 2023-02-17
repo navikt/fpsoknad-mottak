@@ -9,6 +9,7 @@ import static org.springframework.util.StringUtils.capitalize;
 import java.time.LocalDate;
 import java.util.List;
 
+import no.nav.foreldrepenger.mottak.http.WebClientRetryAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -35,6 +36,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
         return hentArbeidsforhold(now().minus(cfg.getTidTilbake()));
     }
 
+    @WebClientRetryAware
     private List<ArbeidsforholdDTO> hentArbeidsforhold(LocalDate fom) {
         LOG.info("Henter arbeidsforhold for perioden fra {}", fom);
         var arbeidsforhold = webClient.get()
@@ -47,7 +49,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
                     LOG.info("Personen har ikke arbeidsforhold i Aareg");
                     return Mono.empty();
                 })
-            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
             .collectList()
             .blockOptional()
             .orElse(List.of());

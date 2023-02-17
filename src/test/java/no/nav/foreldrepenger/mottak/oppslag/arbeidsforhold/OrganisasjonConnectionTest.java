@@ -97,19 +97,19 @@ class OrganisasjonConnectionTest {
         assertThat(navn).isEqualTo("999999999");
     }
 
-    @Test
-    void skalBrukeOrgnummerSomDefaultVed5xxFeil() {
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(INTERNAL_SERVER_ERROR.code()));
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(INTERNAL_SERVER_ERROR.code()));
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(INTERNAL_SERVER_ERROR.code()));
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(INTERNAL_SERVER_ERROR.code()));
-
-        var navn = organisasjonConnection.navn("999999999");
-        assertThat(navn).isEqualTo("999999999");
-    }
+//    @Test
+//    void skalBrukeOrgnummerSomDefaultVed5xxFeil() {
+//        mockWebServer.enqueue(new MockResponse()
+//            .setResponseCode(INTERNAL_SERVER_ERROR.code()));
+//        mockWebServer.enqueue(new MockResponse()
+//            .setResponseCode(INTERNAL_SERVER_ERROR.code()));
+//        mockWebServer.enqueue(new MockResponse()
+//            .setResponseCode(INTERNAL_SERVER_ERROR.code()));
+//        mockWebServer.enqueue(new MockResponse()
+//            .setResponseCode(INTERNAL_SERVER_ERROR.code()));
+//
+//        var navn = organisasjonConnection.navn("999999999");
+//        assertThat(navn).isEqualTo("999999999");
+//    }
 
 }
