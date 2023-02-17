@@ -62,7 +62,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
             .accept(APPLICATION_JSON)
             .retrieve()
             .bodyToMono(OrganisasjonsNavnDTO.class)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
             .mapNotNull(OrganisasjonsNavnDTO::tilOrganisasjonsnavn)
             .defaultIfEmpty(orgnr.value())
             .doOnError(throwable -> LOG.warn("Fant ikke organisasjonsnavn for {}. Returnerer orgnummer som navn.", orgnr.maskert(), throwable))

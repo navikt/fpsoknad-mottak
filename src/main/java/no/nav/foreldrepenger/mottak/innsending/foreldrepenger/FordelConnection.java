@@ -66,7 +66,7 @@ public class FordelConnection extends AbstractWebClientConnection {
             .retrieve()
             .toEntity(FordelKvittering.class)
             .doOnRequest(va -> konvolutt.getType().count()) // Skal kjøres hver gang, uavhengig om OK elelr feilet respons!
-            .retryWhen(retryOnlyOn5xxFailures(cfg.fordelEndpoint().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.fordelEndpoint().toString()))
             .onErrorResume(e -> Mono.error(new InnsendingFeiletFpFordelException(e)))
             .defaultIfEmpty(ResponseEntity.noContent().build())
             .block();
@@ -152,7 +152,7 @@ public class FordelConnection extends AbstractWebClientConnection {
             .retrieve()
             .toEntity(FordelKvittering.class)
             .delayElement(delay)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.fordelEndpoint().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.fordelEndpoint().toString()))
             .onErrorResume(e -> {
                 FEILET_KVITTERINGER.increment();
                 return Mono.error(new UventetPollingStatusFpFordelException(e));

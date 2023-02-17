@@ -31,7 +31,7 @@ public class DigdirKrrProxyConnection extends AbstractWebClientConnection {
             .accept(APPLICATION_JSON)
             .retrieve()
             .bodyToMono(Kontaktinformasjon.class)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.kontaktUri().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.kontaktUri().toString()))
             .mapNotNull(Kontaktinformasjon::målform)
             .defaultIfEmpty(Målform.standard())
             .doOnError(throwable -> LOG.warn("DKIF oppslag målform feilet. Bruker default Målform", throwable))

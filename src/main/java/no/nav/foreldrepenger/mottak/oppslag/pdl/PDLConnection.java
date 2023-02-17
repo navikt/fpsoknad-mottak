@@ -192,7 +192,7 @@ public class PDLConnection implements PingEndpointAware {
     private <T> T post(GraphQLWebClient client, String query, String id, Class<T> responseType) {
         return client.post(query, idFra(id), responseType)
             .onErrorMap(this::mapTilKjentGraphQLException)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
             .block();
     }
 

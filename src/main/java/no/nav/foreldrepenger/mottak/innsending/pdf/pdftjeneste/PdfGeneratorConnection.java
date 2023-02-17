@@ -30,7 +30,7 @@ public class PdfGeneratorConnection extends AbstractWebClientConnection {
                 .body(Mono.just(dto), DokumentBestilling.class)
                 .retrieve()
                 .bodyToMono(byte[].class)
-                .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
+//                .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
                 .block();
         }
         LOG.info("PdfGenerator er ikke aktivert");

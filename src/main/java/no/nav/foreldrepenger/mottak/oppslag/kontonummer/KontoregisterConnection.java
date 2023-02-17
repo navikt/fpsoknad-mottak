@@ -42,7 +42,7 @@ public class KontoregisterConnection extends AbstractWebClientConnection {
                     return Mono.empty();
                 })
             .bodyToMono(Konto.class)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.kontoregisterURI().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.kontoregisterURI().toString()))
             .doOnError(throwable -> LOG.info("Oppslag av kontonummer feilet! Forsetter uten kontonummer!", throwable))
             .onErrorReturn(UKJENT)
             .defaultIfEmpty(UKJENT)

@@ -48,7 +48,7 @@ public class InnsynConnection extends AbstractWebClientConnection {
             .accept(MediaType.APPLICATION_JSON)
             .retrieve()
             .bodyToFlux(SakDTO.class)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
             .collectList()
             .blockOptional()
             .orElse(List.of());
@@ -61,7 +61,7 @@ public class InnsynConnection extends AbstractWebClientConnection {
             .accept(MediaType.APPLICATION_JSON)
             .retrieve()
             .bodyToMono(Saker.class)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
             .defaultIfEmpty(new Saker(Set.of(), Set.of(), Set.of()))
             .block();
     }
@@ -73,7 +73,7 @@ public class InnsynConnection extends AbstractWebClientConnection {
             .accept(MediaType.APPLICATION_JSON)
             .retrieve()
             .bodyToMono(AnnenPartVedtak.class)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
             .onErrorResume(WebClientResponseException.Forbidden.class, forbidden -> {
                 LOG.info("Kall for å hente annenparts vedtak feiler med {}", forbidden.getRawStatusCode(), forbidden);
                 return Mono.empty();
@@ -88,7 +88,7 @@ public class InnsynConnection extends AbstractWebClientConnection {
             .accept(MediaType.APPLICATION_JSON)
             .retrieve()
             .bodyToMono(UttaksplanDTO.class)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
             .blockOptional();
     }
 
@@ -99,7 +99,7 @@ public class InnsynConnection extends AbstractWebClientConnection {
             .accept(MediaType.APPLICATION_JSON)
             .retrieve()
             .bodyToMono(UttaksplanDTO.class)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
             .doOnError(throwable -> LOG.warn("Kunne ikke hente uttaksplan for annen part {}", annenPart, throwable))
             .onErrorResume(error -> Mono.empty())
             .blockOptional();
@@ -122,7 +122,7 @@ public class InnsynConnection extends AbstractWebClientConnection {
             .accept(MediaType.APPLICATION_JSON)
             .retrieve()
             .bodyToMono(BehandlingDTO.class)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.createLink(href).toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.createLink(href).toString()))
             .block();
     }
 

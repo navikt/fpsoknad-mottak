@@ -47,7 +47,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
                     LOG.info("Personen har ikke arbeidsforhold i Aareg");
                     return Mono.empty();
                 })
-            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
+//            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
             .collectList()
             .blockOptional()
             .orElse(List.of());
