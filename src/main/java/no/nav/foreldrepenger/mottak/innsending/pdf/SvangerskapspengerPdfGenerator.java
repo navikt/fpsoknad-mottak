@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import no.nav.foreldrepenger.common.domain.felles.VedleggReferanse;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.stereotype.Service;
 
@@ -202,7 +203,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private List<EnkeltArbeidsforhold> aktiveArbeidsforhold(LocalDate termindato, LocalDate fødselsdato) {
         var relasjonsDato = fødselsdato != null ? fødselsdato : termindato;
         return safeStream(arbeidsforhold.hentArbeidsforhold())
-            .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsDato)))
+            .filter(a -> a.to().isEmpty() || (a.to().isPresent() && a.to().get().isAfter(relasjonsDato)))
             .collect(Collectors.toList());
     }
 
@@ -338,15 +339,15 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         return startY - y;
     }
 
-    private float renderVedlegg(List<Vedlegg> vedlegg, List<String> vedleggRefs, String keyIfAnnet,
-            FontAwareCos cos, float y) throws IOException {
+    private float renderVedlegg(List<Vedlegg> vedlegg, List<VedleggReferanse> vedleggRefs, String keyIfAnnet,
+                                FontAwareCos cos, float y) throws IOException {
         float startY = y;
         if (!vedleggRefs.isEmpty()) {
             y -= renderer.addBulletPoint(INDENT, txt("vedlegg1"), cos, y);
         }
         for (var vedleggRef : vedleggRefs) {
             var details = safeStream(vedlegg)
-                    .filter(s -> vedleggRef.equals(s.getId()))
+                    .filter(s -> vedleggRef.referanse().equals(s.getId()))
                     .findFirst();
             if (details.isPresent()) {
                 String beskrivelse = vedleggsBeskrivelse(keyIfAnnet, details.get());
@@ -371,9 +372,9 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private String virksomhetsnavn(List<EnkeltArbeidsforhold> arbeidsgivere, Orgnummer orgnr) {
         return safeStream(arbeidsgivere)
-                .filter(arb -> arb.getArbeidsgiverId().equals(orgnr.value()))
+                .filter(arb -> arb.arbeidsgiverId().equals(orgnr.value()))
                 .findFirst()
-                .map(EnkeltArbeidsforhold::getArbeidsgiverNavn)
+                .map(EnkeltArbeidsforhold::arbeidsgiverNavn)
                 .orElse(txt("arbeidsgiverIkkeFunnet", orgnr.value()));
     }
 

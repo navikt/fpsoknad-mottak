@@ -1,23 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static java.util.Comparator.comparing;
-import static no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper.FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfThrowableFunction.uncheck;
-import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.FORELDREPENGER_OUTLINE;
-import static no.nav.foreldrepenger.mottak.util.CollectionUtil.tryOrEmpty;
-import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.function.Function;
-
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.felles.opptjening.Opptjening;
@@ -29,6 +11,23 @@ import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.function.Function;
+
+import static java.util.Comparator.comparing;
+import static no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper.FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.FORELDREPENGER_OUTLINE;
+import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfThrowableFunction.uncheck;
+import static no.nav.foreldrepenger.mottak.util.CollectionUtil.tryOrEmpty;
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 @Component
 public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
@@ -85,7 +84,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             var annenForelder = stønad.annenForelder();
             if (annenForelder != null) {
                 Function<CosyPair, Float> annenForelderFn = uncheck(p -> fpRenderer.annenForelder(annenForelder, stønad.fordeling().erAnnenForelderInformert(),
-                    stønad.rettigheter(), søknad.getSøknadsRolle(), p.cos, p.y));
+                    stønad.rettigheter(), p.cos, p.y));
                 cosy = render(docParam, annenForelderFn, cosy);
             }
 
@@ -132,7 +131,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                 }
 
                 if (stønad.fordeling() != null) {
-                    var forCos = fpRenderer.fordeling(doc, søker, søknad.getSøker().getSøknadsRolle(), stønad,
+                    var forCos = fpRenderer.fordeling(doc, søker, søknad.getSøker().søknadsRolle(), stønad,
                             søknad.getVedlegg(), false, cosy.cos(), cosy.y());
                     cosy = new CosyPair(forCos, -1);
                 }
@@ -171,7 +170,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             var annenForelder = ytelse.annenForelder();
             if (annenForelder != null) {
                 Function<CosyPair, Float> annenForelderFn = uncheck(p -> fpRenderer.annenForelder(annenForelder, ytelse.fordeling().erAnnenForelderInformert(),
-                    ytelse.rettigheter(), søknad.getSøknadsRolle(), p.cos, p.y));
+                    ytelse.rettigheter(), p.cos, p.y));
                 cosy = render(docParam, annenForelderFn, cosy);
             }
 
@@ -182,7 +181,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             }
 
             if (ytelse.fordeling() != null) {
-                var fordelCos = fpRenderer.fordeling(doc, søker, søknad.getSøker().getSøknadsRolle(), ytelse,
+                var fordelCos = fpRenderer.fordeling(doc, søker, søknad.getSøker().søknadsRolle(), ytelse,
                     søknad.getVedlegg(), true, cosy.cos(), cosy.y());
                 cosy = new CosyPair(fordelCos, -1);
             }
@@ -197,8 +196,8 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
 
     private List<EnkeltArbeidsforhold> aktiveArbeidsforhold(LocalDate relasjonsdato) {
         return tryOrEmpty(arbeidsforhold::hentArbeidsforhold).stream()
-            .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsdato)))
-            .sorted(comparing(EnkeltArbeidsforhold::getFrom))
+            .filter(a -> a.to().isEmpty() || (a.to().isPresent() && a.to().get().isAfter(relasjonsdato)))
+            .sorted(comparing(EnkeltArbeidsforhold::from))
             .toList();
     }
 

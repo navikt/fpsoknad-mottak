@@ -1,16 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.common.domain.felles.Kjønn;
@@ -34,6 +23,16 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.modell.MottattDato;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TabellRad;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TemaBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 
 @Component
 public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
@@ -100,10 +99,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
             tabeller.add(new GruppeBlokk(txt("neste12"), tabellRader(fremtidige)));
         }
         tabeller.add(new FritekstBlokk(fødselssted));
-        return TemaBlokk.builder()
-                .medOverskrift(txt("tilknytning"))
-                .medUnderBlokker(tabeller)
-                .build();
+        return new TemaBlokk(txt("tilknytning"), tabeller);
     }
 
     private static List<TabellRad> tabellRader(List<UtenlandsoppholdFormatert> rader) {
@@ -128,10 +124,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
     }
 
     private TemaBlokk omBarn(Søknad søknad, Kjønn kjønn, Engangsstønad stønad) {
-        return TemaBlokk.builder()
-                .medOverskrift(txt("ombarn"))
-                .medUnderBlokker(omFødsel(søknad, kjønn, stønad))
-                .build();
+        return new TemaBlokk(txt("ombarn"), omFødsel(søknad, kjønn, stønad));
     }
 
     private List<Blokk> omFødsel(Søknad søknad, Kjønn kjønn, Engangsstønad stønad) {
@@ -199,7 +192,14 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
 
     private DokumentPerson personFra(Person person) {
         var navn = textFormatter.sammensattNavn(person);
-        return DokumentPerson.builder().navn(navn).id(person.fnr().value()).build();
+        return new DokumentPerson(
+            person.fnr().value(),
+            null,
+            navn,
+            null,
+            null,
+            null
+        );
     }
 
     @Override

@@ -1,16 +1,34 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.joining;
-import static no.nav.foreldrepenger.common.domain.BrukerRolle.MEDMOR;
-import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000049;
-import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000060;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
-import static no.nav.foreldrepenger.common.util.LangUtil.toBoolean;
-import static no.nav.foreldrepenger.common.util.StreamUtil.distinct;
-import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
-import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+import no.nav.foreldrepenger.common.domain.BrukerRolle;
+import no.nav.foreldrepenger.common.domain.Navn;
+import no.nav.foreldrepenger.common.domain.felles.Person;
+import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.common.domain.felles.annenforelder.AnnenForelder;
+import no.nav.foreldrepenger.common.domain.felles.annenforelder.NorskForelder;
+import no.nav.foreldrepenger.common.domain.felles.annenforelder.UkjentForelder;
+import no.nav.foreldrepenger.common.domain.felles.annenforelder.UtenlandskForelder;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.Medlemsskap;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.AnnenOpptjening;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Adopsjon;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.FremtidigFødsel;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Fødsel;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Omsorgsovertakelse;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.RelasjonTilBarn;
+import no.nav.foreldrepenger.common.domain.felles.ÅpenPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Rettigheter;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.GradertUttaksPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.MorsAktivitet;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.OppholdsPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.OverføringsPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UttaksPeriode;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -21,56 +39,20 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-
-import com.neovisionaries.i18n.CountryCode;
-
-import no.nav.foreldrepenger.common.domain.BrukerRolle;
-import no.nav.foreldrepenger.common.domain.Navn;
-import no.nav.foreldrepenger.common.domain.felles.Person;
-import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.common.domain.felles.annenforelder.AnnenForelder;
-import no.nav.foreldrepenger.common.domain.felles.annenforelder.NorskForelder;
-import no.nav.foreldrepenger.common.domain.felles.annenforelder.UkjentForelder;
-import no.nav.foreldrepenger.common.domain.felles.annenforelder.UtenlandskForelder;
-import no.nav.foreldrepenger.common.domain.felles.medlemskap.Medlemsskap;
-import no.nav.foreldrepenger.common.domain.felles.opptjening.AnnenOpptjening;
-import no.nav.foreldrepenger.common.domain.felles.opptjening.EgenNæring;
-import no.nav.foreldrepenger.common.domain.felles.opptjening.Frilans;
-import no.nav.foreldrepenger.common.domain.felles.opptjening.NorskOrganisasjon;
-import no.nav.foreldrepenger.common.domain.felles.opptjening.Regnskapsfører;
-import no.nav.foreldrepenger.common.domain.felles.opptjening.UtenlandskArbeidsforhold;
-import no.nav.foreldrepenger.common.domain.felles.opptjening.UtenlandskOrganisasjon;
-import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Adopsjon;
-import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.FremtidigFødsel;
-import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Fødsel;
-import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Omsorgsovertakelse;
-import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.RelasjonTilBarn;
-import no.nav.foreldrepenger.common.domain.felles.ÅpenPeriode;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.Dekningsgrad;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.Rettigheter;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Fordeling;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.GradertUttaksPeriode;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.MorsAktivitet;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.OppholdsPeriode;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.OverføringsPeriode;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UttaksPeriode;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
+import static java.util.Arrays.asList;
+import static no.nav.foreldrepenger.common.domain.BrukerRolle.MEDMOR;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
+import static no.nav.foreldrepenger.common.util.LangUtil.toBoolean;
+import static no.nav.foreldrepenger.common.util.StreamUtil.distinct;
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 @Component
-public class ForeldrepengeInfoRenderer {
+public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
     private static final String UTTAKSPERIODETYPE = "uttaksperiodetype";
     private static final String FØDSELSDATO = "fødselsdato";
     private static final String DOKUMENTASJON = "dokumentasjon";
     private static final String DAGER = "dager";
-    private static final String ARBEIDSGIVER = "arbeidsgiver";
     private static final String ALENESORG_KEY = "aleneomsorg";
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private static final float STARTY = PdfElementRenderer.calculateStartY();
@@ -79,6 +61,7 @@ public class ForeldrepengeInfoRenderer {
     private final SøknadTextFormatter textFormatter;
 
     public ForeldrepengeInfoRenderer(PdfElementRenderer renderer, SøknadTextFormatter textFormatter) {
+        super(renderer, textFormatter);
         this.renderer = renderer;
         this.textFormatter = textFormatter;
     }
@@ -98,8 +81,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     public float annenForelder(AnnenForelder annenForelder, Boolean erAnnenForlderInformert,
-            Rettigheter rettigheter, BrukerRolle brukerRolle,
-            FontAwareCos cos, float y) throws IOException {
+            Rettigheter rettigheter, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("omannenforelder"), cos, y);
         switch (annenForelder) {
             case NorskForelder norskForelder -> {
@@ -119,10 +101,9 @@ public class ForeldrepengeInfoRenderer {
             default -> y -= renderer.addLineOfRegularText(INDENT, "Jeg kan ikke oppgi navnet til den andre forelderen", cos, y);
         }
         if (!(annenForelder instanceof UkjentForelder)) {
-            y -= renderer.addLineOfRegularText(INDENT, txt("harrett", jaNei(rettigheter.harAnnenForelderRett())), cos,
-                    y);
+            y -= renderer.addLineOfRegularText(INDENT, txt("harrett", jaNei(rettigheter.harAnnenForelderRett())), cos, y);
             y = annenForelderTilsvarendeRettEøs(rettigheter, cos, y);
-            y = morUfør(rettigheter, brukerRolle, cos, y);
+            y = morUfør(rettigheter, cos, y);
             if (erAnnenForlderInformert != null) {
                 y -= renderer.addLineOfRegularText(INDENT, txt("informert", jaNei(erAnnenForlderInformert)), cos, y);
             }
@@ -139,19 +120,11 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
-    private float morUfør(Rettigheter rettigheter, BrukerRolle brukerRolle, FontAwareCos cos, float y) throws IOException {
+    private float morUfør(Rettigheter rettigheter, FontAwareCos cos, float y) throws IOException {
         if (rettigheter.harMorUføretrygd() != null) {
             y -= renderer.addLineOfRegularText(INDENT, txt("harmorufor", jaNei(rettigheter.harMorUføretrygd())), cos,
                 y);
         }
-        return y;
-    }
-
-    public float frilansOpptjening(Frilans frilans, FontAwareCos cos, float y) throws IOException {
-        if (frilans == null) {
-            return y;
-        }
-        y = frilans(frilans, cos, y);
         return y;
     }
 
@@ -176,103 +149,8 @@ public class ForeldrepengeInfoRenderer {
         return attributter;
     }
 
-    public float egneNæringerOpptjening(List<EgenNæring> egneNæringer, FontAwareCos cos, float y)
-            throws IOException {
-        if (CollectionUtils.isEmpty(egneNæringer)) {
-            return y;
-        }
-        y -= renderer.addLeftHeading(txt("egennæring"), cos, y);
-        for (List<String> næring : egneNæringer(egneNæringer)) {
-            y -= renderer.addLinesOfRegularText(INDENT, næring, cos, y);
-            y -= PdfElementRenderer.BLANK_LINE;
-        }
-        return y;
-    }
-
-    public float utenlandskeArbeidsforholdOpptjening(List<UtenlandskArbeidsforhold> utenlandskArbeidsforhold,
-            List<Vedlegg> vedlegg, FontAwareCos cos,
-            float y) throws IOException {
-        if (CollectionUtils.isEmpty(utenlandskArbeidsforhold)) {
-            return y;
-        }
-        y -= renderer.addLeftHeading(txt("utenlandskarbeid"), cos, y);
-        for (UtenlandskArbeidsforhold forhold : sorterUtelandske(utenlandskArbeidsforhold)) {
-            y -= renderer.addLinesOfRegularText(INDENT, utenlandskeArbeidsforhold(forhold), cos, y);
-            y = renderVedlegg(vedlegg, forhold.getVedlegg(), "vedleggutenlandskarbeid", cos, y);
-        }
-        y -= PdfElementRenderer.BLANK_LINE;
-        return y;
-    }
-
-    private static List<UtenlandskArbeidsforhold> sorterUtelandske(List<UtenlandskArbeidsforhold> arbeidsforhold) {
-        return safeStream(arbeidsforhold)
-            .sorted(Comparator.comparing(utenlandskArbeidsforhold -> utenlandskArbeidsforhold.getPeriode().fom()))
-            .toList();
-    }
-
-    private float renderVedlegg(List<Vedlegg> vedlegg, List<String> vedleggRefs, String keyIfAnnet,
-            FontAwareCos cos,
-            float y) throws IOException {
-        if (!vedleggRefs.isEmpty()) {
-            y -= renderer.addLineOfRegularText(INDENT, txt("vedlegg1"), cos, y);
-        }
-        for (String id : vedleggRefs) {
-            var details = safeStream(vedlegg)
-                    .filter(s -> id.equals(s.getId()))
-                    .findFirst();
-            if (details.isPresent()) {
-                var beskrivelse = vedleggsBeskrivelse(keyIfAnnet, details.get());
-                y -= renderer.addBulletPoint(INDENT,
-                        txt("vedlegg2", beskrivelse, cap(details.get().getInnsendingsType().name())),
-                        cos, y);
-            } else {
-                // Never, hopefully
-                y -= renderer.addBulletPoint(INDENT, txt("vedlegg2", "vedlegg"), cos, y);
-            }
-        }
-        return y;
-    }
-
-    public float arbeidsforholdOpptjening(List<EnkeltArbeidsforhold> arbeidsforholdene, FontAwareCos cos, float y)
-            throws IOException {
-        if (CollectionUtils.isEmpty(arbeidsforholdene)) {
-            return y;
-        }
-        y -= renderer.addLeftHeading(txt("arbeidsforhold"), cos, y);
-        for (EnkeltArbeidsforhold arbeidsforhold : arbeidsforholdene) {
-            y -= renderer.addLinesOfRegularText(INDENT, arbeidsforhold(arbeidsforhold), cos, y);
-            y -= PdfElementRenderer.BLANK_LINE;
-        }
-        return y;
-    }
-
     private static PDPage newPage() {
         return new PDPage(A4);
-    }
-
-    public float frilans(Frilans frilans, FontAwareCos cos, float y) throws IOException {
-        y -= renderer.addLeftHeading(txt("frilans"), cos, y);
-        List<String> attributter = new ArrayList<>();
-        if (frilans.jobberFremdelesSomFrilans()) {
-            addIfSet(attributter, "frilanspågår", textFormatter.dato(frilans.periode().fom()));
-        } else {
-            attributter.add(txt("frilansavsluttet", textFormatter.dato(frilans.periode().fom())));
-        }
-        attributter.add(txt("fosterhjem", jaNei(frilans.harInntektFraFosterhjem())));
-        attributter.add(txt("nyoppstartet", jaNei(frilans.nyOppstartet())));
-        y -= renderer.addLinesOfRegularText(INDENT, attributter, cos, y);
-        if (!frilans.frilansOppdrag().isEmpty()) {
-            y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag"), cos, y);
-            var oppdrag = safeStream(frilans.frilansOppdrag())
-                    .map(o -> o.oppdragsgiver() + " " + textFormatter.periode(o.periode()))
-                    .toList();
-            y -= renderer.addBulletList(INDENT, oppdrag, cos, y);
-            y -= PdfElementRenderer.BLANK_LINE;
-        } else {
-            y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag") + ": Nei", cos, y);
-        }
-        y -= PdfElementRenderer.BLANK_LINE;
-        return y;
     }
 
     private void addIfTrue(List<String> attributter, String key, boolean value) {
@@ -503,7 +381,6 @@ public class ForeldrepengeInfoRenderer {
 
         // attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
         addIfSet(attributter, utsettelse.getMorsAktivitetsType());
-        addListIfSet(attributter, "virksomhetsnummer", utsettelse.getVirksomhetsnummer());
         if (!utsettelse.getÅrsak().equals(LOVBESTEMT_FERIE)) {
             attributter.add(txt("erarbeidstaker", jaNei(utsettelse.isErArbeidstaker())));
         }
@@ -576,20 +453,6 @@ public class ForeldrepengeInfoRenderer {
         return attributter;
     }
 
-    private static double prosentFra(ProsentAndel prosent) {
-        return Optional.ofNullable(prosent)
-                .map(ProsentAndel::prosent)
-                .orElse(0d);
-    }
-
-    private static String prosentUtenDesimaler(ProsentAndel prosent) {
-        return Optional.ofNullable(prosent)
-            .map(ProsentAndel::prosent)
-            .map(Double::intValue)
-            .map(String::valueOf)
-            .orElse("0");
-    }
-
     private void addIfSet(List<String> attributter, String key, Boolean value) {
         if (value != null) {
             attributter.add(txt(key, jaNei(value.booleanValue())));
@@ -635,10 +498,6 @@ public class ForeldrepengeInfoRenderer {
         }
     }
 
-    private String cap(String name) {
-        return textFormatter.capitalize(name);
-    }
-
     public float relasjonTilBarn(RelasjonTilBarn relasjon, List<Vedlegg> vedlegg, FontAwareCos cos,
             float y)
             throws IOException {
@@ -647,16 +506,6 @@ public class ForeldrepengeInfoRenderer {
         y = renderVedlegg(vedlegg, relasjon.getVedlegg(), "vedleggrelasjondok", cos, y);
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
-    }
-
-    public float vedlegg(List<Vedlegg> vedlegg, FontAwareCos cos, float y) throws IOException {
-        var startY = y;
-        y -= renderer.addLeftHeading(txt("vedlegg"), cos, y);
-        var formatted = safeStream(vedlegg)
-                .map(Vedlegg::getBeskrivelse)
-                .toList();
-        y -= renderer.addBulletList(formatted, cos, y);
-        return startY - y;
     }
 
     private List<String> søker(Person søker) {
@@ -685,94 +534,6 @@ public class ForeldrepengeInfoRenderer {
                 txt("fnr", norskForelder.getFnr().value()));
     }
 
-    private List<String> arbeidsforhold(EnkeltArbeidsforhold arbeidsforhold) {
-        List<String> attributter = new ArrayList<>();
-        addIfSet(attributter, ARBEIDSGIVER, arbeidsforhold.getArbeidsgiverNavn());
-        addIfSet(attributter, "fom", arbeidsforhold.getFrom());
-        addIfSet(attributter, "tom", arbeidsforhold.getTo());
-        if (arbeidsforhold.getStillingsprosent() != null) {
-            attributter.add(txt("stillingsprosent", prosentFra(arbeidsforhold.getStillingsprosent())));
-        }
-        return attributter;
-    }
-
-    private List<String> utenlandskeArbeidsforhold(UtenlandskArbeidsforhold ua) {
-        List<String> attributter = new ArrayList<>();
-        addIfSet(attributter, ARBEIDSGIVER, ua.getArbeidsgiverNavn());
-        addIfSet(attributter, "fom", ua.getPeriode().fom());
-        addIfSet(attributter, "tom", ua.getPeriode().tom());
-        addIfSet(attributter, "virksomhetsland", ua.getLand());
-        return attributter;
-    }
-
-    private List<List<String>> egneNæringer(List<EgenNæring> egenNæring) {
-        return safeStream(egenNæring)
-                .map(this::egenNæring)
-                .toList();
-    }
-
-    private List<String> egenNæring(EgenNæring næring) {
-        List<String> attributter = new ArrayList<>();
-        if (næring instanceof NorskOrganisasjon) {
-            var org = NorskOrganisasjon.class.cast(næring);
-            addIfSet(attributter, "virksomhetsnavn", org.getOrgName());
-            addIfSet(attributter, "orgnummer", org.getOrgNummer().value());
-            addIfSet(attributter, "registrertiland", CountryCode.NO);
-        }
-        if (næring instanceof UtenlandskOrganisasjon) {
-            var org = UtenlandskOrganisasjon.class.cast(næring);
-            addIfSet(attributter, "virksomhetsnavn", org.getOrgName());
-            addIfSet(attributter, "registrertiland", org.getRegistrertILand());
-        }
-        attributter.add(txt("egennæringtyper", næring.getVedlegg().size() > 1 ? "r" : "",
-                safeStream(næring.getVirksomhetsTyper())
-                        .map(v -> textFormatter.capitalize(v.toString()))
-                        .collect(joining(","))));
-        if (næring.getPeriode().tom() == null) {
-            addIfSet(attributter, "egennæringpågår", textFormatter.dato(næring.getPeriode().fom()));
-        } else {
-            attributter.add(txt("egennæringavsluttet", næring.getPeriode().fom(),
-                    textFormatter.dato(næring.getPeriode().tom())));
-        }
-        if (næring.getStillingsprosent() != null) {
-            attributter.add(txt("stillingsprosent", prosentFra(næring.getStillingsprosent())));
-        }
-        attributter.add(txt("nyligyrkesaktiv", jaNei(næring.isErNyIArbeidslivet())));
-        attributter.add(txt("varigendring", jaNei(næring.isErVarigEndring())));
-        addIfSet(attributter, "egennæringbeskrivelseendring", næring.getBeskrivelseEndring());
-        addIfSet(attributter, "egennæringendringsdato", næring.getEndringsDato());
-        if (næring.isErNyOpprettet() || næring.isErVarigEndring()) {
-            addMoneyIfSet(attributter, "egennæringbruttoinntekt", næring.getNæringsinntektBrutto());
-        }
-        if (næring.isErNyOpprettet()) {
-            attributter.add(txt("nystartetvirksomhet", jaNei(true)));
-            addIfSet(attributter, "egennæringoppstartsdato", næring.getOppstartsDato());
-        }
-        var rf = regnskapsfører(næring);
-        if (rf != null) {
-            if (rf.telefon() != null) {
-                attributter.add(
-                        txt("regnskapsførertelefon", rf.navn(), rf.telefon(), jaNei(næring.isNærRelasjon())));
-            } else {
-                attributter.add(txt("regnskapsfører", rf.navn(), jaNei(næring.isNærRelasjon())));
-            }
-        }
-        return attributter;
-    }
-
-    private static Regnskapsfører regnskapsfører(EgenNæring næring) {
-        if (næring == null || CollectionUtils.isEmpty(næring.getRegnskapsførere())) {
-            return null;
-        }
-        return næring.getRegnskapsførere().get(0);
-    }
-
-    private void addIfSet(List<String> attributter, String key, String value) {
-        if (value != null) {
-            attributter.add(txt(key, value));
-        }
-    }
-
     private void addListIfSet(List<String> attributter, String key, List<String> values) {
         if (CollectionUtils.isEmpty(values)) {
             return;
@@ -786,21 +547,9 @@ public class ForeldrepengeInfoRenderer {
         }
     }
 
-    private void addIfSet(List<String> attributter, String key, LocalDate dato) {
-        if (dato != null) {
-            attributter.add(txt(key, textFormatter.dato(dato)));
-        }
-    }
-
     private void addIfSet(List<String> attributter, String key, List<LocalDate> datoer) {
         if (!CollectionUtils.isEmpty(datoer)) {
             attributter.add(txt(key, textFormatter.datoer(datoer)));
-        }
-    }
-
-    private void addIfSet(List<String> attributter, String key, Optional<LocalDate> dato) {
-        if (dato.isPresent()) {
-            attributter.add(txt(key, textFormatter.dato(dato.get())));
         }
     }
 
@@ -811,24 +560,8 @@ public class ForeldrepengeInfoRenderer {
         }
     }
 
-    private void addMoneyIfSet(List<String> attributter, String key, Long sum) {
-        if (sum != null) {
-            attributter.add(txt(key, String.valueOf(sum)));
-        }
-    }
-
     private String jaNei(Boolean value) {
         return jaNei(toBoolean(value));
-    }
-
-    private String jaNei(boolean value) {
-        return textFormatter.yesNo(value);
-    }
-
-    private void addIfSet(List<String> attributter, String key, CountryCode land) {
-        if (land != null) {
-            attributter.add(txt(key, textFormatter.countryName(land)));
-        }
     }
 
     private List<String> barn(RelasjonTilBarn relasjonTilBarn) {
@@ -875,18 +608,6 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "omsorgsovertakelsesdato", overtakelse.getOmsorgsovertakelsesdato());
         addIfSet(attributter, FØDSELSDATO, overtakelse.getFødselsdato());
         return attributter;
-    }
-
-    private String vedleggsBeskrivelse(String key, Vedlegg vedlegg) {
-        return erAnnenDokumentType(vedlegg) ? txt(key) : vedlegg.getBeskrivelse();
-    }
-
-    private static boolean erAnnenDokumentType(Vedlegg vedlegg) {
-        return vedlegg.getDokumentType().equals(I000060) || vedlegg.getDokumentType().equals(I000049);
-    }
-
-    private String txt(String key, Object... values) {
-        return textFormatter.fromMessageSource(key, values);
     }
 
     @Override
