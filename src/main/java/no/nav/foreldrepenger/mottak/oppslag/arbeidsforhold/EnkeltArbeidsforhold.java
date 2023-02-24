@@ -5,12 +5,27 @@ import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static no.nav.foreldrepenger.common.util.StringUtil.mask;
+
 public record EnkeltArbeidsforhold(String arbeidsgiverId,
                                    String arbeidsgiverIdType,
                                    LocalDate from,
                                    Optional<LocalDate> to,
                                    ProsentAndel stillingsprosent,
                                    String arbeidsgiverNavn) {
+
+
+    @Override
+    public String toString() {
+        return "EnkeltArbeidsforhold{" +
+            "arbeidsgiverId='" + mask(arbeidsgiverId) + '\'' +
+            ", arbeidsgiverIdType='" + arbeidsgiverIdType + '\'' +
+            ", from=" + from +
+            ", to=" + to +
+            ", stillingsprosent=" + stillingsprosent +
+            ", arbeidsgiverNavn='" + mask(arbeidsgiverNavn) + '\'' +
+            '}';
+    }
 
     public static Builder builder() {
         return new Builder();

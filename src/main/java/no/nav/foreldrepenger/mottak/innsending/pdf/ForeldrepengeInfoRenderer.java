@@ -516,22 +516,22 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
 
     private List<String> utenlandskForelder(UtenlandskForelder utenlandsForelder) {
         List<String> attributter = new ArrayList<>();
-        attributter.add(Optional.ofNullable(utenlandsForelder.getNavn())
+        attributter.add(Optional.ofNullable(utenlandsForelder.navn())
                 .map(n -> txt("navninline", n))
                 .orElse("Ukjent"));
         attributter.add(txt("nasjonalitetinline",
-                textFormatter.countryName(utenlandsForelder.getLand(),
-                        utenlandsForelder.getLand().getName())));
-        addIfSet(attributter, "utenlandskid", utenlandsForelder.getId());
+                textFormatter.countryName(utenlandsForelder.land(),
+                        utenlandsForelder.land().getName())));
+        addIfSet(attributter, "utenlandskid", utenlandsForelder.id());
         return attributter;
     }
 
     private List<String> norskForelder(NorskForelder norskForelder) {
         return asList(
-                Optional.ofNullable(norskForelder.getNavn())
+                Optional.ofNullable(norskForelder.navn())
                         .map(n -> txt("navninline", n))
                         .orElse("Ukjent"),
-                txt("fnr", norskForelder.getFnr().value()));
+                txt("fnr", norskForelder.fnr().value()));
     }
 
     private void addListIfSet(List<String> attributter, String key, List<String> values) {

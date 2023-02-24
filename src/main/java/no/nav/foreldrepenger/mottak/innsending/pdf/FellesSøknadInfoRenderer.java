@@ -182,7 +182,7 @@ public class FellesSøknadInfoRenderer {
 
     private List<String> egenNæring(EgenNæring næring) {
         List<String> attributter = new ArrayList<>();
-        if (CountryCode.NO.equals(næring.registrertILand())) {
+        if (CountryCode.NO.equals(næring.registrertILand()) || næring.registrertILand() == null) {
             addIfSet(attributter, "virksomhetsnavn", næring.orgName());
             addIfSet(attributter, "orgnummer", næring.orgNummer().value());
             addIfSet(attributter, "registrertiland", næring.registrertILand());

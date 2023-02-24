@@ -141,7 +141,7 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                             textFormatter.dato(næring.periode().fom()),
                             textFormatter.dato(næring.periode().tom()))));
         }
-        if (CountryCode.NO.equals(næring.registrertILand())) {
+        if (CountryCode.NO.equals(næring.registrertILand()) || næring.registrertILand() == null) {
             gruppe.overskrift(txt("virksomhetsnavn", næring.orgName()));
             rader.add(rad(txt("orgnummer"), næring.orgNummer().value()));
             rader.add(rad(txt("registrertiland"), textFormatter.countryName(CountryCode.NO)));
