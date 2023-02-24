@@ -92,11 +92,11 @@ public class InfoskrivRenderer {
         if (!ferieArbeidsperioder.isEmpty()) {
             PDPage scratch1 = newPage();
             FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
-            float x = renderFerieArbeidsperioder(ferieArbeidsperioder, arbeidsforhold, scratchcos, STARTY);
+            float x = renderFerieArbeidsperioder(ferieArbeidsperioder, scratchcos, STARTY);
             float behov = STARTY - x;
             if (behov < y) {
                 scratchcos.close();
-                y = renderFerieArbeidsperioder(ferieArbeidsperioder, arbeidsforhold, cos, y);
+                y = renderFerieArbeidsperioder(ferieArbeidsperioder, cos, y);
             } else {
                 cos = førstesideInfoskriv(doc, cos, scratch1, scratchcos);
                 y = STARTY - behov;
@@ -143,24 +143,18 @@ public class InfoskrivRenderer {
 
     private List<String> arbeidsgivere(List<EnkeltArbeidsforhold> arbeidsforhold, List<String> virksomhetsnummer) {
         return safeStream(arbeidsforhold)
-                .filter(a -> virksomhetsnummer.contains(a.getArbeidsgiverId()))
-                .map(EnkeltArbeidsforhold::getArbeidsgiverNavn)
+                .filter(a -> virksomhetsnummer.contains(a.arbeidsgiverId()))
+                .map(EnkeltArbeidsforhold::arbeidsgiverNavn)
                 .map(s -> txt("arbeidsgiver", s))
                 .toList();
     }
 
-    private float renderFerieArbeidsperioder(List<UtsettelsesPeriode> ferieArbeidsperioder,
-            List<EnkeltArbeidsforhold> arbeidsforhold,
-            FontAwareCos cos, float y) throws IOException {
+    private float renderFerieArbeidsperioder(List<UtsettelsesPeriode> ferieArbeidsperioder, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLineOfRegularText(txt("svp.utsettelse"), cos, y);
         y -= addTinyBlankLine();
         for (UtsettelsesPeriode periode : ferieArbeidsperioder) {
             y -= renderer.addLineOfRegularText(txt("fom", formattertDato(periode.getFom())), cos, y);
             y -= renderer.addLineOfRegularText(txt("tom", formattertDato(periode.getTom())), cos, y);
-            if (periode.getVirksomhetsnummer() != null) {
-                y -= renderer.addLinesOfRegularText(arbeidsgivere(arbeidsforhold, periode.getVirksomhetsnummer()),
-                        cos, y);
-            }
             y -= renderer.addLineOfRegularText(txt("utsettelsesårsak",
                     textFormatter.capitalize(periode.getÅrsak().name())), cos, y);
             y -= addTinyBlankLine();

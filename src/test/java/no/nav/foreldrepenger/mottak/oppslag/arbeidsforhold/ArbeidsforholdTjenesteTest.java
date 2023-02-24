@@ -1,24 +1,5 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
-import static io.netty.handler.codec.http.HttpResponseStatus.BAD_GATEWAY;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.IOException;
-import java.net.URI;
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.List;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-
 import no.nav.foreldrepenger.common.domain.Orgnummer;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.AnsettelsesperiodeDTO;
@@ -30,6 +11,24 @@ import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.Periode;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+
+import java.io.IOException;
+import java.net.URI;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.List;
+
+import static io.netty.handler.codec.http.HttpResponseStatus.BAD_GATEWAY;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 class ArbeidsforholdTjenesteTest {
@@ -228,12 +227,12 @@ class ArbeidsforholdTjenesteTest {
         var arbeidsforhold = arbeidsforholdTjeneste.hentArbeidsforhold();
         assertThat(arbeidsforhold).hasSize(1);
         var enkeltArbeidsforhold = arbeidsforhold.get(0);
-        assertThat(enkeltArbeidsforhold.getArbeidsgiverId()).isEqualTo("999999999");
-        assertThat(enkeltArbeidsforhold.getArbeidsgiverIdType()).isEqualTo("orgnr");
-        assertThat(enkeltArbeidsforhold.getArbeidsgiverNavn()).isEqualTo("Fake Bedrift AS");
-        assertThat(enkeltArbeidsforhold.getFrom()).isEqualTo(LocalDate.parse("2014-07-01"));
-        assertThat(enkeltArbeidsforhold.getTo()).isPresent().get().isEqualTo(LocalDate.parse("2015-12-31"));
-        assertThat(enkeltArbeidsforhold.getStillingsprosent()).isNull();
+        assertThat(enkeltArbeidsforhold.arbeidsgiverId()).isEqualTo("999999999");
+        assertThat(enkeltArbeidsforhold.arbeidsgiverIdType()).isEqualTo("orgnr");
+        assertThat(enkeltArbeidsforhold.arbeidsgiverNavn()).isEqualTo("Fake Bedrift AS");
+        assertThat(enkeltArbeidsforhold.from()).isEqualTo(LocalDate.parse("2014-07-01"));
+        assertThat(enkeltArbeidsforhold.to()).isPresent().get().isEqualTo(LocalDate.parse("2015-12-31"));
+        assertThat(enkeltArbeidsforhold.stillingsprosent()).isNull();
     }
 
     @Test
@@ -300,12 +299,12 @@ class ArbeidsforholdTjenesteTest {
         var arbeidsforhold = arbeidsforholdTjeneste.hentArbeidsforhold();
         assertThat(arbeidsforhold).hasSize(1);
         var enkeltArbeidsforhold = arbeidsforhold.get(0);
-        assertThat(enkeltArbeidsforhold.getArbeidsgiverId()).isEqualTo("22222233333");
-        assertThat(enkeltArbeidsforhold.getArbeidsgiverIdType()).isEqualTo("fnr");
-        assertThat(enkeltArbeidsforhold.getArbeidsgiverNavn()).isNotNull();
-        assertThat(enkeltArbeidsforhold.getFrom()).isEqualTo(LocalDate.parse("2014-07-01"));
-        assertThat(enkeltArbeidsforhold.getTo()).isNotPresent();
-        assertThat(enkeltArbeidsforhold.getStillingsprosent()).isEqualTo(new ProsentAndel(49.5));
+        assertThat(enkeltArbeidsforhold.arbeidsgiverId()).isEqualTo("22222233333");
+        assertThat(enkeltArbeidsforhold.arbeidsgiverIdType()).isEqualTo("fnr");
+        assertThat(enkeltArbeidsforhold.arbeidsgiverNavn()).isNotNull();
+        assertThat(enkeltArbeidsforhold.from()).isEqualTo(LocalDate.parse("2014-07-01"));
+        assertThat(enkeltArbeidsforhold.to()).isNotPresent();
+        assertThat(enkeltArbeidsforhold.stillingsprosent()).isEqualTo(new ProsentAndel(49.5));
     }
 
     @Test
@@ -385,11 +384,11 @@ class ArbeidsforholdTjenesteTest {
             List.of(new ArbeidsavtaleDTO(new Periode(fom, null), null)));
 
         var enkeltArbeidsforhold = arbeidsforholdTjeneste.tilEnkeltArbeidsforhold(arbeidsforholdDTO);
-        assertThat(enkeltArbeidsforhold.getArbeidsgiverId()).isEqualTo(Orgnummer.MAGIC_ORG.value());
-        assertThat(enkeltArbeidsforhold.getArbeidsgiverIdType()).isEqualTo("orgnr");
-        assertThat(enkeltArbeidsforhold.getArbeidsgiverNavn()).isNotNull();
-        assertThat(enkeltArbeidsforhold.getFrom()).isNotNull();
-        assertThat(enkeltArbeidsforhold.getTo()).isNotPresent();
-        assertThat(enkeltArbeidsforhold.getStillingsprosent()).isNull();
+        assertThat(enkeltArbeidsforhold.arbeidsgiverId()).isEqualTo(Orgnummer.MAGIC_ORG.value());
+        assertThat(enkeltArbeidsforhold.arbeidsgiverIdType()).isEqualTo("orgnr");
+        assertThat(enkeltArbeidsforhold.arbeidsgiverNavn()).isNotNull();
+        assertThat(enkeltArbeidsforhold.from()).isNotNull();
+        assertThat(enkeltArbeidsforhold.to()).isNotPresent();
+        assertThat(enkeltArbeidsforhold.stillingsprosent()).isNull();
     }
 }

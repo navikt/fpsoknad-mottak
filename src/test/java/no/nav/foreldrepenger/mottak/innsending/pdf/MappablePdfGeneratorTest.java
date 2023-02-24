@@ -1,32 +1,19 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static no.nav.boot.conditionals.EnvUtil.LOCAL;
-import static no.nav.boot.conditionals.EnvUtil.TEST;
-import static no.nav.foreldrepenger.common.domain.felles.TestUtils.engangssøknad;
-import static no.nav.foreldrepenger.common.domain.felles.TestUtils.fødsel;
-import static no.nav.foreldrepenger.common.domain.felles.TestUtils.hasPdfSignature;
-import static no.nav.foreldrepenger.common.domain.felles.TestUtils.person;
-import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
-import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
-import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.INITIELL_ENGANGSSTØNAD;
-import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.INITIELL_FORELDREPENGER;
-import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.INITIELL_SVANGERSKAPSPENGER;
-import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
-import javax.inject.Inject;
-
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Saksnummer;
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.domain.felles.TestUtils;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.common.util.TokenUtil;
+import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
+import no.nav.foreldrepenger.mottak.config.TestConfig;
+import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorStub;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
+import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,16 +27,37 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.foreldrepenger.common.domain.Fødselsnummer;
-import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.common.util.TokenUtil;
-import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
-import no.nav.foreldrepenger.mottak.config.TestConfig;
-import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorStub;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
-import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
+import javax.inject.Inject;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import static no.nav.boot.conditionals.EnvUtil.LOCAL;
+import static no.nav.boot.conditionals.EnvUtil.TEST;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.engangssøknad;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.fødsel;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.hasPdfSignature;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.person;
+import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
+import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.INITIELL_ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.INITIELL_SVANGERSKAPSPENGER;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.VEDLEGG1;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.fordeling;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengesøknad;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengesøknadMedEttIkkeOpplastedVedlegg;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.norskForelder;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.rettigheter;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.svp;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 @AutoConfigureJsonTesters
 @ActiveProfiles(profiles = { LOCAL, TEST })
@@ -107,34 +115,43 @@ class MappablePdfGeneratorTest {
     @Test
     void førstegangssøknad() throws Exception {
         var filNavn = ABSOLUTE_PATH +"/søknad.pdf";
+        var søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
         try (var fos = new FileOutputStream(filNavn)) {
-            var søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
-            søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
             assertDoesNotThrow(() -> fos.write(gen.generer(søknad, person(), INITIELL_FORELDREPENGER)));
         }
-        verifiserGenerertPDF(filNavn, 6, TILLEGGSOPPLYSNINGER);
+
+        assertThat(søknad.getTilleggsopplysninger()).isNotNull();
+        verifiserGenerertPDF(filNavn, 6, søknad.getTilleggsopplysninger());
     }
 
     @Test
     void foreldrepengerFortsettUtenArbeidsforholdVedExceptionFraTjeneste() throws Exception {
         var filNavn = ABSOLUTE_PATH +"/søknad_exception_fra_arbeidsforholdtjeneste.pdf";
         when(arbeidsforholdTjeneste.hentArbeidsforhold()).thenThrow(RuntimeException.class);
+        var søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
         try (FileOutputStream fos = new FileOutputStream(filNavn)) {
-            var søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
-            søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
             assertDoesNotThrow(() -> fos.write(gen.generer(søknad, person(), INITIELL_FORELDREPENGER)));
         }
-        verifiserGenerertPDF(filNavn, 5, TILLEGGSOPPLYSNINGER);
+
+        assertThat(søknad.getTilleggsopplysninger()).isNotNull();
+        verifiserGenerertPDF(filNavn, 5, søknad.getTilleggsopplysninger());
     }
 
     @Test
     void endring() throws Exception {
         var filNavn = ABSOLUTE_PATH +"/endring.pdf";
+        var endringssøknad = new Endringssøknad(
+            LocalDate.now(),
+            TestUtils.søker(),
+            new Foreldrepenger(norskForelder(), fødsel(), rettigheter(), null, null,
+                fordeling(VEDLEGG1.getMetadata().id()), null),
+            TILLEGGSOPPLYSNINGER,
+            List.of(VEDLEGG1),
+            Saksnummer.valueOf("123456789"));
         try (FileOutputStream fos = new FileOutputStream(filNavn)) {
-            var endringssøknad = endringssøknad(VEDLEGG1);
-            endringssøknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
             assertDoesNotThrow(() -> fos.write(gen.generer(endringssøknad, person(), ENDRING_FORELDREPENGER)));
         }
+
         verifiserGenerertPDF(filNavn, 3, TILLEGGSOPPLYSNINGER);
     }
 
@@ -158,7 +175,6 @@ class MappablePdfGeneratorTest {
         var filNavn = ABSOLUTE_PATH +"/infoskriv.pdf";
         try (var fos = new FileOutputStream(filNavn)) {
             Søknad søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
-            søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
             byte[] fullSøknadPdf = gen.generer(søknad, person(), INITIELL_FORELDREPENGER);
             byte[] infoskriv = pdfExtracter.infoskriv(fullSøknadPdf);
             if (infoskriv != null) {

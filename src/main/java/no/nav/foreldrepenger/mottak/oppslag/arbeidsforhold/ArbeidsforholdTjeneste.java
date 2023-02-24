@@ -31,7 +31,7 @@ public class ArbeidsforholdTjeneste implements ArbeidsInfo {
         var enkleArbeidsforhold = connection.hentArbeidsforhold().stream()
             .filter(Objects::nonNull)
             .map(this::tilEnkeltArbeidsforhold)
-            .sorted(comparing(EnkeltArbeidsforhold::getArbeidsgiverNavn))
+            .sorted(comparing(EnkeltArbeidsforhold::arbeidsgiverNavn))
             .toList();
         LOG.trace("Arbeidsforhold: {}", enkleArbeidsforhold);
         return enkleArbeidsforhold;
@@ -44,7 +44,7 @@ public class ArbeidsforholdTjeneste implements ArbeidsInfo {
 
     public EnkeltArbeidsforhold tilEnkeltArbeidsforhold(ArbeidsforholdDTO a) {
         var arbeidsgiverId = tilArbeidsgiverId(a.arbeidsgiver());
-        return EnkeltArbeidsforhold.builder()
+        return new EnkeltArbeidsforhold.Builder()
             .arbeidsgiverId(arbeidsgiverId)
             .arbeidsgiverIdType(tilArbeidsgiverTypeFrontend(a.arbeidsgiver().type()))
             .from(a.ansettelsesperiode().periode().fom())
