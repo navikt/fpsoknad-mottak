@@ -143,7 +143,8 @@ class MappablePdfGeneratorTest {
         var endringssøknad = new Endringssøknad(
             LocalDate.now(),
             TestUtils.søker(),
-            new Foreldrepenger(norskForelder(), fødsel(), rettigheter(), null, null, fordeling(), null),
+            new Foreldrepenger(norskForelder(), fødsel(), rettigheter(), null, null,
+                fordeling(VEDLEGG1.getMetadata().id()), null),
             TILLEGGSOPPLYSNINGER,
             List.of(VEDLEGG1),
             Saksnummer.valueOf("123456789"));
@@ -151,7 +152,7 @@ class MappablePdfGeneratorTest {
             assertDoesNotThrow(() -> fos.write(gen.generer(endringssøknad, person(), ENDRING_FORELDREPENGER)));
         }
 
-        verifiserGenerertPDF(filNavn, 2, TILLEGGSOPPLYSNINGER);
+        verifiserGenerertPDF(filNavn, 3, TILLEGGSOPPLYSNINGER);
     }
 
     @Test
