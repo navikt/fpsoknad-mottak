@@ -102,6 +102,7 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
         }
         if (!(annenForelder instanceof UkjentForelder)) {
             y -= renderer.addLineOfRegularText(INDENT, txt("harrett", jaNei(rettigheter.harAnnenForelderRett())), cos, y);
+            y = annenForelderOppholdtSegIEøs(rettigheter, cos, y);
             y = annenForelderTilsvarendeRettEøs(rettigheter, cos, y);
             y = morUfør(rettigheter, cos, y);
             if (erAnnenForlderInformert != null) {
@@ -109,6 +110,14 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
             }
         }
         y -= PdfElementRenderer.BLANK_LINE;
+        return y;
+    }
+
+    private float annenForelderOppholdtSegIEøs(Rettigheter rettigheter, FontAwareCos cos, float y) throws IOException {
+        if (rettigheter.harAnnenForelderOppholdtSegIEØS() != null) {
+            y -= renderer.addLineOfRegularText(INDENT, txt("annenForelderOppholdtSegIEos",
+                jaNei(rettigheter.harAnnenForelderOppholdtSegIEØS())), cos, y);
+        }
         return y;
     }
 
