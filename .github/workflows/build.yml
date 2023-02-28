@@ -41,10 +41,97 @@ jobs:
       issue-number: ${{ needs.create-issue.outputs.issue-number }}
     secrets: inherit
 
-  snyk:
-    name: Snyk
+#  snyk:
+#    name: Snyk
+#    needs: build-app
+#    uses: navikt/fp-gha-workflows/.github/workflows/snyk.yml@main
+#    with:
+#      build-version: ${{ needs.build-app.outputs.build-version }}
+#    secrets: inherit
+
+
+  snyk-monitor-docker:
+    name: Docker
     needs: build-app
-    uses: navikt/fp-gha-workflows/.github/workflows/snyk.yml@main
-    with:
-      build-version: ${{ needs.build-app.outputs.build-version }}
-    secrets: inherit
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.3.0
+
+      - name: Run Trivy vulnerability scanner for container
+        uses: aquasecurity/trivy-action@master
+        with:
+          security-checks: 'vuln'
+          image-ref: 'ghcr.io/${{ github.repository }}:latest'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'HIGH,CRITICAL'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        if: success()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+
+  snyk-monitor-code:
+    name: Code
+    needs: build-app
+    runs-on: 'ubuntu-latest'
+    if: github.actor != 'dependabot[bot]'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.3.0
+
+      - name: Set up JDK-${{ inputs.java-version }} with cache
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ inputs.java-version }}
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - uses: snyk/actions/setup@master
+
+      - name: Create maven .m2 settings
+        uses: whelk-io/maven-settings-xml-action@v21
+        with:
+          repositories: '[{"id": "github", "name": "github", "url": "https://maven.pkg.github.com/${{ github.repository }}",
+              "releases": { "enabled": "true" }, "snapshots": { "enabled": "false" }},
+              {"id": "github1", "name": "github1", "url": "https://maven.pkg.github.com/navikt/fp-felles",
+              "releases": { "enabled": "true" }, "snapshots": { "enabled": "false" }}]'
+          servers: '[{ "id": "github", "username": "${{ github.actor }}", "password": "${{ secrets.GITHUB_TOKEN }}" },
+                    { "id": "github1", "username": "${{ github.actor }}", "password": "${{ secrets.READER_TOKEN }}" }]'
+          output_file: settings.xml
+
+      - name: Set version
+        run: |
+          echo "Building ${{ needs.build-app.outputs.build-version }}"
+          mvn -q -B -s settings.xml versions:set -DnewVersion=${{ needs.build-app.outputs.build-version }}
+
+      - name: Run Snyk monitor
+        if: github.ref_name == 'master'
+        run: >
+          snyk monitor
+          --org=teamforeldrepenger
+          --maven-aggregate-project
+          --severity-threshold=high
+          --project-name=${{ github.repository }}
+          --remote-repo-url=https://github.com/${{ github.repository }}.git
+          -- -s settings.xml -DskipTests
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Run Snyk test
+        if: github.ref_name != 'master'
+        run: >
+          snyk test
+          --org=teamforeldrepenger
+          --maven-aggregate-project
+          --severity-threshold=high
+          --fail-on=all
+          --fail-fast
+          --project-name=${{ github.repository }}
+          --remote-repo-url=https://github.com/${{ github.repository }}.git
+          -- -s settings.xml -DskipTests
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
