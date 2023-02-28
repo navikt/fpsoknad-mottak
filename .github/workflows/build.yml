@@ -93,6 +93,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3.3.0
 
+      - name: Create maven .m2 settings
+        uses: whelk-io/maven-settings-xml-action@v21
+        with:
+          repositories: '[{"id": "github", "name": "github", "url": "https://maven.pkg.github.com/${{ github.repository }}",
+              "releases": { "enabled": "true" }, "snapshots": { "enabled": "false" }},
+              {"id": "github1", "name": "github1", "url": "https://maven.pkg.github.com/navikt/fp-felles",
+              "releases": { "enabled": "true" }, "snapshots": { "enabled": "false" }}]'
+          servers: '[{ "id": "github", "username": "${{ github.actor }}", "password": "${{ secrets.GITHUB_TOKEN }}" },
+                    { "id": "github1", "username": "${{ github.actor }}", "password": "${{ secrets.READER_TOKEN }}" }]'
+          output_file: settings.xml
+
       - name: Run Snyk test
         if: github.ref_name != 'master'
         uses: snyk/actions/maven@master
