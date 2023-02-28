@@ -71,11 +71,11 @@ import static org.mockito.Mockito.when;
         EngangsstønadPdfGenerator.class,
         RestTemplate.class,
         PdfGeneratorStub.class,
-        NySvangerskapspengerPdfGenerator.class,
         DelegerendePDFGenerator.class,
         InfoskrivRenderer.class,
         InfoskrivPdfEkstraktor.class,
         SvangerskapspengerInfoRenderer.class,
+        SvangerskapspengerPdfGenerator.class,
         SpringTokenValidationContextHolder.class, TestConfig.class })
 class MappablePdfGeneratorTest {
 
