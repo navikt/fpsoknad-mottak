@@ -58,11 +58,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3.3.0
 
+      - name: Login to GitHub Packages Docker Registry
+        if: (inputs.build-image && inputs.push-image)
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Run Trivy vulnerability scanner for container
         uses: aquasecurity/trivy-action@master
         with:
           security-checks: 'vuln'
-          image-ref: 'ghcr.io/${{ github.repository }}:latest'
+          image-ref: 'ghcr.io/${{ github.repository }}:${{ needs.build-app.outputs.build-version }}'
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'HIGH,CRITICAL'
