@@ -93,57 +93,71 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3.3.0
 
-      - name: Set up JDK-17 with cache
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: 'temurin'
-          cache: 'maven'
-
-      - uses: snyk/actions/setup@master
-
-      - name: Create maven .m2 settings
-        uses: whelk-io/maven-settings-xml-action@v21
-        with:
-          repositories: '[{"id": "github", "name": "github", "url": "https://maven.pkg.github.com/${{ github.repository }}",
-              "releases": { "enabled": "true" }, "snapshots": { "enabled": "false" }},
-              {"id": "github1", "name": "github1", "url": "https://maven.pkg.github.com/navikt/fp-felles",
-              "releases": { "enabled": "true" }, "snapshots": { "enabled": "false" }}]'
-          servers: '[{ "id": "github", "username": "${{ github.actor }}", "password": "${{ secrets.GITHUB_TOKEN }}" },
-                    { "id": "github1", "username": "${{ github.actor }}", "password": "${{ secrets.READER_TOKEN }}" }]'
-          output_file: settings.xml
-
-      - name: Set version
-        run: |
-          echo "Building ${{ needs.build-app.outputs.build-version }}"
-          mvn -q -B -s settings.xml versions:set -DnewVersion=${{ needs.build-app.outputs.build-version }}
-
-      - name: Run Snyk monitor
-        if: github.ref_name == 'master'
-        run: >
-          snyk monitor
-          --org=teamforeldrepenger
-          --maven-aggregate-project
-          --severity-threshold=high
-          --project-name=${{ github.repository }}
-          --remote-repo-url=https://github.com/${{ github.repository }}.git
-          -- -s settings.xml -DskipTests
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/maven@master
+        continue-on-error: true # To make sure that SARIF upload gets called
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --sarif-file-output=snyk.sarif
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk.sarif
 
-      - run: DEBUG=* mvn test-compile dependency:tree -DoutputType=dot --batch-mode -s settings.xml -DskipTests
 
-      - name: Run Snyk test
-        if: github.ref_name != 'master'
-        run: >
-          snyk test
-          --org=teamforeldrepenger
-          --maven-aggregate-project
-          --severity-threshold=high
-          --fail-on=all
-          --fail-fast
-          --project-name=${{ github.repository }}
-          --remote-repo-url=https://github.com/${{ github.repository }}.git
-          -- -s settings.xml -DskipTests
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+#      - name: Set up JDK-17 with cache
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: 17
+#          distribution: 'temurin'
+#          cache: 'maven'
+#
+#      - uses: snyk/actions/setup@master
+#
+#      - name: Create maven .m2 settings
+#        uses: whelk-io/maven-settings-xml-action@v21
+#        with:
+#          repositories: '[{"id": "github", "name": "github", "url": "https://maven.pkg.github.com/${{ github.repository }}",
+#              "releases": { "enabled": "true" }, "snapshots": { "enabled": "false" }},
+#              {"id": "github1", "name": "github1", "url": "https://maven.pkg.github.com/navikt/fp-felles",
+#              "releases": { "enabled": "true" }, "snapshots": { "enabled": "false" }}]'
+#          servers: '[{ "id": "github", "username": "${{ github.actor }}", "password": "${{ secrets.GITHUB_TOKEN }}" },
+#                    { "id": "github1", "username": "${{ github.actor }}", "password": "${{ secrets.READER_TOKEN }}" }]'
+#          output_file: settings.xml
+#
+#      - name: Set version
+#        run: |
+#          echo "Building ${{ needs.build-app.outputs.build-version }}"
+#          mvn -q -B -s settings.xml versions:set -DnewVersion=${{ needs.build-app.outputs.build-version }}
+#
+#      - name: Run Snyk monitor
+#        if: github.ref_name == 'master'
+#        run: >
+#          snyk monitor
+#          --org=teamforeldrepenger
+#          --maven-aggregate-project
+#          --severity-threshold=high
+#          --project-name=${{ github.repository }}
+#          --remote-repo-url=https://github.com/${{ github.repository }}.git
+#          -- -s settings.xml -DskipTests
+#        env:
+#          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+#
+#      - run: DEBUG=* mvn test-compile dependency:tree -DoutputType=dot --batch-mode -s settings.xml -DskipTests
+#
+#      - name: Run Snyk test
+#        if: github.ref_name != 'master'
+#        run: >
+#          snyk test
+#          --org=teamforeldrepenger
+#          --maven-aggregate-project
+#          --severity-threshold=high
+#          --fail-on=all
+#          --fail-fast
+#          --project-name=${{ github.repository }}
+#          --remote-repo-url=https://github.com/${{ github.repository }}.git
+#          -- -s settings.xml -DskipTests
+#        env:
+#          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
