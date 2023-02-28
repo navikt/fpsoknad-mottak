@@ -113,8 +113,6 @@ jobs:
           command: test
           args: >
             --severity-threshold=high
-            --fail-on=all
-            --fail-fast
             --org=teamforeldrepenger
             --project-name=${{ github.repository }}
             --remote-repo-url=https://github.com/${{ github.repository }}.git
