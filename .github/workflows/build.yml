@@ -131,6 +131,8 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
+      - run: DEBUG=* mvn test-compile dependency:tree -DoutputType=dot --batch-mode -s settings.xml -DskipTests
+
       - name: Run Snyk test
         if: github.ref_name != 'master'
         run: >
