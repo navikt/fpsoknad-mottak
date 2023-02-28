@@ -115,7 +115,6 @@ jobs:
             --severity-threshold=high
             --fail-on=all
             --fail-fast
-            --maven-aggregate-project
             --org=teamforeldrepenger
             --project-name=${{ github.repository }}
             --remote-repo-url=https://github.com/${{ github.repository }}.git
@@ -131,7 +130,6 @@ jobs:
           command: monitor
           args: >
             --severity-threshold=high
-            --maven-aggregate-project
             --org=teamforeldrepenger
             --project-name=${{ github.repository }}
             --remote-repo-url=https://github.com/${{ github.repository }}.git
