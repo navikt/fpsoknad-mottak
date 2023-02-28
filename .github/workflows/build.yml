@@ -66,13 +66,13 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Henter image fra forrige steg
-        run: docker pull ghcr.io/${{ github.repository }}:${{ needs.build-app.outputs.build-version }}
+        run: docker pull ghcr.io/${{ github.repository }}:latest
 
       - name: Run Trivy vulnerability scanner for container
         uses: aquasecurity/trivy-action@master
         with:
           security-checks: 'vuln'
-          image-ref: 'ghcr.io/${{ github.repository }}:${{ needs.build-app.outputs.build-version }}'
+          image-ref: 'ghcr.io/${{ github.repository }}:latest'
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'HIGH,CRITICAL'
@@ -115,8 +115,8 @@ jobs:
 
       - name: Set version
         run: |
-          echo "Building ${{ needs.build-app.outputs.build-version }}"
-          mvn -q -B -s settings.xml versions:set -DnewVersion=${{ needs.build-app.outputs.build-version }}
+          echo "Building latest"
+          mvn -q -B -s settings.xml versions:set -DnewVersion=latest
 
       - name: Run Snyk monitor
         if: github.ref_name == 'master'
