@@ -93,17 +93,52 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3.3.0
 
-      - name: Run Snyk to check for vulnerabilities
+      - name: Run Snyk test
+        if: github.ref_name != 'master'
+        uses: snyk/actions/maven@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: test
+          args: >
+            --severity-threshold=high
+            --fail-on=all
+            --fail-fast
+            --maven-aggregate-project
+            --org=teamforeldrepenger
+            --project-name=${{ github.repository }}
+            --remote-repo-url=https://github.com/${{ github.repository }}.git
+            -- -s settings.xml -DskipTests
+
+      - name: Run Snyk monitor
+        if: github.ref_name == 'master'
         uses: snyk/actions/maven@master
         continue-on-error: true # To make sure that SARIF upload gets called
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --sarif-file-output=snyk.sarif
+          command: monitor
+          args: >
+            --severity-threshold=high
+            --maven-aggregate-project
+            --org=teamforeldrepenger
+            --project-name=${{ github.repository }}
+            --remote-repo-url=https://github.com/${{ github.repository }}.git
+            --sarif-file-output=snyk.sarif
+            -- -s settings.xml -DskipTests
+
       - name: Upload result to GitHub Code Scanning
+        if: github.ref_name == 'master'
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: snyk.sarif
+
+
+
+#          snyk monitor
+#          --org=teamforeldrepenger
+#          --maven-aggregate-project
+#          --severity-threshold=high
 
 
 
