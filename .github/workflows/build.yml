@@ -41,122 +41,57 @@ jobs:
       issue-number: ${{ needs.create-issue.outputs.issue-number }}
     secrets: inherit
 
-#  snyk:
-#    name: Snyk
+  snyk:
+    name: Snyk
+    needs: build-app
+    uses: navikt/fp-gha-workflows/.github/workflows/snyk.yml@main
+    with:
+      build-version: ${{ needs.build-app.outputs.build-version }}
+    secrets: inherit
+
+
+#  snyk-monitor-docker:
+#    name: Docker
 #    needs: build-app
-#    uses: navikt/fp-gha-workflows/.github/workflows/snyk.yml@main
-#    with:
-#      build-version: ${{ needs.build-app.outputs.build-version }}
-#    secrets: inherit
-
-
-  snyk-monitor-docker:
-    name: Docker
-    needs: build-app
-    runs-on: 'ubuntu-latest'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3.3.0
-
-      - name: Login to GitHub Packages Docker Registry
-        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Henter image fra forrige steg
-        run: docker pull ghcr.io/${{ github.repository }}:latest
-
-      - name: Run Trivy vulnerability scanner for container
-        uses: aquasecurity/trivy-action@master
-        with:
-          security-checks: 'vuln'
-          image-ref: 'ghcr.io/${{ github.repository }}:latest'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'HIGH,CRITICAL'
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
-        if: success()
-        with:
-          sarif_file: 'trivy-results.sarif'
-
-
-  snyk-monitor-code:
-    name: Code
-    needs: build-app
-    runs-on: 'ubuntu-latest'
-    if: github.actor != 'dependabot[bot]'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3.3.0
-
-      - name: Create maven .m2 settings
-        uses: whelk-io/maven-settings-xml-action@v21
-        with:
-          repositories: '[{"id": "github", "name": "github", "url": "https://maven.pkg.github.com/${{ github.repository }}",
-              "releases": { "enabled": "true" }, "snapshots": { "enabled": "false" }},
-              {"id": "github1", "name": "github1", "url": "https://maven.pkg.github.com/navikt/fp-felles",
-              "releases": { "enabled": "true" }, "snapshots": { "enabled": "false" }}]'
-          servers: '[{ "id": "github", "username": "${{ github.actor }}", "password": "${{ secrets.GITHUB_TOKEN }}" },
-                    { "id": "github1", "username": "${{ github.actor }}", "password": "${{ secrets.READER_TOKEN }}" }]'
-          output_file: settings.xml
-
-      - name: Run Snyk test
-        if: github.ref_name != 'master'
-        uses: snyk/actions/maven@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          command: test
-          args: >
-            --severity-threshold=high
-            --org=teamforeldrepenger
-            --project-name=${{ github.repository }}
-            --remote-repo-url=https://github.com/${{ github.repository }}.git
-            -- -s settings.xml -DskipTests
-
-      - name: Run Snyk monitor
-        if: github.ref_name == 'master'
-        uses: snyk/actions/maven@master
-        continue-on-error: true # To make sure that SARIF upload gets called
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          command: monitor
-          args: >
-            --severity-threshold=high
-            --org=teamforeldrepenger
-            --project-name=${{ github.repository }}
-            --remote-repo-url=https://github.com/${{ github.repository }}.git
-            --sarif-file-output=snyk.sarif
-            -- -s settings.xml -DskipTests
-
-      - name: Upload result to GitHub Code Scanning
-        if: github.ref_name == 'master'
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: snyk.sarif
-
-
-
-#          snyk monitor
-#          --org=teamforeldrepenger
-#          --maven-aggregate-project
-#          --severity-threshold=high
-
-
-
-#      - name: Set up JDK-17 with cache
-#        uses: actions/setup-java@v3
-#        with:
-#          java-version: 17
-#          distribution: 'temurin'
-#          cache: 'maven'
+#    runs-on: 'ubuntu-latest'
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v3.3.0
 #
-#      - uses: snyk/actions/setup@master
+#      - name: Login to GitHub Packages Docker Registry
+#        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+#        with:
+#          registry: ghcr.io
+#          username: ${{ github.actor }}
+#          password: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Henter image fra forrige steg
+#        run: docker pull ghcr.io/${{ github.repository }}:latest
+#
+#      - name: Run Trivy vulnerability scanner for container
+#        uses: aquasecurity/trivy-action@master
+#        with:
+#          security-checks: 'vuln'
+#          image-ref: 'ghcr.io/${{ github.repository }}:latest'
+#          format: 'sarif'
+#          output: 'trivy.sarif'
+#          severity: 'HIGH,CRITICAL'
+#
+#      - name: Upload Trivy scan results to GitHub Security tab
+#        uses: github/codeql-action/upload-sarif@v2
+#        if: success()
+#        with:
+#          sarif_file: 'trivy-results.sarif'
+#
+#
+#  snyk-monitor-code:
+#    name: Code
+#    needs: build-app
+#    runs-on: 'ubuntu-latest'
+#    if: github.actor != 'dependabot[bot]'
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v3.3.0
 #
 #      - name: Create maven .m2 settings
 #        uses: whelk-io/maven-settings-xml-action@v21
@@ -171,35 +106,43 @@ jobs:
 #
 #      - name: Set version
 #        run: |
-#          echo "Building ${{ needs.build-app.outputs.build-version }}"
-#          mvn -q -B -s settings.xml versions:set -DnewVersion=${{ needs.build-app.outputs.build-version }}
-#
-#      - name: Run Snyk monitor
-#        if: github.ref_name == 'master'
-#        run: >
-#          snyk monitor
-#          --org=teamforeldrepenger
-#          --maven-aggregate-project
-#          --severity-threshold=high
-#          --project-name=${{ github.repository }}
-#          --remote-repo-url=https://github.com/${{ github.repository }}.git
-#          -- -s settings.xml -DskipTests
-#        env:
-#          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-#
-#      - run: DEBUG=* mvn test-compile dependency:tree -DoutputType=dot --batch-mode -s settings.xml -DskipTests
+#          echo "Building ${{ inputs.build-version }}"
+#          mvn -q -B -s settings.xml versions:set -DnewVersion=${{ inputs.build-version }}
 #
 #      - name: Run Snyk test
 #        if: github.ref_name != 'master'
-#        run: >
-#          snyk test
-#          --org=teamforeldrepenger
-#          --maven-aggregate-project
-#          --severity-threshold=high
-#          --fail-on=all
-#          --fail-fast
-#          --project-name=${{ github.repository }}
-#          --remote-repo-url=https://github.com/${{ github.repository }}.git
-#          -- -s settings.xml -DskipTests
+#        uses: snyk/actions/maven@master
 #        env:
 #          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+#        with:
+#          command: test
+#          args: >
+#            --severity-threshold=high
+#            --fail-on=all
+#            --fail-fast
+#            --org=teamforeldrepenger
+#            --project-name=${{ github.repository }}
+#            --remote-repo-url=https://github.com/${{ github.repository }}.git
+#            -- -s settings.xml -DskipTests
+#
+#      - name: Run Snyk monitor
+#        if: github.ref_name == 'master'
+#        uses: snyk/actions/maven@master
+#        continue-on-error: true # To make sure that SARIF upload gets called
+#        env:
+#          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+#        with:
+#          command: monitor
+#          args: >
+#            --severity-threshold=high
+#            --org=teamforeldrepenger
+#            --project-name=${{ github.repository }}
+#            --remote-repo-url=https://github.com/${{ github.repository }}.git
+#            --sarif-file-output=snyk.sarif
+#            -- -s settings.xml -DskipTests
+#
+#      - name: Upload result to GitHub Code Scanning
+#        if: github.ref_name == 'master'
+#        uses: github/codeql-action/upload-sarif@v2
+#        with:
+#          sarif_file: snyk.sarif
