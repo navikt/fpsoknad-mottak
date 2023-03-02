@@ -12,7 +12,7 @@ on:
 jobs:
   snyk:
     name: Snyk
-    uses: navikt/fp-gha-workflows/.github/workflows/snyk.yml@main
+    uses: navikt/fp-gha-workflows/.github/workflows/snyk.yml@rydding
     with:
       build-version: latest
       multi-module-maven-project: false
