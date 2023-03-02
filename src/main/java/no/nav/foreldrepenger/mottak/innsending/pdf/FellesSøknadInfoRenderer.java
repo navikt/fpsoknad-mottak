@@ -182,15 +182,12 @@ public class FellesSøknadInfoRenderer {
 
     private List<String> egenNæring(EgenNæring næring) {
         List<String> attributter = new ArrayList<>();
-        if (CountryCode.NO.equals(næring.registrertILand()) || næring.registrertILand() == null) {
-            addIfSet(attributter, "virksomhetsnavn", næring.orgName());
+        if (næring.orgNummer() != null) {
             addIfSet(attributter, "orgnummer", næring.orgNummer().value());
-            addIfSet(attributter, "registrertiland", næring.registrertILand());
-        } else {
-            addIfSet(attributter, "virksomhetsnavn", næring.orgName());
-            addIfSet(attributter, "registrertiland", næring.registrertILand());
         }
 
+        addIfSet(attributter, "virksomhetsnavn", næring.orgName());
+        addIfSet(attributter, "registrertiland", næring.registrertILand());
         attributter.add(txt("egennæringtyper", næring.vedlegg().size() > 1 ? "r" : "",
             safeStream(næring.virksomhetsTyper())
                 .map(v -> textFormatter.capitalize(v.toString()))
