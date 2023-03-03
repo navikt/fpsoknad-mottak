@@ -1,22 +1,21 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import static no.nav.foreldrepenger.mottak.innsyn.InnsynControllerV2.INNSYNV2;
-
-import javax.validation.Valid;
-
+import no.nav.foreldrepenger.common.innsyn.AnnenPartVedtak;
+import no.nav.foreldrepenger.common.innsyn.Saker;
+import no.nav.foreldrepenger.common.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import no.nav.foreldrepenger.common.innsyn.v2.AnnenPartVedtak;
-import no.nav.foreldrepenger.common.innsyn.v2.Saker;
-import no.nav.foreldrepenger.common.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
+import javax.validation.Valid;
 
-@ProtectedRestController(INNSYNV2)
+import static no.nav.foreldrepenger.mottak.innsyn.InnsynControllerV2.PATH;
+
+@ProtectedRestController(PATH)
 public class InnsynControllerV2 {
 
-    public static final String INNSYNV2 = "/innsyn/v2";
+    public static final String PATH = "/innsyn/v2";
     private final Oppslag oppslag;
     private final Innsyn innsyn;
 
@@ -27,7 +26,7 @@ public class InnsynControllerV2 {
 
     @GetMapping("/saker")
     public Saker saker() {
-        return innsyn.sakerV2(oppslag.aktørId());
+        return innsyn.saker(oppslag.aktørId());
     }
 
     @PostMapping("/annenPartVedtak")

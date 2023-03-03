@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
-import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
 
 @Component
 @Qualifier(DELEGERENDE)
