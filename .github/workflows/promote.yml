@@ -4,10 +4,23 @@ on:
     types: [promote-command]
 
 jobs:
-  promote:
-    uses: navikt/fp-gha-workflows/.github/workflows/promote.yml@rydding
+  promote-dev:
+    name: Deploy dev
+    if: contains(github.event.client_payload.slash_command.args.unnamed.all, 'dev')
+    uses: navikt/fp-gha-workflows/.github/workflows/deploy-app.yml@rydding
     with:
       issue-number: ${{ github.event.client_payload.github.payload.issue.number }}
-      environment: ${{ github.event.client_payload.slash_command.args.unnamed.all }}
+      environment: dev
+      platform: fss
+    secrets: inherit
+
+  promote-prod:
+    name: Deploy prod
+    needs: promote-dev
+    if: success() && contains(github.event.client_payload.slash_command.args.unnamed.all, 'prod')
+    uses: navikt/fp-gha-workflows/.github/workflows/deploy-app.yml@rydding
+    with:
+      issue-number: ${{ github.event.client_payload.github.payload.issue.number }}
+      environment: prod
       platform: fss
     secrets: inherit
