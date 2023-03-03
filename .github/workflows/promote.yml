@@ -20,7 +20,7 @@ jobs:
     if: |
       always() &&
       contains(github.event.client_payload.slash_command.args.unnamed.all, 'prod') &&
-      contains(fromJson('["success", "skipped"]'), needs.promote-dev.result)
+      !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
     uses: navikt/fp-gha-workflows/.github/workflows/deploy-app.yml@rydding
     with:
       issue-number: ${{ github.event.client_payload.github.payload.issue.number }}
