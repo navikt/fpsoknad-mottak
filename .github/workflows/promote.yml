@@ -5,10 +5,9 @@ on:
 
 jobs:
   promote:
-    name: Deploy
     uses: navikt/fp-gha-workflows/.github/workflows/promote.yml@rydding
     with:
       issue-number: ${{ github.event.client_payload.github.payload.issue.number }}
-      environment: ${{ github.event.client_payload.slash_command.args.all }}
+      environment: ${{ github.event.client_payload.slash_command.args.unnamed.all }}
       platform: fss
     secrets: inherit
