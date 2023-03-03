@@ -1,54 +1,31 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import static no.nav.foreldrepenger.mottak.util.URIUtil.queryParams;
-import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
-
-import java.net.URI;
-
+import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
-import no.nav.foreldrepenger.common.domain.AktørId;
-import no.nav.foreldrepenger.common.innsyn.v2.Saksnummer;
-import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
+import java.net.URI;
+
+import static no.nav.foreldrepenger.mottak.util.URIUtil.queryParams;
+import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
 @ConfigurationProperties(prefix = "innsyn")
 public class InnsynConfig extends AbstractConfig {
     private static final String DEFAULT_URI = "http://fpinfo/fpinfo";
-    private static final String DEFAULT_BASE_PATH = "api/dokumentforsendelse/";
     private static final String DEFAULT_PING_PATH = "internal/health/isAlive";
-    private static final String SAK = DEFAULT_BASE_PATH + "sak";
-    private static final String ANNENFORELDERPLAN = DEFAULT_BASE_PATH + "annenforelderplan";
-    private static final String UTTAKSPLAN = DEFAULT_BASE_PATH + "uttaksplan";
 
-    private static final String DEFAULT_BASE_V2_PATH = "api/v2/";
-    private static final String SAKV2 = DEFAULT_BASE_V2_PATH + "saker";
-    private static final String ANNEN_PART_VEDTAK = DEFAULT_BASE_V2_PATH + "annenPartVedtak";
+    private static final String DEFAULT_BASE_PATH = "api/v2/";
+    private static final String SAKER = DEFAULT_BASE_PATH + "saker";
+    private static final String ANNEN_PART_VEDTAK = DEFAULT_BASE_PATH + "annenPartVedtak";
 
     private static final String AKTOR_ID = "aktorId";
-    private static final String SAKSNUMMER = "saksnummer";
-    private static final String ANNENPART = "aktorIdAnnenPart";
-    private static final String BRUKER = "aktorIdBruker";
 
     @ConstructorBinding
     public InnsynConfig(@DefaultValue(DEFAULT_PING_PATH) String pingPath,
             @DefaultValue("true") boolean enabled,
             @DefaultValue(DEFAULT_URI) URI baseUri) {
         super(baseUri, pingPath, enabled);
-    }
-
-    URI uttaksplanURI(Saksnummer saksnummer) {
-        return uri(getBaseUri(), UTTAKSPLAN, queryParams(SAKSNUMMER, saksnummer.value()));
-    }
-
-    URI sakURI(String aktørId) {
-        return uri(getBaseUri(), SAK, queryParams(AKTOR_ID, aktørId));
-    }
-
-    URI uttaksplanURI(AktørId aktørId, AktørId annenPart) {
-        return uri(getBaseUri(), ANNENFORELDERPLAN,
-                queryParams(ANNENPART, annenPart.value(), BRUKER, aktørId.value()));
     }
 
     URI createLink(String l) {
@@ -60,8 +37,8 @@ public class InnsynConfig extends AbstractConfig {
         return URI.create(base + l);
     }
 
-    URI sakV2URI(String aktørId) {
-        return uri(getBaseUri(), SAKV2, queryParams(AKTOR_ID, aktørId));
+    URI sakerURI(String aktørId) {
+        return uri(getBaseUri(), SAKER, queryParams(AKTOR_ID, aktørId));
     }
 
     URI annenPartVedtakURI() {

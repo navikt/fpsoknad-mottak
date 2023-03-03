@@ -1,13 +1,11 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static java.util.Collections.emptyList;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator.HOVEDDOKUMENT;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator.METADATA;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator.VEDLEGG;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
+import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
+import no.nav.foreldrepenger.common.innsending.SøknadType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,13 +13,10 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpEntity;
-import org.springframework.util.MultiValueMap;
-
-import no.nav.foreldrepenger.common.innsending.SøknadType;
-import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
+import static java.util.Collections.emptyList;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator.*;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.MediaType.*;
 
 public class Konvolutt {
     private final SøknadEgenskap egenskap;

@@ -1,26 +1,20 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Orgnummer;
-import no.nav.foreldrepenger.common.domain.Sak;
-import no.nav.foreldrepenger.common.innsyn.uttaksplan.UttaksplanDto;
-import no.nav.foreldrepenger.common.innsyn.v2.Saksnummer;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-@ProtectedRestController(InnsynController.INNSYN)
+import javax.validation.Valid;
+import java.util.List;
+
+@ProtectedRestController(InnsynController.PATH)
 public class InnsynController {
 
-    public static final String INNSYN = "/innsyn";
+    public static final String PATH = "/innsyn";
 
     private final Oppslag oppslag;
     private final Innsyn innsyn;
@@ -32,11 +26,6 @@ public class InnsynController {
         this.arbeidsforhold = arbeidsforhold;
     }
 
-    @GetMapping("/saker")
-    public List<Sak> saker() {
-        return innsyn.saker(oppslag.aktørId());
-    }
-
     @GetMapping("/arbeidsforhold")
     public List<EnkeltArbeidsforhold> arbeidsforhold() {
         return arbeidsforhold.hentArbeidsforhold();
@@ -45,16 +34,6 @@ public class InnsynController {
     @GetMapping("/orgnavn")
     public String orgnavn(@Valid @RequestParam(name = "orgnr") Orgnummer orgnr) {
         return arbeidsforhold.orgnavn(orgnr);
-    }
-
-    @GetMapping("/uttaksplan")
-    public UttaksplanDto uttaksplan(@Valid @RequestParam(name = "saksnummer") Saksnummer saksnummer) {
-        return innsyn.uttaksplan(saksnummer);
-    }
-
-    @GetMapping("/uttaksplanannen")
-    public UttaksplanDto uttaksplan(@Valid @RequestParam(name = "annenPart") Fødselsnummer annenPart) {
-        return innsyn.uttaksplan(oppslag.aktørId(), oppslag.aktørId(annenPart));
     }
 
     @Override
