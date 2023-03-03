@@ -18,8 +18,9 @@ jobs:
     name: Deploy prod
     needs: promote-dev
     if: |
+      always() &&
       contains(github.event.client_payload.slash_command.args.unnamed.all, 'prod') &&
-      (needs.promote-dev.result == 'success' || needs.promote-dev.result == 'skipped')
+      contains(fromJson('["success", "skipped"]'), needs.promote-dev.result)
     uses: navikt/fp-gha-workflows/.github/workflows/deploy-app.yml@rydding
     with:
       issue-number: ${{ github.event.client_payload.github.payload.issue.number }}
