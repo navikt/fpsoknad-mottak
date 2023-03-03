@@ -15,7 +15,7 @@ on:
 jobs:
   build-app:
     name: Build
-    uses: navikt/fp-gha-workflows/.github/workflows/build-app-no-db.yml@rydding
+    uses: navikt/fp-gha-workflows/.github/workflows/build-app-no-db.yml@main
     with:
       sonar-scan: true
       build-image: ${{ github.ref_name == 'master' }} # default: true
@@ -25,7 +25,7 @@ jobs:
   snyk:
     name: Snyk
     needs: build-app
-    uses: navikt/fp-gha-workflows/.github/workflows/snyk.yml@rydding
+    uses: navikt/fp-gha-workflows/.github/workflows/snyk.yml@main
     with:
       build-version: ${{ needs.build-app.outputs.build-version }}
       multi-module-maven-project: false
@@ -35,7 +35,7 @@ jobs:
     name: Issues
     if: github.ref_name == 'master'
     needs: build-app
-    uses: navikt/fp-gha-workflows/.github/workflows/issues.yml@rydding
+    uses: navikt/fp-gha-workflows/.github/workflows/issues.yml@main
     with:
       build-version: ${{ needs.build-app.outputs.build-version }}
     secrets: inherit
@@ -44,7 +44,7 @@ jobs:
     name: Autotest
     if: github.ref_name == 'master'
     needs: [ build-app, create-issue ]
-    uses: navikt/fp-gha-workflows/.github/workflows/autotest.yml@rydding
+    uses: navikt/fp-gha-workflows/.github/workflows/autotest.yml@main
     with:
       build-version: ${{ needs.build-app.outputs.build-version }}
       issue-number: ${{ needs.create-issue.outputs.issue-number }}
