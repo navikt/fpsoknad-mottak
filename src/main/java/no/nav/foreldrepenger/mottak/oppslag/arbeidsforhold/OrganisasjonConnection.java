@@ -1,14 +1,12 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
-import static no.nav.foreldrepenger.common.domain.Orgnummer.MAGIC;
-import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClientConfiguration.retryOnlyOn5xxFailures;
-import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ORGANISASJON;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.util.StringUtils.capitalize;
-
-import java.util.Optional;
-
-import no.nav.foreldrepenger.mottak.http.WebClientRetryAware;
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Navn;
+import no.nav.foreldrepenger.common.domain.Orgnummer;
+import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
+import no.nav.foreldrepenger.mottak.http.Retry;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.OrganisasjonsNavnDTO;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,12 +14,12 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.foreldrepenger.common.domain.Fødselsnummer;
-import no.nav.foreldrepenger.common.domain.Navn;
-import no.nav.foreldrepenger.common.domain.Orgnummer;
-import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.OrganisasjonsNavnDTO;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
+import java.util.Optional;
+
+import static no.nav.foreldrepenger.common.domain.Orgnummer.MAGIC;
+import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ORGANISASJON;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.util.StringUtils.capitalize;
 
 @Component
 public class OrganisasjonConnection extends AbstractWebClientConnection {
@@ -56,19 +54,25 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
         return nr != null && nr.length() == 9 && !nr.equals(MAGIC);
     }
 
-    @WebClientRetryAware
-    private String orgNavn(Orgnummer orgnr) {
-        LOG.info("Henter organisasjonsnavn for {}", orgnr.maskert());
+    public String orgNavn(Orgnummer orgnr) {
+        try {
+            LOG.info("Henter organisasjonsnavn for {}", orgnr.maskert());
+            return organisasjonsNavn(orgnr);
+        } catch (Exception e) {
+            LOG.warn("Fant ikke organisasjonsnavn for {}. Returnerer orgnummer som navn.", orgnr.maskert(), e);
+            return orgnr.value();
+        }
+    }
+
+    @Retry
+    private String organisasjonsNavn(Orgnummer orgnr) {
         var navn = webClient.get()
             .uri(b -> cfg.getOrganisasjonURI(b, orgnr.value()))
             .accept(APPLICATION_JSON)
             .retrieve()
             .bodyToMono(OrganisasjonsNavnDTO.class)
-//            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
             .mapNotNull(OrganisasjonsNavnDTO::tilOrganisasjonsnavn)
             .defaultIfEmpty(orgnr.value())
-            .doOnError(throwable -> LOG.warn("Fant ikke organisasjonsnavn for {}. Returnerer orgnummer som navn.", orgnr.maskert(), throwable))
-            .onErrorReturn(orgnr.value())
             .block();
         LOG.info("Hentet organisasjonsnavn for {} OK", orgnr.maskert());
         LOG.trace("Organisasjonsnavn for {} er {}", orgnr, navn);

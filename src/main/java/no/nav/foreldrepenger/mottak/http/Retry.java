@@ -22,7 +22,7 @@ import static java.lang.annotation.ElementType.TYPE;
     maxAttemptsExpression = "#{${rest.retry.attempts:3}}",
     backoff = @Backoff(delayExpression = "#{${rest.retry.delay:500}}")
 )
-public @interface WebClientRetryAware {
+public @interface Retry {
 
 }
 

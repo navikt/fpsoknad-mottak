@@ -1,39 +1,35 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.common.util.CounterRegistry.FEILET_KVITTERINGER;
-import static no.nav.foreldrepenger.common.util.CounterRegistry.FORDELT_KVITTERING;
-import static no.nav.foreldrepenger.common.util.CounterRegistry.FP_SENDFEIL;
-import static no.nav.foreldrepenger.common.util.CounterRegistry.GITTOPP_KVITTERING;
-import static no.nav.foreldrepenger.common.util.CounterRegistry.MANUELL_KVITTERING;
-import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClientConfiguration.retryOnlyOn5xxFailures;
-import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.FPFORDEL;
-import static org.springframework.http.HttpHeaders.LOCATION;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.MULTIPART_MIXED;
-
-import java.net.URI;
-import java.time.Duration;
-import java.util.Optional;
-
-import no.nav.foreldrepenger.mottak.http.WebClientRetryAware;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.ResponseEntity;
-import org.springframework.retry.annotation.EnableRetry;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import no.nav.foreldrepenger.common.innsending.SøknadType;
 import no.nav.foreldrepenger.common.innsending.foreldrepenger.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.common.innsending.foreldrepenger.FordelKvittering;
 import no.nav.foreldrepenger.common.innsending.foreldrepenger.GosysKvittering;
 import no.nav.foreldrepenger.common.innsending.foreldrepenger.PendingKvittering;
 import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
+import no.nav.foreldrepenger.mottak.http.Retry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
+import java.time.Duration;
+import java.util.Optional;
+
+import static no.nav.foreldrepenger.common.util.CounterRegistry.FEILET_KVITTERINGER;
+import static no.nav.foreldrepenger.common.util.CounterRegistry.FORDELT_KVITTERING;
+import static no.nav.foreldrepenger.common.util.CounterRegistry.FP_SENDFEIL;
+import static no.nav.foreldrepenger.common.util.CounterRegistry.GITTOPP_KVITTERING;
+import static no.nav.foreldrepenger.common.util.CounterRegistry.MANUELL_KVITTERING;
+import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.FPFORDEL;
+import static org.springframework.http.HttpHeaders.LOCATION;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.MULTIPART_MIXED;
+
 @Component
-@EnableRetry
 public class FordelConnection extends AbstractWebClientConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(FordelConnection.class);
@@ -60,7 +56,7 @@ public class FordelConnection extends AbstractWebClientConnection {
         }
     }
 
-    @WebClientRetryAware
+    @Retry
     private FordelResultat sendSøknad(Konvolutt konvolutt) {
         var leveranseRespons = webClient.post()
             .uri(cfg.fordelEndpoint())
@@ -70,7 +66,6 @@ public class FordelConnection extends AbstractWebClientConnection {
             .retrieve()
             .toEntity(FordelKvittering.class)
             .doOnRequest(va -> konvolutt.getType().count()) // Skal kjøres hver gang, uavhengig om OK elelr feilet respons!
-//            .retryWhen(retryOnlyOn5xxFailures(cfg.fordelEndpoint().toString()))
             .onErrorResume(e -> Mono.error(new InnsendingFeiletFpFordelException(e)))
             .defaultIfEmpty(ResponseEntity.noContent().build())
             .block();
@@ -130,7 +125,7 @@ public class FordelConnection extends AbstractWebClientConnection {
             var fordelResultat = switch (kvittering.getBody()) {
                 case FPSakFordeltKvittering fpSakFordeltKvittering -> håndterFpsakFordeltKvittering(fpSakFordeltKvittering);
                 case GosysKvittering gosysKvittering -> håndterGosysKvittering(gosysKvittering);
-                case PendingKvittering pending -> {
+                case PendingKvittering ignored -> {
                     LOG.info("Fikk pending kvittering på {}. forsøk", i);
                     yield null;
                 }
@@ -149,7 +144,7 @@ public class FordelConnection extends AbstractWebClientConnection {
         throw new UventetPollingStatusFpFordelException("Forsendelser er mottatt, men ikke fordel. ");
     }
 
-    @WebClientRetryAware
+    @Retry
     private ResponseEntity<FordelKvittering> status(URI pollingURL, Duration delay) {
         return webClient.get()
             .uri(pollingURL)
@@ -157,7 +152,6 @@ public class FordelConnection extends AbstractWebClientConnection {
             .retrieve()
             .toEntity(FordelKvittering.class)
             .delayElement(delay)
-//            .retryWhen(retryOnlyOn5xxFailures(cfg.fordelEndpoint().toString()))
             .onErrorResume(e -> {
                 FEILET_KVITTERINGER.increment();
                 return Mono.error(new UventetPollingStatusFpFordelException(e));
