@@ -59,7 +59,7 @@ class KontoregisterConnectionTest {
             .setBody(body)
             .addHeader("Content-Type", "application/json"));
 
-        var kontoinformasjon = kontoregisterConnection.kontonrFraNyTjeneste();
+        var kontoinformasjon = kontoregisterConnection.kontonummer();
         assertThat(kontoinformasjon).isNotNull();
         assertThat(kontoinformasjon.kontonummer()).isEqualTo("8361347234732292");
     }
@@ -84,7 +84,7 @@ class KontoregisterConnectionTest {
             .setBody(body)
             .addHeader("Content-Type", "application/json"));
 
-        var kontoinformasjon = kontoregisterConnection.kontonrFraNyTjeneste();
+        var kontoinformasjon = kontoregisterConnection.kontonummer();
         assertThat(kontoinformasjon).isNotNull();
         assertThat(kontoinformasjon.kontonummer()).isNull();
         assertThat(kontoinformasjon.utenlandskKontoInfo()).isNotNull();
@@ -96,7 +96,7 @@ class KontoregisterConnectionTest {
                 .setResponseCode(404)
             .addHeader("Content-Type", "application/json"));
 
-        var kontoinformasjon = kontoregisterConnection.kontonrFraNyTjeneste();
+        var kontoinformasjon = kontoregisterConnection.kontonummer();
         assertThat(kontoinformasjon).isEqualTo(UKJENT);
     }
 
@@ -120,7 +120,7 @@ class KontoregisterConnectionTest {
             .addHeader("Content-Type", "application/json"));
 
 
-        var kontoinformasjon = kontoregisterConnection.kontonrFraNyTjeneste();
+        var kontoinformasjon = kontoregisterConnection.kontonummer();
         assertThat(kontoinformasjon).isEqualTo(UKJENT);
     }
 }

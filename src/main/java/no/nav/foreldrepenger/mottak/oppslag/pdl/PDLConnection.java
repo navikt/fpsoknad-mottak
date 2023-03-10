@@ -1,9 +1,38 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
+import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
+import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
+import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Navn;
+import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
+import no.nav.foreldrepenger.common.domain.felles.Person;
+import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
+import no.nav.foreldrepenger.common.util.TokenUtil;
+import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
+import no.nav.foreldrepenger.mottak.http.Retry;
+import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConnection;
+import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConnection;
+import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto;
+import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.UtenlandskKontoInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
 import static java.util.function.Predicate.not;
 import static no.nav.boot.conditionals.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
-import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClientConfiguration.retryOnlyOn5xxFailures;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_SYSTEM;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_USER;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig.ANNEN_PART_QUERY;
@@ -16,36 +45,6 @@ import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLId
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe.FOLKEREGISTERIDENT;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.map;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.mapIdent;
-
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-
-import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
-import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
-import no.nav.foreldrepenger.common.domain.AktørId;
-import no.nav.foreldrepenger.common.domain.Fødselsnummer;
-import no.nav.foreldrepenger.common.domain.Navn;
-import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
-import no.nav.foreldrepenger.common.domain.felles.Person;
-import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
-import no.nav.foreldrepenger.common.util.TokenUtil;
-import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
-import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConnection;
-import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConnection;
-import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto;
-import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.UtenlandskKontoInfo;
 
 @Component
 public class PDLConnection implements PingEndpointAware {
@@ -189,10 +188,10 @@ public class PDLConnection implements PingEndpointAware {
         return post(systemClient, query, id, responseType);
     }
 
+    @Retry
     private <T> T post(GraphQLWebClient client, String query, String id, Class<T> responseType) {
         return client.post(query, idFra(id), responseType)
             .onErrorMap(this::mapTilKjentGraphQLException)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
             .block();
     }
 
@@ -217,7 +216,7 @@ public class PDLConnection implements PingEndpointAware {
     }
 
     Bankkonto kontonr() {
-        return tilBankkonto(kontoregister.kontonrFraNyTjeneste());
+        return tilBankkonto(kontoregister.kontonummer());
     }
 
     private static Bankkonto tilBankkonto(Konto kontoinformasjon) {

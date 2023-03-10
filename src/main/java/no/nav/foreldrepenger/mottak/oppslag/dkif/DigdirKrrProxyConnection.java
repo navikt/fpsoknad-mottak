@@ -1,18 +1,17 @@
 package no.nav.foreldrepenger.mottak.oppslag.dkif;
 
-import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClientConfiguration.retryOnlyOn5xxFailures;
-import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.KRR;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.util.StringUtils.capitalize;
-
+import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
+import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
+import no.nav.foreldrepenger.mottak.http.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
-import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
+import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.KRR;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.util.StringUtils.capitalize;
 
 @Component
 public class DigdirKrrProxyConnection extends AbstractWebClientConnection {
@@ -25,17 +24,24 @@ public class DigdirKrrProxyConnection extends AbstractWebClientConnection {
     }
 
     public Målform målform() {
-        LOG.info("Henter målform fra digdir-krr-proxy");
+        try {
+            LOG.info("Henter målform fra digdir-krr-proxy");
+            return hentMålform();
+        } catch (Exception e) {
+            LOG.warn("DKIF oppslag målform feilet. Bruker default Målform", e);
+            return Målform.standard();
+        }
+    }
+
+    @Retry
+    private Målform hentMålform() {
         return webClient.get()
             .uri(uri -> cfg.kontaktUri())
             .accept(APPLICATION_JSON)
             .retrieve()
             .bodyToMono(Kontaktinformasjon.class)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.kontaktUri().toString()))
             .mapNotNull(Kontaktinformasjon::målform)
             .defaultIfEmpty(Målform.standard())
-            .doOnError(throwable -> LOG.warn("DKIF oppslag målform feilet. Bruker default Målform", throwable))
-            .onErrorReturn(Målform.standard())
             .block();
     }
 

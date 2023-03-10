@@ -4,6 +4,7 @@ import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.innsyn.AnnenPartVedtak;
 import no.nav.foreldrepenger.common.innsyn.Saker;
 import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
+import no.nav.foreldrepenger.mottak.http.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,7 +17,6 @@ import reactor.core.publisher.Mono;
 import java.util.Optional;
 import java.util.Set;
 
-import static no.nav.foreldrepenger.mottak.http.RetryAwareWebClientConfiguration.retryOnlyOn5xxFailures;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.FPINFO;
 
 @Component
@@ -34,6 +34,7 @@ public class InnsynConnection extends AbstractWebClientConnection {
         return cfg.name();
     }
 
+    @Retry
     Saker saker(AktørId aktørId) {
         LOG.trace("Henter saker for {}", aktørId);
         return webClient.get()
@@ -41,11 +42,11 @@ public class InnsynConnection extends AbstractWebClientConnection {
             .accept(MediaType.APPLICATION_JSON)
             .retrieve()
             .bodyToMono(Saker.class)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
             .defaultIfEmpty(new Saker(Set.of(), Set.of(), Set.of()))
             .block();
     }
 
+    @Retry
     public Optional<AnnenPartVedtak> annenPartVedtak(AnnenPartVedtakRequest annenPartVedtakRequest) {
         return webClient.post()
             .uri(cfg.annenPartVedtakURI())
@@ -53,7 +54,6 @@ public class InnsynConnection extends AbstractWebClientConnection {
             .accept(MediaType.APPLICATION_JSON)
             .retrieve()
             .bodyToMono(AnnenPartVedtak.class)
-            .retryWhen(retryOnlyOn5xxFailures(cfg.getBaseUri().toString()))
             .onErrorResume(WebClientResponseException.Forbidden.class, forbidden -> {
                 LOG.info("Kall for å hente annenparts vedtak feiler med {}", forbidden.getRawStatusCode(), forbidden);
                 return Mono.empty();
