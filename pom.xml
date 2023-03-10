@@ -40,7 +40,7 @@
         <nv-i18n.version>1.29</nv-i18n.version>
         <javax.inject.version>1</javax.inject.version>
         <reflections.version>0.10.2</reflections.version>
-        <logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
+        <logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
         <springdoc.version>1.6.14</springdoc.version>
         <spring.vault.version>3.1.1</spring.vault.version>
         <spring.graphql.version>2.0.1</spring.graphql.version>
