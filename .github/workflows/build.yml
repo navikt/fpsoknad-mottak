@@ -31,21 +31,32 @@ jobs:
       multi-module-maven-project: false
     secrets: inherit
 
-  create-issue:
-    name: Issues
-    if: github.ref_name == 'master'
-    needs: build-app
-    uses: navikt/fp-gha-workflows/.github/workflows/issues.yml@main
-    with:
-      build-version: ${{ needs.build-app.outputs.build-version }}
-    secrets: inherit
-
-  trigger-autotest:
+  autotest:
     name: Autotest
     if: github.ref_name == 'master'
-    needs: [ build-app, create-issue ]
+    needs: build-app
     uses: navikt/fp-gha-workflows/.github/workflows/autotest.yml@main
     with:
       build-version: ${{ needs.build-app.outputs.build-version }}
       issue-number: ${{ needs.create-issue.outputs.issue-number }}
+    secrets: inherit
+
+  deploy-dev:
+    name: Deploy dev
+    if: github.ref_name == 'master'
+    needs: [build-app, autotest]
+    uses: navikt/fp-gha-workflows/.github/workflows/deploy-app.yml@deploy
+    with:
+      image: ${{ needs.build-app.outputs.build-version }}
+      cluster: dev-fss
+    secrets: inherit
+
+  deploy-prod:
+    name: Deploy prod
+    if: github.ref_name == 'master'
+    needs: [build-app, autotest, deploy-dev]
+    uses: navikt/fp-gha-workflows/.github/workflows/deploy-app.yml@deploy
+    with:
+      image: ${{ needs.build-app.outputs.build-version }}
+      cluster: prod-fss
     secrets: inherit

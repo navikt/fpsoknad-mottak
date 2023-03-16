@@ -1,0 +1,24 @@
+name: Promote
+on:
+  workflow_dispatch:
+    inputs:
+      image:
+        required: true
+        type: string
+        description: 'Image tag to deploy (example 2023.03.10.080433-f821119)'
+      environment:
+        required: true
+        type: choice
+        description: 'The environment to deployed to (dev|prod)'
+        options:
+          - dev
+          - prod
+
+jobs:
+  deploy:
+    name: Deploy dev
+    uses: navikt/fp-gha-workflows/.github/workflows/deploy-app.yml@deploy
+    with:
+      image: ${{ inputs.image }}
+      cluster: ${{ inputs.environment }}-fss
+    secrets: inherit
