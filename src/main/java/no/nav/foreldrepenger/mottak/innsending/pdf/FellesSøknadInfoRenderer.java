@@ -9,8 +9,6 @@ import no.nav.foreldrepenger.common.domain.felles.opptjening.Frilans;
 import no.nav.foreldrepenger.common.domain.felles.opptjening.Regnskapsfører;
 import no.nav.foreldrepenger.common.domain.felles.opptjening.UtenlandskArbeidsforhold;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -28,7 +26,6 @@ import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 
 @Component
 public class FellesSøknadInfoRenderer {
-    private static final Logger LOG = LoggerFactory.getLogger(FellesSøknadInfoRenderer.class);
 
     protected static final String ARBEIDSGIVER = "arbeidsgiver";
 
@@ -126,7 +123,6 @@ public class FellesSøknadInfoRenderer {
         }
         for (VedleggReferanse id : vedleggRefs) {
             var details = safeStream(vedlegg)
-                .peek(s -> LOG.debug("Sjekker vedlegg med id {} mot {}", s.getId(), id)) // debug
                 .filter(s -> id.referanse().equals(s.getId()))
                 .findFirst();
             if (details.isPresent()) {
@@ -144,7 +140,7 @@ public class FellesSøknadInfoRenderer {
 
     List<String> arbeidsforhold(EnkeltArbeidsforhold arbeidsforhold) {
         List<String> attributter = new ArrayList<>();
-        addIfSet(attributter, "arbeidsgiver", arbeidsforhold.arbeidsgiverNavn());
+        addIfSet(attributter, ARBEIDSGIVER, arbeidsforhold.arbeidsgiverNavn());
         addIfSet(attributter, "fom", arbeidsforhold.from());
         addIfSet(attributter, "tom", arbeidsforhold.to());
         if (arbeidsforhold.stillingsprosent() != null) {

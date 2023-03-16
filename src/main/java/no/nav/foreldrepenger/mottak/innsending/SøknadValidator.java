@@ -1,8 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
-import java.util.List;
-import java.util.Objects;
-
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.Ytelse;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
@@ -11,7 +8,14 @@ import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesP
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.common.error.UnexpectedInputException;
 
+import java.util.List;
+import java.util.Objects;
+
 final class SøknadValidator {
+
+    private SøknadValidator() {
+        // Skal ikke instansieres
+    }
 
     static void validerFørstegangFpSøknad(Søknad søknad) {
         var ytelse = søknad.getYtelse();

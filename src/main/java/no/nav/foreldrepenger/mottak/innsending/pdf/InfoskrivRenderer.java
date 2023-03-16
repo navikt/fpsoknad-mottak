@@ -1,10 +1,17 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.ARBEID;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
-import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
-import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.INFOSKRIV_OUTLINE;
-import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.felles.Person;
+import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.GradertUttaksPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -17,17 +24,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.*;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
-import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.domain.felles.Person;
-import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.ARBEID;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
+import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
+import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.INFOSKRIV_OUTLINE;
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 @Component
 public class InfoskrivRenderer {
@@ -112,10 +113,9 @@ public class InfoskrivRenderer {
             float behov = STARTY - x;
             if (behov < y) {
                 scratchcos.close();
-                y = renderGradertePerioder(gradertePerioder, arbeidsforhold, cos, y);
+                renderGradertePerioder(gradertePerioder, arbeidsforhold, cos, y);
             } else {
                 cos = førstesideInfoskriv(doc, cos, scratch1, scratchcos);
-                y = STARTY - behov;
             }
         }
 
@@ -164,7 +164,8 @@ public class InfoskrivRenderer {
     }
 
     private float header(FontAwarePdfDocument doc, FontAwareCos cos, float y) throws IOException {
-        return y -= renderer.addLogo(doc, cos, y);
+        y -= renderer.addLogo(doc, cos, y);
+        return y;
     }
 
     private static String formattertDato(LocalDate date) {

@@ -6,14 +6,12 @@ import no.nav.foreldrepenger.common.domain.felles.opptjening.Opptjening;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.common.error.UnexpectedInputException;
-import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
+import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
@@ -31,19 +29,19 @@ import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 @Component
 public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
-    private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPdfGenerator.class);
+
     private static final float INITIAL_Y = PdfElementRenderer.calculateStartY();
     private final Oppslag oppslag;
-    private final ArbeidsInfo arbeidsforhold;
+    private final ArbeidsInfo arbeidsInfo;
 
     private final ForeldrepengeInfoRenderer fpRenderer;
     private final InfoskrivRenderer infoskrivRenderer;
 
-    public ForeldrepengerPdfGenerator(Oppslag oppslag, ArbeidsInfo arbeidsforhold,
+    public ForeldrepengerPdfGenerator(Oppslag oppslag, ArbeidsInfo arbeidsInfo,
             ForeldrepengeInfoRenderer fpRenderer,
             InfoskrivRenderer infoskrivRenderer) {
         this.oppslag = oppslag;
-        this.arbeidsforhold = arbeidsforhold;
+        this.arbeidsInfo = arbeidsInfo;
         this.fpRenderer = fpRenderer;
         this.infoskrivRenderer = infoskrivRenderer;
     }
@@ -145,7 +143,6 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             return baos.toByteArray();
 
         } catch (Exception e) {
-            LOG.warn("Kunne ikke lage PDF", e);
             throw new UnexpectedInputException("Kunne ikke lage PDF", e);
         }
     }
@@ -189,14 +186,13 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             doc.save(baos);
             return baos.toByteArray();
         } catch (Exception e) {
-            LOG.warn("Kunne ikke lage PDF", e);
             throw new UnexpectedInputException("Kunne ikke lage PDF", e);
         }
     }
 
     private List<EnkeltArbeidsforhold> aktiveArbeidsforhold(LocalDate relasjonsdato) {
-        return tryOrEmpty(arbeidsforhold::hentArbeidsforhold).stream()
-            .filter(a -> a.to().isEmpty() || (a.to().isPresent() && a.to().get().isAfter(relasjonsdato)))
+        return tryOrEmpty(arbeidsInfo::hentArbeidsforhold).stream()
+            .filter(a -> a.to().isEmpty() || a.to().get().isAfter(relasjonsdato))
             .sorted(comparing(EnkeltArbeidsforhold::from))
             .toList();
     }
