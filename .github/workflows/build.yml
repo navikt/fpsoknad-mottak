@@ -47,7 +47,7 @@ jobs:
     needs: [build-app, autotest]
     uses: navikt/fp-gha-workflows/.github/workflows/deploy-app.yml@deploy
     with:
-      image: ${{ needs.build-app.outputs.build-version }}
+      image: ghcr.io/${{ github.repository }}:${{ needs.build-app.outputs.build-version }}
       cluster: dev-fss
     secrets: inherit
 
@@ -57,6 +57,6 @@ jobs:
     needs: [build-app, autotest, deploy-dev]
     uses: navikt/fp-gha-workflows/.github/workflows/deploy-app.yml@deploy
     with:
-      image: ${{ needs.build-app.outputs.build-version }}
+      image: ghcr.io/${{ github.repository }}:${{ needs.build-app.outputs.build-version }}
       cluster: prod-fss
     secrets: inherit
