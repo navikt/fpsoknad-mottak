@@ -35,10 +35,9 @@ jobs:
     name: Autotest
     if: github.ref_name == 'master'
     needs: build-app
-    uses: navikt/fp-gha-workflows/.github/workflows/autotest.yml@main
+    uses: navikt/fp-autotest/.github/workflows/autotest.yml@autotester
     with:
       build-version: ${{ needs.build-app.outputs.build-version }}
-      issue-number: ${{ needs.create-issue.outputs.issue-number }}
     secrets: inherit
 
   deploy-dev:
