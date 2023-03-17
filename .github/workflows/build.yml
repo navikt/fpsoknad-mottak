@@ -31,21 +31,31 @@ jobs:
       multi-module-maven-project: false
     secrets: inherit
 
-  create-issue:
-    name: Issues
+  autotest:
+    name: Autotest
     if: github.ref_name == 'master'
     needs: build-app
-    uses: navikt/fp-gha-workflows/.github/workflows/issues.yml@main
+    uses: navikt/fp-autotest/.github/workflows/autotest.yml@autotester
     with:
       build-version: ${{ needs.build-app.outputs.build-version }}
     secrets: inherit
 
-  trigger-autotest:
-    name: Autotest
+  deploy-dev:
+    name: Deploy dev
     if: github.ref_name == 'master'
-    needs: [ build-app, create-issue ]
-    uses: navikt/fp-gha-workflows/.github/workflows/autotest.yml@main
+    needs: [build-app, autotest]
+    uses: navikt/fp-gha-workflows/.github/workflows/deploy-app.yml@deploy
     with:
-      build-version: ${{ needs.build-app.outputs.build-version }}
-      issue-number: ${{ needs.create-issue.outputs.issue-number }}
+      image: ghcr.io/${{ github.repository }}:${{ needs.build-app.outputs.build-version }}
+      cluster: dev-fss
+    secrets: inherit
+
+  deploy-prod:
+    name: Deploy prod
+    if: github.ref_name == 'master'
+    needs: [build-app, autotest, deploy-dev]
+    uses: navikt/fp-gha-workflows/.github/workflows/deploy-app.yml@deploy
+    with:
+      image: ghcr.io/${{ github.repository }}:${{ needs.build-app.outputs.build-version }}
+      cluster: prod-fss
     secrets: inherit
