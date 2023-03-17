@@ -33,7 +33,7 @@ jobs:
 
   autotest:
     name: Autotest
-#    if: github.ref_name == 'master'
+    if: github.ref_name == 'master'
     needs: build-app
     uses: navikt/fp-autotest/.github/workflows/autotest.yml@autotester
     with:
