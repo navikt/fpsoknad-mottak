@@ -158,16 +158,20 @@ class MappablePdfGeneratorTest {
     @Test
     void engangs() throws Exception {
         when(tokenUtil.autentisertBrukerOrElseThrowException()).thenReturn(new Fødselsnummer("010101010101"));
-        try (var fos = new FileOutputStream("engangssøknad.pdf")) {
-            fos.write(gen.generer(engangssøknad(fødsel(), true), person(), INITIELL_ENGANGSSTØNAD));
+        var filNavn = ABSOLUTE_PATH + "/engangssøknad.pdf";
+        try (var fos = new FileOutputStream(filNavn)) {
+            fos.write(gen.generer(engangssøknad(false), person(), INITIELL_ENGANGSSTØNAD));
         }
+        // verifiserGenerertPDF(filNavn, 1, "Søknad om engangsstønad");
     }
 
     @Test
     void svanger() throws Exception {
-        try (var fos = new FileOutputStream("svangerskapspenger.pdf")) {
+        var filNavn = ABSOLUTE_PATH + "/svangerskapspenger.pdf";
+        try (var fos = new FileOutputStream(filNavn)) {
             fos.write(gen.generer(svp(), person(), INITIELL_SVANGERSKAPSPENGER));
         }
+        verifiserGenerertPDF(filNavn, 4, "Søknad om svangerskapspenger");
     }
 
     @Test

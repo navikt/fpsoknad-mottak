@@ -1,37 +1,6 @@
 package no.nav.foreldrepenger.mottak.http;
 
-import static no.nav.boot.conditionals.EnvUtil.isDevOrLocal;
-import static no.nav.foreldrepenger.common.util.Constants.FORELDREPENGER;
-import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
-import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID1;
-import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID2;
-import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_ID;
-import static no.nav.foreldrepenger.common.util.Constants.NAV_PERSON_IDENT;
-import static no.nav.foreldrepenger.common.util.TokenUtil.BEARER;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
-import java.time.Duration;
-import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.reactive.function.client.WebClientCustomizer;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ClientRequest;
-import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
-import org.springframework.web.reactive.function.client.ExchangeFunction;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClient.Builder;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.common.util.MDCUtil;
 import no.nav.foreldrepenger.common.util.TokenUtil;
@@ -46,9 +15,34 @@ import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 import no.nav.security.token.support.client.spring.oauth2.ClientConfigurationPropertiesMatcher;
-import reactor.core.publisher.Mono;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.reactive.function.client.WebClientCustomizer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.web.reactive.function.client.ClientRequest;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.Builder;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
+
+import java.time.Duration;
+import java.util.Optional;
+
+import static no.nav.boot.conditionals.EnvUtil.isDevOrLocal;
+import static no.nav.foreldrepenger.common.util.Constants.FORELDREPENGER;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID1;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID2;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_ID;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_PERSON_IDENT;
+import static no.nav.foreldrepenger.common.util.TokenUtil.BEARER;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Configuration
 public class WebClientConfiguration {

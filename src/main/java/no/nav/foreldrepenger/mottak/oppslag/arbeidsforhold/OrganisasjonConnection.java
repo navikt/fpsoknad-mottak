@@ -80,16 +80,17 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
     }
 
     private String personNavn(Fødselsnummer fnr) {
-        LOG.info("Henter personnavn for {}", fnr);
+        LOG.info("Henter personnavn");
         try {
             var n = oppslag.navnFor(fnr.value());
             var navn = Optional.ofNullable(n)
                 .map(Navn::navn)
                 .orElse(PRIVAT_ARBEIDSGIVER);
-            LOG.info("Hentet personnavn {} for {}", n.fornavn(), fnr);
+            LOG.info("Hentet personnavn {} for oppgitt fnr",
+                n != null ? n.fornavn() : PRIVAT_ARBEIDSGIVER);
             return navn;
         } catch (Exception e) {
-            LOG.warn("Fant ikke personnavn for {}", fnr);
+            LOG.warn("Fant ikke personnavn. Returneren {} som navn.", PRIVAT_ARBEIDSGIVER, e);
             return PRIVAT_ARBEIDSGIVER;
         }
     }

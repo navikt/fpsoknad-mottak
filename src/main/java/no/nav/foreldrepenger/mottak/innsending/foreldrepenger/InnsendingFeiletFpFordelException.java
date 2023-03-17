@@ -14,6 +14,6 @@ public class InnsendingFeiletFpFordelException extends RuntimeException {
     }
 
     public InnsendingFeiletFpFordelException(HttpStatus httpStatus, String message) {
-        super(String.format("[%s] " + message, httpStatus));
+        super(String.format("[%s] %s", httpStatus, message));
     }
 }
