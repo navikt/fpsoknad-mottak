@@ -24,6 +24,7 @@ jobs:
 
   codeql:
     name: CodeQl
+    needs: build-app
     uses: navikt/fp-gha-workflows/.github/workflows/codeql.yml@codeql
     secrets: inherit
 
