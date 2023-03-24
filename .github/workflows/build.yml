@@ -24,7 +24,7 @@ jobs:
 
   codeql:
     name: CodeQl
-    uses: navikt/fp-gha-workflows/.github/workflows/codeql.yml@codeql
+    uses: navikt/fp-gha-workflows/.github/workflows/codeql.yml@main
     secrets: inherit
 
   autotest:
