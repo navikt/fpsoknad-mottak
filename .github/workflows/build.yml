@@ -15,17 +15,11 @@ on:
 jobs:
   build-app:
     name: Build
-    uses: navikt/fp-gha-workflows/.github/workflows/build-app-no-db.yml@main
+    uses: navikt/fp-gha-workflows/.github/workflows/build-app-no-db.yml@codeql
     with:
       sonar-scan: true
       build-image: ${{ github.ref_name == 'master' }} # default: true
       push-image: ${{ github.ref_name == 'master' }} # default: false
-    secrets: inherit
-
-  codeql:
-    name: CodeQl
-    needs: build-app
-    uses: navikt/fp-gha-workflows/.github/workflows/codeql.yml@codeql
     secrets: inherit
 
   autotest:
