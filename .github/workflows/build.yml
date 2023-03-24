@@ -39,10 +39,11 @@ jobs:
 
   notify:
     name: Notify
+    if: github.ref_name == 'master'
     needs: autotest
     uses: navikt/fp-autotest/.github/workflows/report-and-notify.yml@autotester
     with:
-      verdikjede: ${{ needs.autotest.output.verdikjede }}
+      verdikjede: ${{ needs.autotest.outputs.verdikjede }}
 
   deploy-dev:
     name: Deploy dev
