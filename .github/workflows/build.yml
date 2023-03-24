@@ -33,7 +33,7 @@ jobs:
     needs: build-app
     uses: navikt/fp-autotest/.github/workflows/autotest.yml@autotester
     with:
-      verdikjede: true
+      test-verdikjede: true
       build-version: ${{ needs.build-app.outputs.build-version }}
     secrets: inherit
 
