@@ -1,4 +1,4 @@
-name: Snyk vulnerabilities scanning of dependencies
+name: CodeQl Analyse
 on:
   schedule:
     - cron: '0 0 * * 0,4'
