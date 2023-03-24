@@ -21,6 +21,11 @@ jobs:
       push-image: ${{ github.ref_name == 'master' }} # default: false
     secrets: inherit
 
+  codeql:
+    name: CodeQl
+    uses: navikt/fp-gha-workflows/.github/workflows/codeql.yml@codeql
+    secrets: inherit
+
   autotest:
     name: Autotest
     if: github.ref_name == 'master'
