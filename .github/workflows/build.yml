@@ -22,13 +22,9 @@ jobs:
       push-image: ${{ github.ref_name == 'master' }} # default: false
     secrets: inherit
 
-  snyk:
-    name: Snyk
-    needs: build-app
-    uses: navikt/fp-gha-workflows/.github/workflows/snyk.yml@main
-    with:
-      build-version: ${{ needs.build-app.outputs.build-version }}
-      multi-module-maven-project: false
+  codeql:
+    name: CodeQl
+    uses: navikt/fp-gha-workflows/.github/workflows/codeql.yml@codeql
     secrets: inherit
 
   autotest:
