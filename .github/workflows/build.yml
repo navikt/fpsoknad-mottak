@@ -39,8 +39,8 @@ jobs:
 
   notify:
     name: Notify
-    if: github.ref_name == 'master'
-    needs: autotest
+    if: github.ref_name == 'master' && always() && !contains(fromJSON('["skipped", "cancelled"]'), needs.autotest.result)
+    needs: [build-app, autotest]
     uses: navikt/fp-autotest/.github/workflows/report-and-notify.yml@autotester
     with:
       verdikjede: ${{ needs.autotest.outputs.verdikjede }}
