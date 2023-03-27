@@ -44,6 +44,7 @@ jobs:
     uses: navikt/fp-autotest/.github/workflows/report-and-notify.yml@autotester
     with:
       verdikjede: ${{ needs.autotest.outputs.verdikjede }}
+    secrets: inherit
 
   deploy-dev:
     name: Deploy dev
