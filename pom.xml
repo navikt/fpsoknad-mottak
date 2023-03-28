@@ -31,17 +31,17 @@
         <sonar.organization>navikt</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-        <boot-conditionals.version>5.0.3</boot-conditionals.version>
+        <boot-conditionals.version>5.0.5</boot-conditionals.version>
         <token-support.version>2.1.9</token-support.version>
-        <fpsoknad-felles.version>1.0.0</fpsoknad-felles.version>
+        <fpsoknad-felles.version>1.0.1</fpsoknad-felles.version>
 
         <jacoco.version>0.8.8</jacoco.version>
         <pdfbox.version>2.0.27</pdfbox.version>
         <nv-i18n.version>1.29</nv-i18n.version>
         <javax.inject.version>1</javax.inject.version>
         <reflections.version>0.10.2</reflections.version>
-        <logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
-        <springdoc.version>1.6.14</springdoc.version>
+        <logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
+        <springdoc.version>1.6.15</springdoc.version>
         <spring.vault.version>3.1.1</spring.vault.version>
         <spring.graphql.version>2.0.1</spring.graphql.version>
     </properties>
