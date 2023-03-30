@@ -1,10 +1,5 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
-import java.util.Optional;
-
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Service;
-
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Navn;
@@ -12,6 +7,10 @@ import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @ConditionalOnProperty(name = "oppslag.stub", havingValue = "false", matchIfMissing = true)

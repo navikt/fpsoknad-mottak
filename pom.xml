@@ -247,6 +247,18 @@
             <artifactId>fpsoknad-felles</artifactId>
             <version>${fpsoknad-felles.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>1.10.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>no.nav.boot</groupId>
             <artifactId>boot-conditionals</artifactId>

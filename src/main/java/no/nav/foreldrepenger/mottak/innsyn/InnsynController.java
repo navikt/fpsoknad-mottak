@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import no.nav.foreldrepenger.common.domain.Orgnummer;
-import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
@@ -16,13 +15,11 @@ public class InnsynController {
 
     public static final String PATH = "/innsyn";
 
-    private final Oppslag oppslag;
     private final Innsyn innsyn;
     private final ArbeidsInfo arbeidsforhold;
 
-    public InnsynController(Innsyn innsyn, Oppslag oppslag, ArbeidsInfo arbeidsforhold) {
+    public InnsynController(Innsyn innsyn, ArbeidsInfo arbeidsforhold) {
         this.innsyn = innsyn;
-        this.oppslag = oppslag;
         this.arbeidsforhold = arbeidsforhold;
     }
 
@@ -38,6 +35,6 @@ public class InnsynController {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [innsyn=" + innsyn + ", oppslag=" + oppslag + "]";
+        return getClass().getSimpleName() + " [innsyn=" + innsyn + "]";
     }
 }
