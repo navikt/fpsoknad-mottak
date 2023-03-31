@@ -25,7 +25,7 @@ final class SøknadValidator {
             //Allerede validert på minst en periode
             if (perioder.stream().allMatch(SøknadValidator::erFriUtsettelse)) {
                 throw new UnexpectedInputException(
-                    "Søknad må inneholde minst en søknadsperiode som ikke" + "er fri utsettelse");
+                    "Søknad må inneholde minst en søknadsperiode som ikke er fri utsettelse");
             }
         }
     }
