@@ -33,7 +33,7 @@
 
         <boot-conditionals.version>5.0.6</boot-conditionals.version>
         <token-support.version>2.1.9</token-support.version>
-        <fpsoknad-felles.version>1.0.1</fpsoknad-felles.version>
+        <fpsoknad-felles.version>1.0.2</fpsoknad-felles.version>
 
         <jacoco.version>0.8.9</jacoco.version>
         <pdfbox.version>2.0.27</pdfbox.version>
