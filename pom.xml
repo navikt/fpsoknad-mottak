@@ -35,7 +35,7 @@
         <token-support.version>2.1.9</token-support.version>
         <fpsoknad-felles.version>1.0.1</fpsoknad-felles.version>
 
-        <jacoco.version>0.8.8</jacoco.version>
+        <jacoco.version>0.8.9</jacoco.version>
         <pdfbox.version>2.0.27</pdfbox.version>
         <nv-i18n.version>1.29</nv-i18n.version>
         <javax.inject.version>1</javax.inject.version>
