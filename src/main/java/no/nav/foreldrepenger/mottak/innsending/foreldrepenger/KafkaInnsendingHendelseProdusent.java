@@ -1,13 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
-import static no.nav.foreldrepenger.common.util.MDCUtil.callId;
-import static org.springframework.kafka.support.KafkaHeaders.MESSAGE_KEY;
-import static org.springframework.kafka.support.KafkaHeaders.TOPIC;
-
-import java.time.LocalDate;
-import java.util.Optional;
-
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +14,14 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 
-import no.nav.foreldrepenger.common.domain.Fødselsnummer;
-import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
+import java.time.LocalDate;
+import java.util.Optional;
+
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
+import static no.nav.foreldrepenger.common.util.MDCUtil.callId;
+import static org.springframework.kafka.support.KafkaHeaders.KEY;
+import static org.springframework.kafka.support.KafkaHeaders.TOPIC;
 
 @Component
 @ConditionalOnProperty(value = "mottak.sender.domainevent.enabled", havingValue = "true")
@@ -54,7 +52,7 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
         send(MessageBuilder
                 .withPayload(mapper.writeValueAsString(h))
                 .setHeader(TOPIC, topic)
-                .setHeader(MESSAGE_KEY, h.aktørId().value())
+                .setHeader(KEY, h.aktørId().value())
                 .setHeader(NAV_CALL_ID, callId)
                 .build());
     }
@@ -68,19 +66,17 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
     }
 
     private void send(Message<String> melding) {
-        kafkaOperations.send(melding).addCallback(new ListenableFutureCallback<>() {
+        kafkaOperations.send(melding)
+                .whenComplete((input, exception) -> handleResponse(melding, input, exception));
+    }
 
-            @Override
-            public void onSuccess(SendResult<String, String> result) {
-                LOG.info("Sendte hendelse med offset {} OK", result.getRecordMetadata().offset());
-            }
-
-            @Override
-            public void onFailure(Throwable e) {
-                LOG.warn("Kunne ikke sende melding til topic {}, se secure logs for detaljer.", topic, e);
-                SECURE_LOG.warn("Kunne ikke sende melding til topic {}. Melding: {}", topic, melding, e);
-            }
-        });
+    private void handleResponse(Message<String> melding, SendResult<String, String> input, Throwable exception) {
+        if (exception != null) {
+            LOG.warn("Kunne ikke sende melding til topic {}, se secure logs for detaljer.", topic, exception);
+            SECURE_LOG.warn("Kunne ikke sende melding til topic {}. Melding: {}", topic, melding, exception);
+        } else {
+            LOG.info("Sendte hendelse med offset {} OK", input.getRecordMetadata().offset());
+        }
     }
 
     @Override

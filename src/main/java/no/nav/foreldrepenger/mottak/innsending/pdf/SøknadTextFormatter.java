@@ -1,9 +1,16 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static java.util.stream.Collectors.joining;
-import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
-import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.KVITTERINGSTEKSTER;
-import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.LANDKODER;
+import com.neovisionaries.i18n.CountryCode;
+import no.nav.foreldrepenger.common.domain.Navn;
+import no.nav.foreldrepenger.common.domain.felles.Person;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.Utenlandsopphold;
+import no.nav.foreldrepenger.common.domain.felles.ÅpenPeriode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -14,20 +21,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
-
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.MessageSource;
-import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-
-import com.neovisionaries.i18n.CountryCode;
-
-import no.nav.foreldrepenger.common.domain.Navn;
-import no.nav.foreldrepenger.common.domain.felles.Person;
-import no.nav.foreldrepenger.common.domain.felles.medlemskap.Utenlandsopphold;
-import no.nav.foreldrepenger.common.domain.felles.ÅpenPeriode;
+import static java.util.stream.Collectors.joining;
+import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
+import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.KVITTERINGSTEKSTER;
+import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.LANDKODER;
 
 @Component
 public class SøknadTextFormatter {
@@ -36,7 +33,7 @@ public class SøknadTextFormatter {
     private final MessageSource kvitteringstekster;
     private final Locale locale;
 
-    @Inject
+    @Autowired
     public SøknadTextFormatter(@Qualifier(LANDKODER) MessageSource landkoder,
                                @Qualifier(KVITTERINGSTEKSTER) MessageSource kvitteringstekster) {
         this(landkoder, kvitteringstekster, CountryCode.NO.toLocale());

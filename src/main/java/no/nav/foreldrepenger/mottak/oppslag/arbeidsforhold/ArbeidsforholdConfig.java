@@ -1,17 +1,15 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.web.util.UriBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.Period;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-import org.springframework.web.util.UriBuilder;
-
-import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 
 @ConfigurationProperties(prefix = "arbeidsforhold")
 public class ArbeidsforholdConfig extends AbstractConfig {
@@ -30,7 +28,6 @@ public class ArbeidsforholdConfig extends AbstractConfig {
     private final String arbeidsforholdPath;
     private final boolean sporingsinformasjon;
 
-    @ConstructorBinding
     public ArbeidsforholdConfig(@DefaultValue(DEFAULT_BASE_URI) URI baseUri,
                                 @DefaultValue(V1_ARBEIDSTAKER_ARBEIDSFORHOLD) String arbeidsforholdPath,
                                 @DefaultValue(DEFAULT_PING) String pingPath,

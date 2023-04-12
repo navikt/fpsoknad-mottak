@@ -19,6 +19,7 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,7 +28,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -42,11 +42,11 @@ import static no.nav.foreldrepenger.common.domain.felles.TestUtils.engangssøkna
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.fødsel;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.hasPdfSignature;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.person;
-import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.INITIELL_SVANGERSKAPSPENGER;
+import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.VEDLEGG1;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.fordeling;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengesøknad;
@@ -84,11 +84,11 @@ class MappablePdfGeneratorTest {
             "mulighet til å søke om utsettelse.";
     private static final List<EnkeltArbeidsforhold> ARB_FORHOLD = arbeidsforhold();
 
-    @Inject
+    @Autowired
     @Qualifier(DELEGERENDE)
     MappablePdfGenerator gen;
 
-    @Inject
+    @Autowired
     InfoskrivPdfEkstraktor pdfExtracter;
 
     @MockBean

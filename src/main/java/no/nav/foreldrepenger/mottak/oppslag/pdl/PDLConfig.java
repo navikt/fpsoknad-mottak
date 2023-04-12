@@ -1,12 +1,10 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
-import java.net.URI;
-
+import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
-import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
+import java.net.URI;
 
 @ConfigurationProperties(prefix = "pdl")
 public class PDLConfig extends AbstractConfig {
@@ -22,7 +20,6 @@ public class PDLConfig extends AbstractConfig {
 
     private final int barnFoedtInnen;
 
-    @ConstructorBinding
     public PDLConfig(@DefaultValue(DEFAULT_PING_PATH) String pingPath,
             @DefaultValue("true") boolean enabled,
             @DefaultValue(DEFAULT_BASE_URI) URI baseUri,

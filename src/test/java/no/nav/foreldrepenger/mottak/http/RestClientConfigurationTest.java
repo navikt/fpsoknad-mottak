@@ -1,22 +1,20 @@
 package no.nav.foreldrepenger.mottak.http;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.net.URI;
-import java.util.Map;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
-
 import no.nav.security.token.support.client.core.ClientAuthenticationProperties;
 import no.nav.security.token.support.client.core.ClientProperties;
 import no.nav.security.token.support.client.core.OAuth2GrantType;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 import no.nav.security.token.support.client.spring.oauth2.ClientConfigurationPropertiesMatcher;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.net.URI;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 class RestClientConfigurationTest {
@@ -25,7 +23,7 @@ class RestClientConfigurationTest {
     private static ClientConfigurationProperties properties;
 
     @BeforeAll
-    private static void instansiererClientPropertiesForAaregOgFpfordel() {
+    static void instansiererClientPropertiesForAaregOgFpfordel() {
         var generellKlientProperties = ClientProperties.builder()
             .wellKnownUrl(URI.create("http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server"))
             .tokenEndpointUrl(URI.create("http://localhost:8060/rest/tokenx/token"))

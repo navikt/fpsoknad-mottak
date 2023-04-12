@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.8</version>
+        <version>3.0.5</version>
         <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -29,16 +29,15 @@
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
         <sonar.projectKey>navikt_fpsoknad-mottak</sonar.projectKey>
         <sonar.organization>navikt</sonar.organization>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.host.url>https://sonar cloud.io</sonar.host.url>
 
         <boot-conditionals.version>5.0.6</boot-conditionals.version>
-        <token-support.version>2.1.9</token-support.version>
-        <fpsoknad-felles.version>1.0.2</fpsoknad-felles.version>
+        <token-support.version>3.0.10</token-support.version>
+        <fpsoknad-felles.version>2.0.0-jakarta</fpsoknad-felles.version>
 
-        <jacoco.version>0.8.9</jacoco.version>
+        <jacoco.version>0.8.8</jacoco.version>
         <pdfbox.version>2.0.27</pdfbox.version>
         <nv-i18n.version>1.29</nv-i18n.version>
-        <javax.inject.version>1</javax.inject.version>
         <reflections.version>0.10.2</reflections.version>
         <logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
         <springdoc.version>1.7.0</springdoc.version>
@@ -97,10 +96,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-            </plugin>
-            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
@@ -136,16 +131,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jetty</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -190,6 +175,11 @@
             <artifactId>graphql-webclient-spring-boot-starter</artifactId>
             <version>${spring.graphql.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-properties-migrator</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
         <!-- Retry -->
         <dependency>
@@ -205,11 +195,6 @@
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <version>${javax.inject.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>

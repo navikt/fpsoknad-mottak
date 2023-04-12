@@ -1,15 +1,13 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
-import static org.springframework.web.util.UriComponentsBuilder.newInstance;
-
-import java.net.URI;
-
+import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.web.util.UriBuilder;
 
-import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
+import java.net.URI;
+
+import static org.springframework.web.util.UriComponentsBuilder.newInstance;
 
 @ConfigurationProperties(prefix = "organisasjon")
 public class OrganisasjonConfig extends AbstractConfig {
@@ -20,7 +18,6 @@ public class OrganisasjonConfig extends AbstractConfig {
     private static final String NAV = "998004993";
     private final String organisasjonPath;
 
-    @ConstructorBinding
     public OrganisasjonConfig(@DefaultValue(DEFAULT_BASE_URI) URI baseUri,
             @DefaultValue(V1_ORGANISASJON) String organisasjonPath,
             @DefaultValue("true") boolean enabled) {

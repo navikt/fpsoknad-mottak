@@ -1,14 +1,13 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
+import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.net.URI;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-
-import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
+import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
 @ConfigurationProperties(prefix = "fpfordel")
 public class FordelConfig extends AbstractConfig {

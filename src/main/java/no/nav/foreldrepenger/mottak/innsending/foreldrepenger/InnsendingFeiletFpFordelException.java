@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 // FEIL HARDT! Innsending av søknad feilet!
 public class InnsendingFeiletFpFordelException extends RuntimeException {
@@ -13,7 +13,7 @@ public class InnsendingFeiletFpFordelException extends RuntimeException {
         super(message);
     }
 
-    public InnsendingFeiletFpFordelException(HttpStatus httpStatus, String message) {
-        super(String.format("[%s] %s", httpStatus, message));
+    public InnsendingFeiletFpFordelException(HttpStatusCode httpStatus, String message) {
+        super(String.format("[%s] %s", httpStatus.value(), message));
     }
 }

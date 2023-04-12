@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 public class UventetPollingStatusFpFordelException extends RuntimeException {
     public UventetPollingStatusFpFordelException(String message) {
@@ -11,7 +11,7 @@ public class UventetPollingStatusFpFordelException extends RuntimeException {
         super(throwable);
     }
 
-    public UventetPollingStatusFpFordelException(HttpStatus httpStatus, String message) {
-        super(String.format("[%s] %s", message, httpStatus));
+    public UventetPollingStatusFpFordelException(HttpStatusCode httpStatus, String message) {
+        super(String.format("[%s] %s", httpStatus.value(), message));
     }
 }

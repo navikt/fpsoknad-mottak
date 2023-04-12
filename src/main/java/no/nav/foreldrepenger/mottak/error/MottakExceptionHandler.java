@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.error;
 
+import jakarta.validation.ConstraintViolationException;
 import no.nav.foreldrepenger.common.error.SøknadEgenskapException;
 import no.nav.foreldrepenger.common.error.UnexpectedInputException;
 import no.nav.foreldrepenger.common.util.TokenUtil;
@@ -8,9 +9,8 @@ import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnaut
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,7 +20,6 @@ import org.springframework.web.reactive.function.client.WebClientRequestExceptio
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -41,13 +40,8 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e, HttpHeaders headers, HttpStatus status, WebRequest req) {
-        return logAndHandle(UNPROCESSABLE_ENTITY, e, req, headers);
-    }
-
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e, HttpHeaders headers, HttpStatus status, WebRequest req) {
-        return logAndHandle(UNPROCESSABLE_ENTITY, e, req, headers, validationErrors(e));
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e, HttpHeaders headers, HttpStatusCode status, WebRequest req) {
+        return logAndHandle(UNPROCESSABLE_ENTITY, e, req, validationErrors(e));
     }
 
     private static List<String> validationErrors(MethodArgumentNotValidException e) {
@@ -104,16 +98,11 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return logAndHandle(INTERNAL_SERVER_ERROR, e, req);
     }
 
-    private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, Object... messages) {
-        return logAndHandle(status, e, req, new HttpHeaders(), messages);
+    private ResponseEntity<Object> logAndHandle(HttpStatusCode status, Exception e, WebRequest req, Object... messages) {
+        return logAndHandle(status, e, req, asList(messages));
     }
 
-    private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, HttpHeaders headers, Object... messages) {
-        return logAndHandle(status, e, req, headers, asList(messages));
-    }
-
-    private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, HttpHeaders headers,
-                                                List<Object> messages) {
+    private ResponseEntity<Object> logAndHandle(HttpStatusCode status, Exception e, WebRequest req, List<Object> messages) {
         var apiError = apiErrorFra(status, e, messages);
         if (ikkeLoggExceptionsMedSensitiveOpplysnignerTilVanligLogg(e)) {
             LOG.warn("[{} ({})] {}", req.getContextPath(), status, apiError.getMessages());
@@ -123,10 +112,10 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         } else {
             LOG.debug("[{}] {} {}", req.getContextPath(), status, apiError.getMessages(), e);
         }
-        return handleExceptionInternal(e, apiError, headers, status, req);
+        return handleExceptionInternal(e, apiError, new HttpHeaders(), status, req);
     }
 
-    private static ApiError apiErrorFra(HttpStatus status, Exception e, List<Object> messages) {
+    private static ApiError apiErrorFra(HttpStatusCode status, Exception e, List<Object> messages) {
         return new ApiError(status, e, messages);
     }
 

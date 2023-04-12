@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.innsyn;
 
 import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.net.URI;
@@ -21,7 +20,6 @@ public class InnsynConfig extends AbstractConfig {
 
     private static final String AKTOR_ID = "aktorId";
 
-    @ConstructorBinding
     public InnsynConfig(@DefaultValue(DEFAULT_PING_PATH) String pingPath,
             @DefaultValue("true") boolean enabled,
             @DefaultValue(DEFAULT_URI) URI baseUri) {
