@@ -1,14 +1,12 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste;
 
-import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
+import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.net.URI;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-
-import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
+import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
 @ConfigurationProperties(prefix = "fppdfgen")
 public class PdfGeneratorConfig extends AbstractConfig {
@@ -20,7 +18,6 @@ public class PdfGeneratorConfig extends AbstractConfig {
     private final URI pdfUri;
     private final URI pingUri;
 
-    @ConstructorBinding
     public PdfGeneratorConfig(@DefaultValue(DEFAULT_URI) URI baseUri,
             @DefaultValue(DEFAULT_PING_PATH) String pingPath,
             @DefaultValue(DEFAULT_SØKNAD_PATH) String soknadPath,

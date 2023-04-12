@@ -1,23 +1,21 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
+import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
+import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
+import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
 import static java.util.Arrays.asList;
 import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.egenskaperFor;
 import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.mapperFor;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-
-import no.nav.foreldrepenger.common.domain.AktørId;
-import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
-import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
-import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
 
 @Component
 @Qualifier(DELEGERENDE)
@@ -30,7 +28,7 @@ public class DelegerendeDomainMapper implements DomainMapper {
         this(asList(mappers));
     }
 
-    @Inject
+    @Autowired
     public DelegerendeDomainMapper(List<DomainMapper> mappers) {
         this.mappers = mappers;
         this.mapperEgenskaper = egenskaperFor(mappers);

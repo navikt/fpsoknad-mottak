@@ -1,20 +1,18 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
-import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.egenskaperFor;
-import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.mapperFor;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.felles.Person;
+import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
+import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.domain.felles.Person;
-import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
-import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
+import java.util.List;
+
+import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
+import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.egenskaperFor;
+import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.mapperFor;
 
 @Component
 @Qualifier(DELEGERENDE)
@@ -27,7 +25,7 @@ public class DelegerendePDFGenerator implements MappablePdfGenerator {
         this(List.of(generatorer));
     }
 
-    @Inject
+    @Autowired
     public DelegerendePDFGenerator(List<MappablePdfGenerator> generatorer) {
         this.generatorer = generatorer;
         this.mapperEgenskaper = egenskaperFor(generatorer);
