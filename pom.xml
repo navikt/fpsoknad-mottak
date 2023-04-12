@@ -41,7 +41,7 @@
         <reflections.version>0.10.2</reflections.version>
         <logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
         <springdoc.version>1.7.0</springdoc.version>
-        <spring.vault.version>3.1.1</spring.vault.version>
+        <spring.vault.version>4.0.1</spring.vault.version>
         <spring.graphql.version>2.0.1</spring.graphql.version>
     </properties>
     <scm>
