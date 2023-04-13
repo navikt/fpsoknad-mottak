@@ -25,6 +25,7 @@ import no.nav.foreldrepenger.common.domain.felles.AnnenPart;
 import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.common.domain.felles.Kjønn;
 import no.nav.foreldrepenger.common.domain.felles.Person;
+import no.nav.foreldrepenger.common.domain.felles.Sivilstand;
 import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe;
 
@@ -45,7 +46,31 @@ class PDLMapper {
             .målform(målform)
             .kjønn(kjønnFra(søker.getKjønn()))
             .barn(barnFra(barn))
+            .sivilstand(sivilstandFra(søker.getSivilstand()))
             .build();
+    }
+
+    private static Sivilstand sivilstandFra(Set<PDLSivilstand> sivilstand) {
+        return safeStream(sivilstand).findFirst().map(PDLMapper::map).orElse(null);
+    }
+
+    private static Sivilstand map(PDLSivilstand s) {
+        return new Sivilstand(map(s.type()));
+    }
+
+    private static Sivilstand.Type map(PDLSivilstand.Type type) {
+        return switch (type) {
+            case UOPPGITT -> Sivilstand.Type.UOPPGITT;
+            case UGIFT -> Sivilstand.Type.UGIFT;
+            case GIFT -> Sivilstand.Type.GIFT;
+            case ENKE_ELLER_ENKEMANN -> Sivilstand.Type.ENKE_ELLER_ENKEMANN;
+            case SKILT -> Sivilstand.Type.SKILT;
+            case SEPARERT -> Sivilstand.Type.SEPARERT;
+            case REGISTRERT_PARTNER -> Sivilstand.Type.REGISTRERT_PARTNER;
+            case SEPARERT_PARTNER -> Sivilstand.Type.SEPARERT_PARTNER;
+            case SKILT_PARTNER -> Sivilstand.Type.SKILT_PARTNER;
+            case GJENLEVENDE_PARTNER -> Sivilstand.Type.GJENLEVENDE_PARTNER;
+        };
     }
 
     static Navn navnFra(Set<PDLNavn> navn) {
