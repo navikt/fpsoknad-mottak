@@ -1,5 +1,21 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static java.util.Comparator.comparing;
+import static no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper.FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.FORELDREPENGER_OUTLINE;
+import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfThrowableFunction.uncheck;
+import static no.nav.foreldrepenger.mottak.util.CollectionUtil.tryOrEmpty;
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.function.Function;
+
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.springframework.stereotype.Component;
+
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.felles.opptjening.Opptjening;
@@ -11,21 +27,6 @@ import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.springframework.stereotype.Component;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.function.Function;
-
-import static java.util.Comparator.comparing;
-import static no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper.FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.FORELDREPENGER_OUTLINE;
-import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfThrowableFunction.uncheck;
-import static no.nav.foreldrepenger.mottak.util.CollectionUtil.tryOrEmpty;
-import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 @Component
 public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
@@ -70,7 +71,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             var cos = new FontAwareCos(doc, page);
             Function<CosyPair, Float> headerFn = uncheck(p -> fpRenderer.header(søker, doc, p.cos(), false, p.y()));
             float y = headerFn.apply(new CosyPair(cos, INITIAL_Y));
-            var docParam = new DocParam(doc, søker, headerFn);
+            var docParam = new DocParam(doc, headerFn);
             var cosy = new CosyPair(cos, y);
 
             if (stønad.relasjonTilBarn() != null) {
@@ -154,7 +155,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             var page = new PDPage(A4);
             doc.addPage(page);
             Function<CosyPair, Float> headerFn = uncheck(p -> fpRenderer.header(søker, doc, p.cos(), true, p.y()));
-            var docParam = new DocParam(doc, søker, headerFn);
+            var docParam = new DocParam(doc, headerFn);
             var cosy = new CosyPair(new FontAwareCos(doc, page), INITIAL_Y);
             cosy = new CosyPair(cosy.cos(), headerFn.apply(cosy));
 
@@ -223,6 +224,6 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
 
     private record CosyPair(FontAwareCos cos, float y) { }
 
-    private record DocParam(FontAwarePdfDocument doc, Person søker, Function<CosyPair, Float> headerFn) { }
+    private record DocParam(FontAwarePdfDocument doc, Function<CosyPair, Float> headerFn) { }
 
 }

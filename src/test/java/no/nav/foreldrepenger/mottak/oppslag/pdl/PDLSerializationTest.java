@@ -35,6 +35,7 @@ import no.nav.foreldrepenger.common.domain.felles.AnnenPart;
 import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.common.domain.felles.Kjønn;
 import no.nav.foreldrepenger.common.domain.felles.Person;
+import no.nav.foreldrepenger.common.domain.felles.Sivilstand;
 import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLAdresseBeskyttelse.PDLAdresseGradering;
@@ -165,12 +166,13 @@ class PDLSerializationTest {
             .kjønn(K)
             .land(CountryCode.NO)
             .navn(kvinneNavn())
+            .sivilstand(new Sivilstand(Sivilstand.Type.GIFT))
             .build();
     }
 
     private static PDLSøker pdlSøker() {
         return new PDLSøker(Set.of(kvinnePDLNavn()), pdlKvinne(), norsk(), fødsel(MORFØDT), familierelasjoner(),
-            List.of(new PDLDødfødtBarn(LocalDate.now())));
+            List.of(new PDLDødfødtBarn(LocalDate.now())), Set.of(new PDLSivilstand(PDLSivilstand.Type.GIFT)));
     }
 
     private static PDLFødsel fødsel() {
