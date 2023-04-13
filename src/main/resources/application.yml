@@ -1,10 +1,4 @@
 management:
-  metrics:
-    web:
-      server:
-        request:
-          autotime:
-            enabled: true
   endpoint:
     health:
       show-details: never
