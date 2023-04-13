@@ -1,8 +1,27 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static java.util.Arrays.asList;
+import static no.nav.foreldrepenger.common.domain.BrukerRolle.MEDMOR;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
+import static no.nav.foreldrepenger.common.util.LangUtil.toBoolean;
+import static no.nav.foreldrepenger.common.util.StreamUtil.distinct;
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
 import no.nav.foreldrepenger.common.domain.BrukerRolle;
-import no.nav.foreldrepenger.common.domain.Navn;
-import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.common.domain.felles.annenforelder.AnnenForelder;
 import no.nav.foreldrepenger.common.domain.felles.annenforelder.NorskForelder;
@@ -26,26 +45,7 @@ import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Overførings
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UttaksPeriode;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-
-import static java.util.Arrays.asList;
-import static no.nav.foreldrepenger.common.domain.BrukerRolle.MEDMOR;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
-import static no.nav.foreldrepenger.common.util.LangUtil.toBoolean;
-import static no.nav.foreldrepenger.common.util.StreamUtil.distinct;
-import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
 
 @Component
 public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
@@ -66,7 +66,7 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
         this.textFormatter = textFormatter;
     }
 
-    public float header(Person søker, FontAwarePdfDocument doc, FontAwareCos cos, boolean endring, float y)
+    public float header(FontAwarePdfDocument doc, FontAwareCos cos, boolean endring, float y, InnsendingPersonInfo person)
             throws IOException {
         y -= renderer.addLogo(doc, cos, y);
         y -= renderer.addCenteredHeading(
@@ -75,7 +75,7 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
                 cos, y);
         y -= renderer.addCenteredRegular(
                 textFormatter.fromMessageSource("mottatt", FMT.format(LocalDateTime.now())), cos, y);
-        y -= renderer.addCenteredRegulars(søker(søker), cos, y);
+        y -= renderer.addCenteredRegulars(søker(person), cos, y);
         y -= renderer.addDividerLine(cos, y);
         return y;
     }
@@ -225,8 +225,8 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
         return y;
     }
 
-    public FontAwareCos fordeling(FontAwarePdfDocument doc, Person søker, BrukerRolle rolle, Foreldrepenger stønad,
-            List<Vedlegg> vedlegg, boolean erEndring, FontAwareCos cos, float y)
+    public FontAwareCos fordeling(FontAwarePdfDocument doc, BrukerRolle rolle, Foreldrepenger stønad,
+                                  List<Vedlegg> vedlegg, boolean erEndring, FontAwareCos cos, float y, InnsendingPersonInfo person)
             throws IOException {
         var fordeling = stønad.fordeling();
         var dekningsgrad = stønad.dekningsgrad();
@@ -249,7 +249,7 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
                     y = renderUttaksPeriode(UttaksPeriode.class.cast(periode), rolle, vedlegg, antallBarn, cos,
                             y);
                 } else {
-                    cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
+                    cos = nySide(doc, cos, scratch1, scratchcos, erEndring, person);
                     y = STARTY - (headerSize + behov);
                 }
             } else if (periode instanceof GradertUttaksPeriode) {
@@ -264,7 +264,7 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
                     y = renderGradertPeriode(GradertUttaksPeriode.class.cast(periode), rolle, vedlegg, antallBarn, cos,
                             y);
                 } else {
-                    cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
+                    cos = nySide(doc, cos, scratch1, scratchcos, erEndring, person);
                     y = STARTY - (headerSize + behov);
                 }
             } else if (periode instanceof OppholdsPeriode) {
@@ -277,7 +277,7 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
                     scratchcos.close();
                     y = renderOppholdsPeriode(OppholdsPeriode.class.cast(periode), vedlegg, cos, y);
                 } else {
-                    cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
+                    cos = nySide(doc, cos, scratch1, scratchcos, erEndring, person);
                     y = STARTY - (headerSize + behov);
                 }
             } else if (periode instanceof UtsettelsesPeriode) {
@@ -292,7 +292,7 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
                             cos,
                             y);
                 } else {
-                    cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
+                    cos = nySide(doc, cos, scratch1, scratchcos, erEndring, person);
                     y = STARTY - (headerSize + behov);
                 }
             } else if (periode instanceof OverføringsPeriode) {
@@ -307,7 +307,7 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
                             cos,
                             y);
                 } else {
-                    cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
+                    cos = nySide(doc, cos, scratch1, scratchcos, erEndring, person);
                     y = STARTY - (headerSize + behov);
                 }
             }
@@ -324,7 +324,7 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
                 y = renderer.addLineOfRegularText(txt("fp.justeruttak",
                     jaNei(toBoolean(fordeling.ønskerJustertUttakVedFødsel())), pluralize(antallBarn)), cos, y);
             } else {
-                cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
+                cos = nySide(doc, cos, scratch1, scratchcos, erEndring, person);
                 y = STARTY - (headerSize + behov);
             }
         }
@@ -340,9 +340,9 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
     }
 
     private FontAwareCos nySide(FontAwarePdfDocument doc, FontAwareCos cos, PDPage scratch,
-            FontAwareCos scratchcos, Person søker, boolean erEndring) throws IOException {
+                                FontAwareCos scratchcos, boolean erEndring, InnsendingPersonInfo person) throws IOException {
         cos.close();
-        header(søker, doc, scratchcos, erEndring, STARTY);
+        header(doc, scratchcos, erEndring, STARTY, person);
         doc.addPage(scratch);
         cos = scratchcos;
         return cos;
@@ -517,10 +517,10 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
         return y;
     }
 
-    private List<String> søker(Person søker) {
+    private List<String> søker(InnsendingPersonInfo person) {
         return asList(
-                textFormatter.navn(new Navn(søker.getFornavn(), søker.getMellomnavn(), søker.getEtternavn())),
-                textFormatter.fromMessageSource("fødselsnummerinline", søker.fnr().value()));
+                textFormatter.navn(person.navn()),
+                textFormatter.fromMessageSource("fødselsnummerinline", person.fnr().value()));
     }
 
     private List<String> utenlandskForelder(UtenlandskForelder utenlandsForelder) {

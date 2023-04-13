@@ -17,14 +17,13 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.felles.opptjening.Opptjening;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.common.error.UnexpectedInputException;
 import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
 import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
-import no.nav.foreldrepenger.common.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
@@ -32,16 +31,14 @@ import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
 
     private static final float INITIAL_Y = PdfElementRenderer.calculateStartY();
-    private final Oppslag oppslag;
     private final ArbeidsInfo arbeidsInfo;
 
     private final ForeldrepengeInfoRenderer fpRenderer;
     private final InfoskrivRenderer infoskrivRenderer;
 
-    public ForeldrepengerPdfGenerator(Oppslag oppslag, ArbeidsInfo arbeidsInfo,
-            ForeldrepengeInfoRenderer fpRenderer,
-            InfoskrivRenderer infoskrivRenderer) {
-        this.oppslag = oppslag;
+    public ForeldrepengerPdfGenerator(ArbeidsInfo arbeidsInfo,
+                                      ForeldrepengeInfoRenderer fpRenderer,
+                                      InfoskrivRenderer infoskrivRenderer) {
         this.arbeidsInfo = arbeidsInfo;
         this.fpRenderer = fpRenderer;
         this.infoskrivRenderer = infoskrivRenderer;
@@ -53,15 +50,15 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
     }
 
     @Override
-    public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
+    public byte[] generer(Søknad søknad, SøknadEgenskap egenskap, InnsendingPersonInfo person) {
         return switch (egenskap.getType()) {
-            case INITIELL_FORELDREPENGER -> generer(søknad, søker);
-            case ENDRING_FORELDREPENGER -> generer((Endringssøknad) søknad, søker);
+            case INITIELL_FORELDREPENGER -> generer(søknad, person);
+            case ENDRING_FORELDREPENGER -> generer((Endringssøknad) søknad, person);
             default -> throw new UnexpectedInputException("Ukjent type " + egenskap.getType() + " for søknad, kan ikke lage PDF");
         };
     }
 
-    private byte[] generer(Søknad søknad, Person søker) {
+    private byte[] generer(Søknad søknad, InnsendingPersonInfo person) {
         var stønad = (Foreldrepenger) søknad.getYtelse();
 
         try (var doc = new FontAwarePdfDocument(); var baos = new ByteArrayOutputStream()) {
@@ -69,7 +66,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             doc.addPage(page);
             fpRenderer.addOutlineItem(doc, page, FORELDREPENGER_OUTLINE);
             var cos = new FontAwareCos(doc, page);
-            Function<CosyPair, Float> headerFn = uncheck(p -> fpRenderer.header(søker, doc, p.cos(), false, p.y()));
+            Function<CosyPair, Float> headerFn = uncheck(p -> fpRenderer.header(doc, p.cos(), false, p.y(), person));
             float y = headerFn.apply(new CosyPair(cos, INITIAL_Y));
             var docParam = new DocParam(doc, headerFn);
             var cosy = new CosyPair(cos, y);
@@ -130,13 +127,13 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                 }
 
                 if (stønad.fordeling() != null) {
-                    var forCos = fpRenderer.fordeling(doc, søker, søknad.getSøker().søknadsRolle(), stønad,
-                            søknad.getVedlegg(), false, cosy.cos(), cosy.y());
+                    var forCos = fpRenderer.fordeling(doc, søknad.getSøker().søknadsRolle(), stønad,
+                            søknad.getVedlegg(), false, cosy.cos(), cosy.y(), person);
                     cosy = new CosyPair(forCos, -1);
                 }
 
                 if (!arbeidsforhold.isEmpty()) {
-                    cosy = new CosyPair(infoskrivRenderer.renderInfoskriv(arbeidsforhold, søker, søknad, cosy.cos(), doc), -1);
+                    cosy = new CosyPair(infoskrivRenderer.renderInfoskriv(arbeidsforhold, søknad, cosy.cos(), doc, person), -1);
                 }
             }
             cosy.cos().close();
@@ -148,13 +145,13 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
         }
     }
 
-    private byte[] generer(Endringssøknad søknad, Person søker) {
+    private byte[] generer(Endringssøknad søknad, InnsendingPersonInfo person) {
         var ytelse = (Foreldrepenger) søknad.getYtelse();
 
         try (var doc = new FontAwarePdfDocument(); var baos = new ByteArrayOutputStream()) {
             var page = new PDPage(A4);
             doc.addPage(page);
-            Function<CosyPair, Float> headerFn = uncheck(p -> fpRenderer.header(søker, doc, p.cos(), true, p.y()));
+            Function<CosyPair, Float> headerFn = uncheck(p -> fpRenderer.header(doc, p.cos(), true, p.y(), person));
             var docParam = new DocParam(doc, headerFn);
             var cosy = new CosyPair(new FontAwareCos(doc, page), INITIAL_Y);
             cosy = new CosyPair(cosy.cos(), headerFn.apply(cosy));
@@ -179,8 +176,8 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             }
 
             if (ytelse.fordeling() != null) {
-                var fordelCos = fpRenderer.fordeling(doc, søker, søknad.getSøker().søknadsRolle(), ytelse,
-                    søknad.getVedlegg(), true, cosy.cos(), cosy.y());
+                var fordelCos = fpRenderer.fordeling(doc, søknad.getSøker().søknadsRolle(), ytelse,
+                    søknad.getVedlegg(), true, cosy.cos(), cosy.y(), person);
                 cosy = new CosyPair(fordelCos, -1);
             }
             cosy.cos().close();
@@ -214,12 +211,6 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             param.doc().addPage(scratchPage);
             return new CosyPair(scratchCos, scratchY);
         }
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [oppslag=" + oppslag + ", fpRenderer=" + fpRenderer
-            + ", mapperEgenskaper=" + mapperEgenskaper() + "]";
     }
 
     private record CosyPair(FontAwareCos cos, float y) { }

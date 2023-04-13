@@ -1,24 +1,22 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
-import no.nav.foreldrepenger.common.util.TokenUtil;
-import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfEkstraktor;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfEkstraktor;
 
 @ExtendWith(MockitoExtension.class)
 class FordelSøknadSenderTest {
 
-    @Mock
-    private TokenUtil tokenHelper;
     @Mock
     private InnsendingHendelseProdusent hendelser;
     @Mock
@@ -31,7 +29,7 @@ class FordelSøknadSenderTest {
     @BeforeEach
     void before() {
         fordelSøknadSender = new FordelSøknadSender(connection,
-            null, ekstraktor, hendelser, tokenHelper);
+            null, ekstraktor, hendelser);
     }
 
     @Test
@@ -39,7 +37,7 @@ class FordelSøknadSenderTest {
         when(connection.send(any())).thenThrow(new UventetPollingStatusFpFordelException("Feil"));
         var konvolutt = new Konvolutt(SøknadEgenskap.INITIELL_FORELDREPENGER, null, null, null, null);
 
-        var kvittering = fordelSøknadSender.send(konvolutt);
+        var kvittering = fordelSøknadSender.send(konvolutt, null);
 
         assertThat(kvittering).isNotNull();
         assertThat(kvittering.mottattDato()).isNotNull();
@@ -51,7 +49,7 @@ class FordelSøknadSenderTest {
         when(connection.send(any())).thenThrow(new InnsendingFeiletFpFordelException("Kritisk feil!"));
         var konvolutt = new Konvolutt(SøknadEgenskap.INITIELL_FORELDREPENGER, null, null, null, null);
 
-        assertThatThrownBy(() -> fordelSøknadSender.send(konvolutt))
+        assertThatThrownBy(() -> fordelSøknadSender.send(konvolutt, null))
             .isInstanceOf(InnsendingFeiletFpFordelException.class);
     }
 

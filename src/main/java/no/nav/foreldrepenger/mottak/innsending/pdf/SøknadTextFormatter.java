@@ -1,16 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import com.neovisionaries.i18n.CountryCode;
-import no.nav.foreldrepenger.common.domain.Navn;
-import no.nav.foreldrepenger.common.domain.felles.Person;
-import no.nav.foreldrepenger.common.domain.felles.medlemskap.Utenlandsopphold;
-import no.nav.foreldrepenger.common.domain.felles.ÅpenPeriode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.MessageSource;
-import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
+import static java.util.stream.Collectors.joining;
+import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
+import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.KVITTERINGSTEKSTER;
+import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.LANDKODER;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -21,10 +14,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.joining;
-import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
-import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.KVITTERINGSTEKSTER;
-import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.LANDKODER;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import com.neovisionaries.i18n.CountryCode;
+
+import no.nav.foreldrepenger.common.domain.Navn;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.Utenlandsopphold;
+import no.nav.foreldrepenger.common.domain.felles.ÅpenPeriode;
 
 @Component
 public class SøknadTextFormatter {
@@ -66,19 +67,11 @@ public class SøknadTextFormatter {
         return sammensattnavn.isEmpty() ? "" : fromMessageSource("navninline", sammensattnavn);
     }
 
-    public String navn(Person søker) {
-        return Optional.ofNullable(søker)
-                .map(this::sammensattNavn)
-                .map(String::trim)
-                .orElse("Ukjent");
-    }
-
     public String sammensattNavn(Navn navn) {
+        if (navn == null) {
+            return null;
+        }
         return sammensattNavn(navn.fornavn(), navn.mellomnavn(), navn.etternavn());
-    }
-
-    public String sammensattNavn(Person person) {
-        return sammensattNavn(person.getFornavn(), person.getMellomnavn(), person.getEtternavn());
     }
 
     private String sammensattNavn(String fornavn, String mellomnavn, String etternavn) {

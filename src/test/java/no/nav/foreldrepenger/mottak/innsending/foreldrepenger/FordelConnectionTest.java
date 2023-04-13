@@ -400,8 +400,7 @@ class FordelConnectionTest {
 
     private Konvolutt lagDefaultKonvolutt() {
         var søknad = foreldrepengesøknad( false, valgfrittVedlegg(ForeldrepengerTestUtils.ID142, LASTET_OPP));
-        return konvoluttGenerator.generer(søknad, person(),
-            SøknadEgenskap.of(INITIELL_FORELDREPENGER));
+        return konvoluttGenerator.generer(søknad, SøknadEgenskap.of(INITIELL_FORELDREPENGER), new InnsendingPersonInfo(person().navn(), person().aktørId(), person().fnr()));
     }
 
     private String tilBody(FordelKvittering kvittering) throws JsonProcessingException {

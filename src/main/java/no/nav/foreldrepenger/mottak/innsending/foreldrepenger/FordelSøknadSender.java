@@ -1,19 +1,18 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import no.nav.foreldrepenger.common.domain.Kvittering;
-import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.domain.felles.Ettersending;
-import no.nav.foreldrepenger.common.domain.felles.Person;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
-import no.nav.foreldrepenger.common.util.TokenUtil;
-import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
-import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfEkstraktor;
+import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import no.nav.foreldrepenger.common.domain.Kvittering;
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.felles.Ettersending;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
+import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfEkstraktor;
 
 @Service
 public class FordelSøknadSender implements SøknadSender {
@@ -23,33 +22,30 @@ public class FordelSøknadSender implements SøknadSender {
     private final KonvoluttGenerator generator;
     private final InfoskrivPdfEkstraktor ekstraktor;
     private final InnsendingHendelseProdusent hendelser;
-    private final TokenUtil tokenUtil;
 
     public FordelSøknadSender(FordelConnection connection,
                               KonvoluttGenerator generator,
                               InfoskrivPdfEkstraktor ekstraktor,
-                              InnsendingHendelseProdusent hendelseProdusent,
-                              TokenUtil tokenUtil) {
+                              InnsendingHendelseProdusent hendelseProdusent) {
         this.connection = connection;
         this.generator = generator;
         this.ekstraktor = ekstraktor;
         this.hendelser = hendelseProdusent;
-        this.tokenUtil = tokenUtil;
     }
 
     @Override
-    public Kvittering søk(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        return send(konvolutt(søknad, søker, egenskap));
+    public Kvittering søk(Søknad søknad, SøknadEgenskap egenskap, InnsendingPersonInfo person) {
+        return send(generator.generer(søknad, egenskap, person), person);
     }
 
     @Override
-    public Kvittering endreSøknad(Endringssøknad endring, Person søker, SøknadEgenskap egenskap) {
-        return send(konvolutt(endring, søker, egenskap));
+    public Kvittering endreSøknad(Endringssøknad endring, SøknadEgenskap egenskap, InnsendingPersonInfo person) {
+        return send(generator.generer(endring, egenskap, person), person);
     }
 
     @Override
-    public Kvittering ettersend(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
-        return send(konvolutt(ettersending, søker, egenskap), ettersending.dialogId());
+    public Kvittering ettersend(Ettersending ettersending, SøknadEgenskap egenskap, InnsendingPersonInfo person) {
+        return send(generator.generer(ettersending, egenskap, person.aktørId()), ettersending.dialogId(), person);
     }
 
     @Override
@@ -57,11 +53,11 @@ public class FordelSøknadSender implements SøknadSender {
         return connection.ping();
     }
 
-    Kvittering send(Konvolutt konvolutt) {
-        return send(konvolutt, null);
+    Kvittering send(Konvolutt konvolutt, InnsendingPersonInfo person) {
+        return send(konvolutt, null, person);
     }
 
-    private Kvittering send(Konvolutt konvolutt, String dialogId) {
+    private Kvittering send(Konvolutt konvolutt, String dialogId, InnsendingPersonInfo person) {
         var pdfHovedDokument = konvolutt.PDFHovedDokument();
         var infoskrivPdf = konvolutt.erInitiellForeldrepenger() ? infoskrivPdf(pdfHovedDokument) : null;
         var mottattDato = LocalDateTime.now();
@@ -73,14 +69,14 @@ public class FordelSøknadSender implements SøknadSender {
             fordelKvittering = new FordelResultat(null, null);
         }
 
-        publiserHendelse(konvolutt, dialogId, fordelKvittering);
+        publiserHendelse(konvolutt, dialogId, fordelKvittering, person);
 
         return new Kvittering(mottattDato, fordelKvittering.saksnummer(), pdfHovedDokument, infoskrivPdf);
     }
 
-    private void publiserHendelse(Konvolutt konvolutt, String dialogId, FordelResultat kvittering) {
+    private void publiserHendelse(Konvolutt konvolutt, String dialogId, FordelResultat kvittering, InnsendingPersonInfo person) {
         try {
-            hendelser.publiser(tokenUtil.autentisertBrukerOrElseThrowException(), kvittering, dialogId, konvolutt);
+            hendelser.publiser(kvittering, dialogId, konvolutt, person);
         } catch (Exception e) {
             LOG.warn("Kunne ikke publisere hendelse", e);
         }
@@ -88,18 +84,6 @@ public class FordelSøknadSender implements SøknadSender {
 
     private byte[] infoskrivPdf(byte[] pdf) {
         return ekstraktor.infoskriv(pdf);
-    }
-
-    private Konvolutt konvolutt(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        return generator.generer(søknad, søker, egenskap);
-    }
-
-    private Konvolutt konvolutt(Endringssøknad endring, Person søker, SøknadEgenskap egenskap) {
-        return generator.generer(endring, søker, egenskap);
-    }
-
-    private Konvolutt konvolutt(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
-        return generator.generer(ettersending, søker, egenskap);
     }
 
     @Override

@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,7 +34,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -45,11 +43,11 @@ import no.nav.foreldrepenger.common.domain.Saksnummer;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.felles.EttersendingsType;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
 import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.common.innsending.mappers.V1SvangerskapspengerDomainMapper;
 import no.nav.foreldrepenger.common.innsending.mappers.V3EngangsstønadDomainMapper;
 import no.nav.foreldrepenger.common.innsending.mappers.V3ForeldrepengerDomainMapper;
-import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
@@ -129,8 +127,8 @@ class TestFPFordelSerialization {
     @Test
     void testKonvolutt() {
         var søknad = foreldrepengesøknad( false, valgfrittVedlegg(ForeldrepengerTestUtils.ID142, LASTET_OPP));
-        var konvolutt = konvoluttGenerator.generer(søknad, person(),
-                SøknadEgenskap.of(INITIELL_FORELDREPENGER));
+        var innsendingPersonInfo = new InnsendingPersonInfo(person().navn(), person().aktørId(), person().fnr());
+        var konvolutt = konvoluttGenerator.generer(søknad, SøknadEgenskap.of(INITIELL_FORELDREPENGER), innsendingPersonInfo);
         assertNotNull(konvolutt.getMetadata());
         assertEquals(1, konvolutt.getVedlegg().size());
         assertEquals(søknad, konvolutt.getInnsending());
@@ -142,8 +140,8 @@ class TestFPFordelSerialization {
     @Test
     void testKonvoluttEndring() {
         var es = endringssøknad(ForeldrepengerTestUtils.VEDLEGG1, VEDLEGG2);
-        var konvolutt = konvoluttGenerator.generer(es, person(),
-                SøknadEgenskap.of(ENDRING_FORELDREPENGER));
+        var innsendingPersonInfo = new InnsendingPersonInfo(person().navn(), person().aktørId(), person().fnr());
+        var konvolutt = konvoluttGenerator.generer(es, SøknadEgenskap.of(ENDRING_FORELDREPENGER), innsendingPersonInfo);
         assertNotNull(konvolutt.getMetadata());
         assertNotNull(konvolutt.XMLHovedDokument());
         assertNotNull(konvolutt.PDFHovedDokument());
@@ -155,8 +153,7 @@ class TestFPFordelSerialization {
     @Test
     void testKonvoluttEttersending() {
         var es = new Ettersending(Saksnummer.valueOf("42"), EttersendingsType.FORELDREPENGER, List.of(VEDLEGG1, VEDLEGG2), null);
-        var konvolutt = konvoluttGenerator.generer(es,
-                person(), SøknadEgenskap.ETTERSENDING_FORELDREPENGER);
+        var konvolutt = konvoluttGenerator.generer(es, SøknadEgenskap.ETTERSENDING_FORELDREPENGER, person().aktørId());
         assertNotNull(konvolutt.getMetadata());
         assertEquals(2, konvolutt.getVedlegg().size());
         assertNull(konvolutt.XMLHovedDokument());
@@ -173,9 +170,5 @@ class TestFPFordelSerialization {
                 .to(Optional.of(LocalDate.now()))
                 .stillingsprosent(ProsentAndel.valueOf(90))
                 .arbeidsgiverNavn("El Bedrifto").build());
-    }
-
-    private static void assertMediaType(HttpEntity<?> entity, String type) {
-        assertEquals(type, entity.getHeaders().getFirst(CONTENT_TYPE));
     }
 }

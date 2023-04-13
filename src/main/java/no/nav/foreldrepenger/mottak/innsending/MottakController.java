@@ -1,32 +1,35 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
-import jakarta.validation.Valid;
-import no.nav.foreldrepenger.common.domain.Kvittering;
-import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.domain.felles.Ettersending;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.common.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
-import no.nav.security.token.support.core.api.Unprotected;
+import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerFpSøknad;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerFørstegangFpSøknad;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.ENDRING_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerFpSøknad;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerFørstegangFpSøknad;
+import jakarta.validation.Valid;
+import no.nav.foreldrepenger.common.domain.Kvittering;
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.felles.Ettersending;
+import no.nav.foreldrepenger.common.domain.felles.Person;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
+import no.nav.foreldrepenger.mottak.oppslag.OppslagTjeneste;
+import no.nav.security.token.support.core.api.Unprotected;
 
 @ProtectedRestController(MottakController.INNSENDING)
 public class MottakController {
     private static final Logger LOG = LoggerFactory.getLogger(MottakController.class);
     public static final String INNSENDING = "/mottak";
-    private final Oppslag oppslag;
+    private final OppslagTjeneste oppslag;
     private final SøknadSender søknadSender;
 
     public MottakController(SøknadSender søknadSender,
-                            Oppslag oppslag) {
+                            OppslagTjeneste oppslag) {
         this.søknadSender = søknadSender;
         this.oppslag = oppslag;
     }
@@ -35,18 +38,31 @@ public class MottakController {
     public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
         var søknadEgenskap = Inspektør.inspiser(søknad);
         validerFørstegangFpSøknad(søknad);
-        return søknadSender.søk(søknad, oppslag.person(), søknadEgenskap);
+        var innsendingPersonInfo = personInfo();
+        return søknadSender.søk(søknad, søknadEgenskap, innsendingPersonInfo);
+    }
+
+    private InnsendingPersonInfo map(Person person) {
+        return new InnsendingPersonInfo(person.navn(), person.aktørId(), person.fnr());
     }
 
     @PostMapping("/ettersend")
     public Kvittering ettersend(@Valid @RequestBody Ettersending ettersending) {
-        return søknadSender.ettersend(ettersending, oppslag.person(), Inspektør.inspiser(ettersending));
+        var innsendingPersonInfo = personInfo();
+        return søknadSender.ettersend(ettersending, Inspektør.inspiser(ettersending), innsendingPersonInfo);
     }
 
     @PostMapping("/endre")
     public Kvittering endre(@Valid @RequestBody Endringssøknad endringssøknad) {
         validerFpSøknad(endringssøknad.getYtelse());
-        return søknadSender.endreSøknad(endringssøknad, oppslag.person(), ENDRING_FORELDREPENGER);
+        var innsendingPersonInfo = personInfo();
+        return søknadSender.endreSøknad(endringssøknad, ENDRING_FORELDREPENGER, innsendingPersonInfo);
+    }
+
+    private InnsendingPersonInfo personInfo() {
+        //TODO erstatte med et enklere pdl oppslag
+        var person = oppslag.person();
+        return map(person);
     }
 
     @Unprotected
