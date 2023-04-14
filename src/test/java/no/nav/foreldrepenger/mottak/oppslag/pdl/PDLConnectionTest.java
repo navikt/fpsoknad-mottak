@@ -32,12 +32,11 @@ import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConnection;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import reactor.core.Exceptions;
 
 @ExtendWith(SpringExtension.class)
 class PDLConnectionTest {
     private final AktørId AKTØRID_SØKER = new AktørId("99123456789");
-    private final Fødselsnummer FØDSELSNUMMER_SØKER =  new Fødselsnummer("123456789");
+    private final Fødselsnummer FØDSELSNUMMER_SØKER = new Fødselsnummer("123456789");
 
     private static GraphQLWebClient userClient;
     private static GraphQLWebClient systemClient;
@@ -70,11 +69,7 @@ class PDLConnectionTest {
 
     @BeforeEach
     void setup() {
-        pdlConnection = new PDLConnection(userClient, systemClient, cfg,
-            digdir,
-            kontoregister,
-            tokenUtil,
-            new PDLExceptionGeneratingResponseHander());
+        pdlConnection = new PDLConnection(userClient, systemClient, cfg, digdir, kontoregister, new PDLExceptionGeneratingResponseHander());
     }
 
 
@@ -93,29 +88,19 @@ class PDLConnectionTest {
         var fødselsdatoFar = LocalDate.now().minusYears(25);
         var personFar = personOpplysningFar("MANN", fnrBarn, fødselsdatoFar);
         // Hent personopplysninger om far (søker)
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
-            .setBody(personFar)
-            .addHeader("Content-Type", "application/json")
-        );
+        mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(personFar).addHeader("Content-Type", "application/json"));
         // Hent aktørid for far
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
+        mockWebServer.enqueue(new MockResponse().setResponseCode(200)
             .setBody(hentIdentRespons(FØDSELSNUMMER_SØKER, AKTØRID_SØKER))
-            .addHeader("Content-Type", "application/json")
-        );
+            .addHeader("Content-Type", "application/json"));
 
         var fødselsdatoBarn = LocalDate.now().minusDays(6);
         var personBarn = personOpplysningerBarnResponse(fødselsdatoBarn, null, null);
         // Hent personopplysninger om barnet
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
-            .setBody(personBarn)
-            .addHeader("Content-Type", "application/json")
-        );
+        mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(personBarn).addHeader("Content-Type", "application/json"));
 
 
-        var person = pdlConnection.hentSøker();
+        var person = pdlConnection.hentPerson(tokenUtil.autentisertBrukerOrElseThrowException());
         assertThat(person).isNotNull();
         assertThat(person.fnr()).isEqualTo(FØDSELSNUMMER_SØKER);
         assertThat(person.kjønn()).isEqualTo(Kjønn.M);
@@ -136,29 +121,19 @@ class PDLConnectionTest {
         var fødselsdatoFar = LocalDate.now().minusYears(25);
         var personFar = personOpplysningFar("MANN", fnrBarn, fødselsdatoFar);
         // Hent personopplysninger om far (søker)
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
-            .setBody(personFar)
-            .addHeader("Content-Type", "application/json")
-        );
+        mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(personFar).addHeader("Content-Type", "application/json"));
         // Hent aktørid for far
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
+        mockWebServer.enqueue(new MockResponse().setResponseCode(200)
             .setBody(hentIdentRespons(FØDSELSNUMMER_SØKER, AKTØRID_SØKER))
-            .addHeader("Content-Type", "application/json")
-        );
+            .addHeader("Content-Type", "application/json"));
 
         var fødselsdatoBarn = LocalDate.now().minusDays(6);
         var personBarn = personOpplysningerBarnResponse(fødselsdatoBarn, null, "STRENGT_FORTROLIG");
         // Hent personopplysninger om barnet
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
-            .setBody(personBarn)
-            .addHeader("Content-Type", "application/json")
-        );
+        mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(personBarn).addHeader("Content-Type", "application/json"));
 
 
-        var person = pdlConnection.hentSøker();
+        var person = pdlConnection.hentPerson(tokenUtil.autentisertBrukerOrElseThrowException());
         assertThat(person).isNotNull();
         assertThat(person.fnr()).isEqualTo(FØDSELSNUMMER_SØKER);
         assertThat(person.kjønn()).isEqualTo(Kjønn.M);
@@ -186,11 +161,7 @@ class PDLConnectionTest {
               }
             }
             """, fornavn, etternavn);
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
-            .setBody(body)
-            .addHeader("Content-Type", "application/json")
-        );
+        mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(body).addHeader("Content-Type", "application/json"));
         var navn = pdlConnection.navnFor(FØDSELSNUMMER_SØKER.value());
         assertThat(navn.fornavn()).isEqualTo(fornavn);
         assertThat(navn.mellomnavn()).isNull();
@@ -201,24 +172,16 @@ class PDLConnectionTest {
     @Test
     void hentAktørIDFraGraphQLResponsHappyCase() {
         var body = hentIdentRespons(FØDSELSNUMMER_SØKER, AKTØRID_SØKER);
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
-            .setBody(body)
-            .addHeader("Content-Type", "application/json")
-        );
-        var response = pdlConnection.aktøridFor(FØDSELSNUMMER_SØKER);
+        mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(body).addHeader("Content-Type", "application/json"));
+        var response = pdlConnection.aktørId(FØDSELSNUMMER_SØKER);
         assertThat(response).isEqualTo(AKTØRID_SØKER);
     }
 
     @Test
     void hentFødselsnummerFraGraphQLResponsHappyCase() {
         var body = hentIdentRespons(FØDSELSNUMMER_SØKER, AKTØRID_SØKER);
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
-            .setBody(body)
-            .addHeader("Content-Type", "application/json")
-        );
-        var response = pdlConnection.fødselsnummerFor(AKTØRID_SØKER);
+        mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(body).addHeader("Content-Type", "application/json"));
+        var response = pdlConnection.fnr(AKTØRID_SØKER);
         assertThat(response).isEqualTo(FØDSELSNUMMER_SØKER);
     }
 
@@ -251,12 +214,9 @@ class PDLConnectionTest {
             """;
 
         var currentRequestcount = mockWebServer.getRequestCount();
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
-            .setBody(body)
-            .addHeader("Content-Type", "application/json"));
+        mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(body).addHeader("Content-Type", "application/json"));
 
-        assertThrows(WebClientResponseException.NotFound.class, () -> pdlConnection.aktøridFor(FØDSELSNUMMER_SØKER));
+        assertThrows(WebClientResponseException.NotFound.class, () -> pdlConnection.aktørId(FØDSELSNUMMER_SØKER));
         assertThat(mockWebServer.getRequestCount()).isEqualTo(currentRequestcount + 1);
     }
 
@@ -295,41 +255,37 @@ class PDLConnectionTest {
             """;
 
         var currentRequestcount = mockWebServer.getRequestCount();
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
-            .setBody(body)
-            .addHeader("Content-Type", "application/json"));
+        mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(body).addHeader("Content-Type", "application/json"));
 
-        assertThrows(WebClientResponseException.Forbidden.class, () -> pdlConnection.aktøridFor(FØDSELSNUMMER_SØKER));
+        assertThrows(WebClientResponseException.Forbidden.class, () -> pdlConnection.aktørId(FØDSELSNUMMER_SØKER));
         assertThat(mockWebServer.getRequestCount()).isEqualTo(currentRequestcount + 1);
     }
 
 
-//    @Test
-//    void oppslagSkalRetryPå5xxFeil() {
-//        mockWebServer.enqueue(new MockResponse()
-//            .setResponseCode(500)
-//            .addHeader("Content-Type", "application/json"));
-//        mockWebServer.enqueue(new MockResponse()
-//            .setResponseCode(500)
-//            .addHeader("Content-Type", "application/json"));
-//        mockWebServer.enqueue(new MockResponse()
-//            .setResponseCode(500)
-//            .addHeader("Content-Type", "application/json"));
-//        mockWebServer.enqueue(new MockResponse()
-//            .setResponseCode(500)
-//            .addHeader("Content-Type", "application/json"));
-//
-//        var currentRequestcount = mockWebServer.getRequestCount();
-//
-//        var err = assertThrows(Exception.class, () -> pdlConnection.aktøridFor(FØDSELSNUMMER_SØKER));
-//        assertThat(Exceptions.isRetryExhausted(err)).isTrue();
-//        assertThat(err.getCause()).isInstanceOf(WebClientResponseException.InternalServerError.class);
-//
-//        assertThat(mockWebServer.getRequestCount()).isEqualTo(currentRequestcount + 4);
-//
-//    }
-
+    //    @Test
+    //    void oppslagSkalRetryPå5xxFeil() {
+    //        mockWebServer.enqueue(new MockResponse()
+    //            .setResponseCode(500)
+    //            .addHeader("Content-Type", "application/json"));
+    //        mockWebServer.enqueue(new MockResponse()
+    //            .setResponseCode(500)
+    //            .addHeader("Content-Type", "application/json"));
+    //        mockWebServer.enqueue(new MockResponse()
+    //            .setResponseCode(500)
+    //            .addHeader("Content-Type", "application/json"));
+    //        mockWebServer.enqueue(new MockResponse()
+    //            .setResponseCode(500)
+    //            .addHeader("Content-Type", "application/json"));
+    //
+    //        var currentRequestcount = mockWebServer.getRequestCount();
+    //
+    //        var err = assertThrows(Exception.class, () -> pdlConnection.aktørId(FØDSELSNUMMER_SØKER));
+    //        assertThat(Exceptions.isRetryExhausted(err)).isTrue();
+    //        assertThat(err.getCause()).isInstanceOf(WebClientResponseException.InternalServerError.class);
+    //
+    //        assertThat(mockWebServer.getRequestCount()).isEqualTo(currentRequestcount + 4);
+    //
+    //    }
 
 
     private String personOpplysningFar(String kjønn, Fødselsnummer fnrBarn, LocalDate fødselsdatoFar) {
@@ -347,11 +303,6 @@ class PDLConnectionTest {
                     "kjoenn": [
                         {
                             "kjoenn": "%s"
-                        }
-                    ],
-                    "statsborgerskap": [
-                        {
-                            "land": "NOR"
                         }
                     ],
                     "foedsel": [
@@ -376,23 +327,23 @@ class PDLConnectionTest {
         String graderingString = "";
         if (adressebeskyttelse != null) {
             graderingString = String.format("""
-                        ,
-                        "adressebeskyttelse": [
-                            {
-                                "gradering": "%s"
-                            }
-                        ]""", adressebeskyttelse);
+                ,
+                "adressebeskyttelse": [
+                    {
+                        "gradering": "%s"
+                    }
+                ]""", adressebeskyttelse);
         }
 
         String doedsdatoString = "";
         if (doedsdato != null) {
             doedsdatoString = String.format("""
-                        ,
-                        "doedsfall": [
-                            {
-                                "doedsdato": "%s"
-                            }
-                        ]""", doedsdato.format(DateTimeFormatter.ISO_LOCAL_DATE));
+                ,
+                "doedsfall": [
+                    {
+                        "doedsdato": "%s"
+                    }
+                ]""", doedsdato.format(DateTimeFormatter.ISO_LOCAL_DATE));
         }
 
         return String.format("""
@@ -409,11 +360,6 @@ class PDLConnectionTest {
                     "kjoenn": [
                         {
                             "kjoenn": "MANN"
-                        }
-                    ],
-                    "statsborgerskap": [
-                        {
-                            "land": "NOR"
                         }
                     ],
                     "foedsel": [

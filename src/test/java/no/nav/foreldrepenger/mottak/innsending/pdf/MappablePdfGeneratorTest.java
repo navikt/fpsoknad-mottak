@@ -54,7 +54,6 @@ import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
-import no.nav.foreldrepenger.mottak.config.TestConfig;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorStub;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
@@ -78,7 +77,7 @@ import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
         InfoskrivPdfEkstraktor.class,
         SvangerskapspengerInfoRenderer.class,
         SvangerskapspengerPdfGenerator.class,
-        SpringTokenValidationContextHolder.class, TestConfig.class })
+        SpringTokenValidationContextHolder.class })
 class MappablePdfGeneratorTest {
 
     private static final String TILLEGGSOPPLYSNINGER = "Begrunnelse for å søke om utsettelse, " +

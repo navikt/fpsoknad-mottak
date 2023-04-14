@@ -16,22 +16,26 @@ import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
-import no.nav.foreldrepenger.mottak.oppslag.OppslagTjeneste;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 import no.nav.security.token.support.core.api.Unprotected;
 
 @ProtectedRestController(MottakController.INNSENDING)
 public class MottakController {
     private static final Logger LOG = LoggerFactory.getLogger(MottakController.class);
     public static final String INNSENDING = "/mottak";
-    private final OppslagTjeneste oppslag;
+    private final PDLConnection pdl;
     private final SøknadSender søknadSender;
+    private final TokenUtil tokenUtil;
 
     public MottakController(SøknadSender søknadSender,
-                            OppslagTjeneste oppslag) {
+                            PDLConnection pdl,
+                            TokenUtil tokenUtil) {
         this.søknadSender = søknadSender;
-        this.oppslag = oppslag;
+        this.pdl = pdl;
+        this.tokenUtil = tokenUtil;
     }
 
     @PostMapping("/send")
@@ -61,7 +65,8 @@ public class MottakController {
 
     private InnsendingPersonInfo personInfo() {
         //TODO erstatte med et enklere pdl oppslag
-        var person = oppslag.person();
+        var fnr = tokenUtil.autentisertBrukerOrElseThrowException();
+        var person = pdl.hentPerson(fnr);
         return map(person);
     }
 
@@ -74,7 +79,7 @@ public class MottakController {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [oppslag=" + oppslag + ", søknadSender="
+        return getClass().getSimpleName() + " [pdl=" + pdl + ", søknadSender="
                 + søknadSender +"]";
     }
 

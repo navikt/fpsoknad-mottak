@@ -1,35 +1,5 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
-import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
-import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
-import no.nav.foreldrepenger.common.domain.AktørId;
-import no.nav.foreldrepenger.common.domain.Fødselsnummer;
-import no.nav.foreldrepenger.common.domain.Navn;
-import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
-import no.nav.foreldrepenger.common.domain.felles.Person;
-import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
-import no.nav.foreldrepenger.common.util.TokenUtil;
-import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
-import no.nav.foreldrepenger.mottak.http.Retry;
-import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConnection;
-import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConnection;
-import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto;
-import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.UtenlandskKontoInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
 import static java.util.function.Predicate.not;
 import static no.nav.boot.conditionals.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
@@ -46,8 +16,39 @@ import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLId
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.map;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.mapIdent;
 
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
+import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
+import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Navn;
+import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
+import no.nav.foreldrepenger.common.domain.felles.Person;
+import no.nav.foreldrepenger.common.innsending.mappers.AktørIdTilFnrConverter;
+import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
+import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
+import no.nav.foreldrepenger.mottak.http.Retry;
+import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConnection;
+import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConnection;
+import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto;
+import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.UtenlandskKontoInfo;
+
 @Component
-public class PDLConnection implements PingEndpointAware {
+public class PDLConnection implements PingEndpointAware, AktørIdTilFnrConverter {
 
     private static final String IDENT = "ident";
     private static final Logger LOG = LoggerFactory.getLogger(PDLConnection.class);
@@ -58,35 +59,31 @@ public class PDLConnection implements PingEndpointAware {
     private final DigdirKrrProxyConnection digdir;
     private final PDLErrorResponseHandler errorHandler;
     private final KontoregisterConnection kontoregister;
-    private final TokenUtil tokenUtil;
 
     PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient,
                   @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
                   PDLConfig cfg, DigdirKrrProxyConnection digdir,
                   KontoregisterConnection kontoregister,
-                  TokenUtil tokenUtil,
                   PDLErrorResponseHandler errorHandler) {
         this.userClient = userClient;
         this.systemClient = systemClient;
         this.digdir = digdir;
         this.kontoregister = kontoregister;
         this.cfg = cfg;
-        this.tokenUtil = tokenUtil;
         this.errorHandler = errorHandler;
     }
 
-    public Person hentSøker() {
-        return hentSøkerInternal(b -> b.erNyligFødt(cfg.getBarnFødtInnen()));
+    public Person hentPerson(Fødselsnummer fnr) {
+        return hentPersonInternal(fnr, b -> b.erNyligFødt(cfg.getBarnFødtInnen()));
     }
 
-    public Person hentSøkerMedAlleBarn() {
-        return hentSøkerInternal(b -> true);
+    public Person hentPersonMedAlleBarn(Fødselsnummer fnr) {
+        return hentPersonInternal(fnr, b -> true);
     }
 
-    private Person hentSøkerInternal(Predicate<PDLBarn> filter) {
-        var fnrSøker = tokenUtil.autentisertBrukerOrElseThrowException();
-        return Optional.ofNullable(oppslagSøker(fnrSøker))
-            .map(s -> map(fnrSøker, aktøridFor(fnrSøker), målform(), kontonr(), barn(s, filter), s))
+    private Person hentPersonInternal(Fødselsnummer fnr, Predicate<PDLBarn> filter) {
+        return Optional.ofNullable(oppslagSøker(fnr))
+            .map(s -> map(fnr, aktørId(fnr), målform(), kontonr(), barn(s, filter), s))
             .orElse(null);
     }
 
@@ -98,7 +95,7 @@ public class PDLConnection implements PingEndpointAware {
                 .orElse(null);
     }
 
-    public AktørId aktøridFor(Fødselsnummer fnr) {
+    public AktørId aktørId(Fødselsnummer fnr) {
         return Optional.ofNullable(fnr)
                 .map(this::oppslagId)
                 .map(id -> mapIdent(id, AKTORID))
@@ -106,7 +103,7 @@ public class PDLConnection implements PingEndpointAware {
                 .orElse(null);
     }
 
-    public Fødselsnummer fødselsnummerFor(AktørId aktørId) {
+    public Fødselsnummer fnr(AktørId aktørId) {
         return Optional.ofNullable(aktørId)
                 .map(this::oppslagId)
                 .map(id -> mapIdent(id, FOLKEREGISTERIDENT))
@@ -232,6 +229,11 @@ public class PDLConnection implements PingEndpointAware {
 
     private Målform målform() {
         return digdir.målform();
+    }
+
+    @Override
+    public AktørId konverter(Fødselsnummer fnr) {
+        return aktørId(fnr);
     }
 
     @Override

@@ -8,9 +8,6 @@ query($ident: ID!){
     kjoenn {
         kjoenn
     },
-     statsborgerskap {
-        land
-    },
     foedsel {
         foedselsdato
     },

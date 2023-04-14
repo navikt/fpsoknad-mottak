@@ -1,5 +1,15 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Barn;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
@@ -8,29 +18,17 @@ import no.nav.foreldrepenger.common.innsyn.FpSak;
 import no.nav.foreldrepenger.common.innsyn.PersonDetaljer;
 import no.nav.foreldrepenger.common.innsyn.Saker;
 import no.nav.foreldrepenger.common.innsyn.persondetaljer.Person;
-import no.nav.foreldrepenger.mottak.oppslag.OppslagTjeneste;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static no.nav.boot.conditionals.EnvUtil.CONFIDENTIAL;
-import static no.nav.foreldrepenger.common.util.StringUtil.partialMask;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 
 @Service
 public class InnsynTjeneste implements Innsyn {
     private static final Logger LOG = LoggerFactory.getLogger(InnsynTjeneste.class);
-    private final OppslagTjeneste oppslag;
+    private final PDLConnection pdl;
     private final InnsynConnection innsyn;
 
-    public InnsynTjeneste(InnsynConnection innsyn, OppslagTjeneste oppslag) {
+    public InnsynTjeneste(InnsynConnection innsyn, PDLConnection pdl) {
         this.innsyn = innsyn;
-        this.oppslag = oppslag;
+        this.pdl = pdl;
     }
 
     @Override
@@ -39,12 +37,10 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     @Override
-    public Saker saker(AktørId aktørId) {
-        LOG.info("Henter saker for aktørId {}", partialMask(aktørId.value(), 6));
+    public Saker saker(Fødselsnummer fnr) {
+        var aktørId = pdl.aktørId(fnr);
         var saker = innsyn.saker(aktørId);
-        var beriketSaker = berikPerson(saker);
-        LOG.info(CONFIDENTIAL, "{}", beriketSaker);
-        return beriketSaker;
+        return berikPerson(saker, fnr);
     }
 
     @Override
@@ -57,27 +53,27 @@ public class InnsynTjeneste implements Innsyn {
         LOG.info("Henter annen parts vedtak");
         AktørId annenPartAktørId;
         try {
-            annenPartAktørId = oppslag.aktørId(annenPartVedtakIdentifikator.annenPartFødselsnummer());
+            annenPartAktørId = pdl.aktørId(annenPartVedtakIdentifikator.annenPartFødselsnummer());
         } catch (Exception e) {
             LOG.warn("Feil ved mapping fra fnr til aktørid for annen part. Returnerer tomt resultat", e);
             return Optional.empty();
         }
-        var barnAktørId = oppslag.aktørId(annenPartVedtakIdentifikator.barnFødselsnummer());
+        var barnAktørId = pdl.aktørId(annenPartVedtakIdentifikator.barnFødselsnummer());
         var request = new AnnenPartVedtakRequest(søker, annenPartAktørId, barnAktørId, annenPartVedtakIdentifikator.familiehendelse());
         var vedtak = innsyn.annenPartVedtak(request);
         LOG.info("Returnerer annen parts vedtak. Antall perioder {}", vedtak.map(v -> v.perioder().size()).orElse(0));
         return vedtak;
     }
 
-    private Saker berikPerson(Saker saker) {
+    private Saker berikPerson(Saker saker, Fødselsnummer fnr) {
         var beriketFpSaker = saker.foreldrepenger().stream()
-            .map(this::berikPerson)
+            .map(sak -> berikPerson(sak, fnr))
             .collect(Collectors.toSet());
         return new Saker(beriketFpSaker, saker.engangsstønad(), saker.svangerskapspenger());
     }
 
-    private FpSak berikPerson(FpSak sak) {
-        var søker = oppslag.personMedAlleBarn();
+    private FpSak berikPerson(FpSak sak, Fødselsnummer fnr) {
+        var søker = pdl.hentPersonMedAlleBarn(fnr);
         return new FpSak(sak.saksnummer(), sak.sakAvsluttet(), sak.sisteSøknadMottattDato(), sak.kanSøkeOmEndring(),
             sak.sakTilhørerMor(), sak.gjelderAdopsjon(), sak.morUføretrygd(), sak.harAnnenForelderTilsvarendeRettEØS(),
             sak.ønskerJustertUttakVedFødsel(), sak.rettighetType(),
@@ -89,7 +85,7 @@ public class InnsynTjeneste implements Innsyn {
         return barn.stream()
             .map(b -> {
                 var aktørId = (no.nav.foreldrepenger.common.innsyn.persondetaljer.AktørId) b;
-                var fødselsnummer = oppslag.fnr(new AktørId(aktørId.value()));
+                var fødselsnummer = pdl.fnr(new AktørId(aktørId.value()));
                 return søkerBarn.stream()
                     .filter(sb -> Objects.equals(sb.fnr(), fødselsnummer))
                     .findFirst()
@@ -107,8 +103,8 @@ public class InnsynTjeneste implements Innsyn {
             return null;
         }
         var aktørId = (no.nav.foreldrepenger.common.innsyn.persondetaljer.AktørId) annenPart.personDetaljer();
-        var fødselsnummer = oppslag.fnr(new AktørId(aktørId.value()));
-        var navnOpt = oppslag.annenPartNavn(fødselsnummer.value());
+        var fødselsnummer = pdl.fnr(new AktørId(aktørId.value()));
+        var navnOpt = pdl.annenPart(fødselsnummer.value());
         if (navnOpt.isEmpty()) {
             //Har fnr, men finner ikke navn. Mulig adressebeskyttelse
             return null;
@@ -121,7 +117,7 @@ public class InnsynTjeneste implements Innsyn {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[oppslag=" + oppslag + ", innsyn=" + innsyn + "]";
+        return getClass().getSimpleName() + "[oppslag=" + pdl + ", innsyn=" + innsyn + "]";
     }
 
 }

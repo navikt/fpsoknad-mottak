@@ -34,8 +34,7 @@ class KontonummerHentTest {
         var kontoregisterConfig = new KontoregisterConfig(URI.create(baseUrl), "/", true);
         var kontoregisterConnection = new KontoregisterConnection(webClient, kontoregisterConfig);
 
-        pdlConnection = new PDLConnection(null, null, null, null,
-            kontoregisterConnection, null, null);
+        pdlConnection = new PDLConnection(null, null, null, null, kontoregisterConnection, null);
     }
 
     @AfterAll

@@ -15,8 +15,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import com.neovisionaries.i18n.CountryCode;
-
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Barn;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
@@ -38,7 +36,6 @@ class PDLMapper {
         return Person.builder()
             .fnr(fnrSøker)
             .aktørId(aktørId)
-            .land(landkodeFra(søker.getStatsborgerskap()))
             .fødselsdato(fødselsdatoFra(søker.getFødselsdato()))
             .navn(navnFra(søker.getNavn()))
             .kjønn(kjønnFra(søker.getKjønn()))
@@ -108,17 +105,6 @@ class PDLMapper {
             .map(a -> new AnnenPart(new Fødselsnummer(annen.getId()), null, navnFra(annen.getNavn()),
                 fødselsdatoFra(annen.getFødselsdato())))
             .orElse(null);
-    }
-
-    private static CountryCode landkodeFra(Set<PDLStatsborgerskap> statsborgerskap) {
-        return landkodeFra(onlyElem(statsborgerskap));
-    }
-
-    private static CountryCode landkodeFra(PDLStatsborgerskap statsborgerskap) {
-        return Optional.ofNullable(statsborgerskap)
-            .map(PDLStatsborgerskap::land)
-            .map(CountryCode::getByAlpha3Code)
-            .orElse(CountryCode.NO);
     }
 
     private static LocalDate dødsdatoFra(Set<PDLDødsfall> datoer) {

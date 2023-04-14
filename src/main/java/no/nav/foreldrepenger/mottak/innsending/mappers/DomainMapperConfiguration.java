@@ -7,19 +7,19 @@ import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.common.innsending.mappers.V1SvangerskapspengerDomainMapper;
 import no.nav.foreldrepenger.common.innsending.mappers.V3EngangsstønadDomainMapper;
 import no.nav.foreldrepenger.common.innsending.mappers.V3ForeldrepengerDomainMapper;
-import no.nav.foreldrepenger.common.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 
 @Configuration
 public class DomainMapperConfiguration {
 
     @Bean
-    public DomainMapper mapperForeldrepenger(Oppslag oppslag) {
-        return new V3ForeldrepengerDomainMapper(oppslag);
+    public DomainMapper mapperForeldrepenger(PDLConnection pdl) {
+        return new V3ForeldrepengerDomainMapper(pdl);
     }
 
     @Bean
-    public DomainMapper mapperEngangsstønad(Oppslag oppslag) {
-        return new V3EngangsstønadDomainMapper(oppslag);
+    public DomainMapper mapperEngangsstønad(PDLConnection pdl) {
+        return new V3EngangsstønadDomainMapper(pdl);
     }
 
     @Bean
