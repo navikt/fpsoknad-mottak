@@ -29,10 +29,11 @@ jobs:
 
   verdikjede:
     name: Verdikjedetester
+    needs: build-app
     uses: navikt/fp-autotest/.github/workflows/autotest-single.yml@test
     with:
       build-version: ${{ needs.build-app.outputs.build-version }}
-      run-tests: ${{ github.ref_name == 'master' || (github.event_name == 'pull_request' && contains( github.event.pull_request.labels.*.name, 'autotest')}}
+      run-tests: ${{ github.ref_name == 'master' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'autotest')) }}
       test-suite: verdikjede
     secrets: inherit
 
