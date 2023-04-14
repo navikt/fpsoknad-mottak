@@ -36,7 +36,7 @@
         <fpsoknad-felles.version>2.0.1</fpsoknad-felles.version>
 
         <jacoco.version>0.8.9</jacoco.version>
-        <pdfbox.version>2.0.27</pdfbox.version>
+        <pdfbox.version>2.0.28</pdfbox.version>
         <nv-i18n.version>1.29</nv-i18n.version>
         <reflections.version>0.10.2</reflections.version>
         <logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
