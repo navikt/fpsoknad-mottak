@@ -1,9 +1,13 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import no.nav.foreldrepenger.common.domain.Fødselsnummer;
-import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
+import static no.nav.foreldrepenger.common.util.MDCUtil.callId;
+import static org.springframework.kafka.support.KafkaHeaders.KEY;
+import static org.springframework.kafka.support.KafkaHeaders.TOPIC;
+
+import java.time.LocalDate;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,13 +19,8 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.util.Optional;
-
-import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
-import static no.nav.foreldrepenger.common.util.MDCUtil.callId;
-import static org.springframework.kafka.support.KafkaHeaders.KEY;
-import static org.springframework.kafka.support.KafkaHeaders.TOPIC;
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
 
 @Component
 @ConditionalOnProperty(value = "mottak.sender.domainevent.enabled", havingValue = "true")
@@ -31,22 +30,20 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
     private static final Logger SECURE_LOG = LoggerFactory.getLogger("secureLogger");
     private final String topic;
     private final KafkaOperations<String, String> kafkaOperations;
-    private final Oppslag oppslag;
     private final JacksonWrapper mapper;
 
     public KafkaInnsendingHendelseProdusent(@Value("${mottak.sender.domainevent.topic}") String topic,
-            KafkaTemplate<String, String> kafkaOperations, JacksonWrapper mapper, Oppslag oppslag) {
+            KafkaTemplate<String, String> kafkaOperations, JacksonWrapper mapper) {
         this.topic = topic;
         this.kafkaOperations = kafkaOperations;
         this.mapper = mapper;
-        this.oppslag = oppslag;
     }
 
     @Override
-    public void publiser(Fødselsnummer fnr, FordelResultat kvittering, String dialogId, Konvolutt konvolutt) {
+    public void publiser(FordelResultat kvittering, String dialogId, Konvolutt konvolutt, InnsendingPersonInfo person) {
         var callId = callId();
         var førsteBehandlingsdato = førsteInntektsmeldingDag(konvolutt).orElse(null);
-        var h = new InnsendingHendelse(oppslag.aktørId(), fnr, kvittering.journalId(), callId, dialogId,
+        var h = new InnsendingHendelse(person.aktørId(), person.fnr(), kvittering.journalId(), callId, dialogId,
             kvittering.saksnummer(), konvolutt, førsteBehandlingsdato);
         LOG.info("Publiserer hendelse {} på topic {}", h, topic);
         send(MessageBuilder

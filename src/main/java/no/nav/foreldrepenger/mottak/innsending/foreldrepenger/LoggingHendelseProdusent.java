@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.util.MDCUtil;
 
 @Component
@@ -15,7 +14,7 @@ public class LoggingHendelseProdusent implements InnsendingHendelseProdusent {
     private static final Logger LOG = LoggerFactory.getLogger(LoggingHendelseProdusent.class);
 
     @Override
-    public void publiser(Fødselsnummer fnr, FordelResultat kvittering, String dialogId, Konvolutt konvolutt) {
+    public void publiser(FordelResultat kvittering, String dialogId, Konvolutt konvolutt, InnsendingPersonInfo person) {
         var callId = MDCUtil.callId();
         LOG.info(
                 "Publiserer hendelse fra {} for søknad av type {} med opplastede vedlegg {}, ikkeopplastede vedlegg {} og referanseId {}",

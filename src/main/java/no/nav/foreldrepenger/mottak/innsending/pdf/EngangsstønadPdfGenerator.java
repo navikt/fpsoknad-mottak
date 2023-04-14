@@ -1,18 +1,29 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.common.domain.felles.Kjønn;
-import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.common.domain.felles.medlemskap.Medlemsskap;
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Adopsjon;
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.FremtidigFødsel;
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Fødsel;
-import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
+import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.common.util.StreamUtil;
 import no.nav.foreldrepenger.common.util.TokenUtil;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.Blokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentBestilling;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentPerson;
@@ -23,16 +34,6 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.modell.MottattDato;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TabellRad;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TemaBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGenerator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
-import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 
 @Component
 public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
@@ -54,14 +55,14 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
     }
 
     @Override
-    public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        return pdfGenerator.generate(esFra(søknad, søker));
+    public byte[] generer(Søknad søknad, SøknadEgenskap egenskap, InnsendingPersonInfo person) {
+        return pdfGenerator.generate(esFra(søknad, person));
     }
 
-    private DokumentBestilling esFra(Søknad søknad, Person søker) {
+    private DokumentBestilling esFra(Søknad søknad, InnsendingPersonInfo person) {
         return new DokumentBestilling(
                 txt("søknad_engang"),
-                personFra(søker),
+                personFra(person),
                 mottattDato(),
                 lagOverskrifter(søknad));
     }
@@ -190,12 +191,10 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         return textFormatter.fromMessageSource(key);
     }
 
-    private DokumentPerson personFra(Person person) {
-        var navn = textFormatter.sammensattNavn(person);
+    private DokumentPerson personFra(InnsendingPersonInfo person) {
         return new DokumentPerson(
             person.fnr().value(),
-            null,
-            navn,
+            null, textFormatter.sammensattNavn(person.navn()),
             null,
             null,
             null

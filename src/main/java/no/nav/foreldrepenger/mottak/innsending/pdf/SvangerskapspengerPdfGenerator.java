@@ -1,9 +1,31 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import no.nav.foreldrepenger.common.domain.Navn;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000049;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000060;
+import static no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper.SVANGERSKAPSPENGER;
+import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import no.nav.foreldrepenger.common.domain.Orgnummer;
 import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.common.domain.felles.VedleggReferanse;
@@ -21,31 +43,9 @@ import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.ar
 import no.nav.foreldrepenger.common.error.UnexpectedInputException;
 import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
 import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000049;
-import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000060;
-import static no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper.SVANGERSKAPSPENGER;
-import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
-import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 @Service
 public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
@@ -70,7 +70,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     }
 
     @Override
-    public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
+    public byte[] generer(Søknad søknad, SøknadEgenskap egenskap, InnsendingPersonInfo person) {
         var svp = Svangerskapspenger.class.cast(søknad.getYtelse());
         var arbeidsforhold = aktiveArbeidsforhold(svp.termindato(), svp.fødselsdato());
         try (var doc = new FontAwarePdfDocument(); var baos = new ByteArrayOutputStream()) {
@@ -78,7 +78,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             doc.addPage(page);
             var cos = new FontAwareCos(doc, page);
             float y = STARTY;
-            y -= header(søker, doc, cos, y);
+            y -= header(doc, cos, y, person);
             float headerSize = STARTY - y;
             y -= omBarn(svp, cos, y);
             y -= blankLine();
@@ -94,7 +94,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                     var scratch1 = newPage();
                     var scratchcos = new FontAwareCos(doc, scratch1);
                     float startY = STARTY;
-                    startY -= header(søker, doc, scratchcos, startY);
+                    startY -= header(doc, scratchcos, startY, person);
                     float size = renderTilrettelegging(arbeidsforhold, tilrettelagtArbeidsforhold, tilrettelegging,
                             søknad.getVedlegg(), scratchcos,
                             startY);
@@ -114,7 +114,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
-                startY -= header(søker, doc, scratchcos, startY);
+                startY -= header(doc, scratchcos, startY, person);
                 float size = infoRenderer.arbeidsforholdOpptjening(arbeidsforhold, scratchcos, startY);
                 float behov = startY - size;
                 if (behov < y) {
@@ -129,7 +129,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
-                startY -= header(søker, doc, scratchcos, startY);
+                startY -= header(doc, scratchcos, startY, person);
                 float size = infoRenderer.frilansOpptjening(svp.opptjening().frilans(), scratchcos, startY);
                 float behov = startY - size;
                 if (behov < y) {
@@ -144,7 +144,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
-                startY -= header(søker, doc, scratchcos, startY);
+                startY -= header(doc, scratchcos, startY, person);
                 float size = infoRenderer.egneNæringerOpptjening(opptjening.egenNæring(), scratchcos, startY);
                 float behov = startY - size;
                 if (behov <= y) {
@@ -159,7 +159,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
-                startY -= header(søker, doc, scratchcos, startY);
+                startY -= header(doc, scratchcos, startY, person);
                 float size = infoRenderer.utenlandskeArbeidsforholdOpptjening(
                         opptjening.utenlandskArbeidsforhold(),
                         søknad.getVedlegg(),
@@ -179,7 +179,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
-                startY -= header(søker, doc, scratchcos, startY);
+                startY -= header(doc, scratchcos, startY, person);
                 float size = renderMedlemskap(svp.medlemsskap(), scratchcos, startY);
                 float behov = startY - size;
                 if (behov < y) {
@@ -391,23 +391,22 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         return startY - y;
     }
 
-    private float header(Person søker, FontAwarePdfDocument doc, FontAwareCos cos, float y)
+    private float header(FontAwarePdfDocument doc, FontAwareCos cos, float y, InnsendingPersonInfo person)
             throws IOException {
         float startY = y;
         y -= renderer.addLogo(doc, cos, y);
         y -= renderer.addCenteredHeading(textFormatter.fromMessageSource("svp.søknad"), cos, y);
         y -= renderer.addCenteredRegular(
                 textFormatter.fromMessageSource("mottatt", FMT.format(LocalDateTime.now())), cos, y);
-        y -= renderer.addCenteredRegulars(søker(søker), cos, y);
+        y -= renderer.addCenteredRegulars(søker(person), cos, y);
         y -= renderer.addDividerLine(cos, y);
         return startY - y;
     }
 
-    private List<String> søker(Person søker) {
+    private List<String> søker(InnsendingPersonInfo person) {
         return Arrays.asList(
-                textFormatter.navn(
-                        new Navn(søker.getFornavn(), søker.getMellomnavn(), søker.getEtternavn())),
-                textFormatter.fromMessageSource("fødselsnummerinline", søker.fnr().value()));
+                textFormatter.navn(person.navn()),
+                textFormatter.fromMessageSource("fødselsnummerinline", person.fnr().value()));
     }
 
     private String txt(String key, Object... values) {

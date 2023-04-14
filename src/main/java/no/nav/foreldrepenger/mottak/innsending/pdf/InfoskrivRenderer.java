@@ -1,17 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.domain.felles.Person;
-import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.GradertUttaksPeriode;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.ARBEID;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
+import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
+import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.INFOSKRIV_OUTLINE;
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -24,11 +17,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.ARBEID;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
-import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
-import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.INFOSKRIV_OUTLINE;
-import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.GradertUttaksPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Component
 public class InfoskrivRenderer {
@@ -44,14 +45,14 @@ public class InfoskrivRenderer {
         this.textFormatter = textFormatter;
     }
 
-    FontAwareCos renderInfoskriv(List<EnkeltArbeidsforhold> arbeidsforhold, Person søker, Søknad søknad,
-            FontAwareCos cosOriginal, FontAwarePdfDocument doc) throws IOException {
+    FontAwareCos renderInfoskriv(List<EnkeltArbeidsforhold> arbeidsforhold, Søknad søknad,
+                                 FontAwareCos cosOriginal, FontAwarePdfDocument doc, InnsendingPersonInfo person) throws IOException {
         if (søknad.getFørsteInntektsmeldingDag() == null) {
             LOG.warn("Ingen førsteInntektsmeldingDag i søknad, dropper infoskriv til bruker.");
             return cosOriginal;
         }
 
-        var navn = textFormatter.navn(søker);
+        var navnText = textFormatter.navn(person.navn());
         var datoInntektsmelding = søknad.getFørsteInntektsmeldingDag();
         var ytelse = (Foreldrepenger) søknad.getYtelse();
 
@@ -66,22 +67,22 @@ public class InfoskrivRenderer {
 
         if (!erSperreFristPassert(datoInntektsmelding)) {
             y -= renderer.addLineOfRegularText(
-                    txt("infoskriv.paragraf1", navn, fristTekstFra(datoInntektsmelding)), cos, y);
+                    txt("infoskriv.paragraf1", navnText, fristTekstFra(datoInntektsmelding)), cos, y);
         } else {
             y -= renderer.addLineOfRegularText(
-                    txt("infoskriv.paragraf1.passert", navn), cos, y);
+                    txt("infoskriv.paragraf1.passert", navnText), cos, y);
         }
 
         y -= addTinyBlankLine();
-        y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf2", fornavn(navn), NAV_URL), cos, y);
+        y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf2", fornavn(navnText), NAV_URL), cos, y);
         y -= addTinyBlankLine();
-        y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf3", fornavn(navn)), cos, y);
+        y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf3", fornavn(navnText)), cos, y);
         y -= addTinyBlankLine();
         y -= addBlankLine();
-        y -= renderer.addLeftHeading(txt("infoskriv.opplysningerfrasøknad", navn), cos, y);
+        y -= renderer.addLeftHeading(txt("infoskriv.opplysningerfrasøknad", navnText), cos, y);
         y -= addTinyBlankLine();
         List<String> opplysninger = new ArrayList<>();
-        opplysninger.add(txt("infoskriv.arbeidstaker", søker.fnr().value()));
+        opplysninger.add(txt("infoskriv.arbeidstaker", person.fnr().value()));
         opplysninger.add(txt("infoskriv.ytelse"));
         opplysninger.add(txt("infoskriv.startdato", formattertDato(søknad.getFørsteUttaksdag())));
         y -= renderer.addLinesOfRegularText(opplysninger, cos, y);
