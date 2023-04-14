@@ -31,7 +31,7 @@ jobs:
     name: Verdikjedetester
     if: github.ref_name == 'master'
     needs: build-app
-    uses: navikt/fp-autotest/.github/workflows/autotest.yml@test
+    uses: navikt/fp-autotest/.github/workflows/autotest.yml@master
     with:
       build-version: ${{ needs.build-app.outputs.build-version }}
       test-suite: verdikjede
@@ -41,7 +41,7 @@ jobs:
     name: Notify
     if: github.ref_name == 'master' && always() && !contains(fromJSON('["skipped", "cancelled"]'), needs.verdikjede.result)
     needs: [build-app, verdikjede]
-    uses: navikt/fp-autotest/.github/workflows/report-and-notify.yml@autotester
+    uses: navikt/fp-autotest/.github/workflows/report-and-notify.yml@master
     with:
       verdikjede: ${{ needs.verdikjede.outputs.resultat }}
       build-version: ${{ needs.build-app.outputs.build-version }}
