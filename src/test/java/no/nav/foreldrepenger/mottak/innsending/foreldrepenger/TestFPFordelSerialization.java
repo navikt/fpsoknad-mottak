@@ -38,17 +38,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
-import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Saksnummer;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.felles.EttersendingsType;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
+import no.nav.foreldrepenger.common.innsending.mappers.AktørIdTilFnrConverter;
 import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.common.innsending.mappers.V1SvangerskapspengerDomainMapper;
 import no.nav.foreldrepenger.common.innsending.mappers.V3EngangsstønadDomainMapper;
 import no.nav.foreldrepenger.common.innsending.mappers.V3ForeldrepengerDomainMapper;
-import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
@@ -71,12 +70,11 @@ import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
 })
 class TestFPFordelSerialization {
     private static final AktørId AKTØRID = new AktørId("1111111111");
-    private static final Fødselsnummer FNR = new Fødselsnummer("11111111111");
     private static final List<EnkeltArbeidsforhold> ARB_FORHOLD = arbeidsforhold();
 
-
     @MockBean
-    private Oppslag oppslag;
+    private AktørIdTilFnrConverter aktørIdTilFnrConverter;
+
     @MockBean
     @Qualifier(DELEGERENDE)
     private MappablePdfGenerator mappablePdfGenerator;
@@ -91,10 +89,9 @@ class TestFPFordelSerialization {
 
     @BeforeEach
     void before() {
-        when(oppslag.aktørId(FNR)).thenReturn(AKTØRID);
-        when(oppslag.fnr(AKTØRID)).thenReturn(FNR);
         when(arbeidsforhold.hentArbeidsforhold()).thenReturn(ARB_FORHOLD);
         when(mappablePdfGenerator.generer(any(), any(), any())).thenReturn(new byte[0]);
+        when(aktørIdTilFnrConverter.konverter(any())).thenReturn(new AktørId("1234"));
     }
 
     @Test

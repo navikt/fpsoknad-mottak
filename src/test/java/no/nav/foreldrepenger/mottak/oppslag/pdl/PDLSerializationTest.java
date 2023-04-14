@@ -25,7 +25,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Barn;
@@ -68,11 +67,6 @@ class PDLSerializationTest {
     @Test
     void testWrappedNavn() {
         test(new PDLWrappedNavn(Set.of(new PDLNavn("a", "b", "c"))));
-    }
-
-    @Test
-    void testStatsborgerskapPDL() {
-        test(ettStatsborgerskap());
     }
 
     @Test
@@ -164,14 +158,13 @@ class PDLSerializationTest {
             .barn(List.of(barn()))
             .fødselsdato(MORFØDT)
             .kjønn(K)
-            .land(CountryCode.NO)
             .navn(kvinneNavn())
             .sivilstand(new Sivilstand(Sivilstand.Type.GIFT))
             .build();
     }
 
     private static PDLSøker pdlSøker() {
-        return new PDLSøker(Set.of(kvinnePDLNavn()), pdlKvinne(), norsk(), fødsel(MORFØDT), familierelasjoner(),
+        return new PDLSøker(Set.of(kvinnePDLNavn()), pdlKvinne(), fødsel(MORFØDT), familierelasjoner(),
             List.of(new PDLDødfødtBarn(LocalDate.now())), Set.of(new PDLSivilstand(PDLSivilstand.Type.GIFT)));
     }
 
@@ -222,14 +215,6 @@ class PDLSerializationTest {
         return new PDLAdresseBeskyttelse(PDLAdresseGradering.FORTROLIG);
     }
 
-    private static Set<PDLStatsborgerskap> norsk() {
-        return Set.of(ettStatsborgerskap());
-    }
-
-    private static PDLStatsborgerskap ettStatsborgerskap() {
-        return new PDLStatsborgerskap(CountryCode.NO.getAlpha3());
-    }
-
     private static Set<PDLKjønn> pdlMann() {
         return Set.of(new PDLKjønn(MANN));
     }
@@ -266,25 +251,17 @@ class PDLSerializationTest {
         return new Bankkonto("22222222222", "DNB");
     }
 
-    void test(Object object) {
-        test(object, true);
+    void test(Object expected) {
+        String serialized = serialize(expected, true, mapper);
+        LOG.info("Expected {}", expected);
+        LOG.info("Serialized {}", serialized);
 
-    }
-
-    void test(Object expected, boolean log) {
-        String serialized = serialize(expected, log, mapper);
-        if (log) {
-            LOG.info("Expected {}", expected);
-            LOG.info("Serialized {}", serialized);
-        }
         try {
             Object deserialized = mapper.readValue(serialized, expected.getClass());
-            if (log) {
-                LOG.info("Deserialized {}", deserialized);
-            }
+            LOG.info("Deserialized {}", deserialized);
             assertEquals(expected, deserialized);
         } catch (IOException e) {
-            LOG.error("{}", e);
+            LOG.error("", e);
             fail(expected.getClass().getSimpleName() + " failed");
         }
     }
