@@ -47,7 +47,6 @@ import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Saksnummer;
-import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.common.domain.felles.TestUtils;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
@@ -134,7 +133,7 @@ class MappablePdfGeneratorTest {
         var filNavn = ABSOLUTE_PATH +"/søknad_exception_fra_arbeidsforholdtjeneste.pdf";
         when(arbeidsforholdTjeneste.hentArbeidsforhold()).thenThrow(RuntimeException.class);
         var søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
-        try (FileOutputStream fos = new FileOutputStream(filNavn)) {
+        try (var fos = new FileOutputStream(filNavn)) {
             assertDoesNotThrow(() -> fos.write(gen.generer(søknad, INITIELL_FORELDREPENGER, personInfo())));
         }
 
@@ -153,7 +152,7 @@ class MappablePdfGeneratorTest {
             TILLEGGSOPPLYSNINGER,
             List.of(VEDLEGG1),
             Saksnummer.valueOf("123456789"));
-        try (FileOutputStream fos = new FileOutputStream(filNavn)) {
+        try (var fos = new FileOutputStream(filNavn)) {
             assertDoesNotThrow(() -> fos.write(gen.generer(endringssøknad, ENDRING_FORELDREPENGER, personInfo())));
         }
 
@@ -183,9 +182,9 @@ class MappablePdfGeneratorTest {
     void infoskrivSplitter() throws Exception {
         var filNavn = ABSOLUTE_PATH +"/infoskriv.pdf";
         try (var fos = new FileOutputStream(filNavn)) {
-            Søknad søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
-            byte[] fullSøknadPdf = gen.generer(søknad, INITIELL_FORELDREPENGER, personInfo());
-            byte[] infoskriv = pdfExtracter.infoskriv(fullSøknadPdf);
+            var søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
+            var fullSøknadPdf = gen.generer(søknad, INITIELL_FORELDREPENGER, personInfo());
+            var infoskriv = pdfExtracter.infoskriv(fullSøknadPdf);
             if (infoskriv != null) {
                 fos.write(infoskriv);
                 assertTrue(hasPdfSignature(infoskriv));
@@ -199,8 +198,8 @@ class MappablePdfGeneratorTest {
             assertThat(document.getNumberOfPages()).isEqualTo(antallSiderIPDFen);
             assertThat(document.isEncrypted()).isFalse();
 
-            PDFTextStripper pdfStripper = new PDFTextStripper();
-            String text = pdfStripper.getText(document);
+            var pdfStripper = new PDFTextStripper();
+            var text = pdfStripper.getText(document);
             assertThat(text).containsIgnoringWhitespaces(forventetTekst);
         }
     }

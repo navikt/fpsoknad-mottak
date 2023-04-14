@@ -1,16 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import com.neovisionaries.i18n.CountryCode;
-import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.common.domain.felles.VedleggReferanse;
-import no.nav.foreldrepenger.common.domain.felles.opptjening.EgenNæring;
-import no.nav.foreldrepenger.common.domain.felles.opptjening.Frilans;
-import no.nav.foreldrepenger.common.domain.felles.opptjening.Regnskapsfører;
-import no.nav.foreldrepenger.common.domain.felles.opptjening.UtenlandskArbeidsforhold;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
+import static java.util.stream.Collectors.joining;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000049;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000060;
+import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -19,10 +12,19 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.stream.Collectors.joining;
-import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000049;
-import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000060;
-import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import com.neovisionaries.i18n.CountryCode;
+
+import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.common.domain.felles.VedleggReferanse;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.EgenNæring;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.Frilans;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.Regnskapsfører;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.UtenlandskArbeidsforhold;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Component
 public class FellesSøknadInfoRenderer {
@@ -60,7 +62,7 @@ public class FellesSøknadInfoRenderer {
         y -= renderer.addLinesOfRegularText(attributter, cos, y);
         if (!frilans.frilansOppdrag().isEmpty()) {
             y -= renderer.addLineOfRegularText(txt("oppdrag"), cos, y);
-            List<String> oppdrag = safeStream(frilans.frilansOppdrag())
+            var oppdrag = safeStream(frilans.frilansOppdrag())
                 .map(o -> o.oppdragsgiver() + " " + textFormatter.periode(o.periode()))
                 .toList();
             y -= renderer.addBulletList(INDENT, oppdrag, cos, y);
@@ -80,7 +82,7 @@ public class FellesSøknadInfoRenderer {
             return y;
         }
         y -= renderer.addLeftHeading(txt("egennæring"), cos, y);
-        for (List<String> næring : egneNæringer(egneNæringer)) {
+        for (var næring : egneNæringer(egneNæringer)) {
             y -= renderer.addLinesOfRegularText(INDENT, næring, cos, y);
             y -= PdfElementRenderer.BLANK_LINE;
         }
@@ -93,7 +95,7 @@ public class FellesSøknadInfoRenderer {
             return y;
         }
         y -= renderer.addLeftHeading(txt("arbeidsforhold"), cos, y);
-        for (EnkeltArbeidsforhold forhold : sorterArbeidsforhold(arbeidsforhold)) {
+        for (var forhold : sorterArbeidsforhold(arbeidsforhold)) {
             y -= renderer.addLinesOfRegularText(INDENT, arbeidsforhold(forhold), cos, y);
             y -= PdfElementRenderer.BLANK_LINE;
         }
@@ -107,7 +109,7 @@ public class FellesSøknadInfoRenderer {
             return y;
         }
         y -= renderer.addLeftHeading(txt("utenlandskarbeid"), cos, y);
-        for (UtenlandskArbeidsforhold forhold : sorterUtelandske(utenlandskArbeidsforhold)) {
+        for (var forhold : sorterUtelandske(utenlandskArbeidsforhold)) {
             y -= renderer.addLinesOfRegularText(INDENT, utenlandskeArbeidsforhold(forhold), cos, y);
             y = renderVedlegg(vedlegg, forhold.vedlegg(), "vedleggutenlandskarbeid", cos, y);
         }
@@ -121,7 +123,7 @@ public class FellesSøknadInfoRenderer {
         if (!vedleggRefs.isEmpty()) {
             y -= renderer.addLineOfRegularText(INDENT, txt("vedlegg1"), cos, y);
         }
-        for (VedleggReferanse id : vedleggRefs) {
+        for (var id : vedleggRefs) {
             var details = safeStream(vedlegg)
                 .filter(s -> id.referanse().equals(s.getId()))
                 .findFirst();

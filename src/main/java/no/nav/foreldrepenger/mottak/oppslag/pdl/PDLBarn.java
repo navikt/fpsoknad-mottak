@@ -1,18 +1,19 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Set;
-
 import static java.util.function.Predicate.not;
 import static no.nav.foreldrepenger.common.util.StreamUtil.onlyElem;
 import static no.nav.foreldrepenger.common.util.StringUtil.mask;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLAdresseBeskyttelse.PDLAdresseGradering.UGRADERT;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLForelderBarnRelasjon.PDLRelasjonsRolle.BARN;
+
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 class PDLBarn {
     private static final Logger LOG = LoggerFactory.getLogger(PDLBarn.class);
@@ -110,7 +111,7 @@ class PDLBarn {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PDLBarn pdlBarn = (PDLBarn) o;
+        var pdlBarn = (PDLBarn) o;
         return Objects.equals(fødselsdato, pdlBarn.fødselsdato) && Objects.equals(forelderBarnRelasjon, pdlBarn.forelderBarnRelasjon) && Objects.equals(navn, pdlBarn.navn) && Objects.equals(kjønn, pdlBarn.kjønn) && Objects.equals(beskyttelse, pdlBarn.beskyttelse) && Objects.equals(dødsfall, pdlBarn.dødsfall) && Objects.equals(annenPart, pdlBarn.annenPart) && Objects.equals(id, pdlBarn.id);
     }
 

@@ -75,7 +75,7 @@ class PDLSøker {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        PDLSøker pdlSøker = (PDLSøker) o;
+        var pdlSøker = (PDLSøker) o;
         return Objects.equals(navn, pdlSøker.navn) && Objects.equals(kjønn, pdlSøker.kjønn) && Objects.equals(fødselsdato, pdlSøker.fødselsdato)
             && Objects.equals(forelderBarnRelasjon, pdlSøker.forelderBarnRelasjon) && Objects.equals(dødfødtBarn, pdlSøker.dødfødtBarn)
             && Objects.equals(id, pdlSøker.id) && Objects.equals(sivilstand, pdlSøker.sivilstand);

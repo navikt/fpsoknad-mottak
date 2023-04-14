@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
+import java.util.List;
+import java.util.Objects;
+
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.Ytelse;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
@@ -7,9 +10,6 @@ import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.LukketPeriod
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.common.error.UnexpectedInputException;
-
-import java.util.List;
-import java.util.Objects;
 
 final class SøknadValidator {
 
@@ -48,8 +48,8 @@ final class SøknadValidator {
     }
 
     static boolean finnesOverlapp(List<LukketPeriodeMedVedlegg> perioder) {
-        for (int i = 0; i < perioder.size() - 1; i++) {
-            for (int j = i + 1; j < perioder.size(); j++) {
+        for (var i = 0; i < perioder.size() - 1; i++) {
+            for (var j = i + 1; j < perioder.size(); j++) {
                 if (overlapper(perioder.get(i), perioder.get(j))) {
                     return true;
                 }

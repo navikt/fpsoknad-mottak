@@ -52,7 +52,7 @@ class PdfGeneratorConnectionTest {
             .setBody(ettEllerAnnet)
             .addHeader("Content-Type", "application/json"));
 
-        byte[] result = pdfGeneratorConnection.genererPdf(new DokumentBestilling("test", null, null, null));
+        var result = pdfGeneratorConnection.genererPdf(new DokumentBestilling("test", null, null, null));
         assertThat(result).isEqualTo(ettEllerAnnet.getBytes());
 
     }

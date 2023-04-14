@@ -1,11 +1,11 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf.modell;
 
+import java.util.List;
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
-import java.util.List;
-import java.util.Objects;
 
 @JsonNaming(PropertyNamingStrategies.LowerCaseStrategy.class)
 public class ListeBlokk extends Blokk {
@@ -34,7 +34,7 @@ public class ListeBlokk extends Blokk {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ListeBlokk that = (ListeBlokk) o;
+        var that = (ListeBlokk) o;
         return Objects.equals(tittel, that.tittel) && Objects.equals(punkter, that.punkter);
     }
 

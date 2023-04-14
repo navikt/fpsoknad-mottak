@@ -17,7 +17,6 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.domain.felles.opptjening.Opptjening;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.common.error.UnexpectedInputException;
@@ -89,7 +88,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                 cosy = render(docParam, tilleggsopplysningerFn, cosy);
             }
 
-            Opptjening opptjening = stønad.opptjening();
+            var opptjening = stønad.opptjening();
             var arbeidsforhold = aktiveArbeidsforhold(stønad.relasjonTilBarn().relasjonsDato());
             if (opptjening != null) {
                 Function<CosyPair, Float> arbeidsforholdOpptjFn = uncheck(p -> fpRenderer.arbeidsforholdOpptjening(arbeidsforhold, p.cos, p.y));

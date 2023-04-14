@@ -1,16 +1,17 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Objects;
-import java.util.Set;
-
 import static no.nav.foreldrepenger.common.util.StreamUtil.onlyElem;
 import static no.nav.foreldrepenger.common.util.StringUtil.mask;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLAdresseBeskyttelse.PDLAdresseGradering.UGRADERT;
 import static org.springframework.util.CollectionUtils.isEmpty;
+
+import java.util.Objects;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 class PDLAnnenPart {
 
@@ -80,7 +81,7 @@ class PDLAnnenPart {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PDLAnnenPart that = (PDLAnnenPart) o;
+        var that = (PDLAnnenPart) o;
         return Objects.equals(navn, that.navn) && Objects.equals(fødselsdato, that.fødselsdato) && Objects.equals(kjønn, that.kjønn) && Objects.equals(dødsfall, that.dødsfall) && Objects.equals(beskyttelse, that.beskyttelse) && Objects.equals(id, that.id);
     }
 

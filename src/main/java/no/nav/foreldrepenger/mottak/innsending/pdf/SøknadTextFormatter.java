@@ -113,7 +113,7 @@ public class SøknadTextFormatter {
     }
 
     public String capitalize(String orig) {
-        String lowerWithSpace = orig.replace("_", " ").toLowerCase();
+        var lowerWithSpace = orig.replace("_", " ").toLowerCase();
         return lowerWithSpace.substring(0, 1).toUpperCase() + lowerWithSpace.substring(1);
     }
 

@@ -41,17 +41,17 @@ public class PdfElementRenderer {
     }
 
     int characterLimitInCos(PDFont font, int fontSize, int marginOffset) {
-        float maxLineWidth = MEDIABOX.getWidth() - 2 * MARGIN - marginOffset;
-        float avgCharWidth = font.getAverageFontWidth() / 1000 * fontSize;
+        var maxLineWidth = MEDIABOX.getWidth() - 2 * MARGIN - marginOffset;
+        var avgCharWidth = font.getAverageFontWidth() / 1000 * fontSize;
         return Math.round(maxLineWidth / avgCharWidth);
     }
 
     List<String> splitLineIfNecessary(String str, int maxLength) {
         List<String> lineList = new ArrayList<>();
         if (str.length() > maxLength) {
-            String candidateLine = str.substring(0, maxLength);
-            boolean noSpaceOrLastSpaceInFirstHalf = candidateLine.lastIndexOf(' ') < maxLength / 2;
-            int lastSpace = candidateLine.lastIndexOf(' ');
+            var candidateLine = str.substring(0, maxLength);
+            var noSpaceOrLastSpaceInFirstHalf = candidateLine.lastIndexOf(' ') < maxLength / 2;
+            var lastSpace = candidateLine.lastIndexOf(' ');
             String line;
             String remainingStr;
             if (noSpaceOrLastSpaceInFirstHalf) {
@@ -74,12 +74,12 @@ public class PdfElementRenderer {
 
     public float addLineOfRegularText(int marginOffset, String line, FontAwareCos cos, float startY)
             throws IOException {
-        String encodableLine = normalizeAndRemoveNonencodableChars(line, cos.fontRegular);
-        List<String> lines = splitLineIfNecessary(
+        var encodableLine = normalizeAndRemoveNonencodableChars(line, cos.fontRegular);
+        var lines = splitLineIfNecessary(
                 encodableLine,
                 characterLimitInCos(cos.fontRegular, FontAwareCos.REGULARFONTSIZE, marginOffset));
-        int lineNumber = 0;
-        for (String singleLine : lines) {
+        var lineNumber = 0;
+        for (var singleLine : lines) {
             cos.beginText();
             cos.useRegularFont();
             cos.newLineAtOffset(MARGIN + marginOffset, startY - lineNumber * cos.fontHeightRegular);
@@ -95,8 +95,8 @@ public class PdfElementRenderer {
     }
 
     private static String removeNonencodableChars(String string, PDFont font) throws IOException {
-        StringBuilder encodable = new StringBuilder();
-        for (char character : string.toCharArray()) {
+        var encodable = new StringBuilder();
+        for (var character : string.toCharArray()) {
             if (isCharacterEncodeable(character, font)) {
                 encodable.append(character);
             }
@@ -136,7 +136,7 @@ public class PdfElementRenderer {
     public float addLinesOfRegularText(int marginOffset, List<String> lines, FontAwareCos cos, float startY)
             throws IOException {
         float yTotal = 0;
-        for (String line : lines) {
+        for (var line : lines) {
             yTotal += addLineOfRegularText(marginOffset, line, cos, startY - yTotal);
         }
         return yTotal;
@@ -148,8 +148,8 @@ public class PdfElementRenderer {
 
     public float addLMultilineBulletpoint(int offset, List<String> lines, FontAwareCos cos, float startY)
             throws IOException {
-        float yTotal = addBulletPoint(offset, lines.get(0), cos, startY);
-        for (String line : lines.subList(1, lines.size())) {
+        var yTotal = addBulletPoint(offset, lines.get(0), cos, startY);
+        for (var line : lines.subList(1, lines.size())) {
             yTotal += addLineOfRegularText("  " + line, cos, startY - yTotal);
         }
         return yTotal;
@@ -158,7 +158,7 @@ public class PdfElementRenderer {
     public float addBulletList(int offset, List<String> lines, FontAwareCos cos, float startY)
             throws IOException {
         float yTotal = 0;
-        for (String line : lines) {
+        for (var line : lines) {
             yTotal += addBulletPoint(offset, line, cos, startY - yTotal);
         }
         return yTotal;
@@ -167,8 +167,8 @@ public class PdfElementRenderer {
     public float addCenteredHeading(String heading, FontAwareCos cos, float startY) throws IOException {
         cos.beginText();
         cos.useHeadingFont();
-        float titleWidth = cos.headingTextWidth(heading);
-        float startX = (MEDIABOX.getWidth() - titleWidth) / 2;
+        var titleWidth = cos.headingTextWidth(heading);
+        var startX = (MEDIABOX.getWidth() - titleWidth) / 2;
         cos.newLineAtOffset(startX, startY);
         cos.showText(normalizeAndRemoveNonencodableChars(heading, cos.fontHeading));
         cos.endText();
@@ -177,7 +177,7 @@ public class PdfElementRenderer {
 
     public float addCenteredHeadings(List<String> headings, FontAwareCos cos, float startY) throws IOException {
         float yTotal = 0;
-        for (String heading : headings) {
+        for (var heading : headings) {
             yTotal += addCenteredHeading(heading, cos, startY - yTotal);
         }
         return yTotal;
@@ -186,8 +186,8 @@ public class PdfElementRenderer {
     public float addCenteredRegular(String text, FontAwareCos cos, float startY) throws IOException {
         cos.beginText();
         cos.useRegularFont();
-        float textWidth = cos.regularTextWidth(text);
-        float startX = (MEDIABOX.getWidth() - textWidth) / 2;
+        var textWidth = cos.regularTextWidth(text);
+        var startX = (MEDIABOX.getWidth() - textWidth) / 2;
         cos.newLineAtOffset(startX, startY);
         cos.showText(normalizeAndRemoveNonencodableChars(text, cos.fontRegular));
         cos.endText();
@@ -196,7 +196,7 @@ public class PdfElementRenderer {
 
     public float addCenteredRegulars(List<String> texts, FontAwareCos cos, float startY) throws IOException {
         float yTotal = 0;
-        for (String text : texts) {
+        for (var text : texts) {
             yTotal += addCenteredRegular(text, cos, startY - yTotal);
         }
         return yTotal;
@@ -205,7 +205,7 @@ public class PdfElementRenderer {
     public float addLeftHeading(String heading, FontAwareCos cos, float startY) throws IOException {
         cos.beginText();
         cos.useHeadingFont();
-        float startX = MARGIN;
+        var startX = MARGIN;
         cos.newLineAtOffset(startX, startY);
         cos.showText(heading);
         cos.endText();
@@ -221,8 +221,8 @@ public class PdfElementRenderer {
     }
 
     public float addLogo(PDDocument doc, FontAwareCos cos, float startY) throws IOException {
-        PDImageXObject ximage = PDImageXObject.createFromByteArray(doc, NAV_LOGO, "logo");
-        float startX = (MEDIABOX.getWidth() - 99) / 2;
+        var ximage = PDImageXObject.createFromByteArray(doc, NAV_LOGO, "logo");
+        var startX = (MEDIABOX.getWidth() - 99) / 2;
         float offsetTop = 40;
         startY -= 62f / 2 + offsetTop;
         cos.getCos().drawImage(ximage, startX, startY, 99, 62);
@@ -240,7 +240,7 @@ public class PdfElementRenderer {
     public void addOutlineItem(FontAwarePdfDocument doc, PDPage page, PdfOutlineItem title) {
         PDPageDestination dest = new PDPageFitWidthDestination();
         dest.setPage(page);
-        PDOutlineItem bookmark = new PDOutlineItem();
+        var bookmark = new PDOutlineItem();
         bookmark.setDestination(dest);
         bookmark.setTitle(title.getTitle());
         doc.getPagesOutline().addLast(bookmark);

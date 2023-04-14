@@ -24,7 +24,7 @@ public class GruppeBlokk extends Blokk {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GruppeBlokk that = (GruppeBlokk) o;
+        var that = (GruppeBlokk) o;
         return Objects.equals(overskrift, that.overskrift) && Objects.equals(tabellRader, that.tabellRader);
     }
 

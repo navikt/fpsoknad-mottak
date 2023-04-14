@@ -77,9 +77,9 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             var page = newPage();
             doc.addPage(page);
             var cos = new FontAwareCos(doc, page);
-            float y = STARTY;
+            var y = STARTY;
             y -= header(doc, cos, y, person);
-            float headerSize = STARTY - y;
+            var headerSize = STARTY - y;
             y -= omBarn(svp, cos, y);
             y -= blankLine();
             var opptjening = svp.opptjening();
@@ -93,12 +93,12 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                     var tilrettelegging = sortertTilretteleggingsliste(arb.getValue());
                     var scratch1 = newPage();
                     var scratchcos = new FontAwareCos(doc, scratch1);
-                    float startY = STARTY;
+                    var startY = STARTY;
                     startY -= header(doc, scratchcos, startY, person);
-                    float size = renderTilrettelegging(arbeidsforhold, tilrettelagtArbeidsforhold, tilrettelegging,
+                    var size = renderTilrettelegging(arbeidsforhold, tilrettelagtArbeidsforhold, tilrettelegging,
                             søknad.getVedlegg(), scratchcos,
                             startY);
-                    float behov = startY - size;
+                    var behov = startY - size;
                     if (behov < y) {
                         scratchcos.close();
                         y = renderTilrettelegging(arbeidsforhold, tilrettelagtArbeidsforhold, tilrettelegging,
@@ -113,10 +113,10 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             if (!arbeidsforhold.isEmpty()) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                float startY = STARTY;
+                var startY = STARTY;
                 startY -= header(doc, scratchcos, startY, person);
-                float size = infoRenderer.arbeidsforholdOpptjening(arbeidsforhold, scratchcos, startY);
-                float behov = startY - size;
+                var size = infoRenderer.arbeidsforholdOpptjening(arbeidsforhold, scratchcos, startY);
+                var behov = startY - size;
                 if (behov < y) {
                     scratchcos.close();
                     y = infoRenderer.arbeidsforholdOpptjening(arbeidsforhold, cos, y);
@@ -128,10 +128,10 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             if (opptjening.frilans() != null) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                float startY = STARTY;
+                var startY = STARTY;
                 startY -= header(doc, scratchcos, startY, person);
-                float size = infoRenderer.frilansOpptjening(svp.opptjening().frilans(), scratchcos, startY);
-                float behov = startY - size;
+                var size = infoRenderer.frilansOpptjening(svp.opptjening().frilans(), scratchcos, startY);
+                var behov = startY - size;
                 if (behov < y) {
                     scratchcos.close();
                     y = infoRenderer.frilansOpptjening(svp.opptjening().frilans(), cos, y);
@@ -143,10 +143,10 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             if (!opptjening.egenNæring().isEmpty()) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                float startY = STARTY;
+                var startY = STARTY;
                 startY -= header(doc, scratchcos, startY, person);
-                float size = infoRenderer.egneNæringerOpptjening(opptjening.egenNæring(), scratchcos, startY);
-                float behov = startY - size;
+                var size = infoRenderer.egneNæringerOpptjening(opptjening.egenNæring(), scratchcos, startY);
+                var behov = startY - size;
                 if (behov <= y) {
                     scratchcos.close();
                     y = infoRenderer.egneNæringerOpptjening(opptjening.egenNæring(), cos, y);
@@ -158,13 +158,13 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             if (!opptjening.utenlandskArbeidsforhold().isEmpty()) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                float startY = STARTY;
+                var startY = STARTY;
                 startY -= header(doc, scratchcos, startY, person);
-                float size = infoRenderer.utenlandskeArbeidsforholdOpptjening(
+                var size = infoRenderer.utenlandskeArbeidsforholdOpptjening(
                         opptjening.utenlandskArbeidsforhold(),
                         søknad.getVedlegg(),
                         scratchcos, startY);
-                float behov = startY - size;
+                var behov = startY - size;
                 if (behov <= y) {
                     scratchcos.close();
                     y = infoRenderer.utenlandskeArbeidsforholdOpptjening(
@@ -178,10 +178,10 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             if (svp.medlemsskap() != null) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                float startY = STARTY;
+                var startY = STARTY;
                 startY -= header(doc, scratchcos, startY, person);
-                float size = renderMedlemskap(svp.medlemsskap(), scratchcos, startY);
-                float behov = startY - size;
+                var size = renderMedlemskap(svp.medlemsskap(), scratchcos, startY);
+                var behov = startY - size;
                 if (behov < y) {
                     scratchcos.close();
                     y = renderMedlemskap(svp.medlemsskap(), cos, y);
@@ -283,7 +283,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private float renderTilretteleggingsperioder(List<Tilrettelegging> perioder,
             List<Vedlegg> vedlegg, FontAwareCos cos, float y)
             throws IOException {
-        float startY = y;
+        var startY = y;
         var tilrettelegging = perioder.stream().findAny().orElseThrow(IllegalArgumentException::new);
         y -= renderer.addBulletPoint(INDENT,
                 txt("svp.behovfra", DATEFMT.format(tilrettelegging.getBehovForTilretteleggingFom())), cos, y);
@@ -307,7 +307,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private float renderIngenTilrettelegging(IngenTilrettelegging periode, FontAwareCos cos, float y)
             throws IOException {
-        float startY = y;
+        var startY = y;
         y -= renderer.addBulletPoint(INDENT,
                 txt("svp.sluttearbeid", DATEFMT.format(periode.getSlutteArbeidFom())), cos, y);
         return startY - y;
@@ -315,7 +315,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private float renderDelvisTilrettelegging(DelvisTilrettelegging periode, FontAwareCos cos, float y)
             throws IOException {
-        float startY = y;
+        var startY = y;
         y -= renderer.addBulletPoint(INDENT,
                 txt("svp.tilretteleggingfra", DATEFMT.format(periode.getTilrettelagtArbeidFom())), cos, y);
         y -= renderer.addBulletPoint(INDENT,
@@ -331,7 +331,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private float renderHelTilrettelegging(HelTilrettelegging periode, FontAwareCos cos, float y)
             throws IOException {
-        float startY = y;
+        var startY = y;
         y -= renderer.addBulletPoint(INDENT, txt("svp.tilretteleggingfra",
                 DATEFMT.format(periode.getTilrettelagtArbeidFom())), cos, y);
         return startY - y;
@@ -339,7 +339,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private float renderVedlegg(List<Vedlegg> vedlegg, List<VedleggReferanse> vedleggRefs, String keyIfAnnet,
                                 FontAwareCos cos, float y) throws IOException {
-        float startY = y;
+        var startY = y;
         if (!vedleggRefs.isEmpty()) {
             y -= renderer.addBulletPoint(INDENT, txt("vedlegg1"), cos, y);
         }
@@ -348,7 +348,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                     .filter(s -> vedleggRef.referanse().equals(s.getId()))
                     .findFirst();
             if (details.isPresent()) {
-                String beskrivelse = vedleggsBeskrivelse(keyIfAnnet, details.get());
+                var beskrivelse = vedleggsBeskrivelse(keyIfAnnet, details.get());
                 y -= renderer.addBulletPoint(INDENT * 2,
                         txt("vedlegg2", beskrivelse, details.get().getInnsendingsType().name()),
                         cos, y);
@@ -377,7 +377,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     }
 
     private float omBarn(Svangerskapspenger svp, FontAwareCos cos, float y) throws IOException {
-        float startY = y;
+        var startY = y;
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("ombarn"), cos, y);
         if (svp.fødselsdato() != null) {
             y -= renderer.addLineOfRegularText(
@@ -393,7 +393,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private float header(FontAwarePdfDocument doc, FontAwareCos cos, float y, InnsendingPersonInfo person)
             throws IOException {
-        float startY = y;
+        var startY = y;
         y -= renderer.addLogo(doc, cos, y);
         y -= renderer.addCenteredHeading(textFormatter.fromMessageSource("svp.søknad"), cos, y);
         y -= renderer.addCenteredRegular(

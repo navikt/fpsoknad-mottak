@@ -22,7 +22,7 @@ public class InfoskrivPdfEkstraktor {
         try (var doc = PDDocument.load(pdf)) {
             var outline = doc.getDocumentCatalog().getDocumentOutline();
             var node = outline.getFirstChild();
-            int startpageExtraction = infoskrivStartpage(node);
+            var startpageExtraction = infoskrivStartpage(node);
             if (startpageExtraction > -1) {
                 return extractPagesFrom(doc, startpageExtraction);
             }
@@ -33,7 +33,7 @@ public class InfoskrivPdfEkstraktor {
     }
 
     private static byte[] extractPagesFrom(PDDocument doc, int page) throws IOException {
-        PageExtractor pe = new PageExtractor(doc);
+        var pe = new PageExtractor(doc);
         pe.setStartPage(page);
         try (var infodoc = pe.extract()) {
             var baos = new ByteArrayOutputStream();

@@ -143,7 +143,7 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
             return y;
         }
         y -= renderer.addLeftHeading(txt("annenopptjening"), cos, y);
-        for (AnnenOpptjening annen : annenOpptjening) {
+        for (var annen : annenOpptjening) {
             y -= renderer.addLinesOfRegularText(INDENT, annen(annen), cos, y);
             y = renderVedlegg(vedlegg, annen.vedlegg(), "vedleggannenopptjening", cos, y);
             y -= PdfElementRenderer.BLANK_LINE;
@@ -237,7 +237,7 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
             y -= renderer.addLineOfRegularText(txt("dekningsgrad", dekningsgrad.kode()), cos, y);
         }
         var headerSize = 190F;
-        for (LukketPeriodeMedVedlegg periode : sorted(fordeling.perioder())) {
+        for (var periode : sorted(fordeling.perioder())) {
             if (periode.getClass().equals(UttaksPeriode.class)) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);

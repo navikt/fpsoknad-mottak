@@ -30,7 +30,7 @@ public class TabellRad extends Blokk {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TabellRad tabellRad = (TabellRad) o;
+        var tabellRad = (TabellRad) o;
         return Objects.equals(venstreTekst, tabellRad.venstreTekst) && Objects.equals(høyreTekst, tabellRad.høyreTekst) && Objects.equals(underBlokker, tabellRad.underBlokker);
     }
 

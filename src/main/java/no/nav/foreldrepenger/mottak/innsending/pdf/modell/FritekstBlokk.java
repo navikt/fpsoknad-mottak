@@ -17,7 +17,7 @@ public class FritekstBlokk extends Blokk {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FritekstBlokk that = (FritekstBlokk) o;
+        var that = (FritekstBlokk) o;
         return Objects.equals(tekst, that.tekst);
     }
 

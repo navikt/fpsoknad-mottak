@@ -136,13 +136,13 @@ public class KonvoluttGenerator {
     }
 
     private String xmlHovedDokument(Søknad søknad, AktørId søker, SøknadEgenskap egenskap) {
-        String hovedDokument = domainMapper.tilXML(søknad, søker, egenskap);
+        var hovedDokument = domainMapper.tilXML(søknad, søker, egenskap);
         LOG.debug(CONFIDENTIAL, "Hoveddokument er {}", hovedDokument);
         return hovedDokument;
     }
 
     private String xmlHovedDokument(Endringssøknad endringssøknad, AktørId søker, SøknadEgenskap egenskap) {
-        String hovedDokument = domainMapper.tilXML(endringssøknad, søker, egenskap);
+        var hovedDokument = domainMapper.tilXML(endringssøknad, søker, egenskap);
         LOG.debug(CONFIDENTIAL, "Hoveddokument endringssøknad er {}", hovedDokument);
         return hovedDokument;
     }

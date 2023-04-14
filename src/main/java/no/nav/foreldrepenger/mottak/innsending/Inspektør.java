@@ -9,7 +9,6 @@ import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.INITIELL_S
 import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.UKJENT;
 
 import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.domain.Ytelse;
 import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
@@ -22,7 +21,7 @@ final class Inspektør {
     }
 
     static SøknadEgenskap inspiser(Søknad søknad) {
-        Ytelse ytelse = søknad.getYtelse();
+        var ytelse = søknad.getYtelse();
         if (ytelse instanceof Foreldrepenger) {
             return INITIELL_FORELDREPENGER;
         }

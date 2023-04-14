@@ -14,7 +14,7 @@ public class PdfGeneratorStub implements PdfGenerator {
     private static final Random RANDOM = new Random();
     @Override
     public byte[] generate(DokumentBestilling dokument) {
-        byte[] result = new byte[1];
+        var result = new byte[1];
         RANDOM.nextBytes(result);
         return result;
     }

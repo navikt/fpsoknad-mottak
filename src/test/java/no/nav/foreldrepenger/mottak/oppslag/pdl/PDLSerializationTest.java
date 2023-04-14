@@ -252,12 +252,12 @@ class PDLSerializationTest {
     }
 
     void test(Object expected) {
-        String serialized = serialize(expected, true, mapper);
+        var serialized = serialize(expected, true, mapper);
         LOG.info("Expected {}", expected);
         LOG.info("Serialized {}", serialized);
 
         try {
-            Object deserialized = mapper.readValue(serialized, expected.getClass());
+            var deserialized = mapper.readValue(serialized, expected.getClass());
             LOG.info("Deserialized {}", deserialized);
             assertEquals(expected, deserialized);
         } catch (IOException e) {

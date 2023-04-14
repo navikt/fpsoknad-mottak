@@ -28,7 +28,7 @@ public class FeltBlokk extends Blokk {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FeltBlokk feltBlokk = (FeltBlokk) o;
+        var feltBlokk = (FeltBlokk) o;
         return Objects.equals(felt, feltBlokk.felt) && Objects.equals(verdi, feltBlokk.verdi);
     }
 

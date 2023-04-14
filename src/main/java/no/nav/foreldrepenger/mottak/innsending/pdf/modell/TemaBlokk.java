@@ -24,7 +24,7 @@ public class TemaBlokk extends Blokk {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TemaBlokk temaBlokk = (TemaBlokk) o;
+        var temaBlokk = (TemaBlokk) o;
         return Objects.equals(overskrift, temaBlokk.overskrift) && Objects.equals(underBlokker, temaBlokk.underBlokker);
     }
 

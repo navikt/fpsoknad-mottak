@@ -116,7 +116,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
                     stønad.relasjonTilBarn().getAntallBarn() > 1 ? "a" : "et");
         }
 
-        Fødsel fødsel = (Fødsel) stønad.relasjonTilBarn();
+        var fødsel = (Fødsel) stønad.relasjonTilBarn();
         var land = stønad.medlemsskap().landVedDato(fødsel.getFødselsdato().get(0));
         return textFormatter.fromMessageSource("fødtei",
                 textFormatter.countryName(land),

@@ -324,7 +324,7 @@ class PDLConnectionTest {
     }
 
     private String personOpplysningerBarnResponse(LocalDate fødselsdatoBarn, LocalDate doedsdato, String adressebeskyttelse) {
-        String graderingString = "";
+        var graderingString = "";
         if (adressebeskyttelse != null) {
             graderingString = String.format("""
                 ,
@@ -335,7 +335,7 @@ class PDLConnectionTest {
                 ]""", adressebeskyttelse);
         }
 
-        String doedsdatoString = "";
+        var doedsdatoString = "";
         if (doedsdato != null) {
             doedsdatoString = String.format("""
                 ,

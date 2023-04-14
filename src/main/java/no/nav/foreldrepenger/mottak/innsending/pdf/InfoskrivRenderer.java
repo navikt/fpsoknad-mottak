@@ -58,7 +58,7 @@ public class InfoskrivRenderer {
 
         var cos = førstesideInfoskriv(doc, cosOriginal);
 
-        float y = STARTY;
+        var y = STARTY;
         y = header(doc, cos, y);
         y -= addBlankLine();
         y -= renderer.addLeftHeading(txt("infoskriv.header",
@@ -88,14 +88,14 @@ public class InfoskrivRenderer {
         y -= renderer.addLinesOfRegularText(opplysninger, cos, y);
         y -= addBlankLine();
 
-        List<LukketPeriodeMedVedlegg> perioder = sorted(ytelse.fordeling().perioder());
-        List<UtsettelsesPeriode> ferieArbeidsperioder = ferieOgArbeid(perioder);
+        var perioder = sorted(ytelse.fordeling().perioder());
+        var ferieArbeidsperioder = ferieOgArbeid(perioder);
 
         if (!ferieArbeidsperioder.isEmpty()) {
-            PDPage scratch1 = newPage();
-            FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
-            float x = renderFerieArbeidsperioder(ferieArbeidsperioder, scratchcos, STARTY);
-            float behov = STARTY - x;
+            var scratch1 = newPage();
+            var scratchcos = new FontAwareCos(doc, scratch1);
+            var x = renderFerieArbeidsperioder(ferieArbeidsperioder, scratchcos, STARTY);
+            var behov = STARTY - x;
             if (behov < y) {
                 scratchcos.close();
                 y = renderFerieArbeidsperioder(ferieArbeidsperioder, cos, y);
@@ -105,13 +105,13 @@ public class InfoskrivRenderer {
             }
         }
 
-        List<GradertUttaksPeriode> gradertePerioder = tilGradertePerioder(perioder);
+        var gradertePerioder = tilGradertePerioder(perioder);
 
         if (!gradertePerioder.isEmpty()) {
-            PDPage scratch1 = newPage();
-            FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
-            float x = renderGradertePerioder(gradertePerioder, arbeidsforhold, scratchcos, STARTY);
-            float behov = STARTY - x;
+            var scratch1 = newPage();
+            var scratchcos = new FontAwareCos(doc, scratch1);
+            var x = renderGradertePerioder(gradertePerioder, arbeidsforhold, scratchcos, STARTY);
+            var behov = STARTY - x;
             if (behov < y) {
                 scratchcos.close();
                 renderGradertePerioder(gradertePerioder, arbeidsforhold, cos, y);
@@ -128,7 +128,7 @@ public class InfoskrivRenderer {
             float y) throws IOException {
         y -= renderer.addLineOfRegularText(txt("svp.kombinertarbeid"), cos, y);
         y -= addTinyBlankLine();
-        for (GradertUttaksPeriode periode : gradertePerioder) {
+        for (var periode : gradertePerioder) {
             y -= renderer.addLineOfRegularText(txt("fom", formattertDato(periode.getFom())), cos, y);
             y -= renderer.addLineOfRegularText(txt("tom", formattertDato(periode.getTom())), cos, y);
             if (periode.getVirksomhetsnummer() != null) {
@@ -153,7 +153,7 @@ public class InfoskrivRenderer {
     private float renderFerieArbeidsperioder(List<UtsettelsesPeriode> ferieArbeidsperioder, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLineOfRegularText(txt("svp.utsettelse"), cos, y);
         y -= addTinyBlankLine();
-        for (UtsettelsesPeriode periode : ferieArbeidsperioder) {
+        for (var periode : ferieArbeidsperioder) {
             y -= renderer.addLineOfRegularText(txt("fom", formattertDato(periode.getFom())), cos, y);
             y -= renderer.addLineOfRegularText(txt("tom", formattertDato(periode.getTom())), cos, y);
             y -= renderer.addLineOfRegularText(txt("utsettelsesårsak",
@@ -245,7 +245,7 @@ public class InfoskrivRenderer {
 
     private FontAwareCos førstesideInfoskriv(FontAwarePdfDocument doc, FontAwareCos cos) throws IOException {
         cos.close();
-        PDPage newPage = newPage();
+        var newPage = newPage();
         doc.addPage(newPage);
         renderer.addOutlineItem(doc, newPage, INFOSKRIV_OUTLINE);
         return new FontAwareCos(doc, newPage);
