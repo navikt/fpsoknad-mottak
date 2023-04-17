@@ -16,11 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import jakarta.validation.Valid;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import jakarta.validation.Valid;
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Saksnummer;
 import no.nav.foreldrepenger.common.domain.Søknad;
@@ -122,7 +121,7 @@ public record FordelMetadata(
     }
 
     private static DokumentType dokumentTypeFraRelasjonForEngangsstønad(Søknad søknad) {
-        var relasjon = Engangsstønad.class.cast(søknad.getYtelse()).relasjonTilBarn();
+        var relasjon = ((Engangsstønad) søknad.getYtelse()).relasjonTilBarn();
         if (relasjon instanceof Fødsel || relasjon instanceof FremtidigFødsel) {
             return I000003;
         }
@@ -133,7 +132,7 @@ public record FordelMetadata(
     }
 
     private static DokumentType dokumentTypeFraRelasjonForForeldrepenger(Søknad søknad) {
-        var relasjon = Foreldrepenger.class.cast(søknad.getYtelse()).relasjonTilBarn();
+        var relasjon = ((Foreldrepenger) søknad.getYtelse()).relasjonTilBarn();
         if (relasjon instanceof Fødsel || relasjon instanceof FremtidigFødsel) {
             return I000005;
         }
