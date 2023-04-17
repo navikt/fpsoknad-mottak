@@ -40,7 +40,7 @@
         <nv-i18n.version>1.29</nv-i18n.version>
         <reflections.version>0.10.2</reflections.version>
         <logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
-        <springdoc.version>1.7.0</springdoc.version>
+        <springdoc.version>2.1.0</springdoc.version>
         <spring.vault.version>4.0.1</spring.vault.version>
         <spring.graphql.version>2.0.1</spring.graphql.version>
     </properties>
@@ -155,7 +155,12 @@
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
+            <artifactId>springdoc-openapi-starter-common</artifactId>
+            <version>${springdoc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.version}</version>
         </dependency>
         <dependency>
