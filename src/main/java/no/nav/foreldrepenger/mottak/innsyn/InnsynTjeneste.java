@@ -15,9 +15,8 @@ import no.nav.foreldrepenger.common.domain.Barn;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.innsyn.AnnenPartVedtak;
 import no.nav.foreldrepenger.common.innsyn.FpSak;
-import no.nav.foreldrepenger.common.innsyn.PersonDetaljer;
+import no.nav.foreldrepenger.common.innsyn.Person;
 import no.nav.foreldrepenger.common.innsyn.Saker;
-import no.nav.foreldrepenger.common.innsyn.persondetaljer.Person;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 
 @Service
@@ -40,7 +39,7 @@ public class InnsynTjeneste implements Innsyn {
     public Saker saker(Fødselsnummer fnr) {
         var aktørId = pdl.aktørId(fnr);
         var saker = innsyn.saker(aktørId);
-        return berikPerson(saker, fnr);
+        return konvertAktørIdsTilFnr(saker, fnr);
     }
 
     @Override
@@ -65,14 +64,14 @@ public class InnsynTjeneste implements Innsyn {
         return vedtak;
     }
 
-    private Saker berikPerson(Saker saker, Fødselsnummer fnr) {
+    private Saker konvertAktørIdsTilFnr(Saker saker, Fødselsnummer fnr) {
         var beriketFpSaker = saker.foreldrepenger().stream()
-            .map(sak -> berikPerson(sak, fnr))
+            .map(sak -> konvertAktørIdsTilFnr(sak, fnr))
             .collect(Collectors.toSet());
         return new Saker(beriketFpSaker, saker.engangsstønad(), saker.svangerskapspenger());
     }
 
-    private FpSak berikPerson(FpSak sak, Fødselsnummer fnr) {
+    private FpSak konvertAktørIdsTilFnr(FpSak sak, Fødselsnummer fnr) {
         var søker = pdl.hentPersonMedAlleBarn(fnr);
         return new FpSak(sak.saksnummer(), sak.sakAvsluttet(), sak.sisteSøknadMottattDato(), sak.kanSøkeOmEndring(),
             sak.sakTilhørerMor(), sak.gjelderAdopsjon(), sak.morUføretrygd(), sak.harAnnenForelderTilsvarendeRettEØS(),
@@ -81,16 +80,14 @@ public class InnsynTjeneste implements Innsyn {
             barn(sak.barn(), søker.barn()), sak.dekningsgrad());
     }
 
-    private Set<PersonDetaljer> barn(Set<PersonDetaljer> barn, List<Barn> søkerBarn) {
+    private Set<Person> barn(Set<Person> barn, List<Barn> søkerBarn) {
         return barn.stream()
             .map(b -> {
-                var aktørId = (no.nav.foreldrepenger.common.innsyn.persondetaljer.AktørId) b;
-                var fødselsnummer = pdl.fnr(new AktørId(aktørId.value()));
+                var fødselsnummer = pdl.fnr(b.aktørId());
                 return søkerBarn.stream()
                     .filter(sb -> Objects.equals(sb.fnr(), fødselsnummer))
                     .findFirst()
-                    .map(bb -> new Person(new Fødselsnummer(bb.fnr().value()), bb.navn().fornavn(),
-                        bb.navn().mellomnavn(), bb.navn().etternavn(), null, bb.fødselsdato()))
+                    .map(bb -> new Person(bb.fnr(), null))
                     //Null her kan være adressebeskyttet barn, de er filtrert ut  i søkerBarn
                     .orElse(null);
             })
@@ -98,21 +95,13 @@ public class InnsynTjeneste implements Innsyn {
             .collect(Collectors.toSet());
     }
 
-    private no.nav.foreldrepenger.common.innsyn.AnnenPart berik(no.nav.foreldrepenger.common.innsyn.AnnenPart annenPart) {
+    private Person berik(Person annenPart) {
         if (annenPart == null) {
             return null;
         }
-        var aktørId = (no.nav.foreldrepenger.common.innsyn.persondetaljer.AktørId) annenPart.personDetaljer();
-        var fødselsnummer = pdl.fnr(new AktørId(aktørId.value()));
-        var navnOpt = pdl.annenPart(fødselsnummer.value());
-        if (navnOpt.isEmpty()) {
-            //Har fnr, men finner ikke navn. Mulig adressebeskyttelse
-            return null;
-        }
-        var navn = navnOpt.get();
-        var person = new Person(new Fødselsnummer(fødselsnummer.value()),
-            navn.fornavn(), navn.mellomnavn(), navn.etternavn(), null, null);
-        return new no.nav.foreldrepenger.common.innsyn.AnnenPart(person);
+        var aktørId = annenPart.aktørId();
+        var fødselsnummer = pdl.fnr(aktørId);
+        return new Person(fødselsnummer, null);
     }
 
     @Override
