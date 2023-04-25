@@ -17,7 +17,7 @@ on:
 jobs:
   deploy:
     name: Deploy dev
-    uses: navikt/fp-gha-workflows/.github/workflows/deploy.yml@main
+    uses: navikt/fp-gha-workflows/.github/workflows/deploy.yml@action/cleanup
     with:
       image: ghcr.io/${{ github.repository }}:${{ inputs.image }}
       cluster: ${{ inputs.environment }}-fss

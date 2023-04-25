@@ -15,7 +15,7 @@ on:
 jobs:
   build-app:
     name: Build
-    uses: navikt/fp-gha-workflows/.github/workflows/build-app-no-db.yml@main
+    uses: navikt/fp-gha-workflows/.github/workflows/build-app-no-db.yml@action/cleanup
     with:
       sonar-scan: true
       build-image: ${{ github.ref_name == 'master' }} # default: true
@@ -46,7 +46,7 @@ jobs:
     name: Deploy dev
     if: github.ref_name == 'master'
     needs: [build-app, verdikjede]
-    uses: navikt/fp-gha-workflows/.github/workflows/deploy.yml@main
+    uses: navikt/fp-gha-workflows/.github/workflows/deploy.yml@action/cleanup
     with:
       image: ghcr.io/${{ github.repository }}:${{ needs.build-app.outputs.build-version }}
       cluster: dev-fss
@@ -56,7 +56,7 @@ jobs:
     name: Deploy prod
     if: github.ref_name == 'master'
     needs: [build-app, verdikjede, deploy-dev]
-    uses: navikt/fp-gha-workflows/.github/workflows/deploy.yml@main
+    uses: navikt/fp-gha-workflows/.github/workflows/deploy.yml@action/cleanup
     with:
       image: ghcr.io/${{ github.repository }}:${{ needs.build-app.outputs.build-version }}
       cluster: prod-fss
