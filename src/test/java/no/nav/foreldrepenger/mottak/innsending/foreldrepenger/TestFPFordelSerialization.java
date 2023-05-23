@@ -149,7 +149,7 @@ class TestFPFordelSerialization {
 
     @Test
     void testKonvoluttEttersending() {
-        var es = new Ettersending(Saksnummer.valueOf("42"), EttersendingsType.FORELDREPENGER, List.of(VEDLEGG1, VEDLEGG2), null);
+        var es = new Ettersending(new Saksnummer("42"), EttersendingsType.FORELDREPENGER, List.of(VEDLEGG1, VEDLEGG2), null);
         var konvolutt = konvoluttGenerator.generer(es, SøknadEgenskap.ETTERSENDING_FORELDREPENGER, person().aktørId());
         assertNotNull(konvolutt.getMetadata());
         assertEquals(2, konvolutt.getVedlegg().size());

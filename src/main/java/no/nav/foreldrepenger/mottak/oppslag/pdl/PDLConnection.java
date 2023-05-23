@@ -99,7 +99,7 @@ public class PDLConnection implements PingEndpointAware, AktørIdTilFnrConverter
         return Optional.ofNullable(fnr)
                 .map(this::oppslagId)
                 .map(id -> mapIdent(id, AKTORID))
-                .map(AktørId::valueOf)
+                .map(AktørId::new)
                 .orElse(null);
     }
 

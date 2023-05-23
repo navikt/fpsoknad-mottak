@@ -1,12 +1,12 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
-import no.nav.foreldrepenger.common.domain.Fødselsnummer;
-import no.nav.foreldrepenger.common.domain.Navn;
-import no.nav.foreldrepenger.common.domain.Orgnummer;
-import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
-import no.nav.foreldrepenger.mottak.http.Retry;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.OrganisasjonsNavnDTO;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
+import static no.nav.foreldrepenger.common.domain.Orgnummer.MAGIC;
+import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ORGANISASJON;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.util.StringUtils.capitalize;
+
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,12 +14,13 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Optional;
-
-import static no.nav.foreldrepenger.common.domain.Orgnummer.MAGIC;
-import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ORGANISASJON;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.util.StringUtils.capitalize;
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Navn;
+import no.nav.foreldrepenger.common.domain.Orgnummer;
+import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
+import no.nav.foreldrepenger.mottak.http.Retry;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.OrganisasjonsNavnDTO;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 
 @Component
 public class OrganisasjonConnection extends AbstractWebClientConnection {
@@ -41,7 +42,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
             return personNavn(new Fødselsnummer(identifikator));
         }
         if (isOrgnr(identifikator)) {
-            return orgNavn(Orgnummer.valueOf(identifikator));
+            return orgNavn(new Orgnummer(identifikator));
         }
         return "";
     }

@@ -151,7 +151,7 @@ class MappablePdfGeneratorTest {
                 fordeling(VEDLEGG1.getMetadata().id()), null),
             TILLEGGSOPPLYSNINGER,
             List.of(VEDLEGG1),
-            Saksnummer.valueOf("123456789"));
+            new Saksnummer("123456789"));
         try (var fos = new FileOutputStream(filNavn)) {
             assertDoesNotThrow(() -> fos.write(gen.generer(endringssøknad, ENDRING_FORELDREPENGER, personInfo())));
         }

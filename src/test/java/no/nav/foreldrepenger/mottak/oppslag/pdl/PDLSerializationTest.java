@@ -58,8 +58,8 @@ class PDLSerializationTest {
     private static final LocalDate ANNENFØDT = LocalDate.now().minusYears(30);
     private static final LocalDate MORFØDT = LocalDate.now().minusYears(29);
 
-    private static final AktørId AKTØR_SØKER = AktørId.valueOf("22222222222");
-    private static final AktørId AKTØR_ANNEN = AktørId.valueOf("33333333333");
+    private static final AktørId AKTØR_SØKER = new AktørId("22222222222");
+    private static final AktørId AKTØR_ANNEN = new AktørId("33333333333");
 
     @Autowired
     private ObjectMapper mapper;

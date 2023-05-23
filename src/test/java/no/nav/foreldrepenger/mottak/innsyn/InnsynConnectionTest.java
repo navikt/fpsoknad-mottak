@@ -1,8 +1,12 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import no.nav.foreldrepenger.common.domain.AktørId;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
+import static io.netty.handler.codec.http.HttpResponseStatus.FORBIDDEN;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+import java.net.URI;
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -10,12 +14,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.io.IOException;
-import java.net.URI;
-import java.time.LocalDate;
-
-import static io.netty.handler.codec.http.HttpResponseStatus.FORBIDDEN;
-import static org.assertj.core.api.Assertions.assertThat;
+import no.nav.foreldrepenger.common.domain.AktørId;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 
 @ExtendWith(SpringExtension.class)
 class InnsynConnectionTest {
@@ -45,8 +46,8 @@ class InnsynConnectionTest {
             .setResponseCode(FORBIDDEN.code())
             .setBody("Ikke tilgang til å slå opp person!"));
 
-        var annenPartVedtakRequest = new AnnenPartVedtakRequest(AktørId.valueOf("12345678910"),
-            AktørId.valueOf("10987654321"),
+        var annenPartVedtakRequest = new AnnenPartVedtakRequest(new AktørId("12345678910"),
+            new AktørId("10987654321"),
             null,
             LocalDate.now().minusWeeks(2));
         var uttaksplanAnnenpart = innsynConnection.annenPartVedtak(annenPartVedtakRequest);
