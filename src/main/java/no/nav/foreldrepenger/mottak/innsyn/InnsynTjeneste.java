@@ -77,7 +77,7 @@ public class InnsynTjeneste implements Innsyn {
             sak.sakTilhørerMor(), sak.gjelderAdopsjon(), sak.morUføretrygd(), sak.harAnnenForelderTilsvarendeRettEØS(),
             sak.ønskerJustertUttakVedFødsel(), sak.rettighetType(),
             berik(sak.annenPart()), sak.familiehendelse(), sak.gjeldendeVedtak(), sak.åpenBehandling(),
-            barn(sak.barn(), søker.barn()), sak.dekningsgrad());
+            barn(sak.barn(), søker.barn()), sak.dekningsgrad(), sak.oppdatertTidspunkt());
     }
 
     private Set<Person> barn(Set<Person> barn, List<Barn> søkerBarn) {
