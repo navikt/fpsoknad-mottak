@@ -73,7 +73,7 @@ public class InnsynTjeneste implements Innsyn {
 
     private FpSak konvertAktørIdsTilFnr(FpSak sak, Fødselsnummer fnr) {
         var søker = pdl.hentPersonMedAlleBarn(fnr);
-        return new FpSak(sak.saksnummer(), sak.sakAvsluttet(), sak.sisteSøknadMottattDato(), sak.kanSøkeOmEndring(),
+        return new FpSak(sak.saksnummer(), sak.sakAvsluttet(), sak.kanSøkeOmEndring(),
             sak.sakTilhørerMor(), sak.gjelderAdopsjon(), sak.morUføretrygd(), sak.harAnnenForelderTilsvarendeRettEØS(),
             sak.ønskerJustertUttakVedFødsel(), sak.rettighetType(),
             berik(sak.annenPart()), sak.familiehendelse(), sak.gjeldendeVedtak(), sak.åpenBehandling(),
