@@ -80,7 +80,7 @@ public class InfoskrivRenderer {
         y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf3", formattertFornavn), cos, y);
         y -= addTinyBlankLine();
         y -= addBlankLine();
-        y -= renderer.addLeftHeading(txt("infoskriv.opplysningerfrasøknad", formattertFornavn), cos, y);
+        y -= renderer.addLeftHeading(txt("infoskriv.opplysningerfrasøknad", fulltNavn), cos, y);
         y -= addTinyBlankLine();
         List<String> opplysninger = new ArrayList<>();
         opplysninger.add(txt("infoskriv.arbeidstaker", person.fnr().value()));
