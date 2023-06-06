@@ -71,7 +71,7 @@ public class InfoskrivRenderer {
         if (!erSperreFristPassert(datoInntektsmelding)) {
             y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf1", fulltNavn, fristTekstFra(datoInntektsmelding)), cos, y);
         } else {
-            y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf1.passert", formattertFornavn), cos, y);
+            y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf1.passert", fulltNavn), cos, y);
         }
 
         y -= addTinyBlankLine();
