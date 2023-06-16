@@ -54,9 +54,6 @@ no.nav:
     jwt:
       client:
         registration:
-          fpinfo:
-            token-exchange:
-              audience: dev-fss:teamforeldrepenger:fpinfo
           fpfordel:
             token-exchange:
               audience: dev-fss:teamforeldrepenger:fpfordel
