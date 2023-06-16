@@ -30,9 +30,6 @@ no.nav:
           fpfordel:
             token-exchange:
               audience: lokal
-          fpinfo:
-            token-exchange:
-              audience: lokal
           pdl-api:
             token-exchange:
               audience: lokal
@@ -72,8 +69,6 @@ fpfordel:
   fpfordel-max: ${fpfordel.max}
 digdir:
   base-uri: ${digdir.base.url}
-innsyn:
-  base-uri: ${fpinfo.override.url}
 
 mottak:
   sender:

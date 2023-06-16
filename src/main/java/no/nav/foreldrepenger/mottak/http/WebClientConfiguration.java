@@ -1,20 +1,18 @@
 package no.nav.foreldrepenger.mottak.http;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
-import no.nav.foreldrepenger.common.util.MDCUtil;
-import no.nav.foreldrepenger.common.util.TokenUtil;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelConfig;
-import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorConfig;
-import no.nav.foreldrepenger.mottak.innsyn.InnsynConfig;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
-import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConfig;
-import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConfig;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig;
-import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
-import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
-import no.nav.security.token.support.client.spring.oauth2.ClientConfigurationPropertiesMatcher;
+import static no.nav.boot.conditionals.EnvUtil.isDevOrLocal;
+import static no.nav.foreldrepenger.common.util.Constants.FORELDREPENGER;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID1;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID2;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_ID;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_PERSON_IDENT;
+import static no.nav.foreldrepenger.common.util.TokenUtil.BEARER;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
+import java.time.Duration;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,21 +26,24 @@ import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.Builder;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
+import no.nav.foreldrepenger.common.util.MDCUtil;
+import no.nav.foreldrepenger.common.util.TokenUtil;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelConfig;
+import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorConfig;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
+import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConfig;
+import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConfig;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig;
+import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
+import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
+import no.nav.security.token.support.client.spring.oauth2.ClientConfigurationPropertiesMatcher;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
-
-import java.time.Duration;
-import java.util.Optional;
-
-import static no.nav.boot.conditionals.EnvUtil.isDevOrLocal;
-import static no.nav.foreldrepenger.common.util.Constants.FORELDREPENGER;
-import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
-import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID1;
-import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID2;
-import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_ID;
-import static no.nav.foreldrepenger.common.util.Constants.NAV_PERSON_IDENT;
-import static no.nav.foreldrepenger.common.util.TokenUtil.BEARER;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Configuration
 public class WebClientConfiguration {
@@ -52,7 +53,6 @@ public class WebClientConfiguration {
     public static final String PDL_USER = "PDL";
     public static final String PDL_SYSTEM = "PDL-RELASJON";
     public static final String KRR = "KRR";
-    public static final String FPINFO = "FPINFO";
     public static final String FPFORDEL = "FPFORDEL";
     public static final String PDF_GENERATOR = "PDF_GENERATOR";
     public static final String ARBEIDSFORHOLD = "ARBEIDSFORHOLD";
@@ -89,15 +89,6 @@ public class WebClientConfiguration {
     @Bean
     @Qualifier(FPFORDEL)
     public WebClient webClientFpfordel(Builder builder, FordelConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
-        return builder
-            .baseUrl(cfg.getBaseUri().toString())
-            .filter(tokenXFilterFunction)
-            .build();
-    }
-
-    @Bean
-    @Qualifier(FPINFO)
-    public WebClient webClientFpinfo(Builder builder, InnsynConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
             .baseUrl(cfg.getBaseUri().toString())
             .filter(tokenXFilterFunction)

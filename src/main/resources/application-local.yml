@@ -41,8 +41,6 @@ fpfordel:
   base-uri: http://localhost:8090/fpfordel
 digdir:
   base-uri: http://localhost:8060/rest/api/digdir
-innsyn:
-  base-uri: http://localhost:8040/fpinfo
 kafka:
   username: vtp
   password: vtp
@@ -55,13 +53,6 @@ no.nav:
     jwt:
       client:
         registration:
-          fpinfo:
-            well-known-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
-            token-exchange:
-              audience: local:teamforeldrepenger:fpinfo
-            authentication:
-              client-id: fpsoknad-mottak
-              client-jwk: src/test/resources/tokenx/jwk.json
           fpfordel:
             well-known-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
             token-exchange:
