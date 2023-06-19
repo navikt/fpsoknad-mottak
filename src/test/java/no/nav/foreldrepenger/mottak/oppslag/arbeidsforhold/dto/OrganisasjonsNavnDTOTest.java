@@ -8,7 +8,7 @@ class OrganisasjonsNavnDTOTest {
 
     @Test
     void test1() {
-        var navn = new NavnDTO("navnelinje1", "navnelinje2", "navnelinje3", "navnelinje4", "navnelinje5");
+        var navn = new OrganisasjonsNavnDTO.NavnDTO("sammensatt", "navnelinje1", "navnelinje2", "navnelinje3", "navnelinje4", "navnelinje5");
         var organisasjonsNavnDTO = new OrganisasjonsNavnDTO(navn);
 
         assertThat(organisasjonsNavnDTO.tilOrganisasjonsnavn())
@@ -17,7 +17,7 @@ class OrganisasjonsNavnDTOTest {
 
     @Test
     void test2() {
-        var navn = new NavnDTO("navnelinje1", "navnelinje2", null, "", null);
+        var navn = new OrganisasjonsNavnDTO.NavnDTO("sammensatt", "navnelinje1", "navnelinje2", null, "", null);
         var organisasjonsNavnDTO = new OrganisasjonsNavnDTO(navn);
 
         assertThat(organisasjonsNavnDTO.tilOrganisasjonsnavn())
@@ -26,7 +26,7 @@ class OrganisasjonsNavnDTOTest {
 
     @Test
     void test3() {
-        var navn = new NavnDTO(null, null, "navnelinje3", null, null);
+        var navn = new OrganisasjonsNavnDTO.NavnDTO("sammensatt", null, null, "navnelinje3", null, null);
         var organisasjonsNavnDTO = new OrganisasjonsNavnDTO(navn);
 
         assertThat(organisasjonsNavnDTO.tilOrganisasjonsnavn())
@@ -35,7 +35,7 @@ class OrganisasjonsNavnDTOTest {
 
     @Test
     void test4() {
-        var navn = new NavnDTO(null, null, null, null, null);
+        var navn = new OrganisasjonsNavnDTO.NavnDTO(null,null, null, null, null, null);
         var organisasjonsNavnDTO = new OrganisasjonsNavnDTO(navn);
 
         assertThat(organisasjonsNavnDTO.tilOrganisasjonsnavn())

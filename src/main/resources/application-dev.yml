@@ -44,7 +44,7 @@ arbeidsforhold:
 digdir:
   base-uri: https://digdir-krr-proxy.dev.intern.nav.no
 organisasjon:
-  base-uri: https://modapp-q1.adeo.no/ereg/api
+  base-uri: https://ereg-services-q1.dev.intern.nav.no/api/v2/
 kontoregister:
   base-uri: https://sokos-kontoregister-person.dev.intern.nav.no
 sts:

@@ -10,4 +10,7 @@ public record OrganisasjonsNavnDTO(NavnDTO navn) {
             .filter(s -> s != null && !s.isEmpty())
             .collect(Collectors.joining(", "));
     }
+
+    public record NavnDTO(String sammensattnavn, String navnelinje1, String navnelinje2, String navnelinje3, String navnelinje4, String navnelinje5) {
+    }
 }
