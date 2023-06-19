@@ -1,19 +1,20 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
-import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
+import static org.springframework.web.util.UriComponentsBuilder.newInstance;
+
+import java.net.URI;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.web.util.UriBuilder;
 
-import java.net.URI;
-
-import static org.springframework.web.util.UriComponentsBuilder.newInstance;
+import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 
 @ConfigurationProperties(prefix = "organisasjon")
 public class OrganisasjonConfig extends AbstractConfig {
 
-    private static final String DEFAULT_BASE_URI = "https://modapp.adeo.no/ereg/api";
-    private static final String V1_ORGANISASJON = "/v1/organisasjon/{orgnr}";
+    private static final String DEFAULT_BASE_URI = "https://ereg-services.intern.nav.no/api/v2/organisasjon";
+    private static final String V1_ORGANISASJON = "/{orgnr}";
     private static final String HISTORIKK = "historikk";
     private static final String NAV = "998004993";
     private final String organisasjonPath;

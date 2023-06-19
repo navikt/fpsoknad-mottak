@@ -53,7 +53,7 @@ no.nav:
 arbeidsforhold:
   base-uri: ${aareg.rs.url}
 organisasjon:
-  base-uri: ${organisasjon.rs.base.url}
+  base-uri: ${organisasjon.rs.url}
 sts:
   base-uri: ${oidc.sts.issuer.url}
 fppdfgen:
