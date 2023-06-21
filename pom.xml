@@ -39,7 +39,7 @@
         <pdfbox.version>2.0.28</pdfbox.version>
         <nv-i18n.version>1.29</nv-i18n.version>
         <reflections.version>0.10.2</reflections.version>
-        <logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
+        <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
         <springdoc.version>2.1.0</springdoc.version>
         <spring.vault.version>4.0.1</spring.vault.version>
         <spring.graphql.version>2.0.1</spring.graphql.version>
