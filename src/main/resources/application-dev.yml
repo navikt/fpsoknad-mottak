@@ -47,8 +47,6 @@ organisasjon:
   base-uri: https://ereg-services-q1.dev.intern.nav.no/api/v2/organisasjon
 kontoregister:
   base-uri: https://sokos-kontoregister-person.dev.intern.nav.no
-sts:
-  base-uri: https://security-token-service.nais.preprod.local
 no.nav:
   security:
     jwt:
