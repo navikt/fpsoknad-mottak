@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
 import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.ENDRING_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerFpSøknad;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerFørstegangFpSøknad;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerSøknad;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerFørstegangssøknad;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ public class MottakController {
     @PostMapping("/send")
     public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
         var søknadEgenskap = Inspektør.inspiser(søknad);
-        validerFørstegangFpSøknad(søknad);
+        validerFørstegangssøknad(søknad);
         var innsendingPersonInfo = personInfo();
         return søknadSender.søk(søknad, søknadEgenskap, innsendingPersonInfo);
     }
@@ -58,7 +58,7 @@ public class MottakController {
 
     @PostMapping("/endre")
     public Kvittering endre(@Valid @RequestBody Endringssøknad endringssøknad) {
-        validerFpSøknad(endringssøknad.getYtelse());
+        validerSøknad(endringssøknad.getYtelse());
         var innsendingPersonInfo = personInfo();
         return søknadSender.endreSøknad(endringssøknad, ENDRING_FORELDREPENGER, innsendingPersonInfo);
     }
