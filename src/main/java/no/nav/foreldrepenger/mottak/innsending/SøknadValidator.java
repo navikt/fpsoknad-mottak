@@ -5,6 +5,8 @@ import java.util.Objects;
 
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.Ytelse;
+import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Adopsjon;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
@@ -17,20 +19,32 @@ final class SøknadValidator {
         // Skal ikke instansieres
     }
 
-    static void validerFørstegangFpSøknad(Søknad søknad) {
+    static void validerFørstegangssøknad(Søknad søknad) {
         var ytelse = søknad.getYtelse();
-        validerFpSøknad(ytelse);
+        validerSøknad(ytelse);
         if (ytelse instanceof Foreldrepenger foreldrepenger) {
+            if (foreldrepenger.relasjonTilBarn() instanceof Adopsjon adopsjon) {
+                validerAdopsjon(adopsjon);
+            }
             var perioder = foreldrepenger.fordeling().perioder();
             //Allerede validert på minst en periode
             if (perioder.stream().allMatch(SøknadValidator::erFriUtsettelse)) {
                 throw new UnexpectedInputException(
                     "Søknad må inneholde minst en søknadsperiode som ikke er fri utsettelse");
             }
+        } else if (ytelse instanceof Engangsstønad engangsstønad && engangsstønad.relasjonTilBarn() instanceof Adopsjon adopsjon) {
+            validerAdopsjon(adopsjon);
         }
     }
 
-    static void validerFpSøknad(Ytelse ytelse) {
+    static void validerAdopsjon(Adopsjon adopsjon) {
+        //caser i endringssøknad der ikke fødselsdatoer stemmer med antall barn. Feks hvis ett barn er mer enn 3 år
+        if (adopsjon.getFødselsdato() != null && adopsjon.getFødselsdato().size() != adopsjon.getAntallBarn()) {
+            throw new UnexpectedInputException("Ved adopsjon må antall barn match antall fødselsdatoer oppgitt!");
+        }
+    }
+
+    static void validerSøknad(Ytelse ytelse) {
         if (ytelse instanceof Foreldrepenger foreldrepenger) {
             var perioder = foreldrepenger.fordeling().perioder();
             if (perioder.isEmpty()) {
