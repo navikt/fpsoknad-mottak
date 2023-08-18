@@ -83,22 +83,20 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
     public float annenForelder(AnnenForelder annenForelder, Boolean erAnnenForlderInformert,
             Rettigheter rettigheter, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("omannenforelder"), cos, y);
-        switch (annenForelder) {
-            case NorskForelder norskForelder -> {
-                y -= renderer.addLinesOfRegularText(INDENT, norskForelder(norskForelder), cos, y);
-                if (rettigheter.harAleneOmsorgForBarnet() != null) {
-                    y -= renderer.addLineOfRegularText(INDENT,
-                        txt(ALENESORG_KEY, jaNei(rettigheter.harAleneOmsorgForBarnet())), cos, y);
-                }
+        if (annenForelder instanceof NorskForelder norskForelder) {
+            y -= renderer.addLinesOfRegularText(INDENT, norskForelder(norskForelder), cos, y);
+            if (rettigheter.harAleneOmsorgForBarnet() != null) {
+                y -= renderer.addLineOfRegularText(INDENT,
+                    txt(ALENESORG_KEY, jaNei(rettigheter.harAleneOmsorgForBarnet())), cos, y);
             }
-            case UtenlandskForelder utenlandskForelder -> {
-                y -= renderer.addLinesOfRegularText(INDENT, utenlandskForelder(utenlandskForelder), cos, y);
-                if (rettigheter.harAleneOmsorgForBarnet() != null) {
-                    y -= renderer.addLineOfRegularText(INDENT,
-                        txt(ALENESORG_KEY, jaNei(rettigheter.harAleneOmsorgForBarnet())), cos, y);
-                }
+        } else if (annenForelder instanceof UtenlandskForelder utenlandskForelder) {
+            y -= renderer.addLinesOfRegularText(INDENT, utenlandskForelder(utenlandskForelder), cos, y);
+            if (rettigheter.harAleneOmsorgForBarnet() != null) {
+                y -= renderer.addLineOfRegularText(INDENT,
+                    txt(ALENESORG_KEY, jaNei(rettigheter.harAleneOmsorgForBarnet())), cos, y);
             }
-            default -> y -= renderer.addLineOfRegularText(INDENT, "Jeg kan ikke oppgi navnet til den andre forelderen", cos, y);
+        } else {
+            y -= renderer.addLineOfRegularText(INDENT, "Jeg kan ikke oppgi navnet til den andre forelderen", cos, y);
         }
         if (!(annenForelder instanceof UkjentForelder)) {
             y -= renderer.addLineOfRegularText(INDENT, txt("harrett", jaNei(rettigheter.harAnnenForelderRett())), cos, y);

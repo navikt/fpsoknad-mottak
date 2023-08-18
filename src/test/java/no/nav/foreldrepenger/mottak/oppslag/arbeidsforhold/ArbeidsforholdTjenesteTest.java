@@ -1,5 +1,23 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.io.IOException;
+import java.net.URI;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.List;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+
 import no.nav.foreldrepenger.common.domain.Orgnummer;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.AnsettelsesperiodeDTO;
@@ -11,24 +29,6 @@ import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.Periode;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-
-import java.io.IOException;
-import java.net.URI;
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.List;
-
-import static io.netty.handler.codec.http.HttpResponseStatus.BAD_GATEWAY;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 class ArbeidsforholdTjenesteTest {
@@ -53,11 +53,10 @@ class ArbeidsforholdTjenesteTest {
         mockWebServer.start(63631);
         var baseUrl = String.format("http://localhost:%s", mockWebServer.getPort());
         var webClient = WebClient.builder().baseUrl(baseUrl).build();
-        var organisasjonConfig = new OrganisasjonConfig(URI.create(baseUrl), "/v1/organisasjon/{orgnr}", true);
+        var organisasjonConfig = new OrganisasjonConfig(URI.create(baseUrl), "/v1/organisasjon/{orgnr}");
         var organisasjonConnection = new OrganisasjonConnection(webClient, pdlConnection, organisasjonConfig);
-        var arbeidsforholdConfig = new ArbeidsforholdConfig(URI.create(baseUrl), "/ping",
-            "v1/arbeidstaker/arbeidsforhold", true, Period.of(3,0,0),
-            false);
+        var arbeidsforholdConfig = new ArbeidsforholdConfig(URI.create(baseUrl),
+            "v1/arbeidstaker/arbeidsforhold", Period.of(3,0,0), false);
         var arbeidsforholdConnection = new ArbeidsforholdConnection(webClient, arbeidsforholdConfig);
         arbeidsforholdTjeneste = new ArbeidsforholdTjeneste(arbeidsforholdConnection, organisasjonConnection);
     }

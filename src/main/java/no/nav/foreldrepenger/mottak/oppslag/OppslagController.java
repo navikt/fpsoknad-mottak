@@ -14,7 +14,6 @@ import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
-import no.nav.security.token.support.core.api.Unprotected;
 
 @ProtectedRestController(OppslagController.OPPSLAG_PATH)
 public class OppslagController {
@@ -31,12 +30,6 @@ public class OppslagController {
         this.pdl = pdl;
         this.arbeidsforhold = arbeidsforhold;
         this.tokenUtil = tokenUtil;
-    }
-
-    @GetMapping("/ping")
-    @Unprotected
-    public String ping() {
-        return pdl.ping();
     }
 
     @GetMapping("/aktoer")

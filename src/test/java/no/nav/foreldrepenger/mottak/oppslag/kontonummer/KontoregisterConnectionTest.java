@@ -29,7 +29,7 @@ class KontoregisterConnectionTest {
 
         var baseUrl = String.format("http://localhost:%s", mockWebServer.getPort());
         var webClient = WebClient.create();
-        var kontoregisterConfig = new KontoregisterConfig(URI.create(baseUrl), "/", true);
+        var kontoregisterConfig = new KontoregisterConfig(URI.create(baseUrl));
         kontoregisterConnection = new KontoregisterConnection(webClient, kontoregisterConfig);
     }
 

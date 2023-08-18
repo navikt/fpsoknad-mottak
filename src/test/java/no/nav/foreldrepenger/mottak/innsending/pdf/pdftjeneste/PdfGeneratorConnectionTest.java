@@ -27,7 +27,7 @@ class PdfGeneratorConnectionTest {
 
         var baseUrl = String.format("http://localhost:%s", mockWebServer.getPort());
         var webClient = WebClient.create();
-        var pdfGeneratorConfig = new PdfGeneratorConfig(URI.create(baseUrl), "/api/v1/genpdf/is_alive", "/api/v1/genpdf/soknad-v2/soknad", true);
+        var pdfGeneratorConfig = new PdfGeneratorConfig(URI.create(baseUrl), "/api/v1/genpdf/soknad-v2/soknad", true);
         pdfGeneratorConnection = new PdfGeneratorConnection(webClient, pdfGeneratorConfig);
     }
 

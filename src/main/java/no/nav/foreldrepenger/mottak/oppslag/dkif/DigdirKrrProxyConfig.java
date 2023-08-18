@@ -1,30 +1,31 @@
 package no.nav.foreldrepenger.mottak.oppslag.dkif;
 
-import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.bind.DefaultValue;
+import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
 import java.net.URI;
 
-import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @ConfigurationProperties(prefix = "digdir")
-public class DigdirKrrProxyConfig extends AbstractConfig {
+public class DigdirKrrProxyConfig {
 
-    private static final String DEFAULT_PING_PATH = "rest/ping";
     private static final String DEFAULT_PERSON_PATH = "rest/v1/person";
     private static final String DEFAULT_BASE_URI = "https://digdir-krr-proxy.intern.nav.no";
     private final String personPath;
+    private final URI baseUri;
 
     public DigdirKrrProxyConfig(@DefaultValue(DEFAULT_BASE_URI) URI baseUri,
-                                @DefaultValue(DEFAULT_PING_PATH) String pingPath,
-                                @DefaultValue(DEFAULT_PERSON_PATH) String personPath,
-                                @DefaultValue("true") boolean enabled) {
-        super(baseUri, pingPath, enabled);
+                                @DefaultValue(DEFAULT_PERSON_PATH) String personPath) {
+        this.baseUri = baseUri;
         this.personPath = personPath;
     }
 
     URI kontaktUri() {
         return uri(getBaseUri(), personPath);
+    }
+
+    public URI getBaseUri() {
+        return baseUri;
     }
 }

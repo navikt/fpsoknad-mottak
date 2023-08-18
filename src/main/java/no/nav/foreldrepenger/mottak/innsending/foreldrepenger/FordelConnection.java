@@ -1,24 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import no.nav.foreldrepenger.common.innsending.SøknadType;
-import no.nav.foreldrepenger.common.innsending.foreldrepenger.FPSakFordeltKvittering;
-import no.nav.foreldrepenger.common.innsending.foreldrepenger.FordelKvittering;
-import no.nav.foreldrepenger.common.innsending.foreldrepenger.GosysKvittering;
-import no.nav.foreldrepenger.common.innsending.foreldrepenger.PendingKvittering;
-import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
-import no.nav.foreldrepenger.mottak.http.Retry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-
-import java.net.URI;
-import java.time.Duration;
-import java.util.Optional;
-
 import static no.nav.foreldrepenger.common.util.CounterRegistry.FEILET_KVITTERINGER;
 import static no.nav.foreldrepenger.common.util.CounterRegistry.FORDELT_KVITTERING;
 import static no.nav.foreldrepenger.common.util.CounterRegistry.FP_SENDFEIL;
@@ -29,15 +10,35 @@ import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.MULTIPART_MIXED;
 
+import java.net.URI;
+import java.time.Duration;
+import java.util.Optional;
+
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import no.nav.foreldrepenger.common.innsending.SøknadType;
+import no.nav.foreldrepenger.common.innsending.foreldrepenger.FPSakFordeltKvittering;
+import no.nav.foreldrepenger.common.innsending.foreldrepenger.FordelKvittering;
+import no.nav.foreldrepenger.common.innsending.foreldrepenger.GosysKvittering;
+import no.nav.foreldrepenger.common.innsending.foreldrepenger.PendingKvittering;
+import no.nav.foreldrepenger.mottak.http.Retry;
+import reactor.core.publisher.Mono;
+
 @Component
-public class FordelConnection extends AbstractWebClientConnection {
+public class FordelConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(FordelConnection.class);
-
+    private final WebClient webClient;
     private final FordelConfig cfg;
 
     protected FordelConnection(@Qualifier(FPFORDEL) WebClient webClient, FordelConfig cfg) {
-        super(webClient, cfg);
+        this.webClient = webClient;
         this.cfg = cfg;
     }
 
@@ -86,16 +87,18 @@ public class FordelConnection extends AbstractWebClientConnection {
             var httpStatus = leveranseRespons != null ? leveranseRespons.getStatusCode() : null;
             throw new InnsendingFeiletFpFordelException(httpStatus, "Tom respons fra fpfordel. Må sjekkes opp");
         }
-
-        return switch (leveranseRespons.getBody()) {
-            case FPSakFordeltKvittering kvittering -> håndterFpsakFordeltKvittering(kvittering);
-            case PendingKvittering kvittering -> håndterPendingKvittering(locationFra(leveranseRespons), kvittering);
-            case GosysKvittering kvittering -> håndterGosysKvittering(kvittering);
-            default -> {
-                FEILET_KVITTERINGER.increment();
-                throw new InnsendingFeiletFpFordelException(leveranseRespons.getStatusCode() + " Uventet format på kvitteringen mottatt ved innsending av dokument!");
-            }
-        };
+        var body = leveranseRespons.getBody();
+        if (body instanceof FPSakFordeltKvittering kvittering) {
+            return håndterFpsakFordeltKvittering(kvittering);
+        }
+        if (body instanceof PendingKvittering kvittering) {
+            return håndterPendingKvittering(locationFra(leveranseRespons), kvittering);
+        }
+        if (body instanceof GosysKvittering kvittering) {
+            return håndterGosysKvittering(kvittering);
+        }
+        FEILET_KVITTERINGER.increment();
+        throw new InnsendingFeiletFpFordelException(leveranseRespons.getStatusCode() + " Uventet format på kvitteringen mottatt ved innsending av dokument!");
     }
 
     private static FordelResultat håndterFpsakFordeltKvittering(FPSakFordeltKvittering kvittering) {
@@ -122,18 +125,7 @@ public class FordelConnection extends AbstractWebClientConnection {
                 throw new UventetPollingStatusFpFordelException(httpStatus, "Tom respons fra fpfordel ved polling på status.");
             }
 
-            var fordelResultat = switch (kvittering.getBody()) {
-                case FPSakFordeltKvittering fpSakFordeltKvittering -> håndterFpsakFordeltKvittering(fpSakFordeltKvittering);
-                case GosysKvittering gosysKvittering -> håndterGosysKvittering(gosysKvittering);
-                case PendingKvittering ignored -> {
-                    LOG.info("Fikk pending kvittering på {}. forsøk", i);
-                    yield null;
-                }
-                default -> {
-                    FEILET_KVITTERINGER.increment();
-                    throw new UventetPollingStatusFpFordelException(kvittering.getStatusCode(), "Uventet kvitteringer etter leveranse av søknad, gir opp");
-                }
-            };
+            var fordelResultat = oversett(kvittering, i);
 
             if (fordelResultat != null) {
                 return fordelResultat;
@@ -142,6 +134,23 @@ public class FordelConnection extends AbstractWebClientConnection {
         LOG.info("Pollet FPFordel {} ganger, uten å få svar, gir opp", cfg.maxPollingForsøk());
         GITTOPP_KVITTERING.increment();
         throw new UventetPollingStatusFpFordelException("Forsendelser er mottatt, men ikke fordel. ");
+    }
+
+    @Nullable
+    private static FordelResultat oversett(ResponseEntity<FordelKvittering> response, int forsøk) {
+        var body = response.getBody();
+        if (body instanceof FPSakFordeltKvittering kvittering) {
+            return håndterFpsakFordeltKvittering(kvittering);
+        }
+        else if (body instanceof GosysKvittering kvittering) {
+            return håndterGosysKvittering(kvittering);
+        } else if (body instanceof PendingKvittering) {
+            LOG.info("Fikk pending kvittering på {}. forsøk", forsøk);
+            return null;
+        } else {
+            FEILET_KVITTERINGER.increment();
+            throw new UventetPollingStatusFpFordelException(response.getStatusCode(), "Uventet kvitteringer etter leveranse av søknad, gir opp");
+        }
     }
 
     @Retry
@@ -165,8 +174,7 @@ public class FordelConnection extends AbstractWebClientConnection {
             .orElseThrow(() -> new UventetPollingStatusFpFordelException("Respons innehold ingen location header for å sjekke på status!"));
     }
 
-    @Override
-    public String name() {
+    private static String name() {
         return "fpfordel";
     }
 
