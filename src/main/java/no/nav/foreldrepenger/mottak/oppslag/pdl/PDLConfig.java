@@ -1,16 +1,14 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
-import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
+import java.net.URI;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
-import java.net.URI;
-
 @ConfigurationProperties(prefix = "pdl")
-public class PDLConfig extends AbstractConfig {
+public class PDLConfig {
     private static final String DEFAULT_FØDSEL_MÅNEDER_TILBAKE = "40";
     private static final String DEFAULT_BASE_URI = "http://pdl-api.pdl/graphql";
-    private static final String DEFAULT_PING_PATH = "/";
 
     static final String NAVN_QUERY = "query-navn.graphql";
     static final String BARN_QUERY = "query-barn.graphql";
@@ -19,12 +17,11 @@ public class PDLConfig extends AbstractConfig {
     static final String IDENT_QUERY = "query-ident.graphql";
 
     private final int barnFoedtInnen;
+    private final URI baseUri;
 
-    public PDLConfig(@DefaultValue(DEFAULT_PING_PATH) String pingPath,
-            @DefaultValue("true") boolean enabled,
-            @DefaultValue(DEFAULT_BASE_URI) URI baseUri,
-            @DefaultValue(DEFAULT_FØDSEL_MÅNEDER_TILBAKE) int barnFoedtInnen) {
-        super(baseUri, pingPath, enabled);
+    public PDLConfig(@DefaultValue(DEFAULT_BASE_URI) URI baseUri,
+                     @DefaultValue(DEFAULT_FØDSEL_MÅNEDER_TILBAKE) int barnFoedtInnen) {
+        this.baseUri = baseUri;
         this.barnFoedtInnen = barnFoedtInnen;
     }
 
@@ -32,4 +29,7 @@ public class PDLConfig extends AbstractConfig {
         return barnFoedtInnen;
     }
 
+    public URI getBaseUri() {
+        return baseUri;
+    }
 }

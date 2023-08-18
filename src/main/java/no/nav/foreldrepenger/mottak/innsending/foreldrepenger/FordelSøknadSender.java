@@ -48,11 +48,6 @@ public class FordelSøknadSender implements SøknadSender {
         return send(generator.generer(ettersending, egenskap, person.aktørId()), ettersending.dialogId(), person);
     }
 
-    @Override
-    public String ping() {
-        return connection.ping();
-    }
-
     Kvittering send(Konvolutt konvolutt, InnsendingPersonInfo person) {
         return send(konvolutt, null, person);
     }

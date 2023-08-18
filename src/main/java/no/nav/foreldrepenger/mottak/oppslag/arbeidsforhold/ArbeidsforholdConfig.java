@@ -1,22 +1,20 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
-import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-import org.springframework.web.util.UriBuilder;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.Period;
 
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.web.util.UriBuilder;
 
 @ConfigurationProperties(prefix = "arbeidsforhold")
-public class ArbeidsforholdConfig extends AbstractConfig {
+public class ArbeidsforholdConfig {
 
     private static final String DEFAULT_BASE_URI = "https://aareg-services.intern.nav.no/api";
     private static final String V1_ARBEIDSTAKER_ARBEIDSFORHOLD = "/v1/arbeidstaker/arbeidsforhold";
-    private static final String DEFAULT_PING = "ping";
 
     private static final String TREÅR = "3y";
     private static final String FOM_NAVN = "ansettelsesperiodeFom";
@@ -27,13 +25,13 @@ public class ArbeidsforholdConfig extends AbstractConfig {
     private final Period tidTilbake;
     private final String arbeidsforholdPath;
     private final boolean sporingsinformasjon;
+    private final URI baseUri;
 
     public ArbeidsforholdConfig(@DefaultValue(DEFAULT_BASE_URI) URI baseUri,
                                 @DefaultValue(V1_ARBEIDSTAKER_ARBEIDSFORHOLD) String arbeidsforholdPath,
-                                @DefaultValue(DEFAULT_PING) String pingPath,
-                                @DefaultValue("true") boolean enabled, @DefaultValue(TREÅR) Period tidTilbake,
+                                @DefaultValue(TREÅR) Period tidTilbake,
                                 @DefaultValue("true") boolean sporingsinformasjon) {
-        super(baseUri, pingPath, enabled);
+        this.baseUri = baseUri;
         this.tidTilbake = tidTilbake;
         this.arbeidsforholdPath = arbeidsforholdPath;
         this.sporingsinformasjon = sporingsinformasjon;
@@ -66,5 +64,9 @@ public class ArbeidsforholdConfig extends AbstractConfig {
             ", sporingsinformasjon=" + sporingsinformasjon +
             ", tidTilbake=" + tidTilbake +
             "} " + super.toString();
+    }
+
+    public URI getBaseUri() {
+        return baseUri;
     }
 }

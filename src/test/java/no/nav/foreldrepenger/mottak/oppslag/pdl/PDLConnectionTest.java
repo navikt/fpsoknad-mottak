@@ -59,7 +59,7 @@ class PDLConnectionTest {
         mockWebServer.start();
 
         var baseUrl = String.format("http://localhost:%s", mockWebServer.getPort());
-        cfg = new PDLConfig("/", true, URI.create(baseUrl), 24);
+        cfg = new PDLConfig(URI.create(baseUrl), 24);
         var objectmapper = new JacksonConfiguration().customObjectmapper();
         var konfigurasjoner = new WebClientConfiguration();
         var webclient = WebClient.builder().baseUrl(baseUrl).build();

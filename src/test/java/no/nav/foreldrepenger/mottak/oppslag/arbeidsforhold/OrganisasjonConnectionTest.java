@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
-import static io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
@@ -37,7 +36,7 @@ class OrganisasjonConnectionTest {
     void setupConnection() {
         var baseUrl = String.format("http://localhost:%s", mockWebServer.getPort());
         var webClient = WebClient.builder().baseUrl(baseUrl).build();
-        var organisasjonConfig = new OrganisasjonConfig(URI.create(baseUrl), "/v1/organisasjon/{orgnr}", true);
+        var organisasjonConfig = new OrganisasjonConfig(URI.create(baseUrl), "/v1/organisasjon/{orgnr}");
         organisasjonConnection = new OrganisasjonConnection(webClient, pdlConnection, organisasjonConfig);
     }
 

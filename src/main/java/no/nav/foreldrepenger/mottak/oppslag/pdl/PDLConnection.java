@@ -16,7 +16,6 @@ import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLId
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.map;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.mapIdent;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,7 +39,6 @@ import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.innsending.mappers.AktørIdTilFnrConverter;
 import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
-import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.http.Retry;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConnection;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConnection;
@@ -48,7 +46,7 @@ import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.UtenlandskKontoInfo;
 
 @Component
-public class PDLConnection implements PingEndpointAware, AktørIdTilFnrConverter {
+public class PDLConnection implements AktørIdTilFnrConverter {
 
     private static final String IDENT = "ident";
     private static final Logger LOG = LoggerFactory.getLogger(PDLConnection.class);
@@ -229,22 +227,6 @@ public class PDLConnection implements PingEndpointAware, AktørIdTilFnrConverter
     @Override
     public AktørId konverter(Fødselsnummer fnr) {
         return aktørId(fnr);
-    }
-
-    @Override
-    public String ping() {
-        // options(pingEndpoint()); TODO finn ut av dette
-        return "OK";
-    }
-
-    @Override
-    public URI pingEndpoint() {
-        return cfg.pingEndpoint();
-    }
-
-    @Override
-    public String name() {
-        return cfg.name();
     }
 
     @Override

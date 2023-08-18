@@ -1,12 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
 import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.ENDRING_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerSøknad;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerFørstegangssøknad;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerSøknad;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -20,11 +17,9 @@ import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
-import no.nav.security.token.support.core.api.Unprotected;
 
 @ProtectedRestController(MottakController.INNSENDING)
 public class MottakController {
-    private static final Logger LOG = LoggerFactory.getLogger(MottakController.class);
     public static final String INNSENDING = "/mottak";
     private final PDLConnection pdl;
     private final SøknadSender søknadSender;
@@ -68,13 +63,6 @@ public class MottakController {
         var fnr = tokenUtil.autentisertBrukerOrElseThrowException();
         var person = pdl.hentPerson(fnr);
         return map(person);
-    }
-
-    @Unprotected
-    @GetMapping("/ping")
-    public String ping() {
-        LOG.info("Jeg ble pinget");
-        return "pong";
     }
 
     @Override

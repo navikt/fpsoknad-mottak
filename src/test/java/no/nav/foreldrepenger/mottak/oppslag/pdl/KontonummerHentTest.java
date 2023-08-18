@@ -31,7 +31,7 @@ class KontonummerHentTest {
 
         var baseUrl = String.format("http://localhost:%s", mockWebServer.getPort());
         var webClient = WebClient.create();
-        var kontoregisterConfig = new KontoregisterConfig(URI.create(baseUrl), "/", true);
+        var kontoregisterConfig = new KontoregisterConfig(URI.create(baseUrl));
         var kontoregisterConnection = new KontoregisterConnection(webClient, kontoregisterConfig);
 
         pdlConnection = new PDLConnection(null, null, null, null, kontoregisterConnection, null);

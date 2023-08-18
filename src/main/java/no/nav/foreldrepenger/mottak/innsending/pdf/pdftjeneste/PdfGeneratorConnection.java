@@ -1,24 +1,25 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste;
 
-import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
-import no.nav.foreldrepenger.mottak.http.Retry;
-import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentBestilling;
+import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDF_GENERATOR;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import no.nav.foreldrepenger.mottak.http.Retry;
+import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentBestilling;
 import reactor.core.publisher.Mono;
 
-import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDF_GENERATOR;
-
 @Component
-public class PdfGeneratorConnection extends AbstractWebClientConnection {
+public class PdfGeneratorConnection {
     private static final Logger LOG = LoggerFactory.getLogger(PdfGeneratorConnection.class);
+    private final WebClient webClient;
     private final PdfGeneratorConfig cfg;
 
     public PdfGeneratorConnection(@Qualifier(PDF_GENERATOR) WebClient client, PdfGeneratorConfig cfg) {
-        super(client, cfg);
+        this.webClient = client;
         this.cfg = cfg;
     }
 
@@ -34,12 +35,6 @@ public class PdfGeneratorConnection extends AbstractWebClientConnection {
         }
         LOG.info("PdfGenerator er ikke aktivert");
         return new byte[0];
-    }
-
-
-    @Override
-    public String name() {
-        return cfg.name();
     }
 
     @Override
