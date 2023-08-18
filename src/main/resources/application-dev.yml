@@ -40,11 +40,11 @@ spring:
       key-store-password: ${kafka.credstore.password}
 
 arbeidsforhold:
-  base-uri: https://aareg-services-q1.dev.intern.nav.no/api
+  base-uri: https://aareg-services.dev.intern.nav.no/api
 digdir:
   base-uri: https://digdir-krr-proxy.dev.intern.nav.no
 organisasjon:
-  base-uri: https://ereg-services-q1.dev.intern.nav.no/api/v2/organisasjon
+  base-uri: https://ereg-services.dev.intern.nav.no/api/v2/organisasjon
 kontoregister:
   base-uri: https://sokos-kontoregister-person.dev.intern.nav.no
 no.nav:
@@ -58,15 +58,9 @@ no.nav:
           pdl-api:
             token-exchange:
               audience: dev-fss:pdl:pdl-api
-          aareg-services-q1:
-            well-known-url: ${token.x.well.known.url}
-            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-            authentication:
-              client-id: ${token.x.client.id}
-              client-jwk: ${token.x.private.jwk}
-              client-auth-method: private_key_jwt
+          aareg-services:
             token-exchange:
-              audience: dev-fss:arbeidsforhold:aareg-services-nais-q1
+              audience: dev-fss:arbeidsforhold:aareg-services-nais
           digdir-krr-proxy:
             token-exchange:
               audience: dev-gcp:team-rocket:digdir-krr-proxy
