@@ -13,8 +13,6 @@ import no.nav.security.token.support.core.api.Unprotected;
 
 class RestApiSikredeEndepunktTest extends RestApiTestUtil {
 
-    private static final String ENDEPUNKT_SOM_KAN_VÆRE_UNPROTECTED = "ping";
-
     @Test
     void sjekkAtProtectedRestControllerIkkeHarUbeskyttetAnnotering() {
         assertThat(ProtectedRestController.class)
@@ -25,7 +23,6 @@ class RestApiSikredeEndepunktTest extends RestApiTestUtil {
             .as("Sørg for at @ProtectedRestController ikke er annotert med @Unprotected!")
             .isFalse();
     }
-
 
     @Test
     void sjekkAtAlleEndepunktErBeskyttet() {
@@ -50,9 +47,6 @@ class RestApiSikredeEndepunktTest extends RestApiTestUtil {
     }
 
     private boolean erEndepunktUnprotected(Method metode) {
-        if (metode.getName().equalsIgnoreCase(ENDEPUNKT_SOM_KAN_VÆRE_UNPROTECTED)) {
-            return false;
-        }
         return metode.isAnnotationPresent(Unprotected.class);
     }
 }

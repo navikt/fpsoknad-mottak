@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 import static no.nav.foreldrepenger.common.domain.Orgnummer.MAGIC;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ORGANISASJON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.util.StringUtils.capitalize;
 
 import java.util.Optional;
 
@@ -17,21 +16,21 @@ import org.springframework.web.reactive.function.client.WebClient;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Navn;
 import no.nav.foreldrepenger.common.domain.Orgnummer;
-import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
 import no.nav.foreldrepenger.mottak.http.Retry;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.OrganisasjonsNavnDTO;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 
 @Component
-public class OrganisasjonConnection extends AbstractWebClientConnection {
+public class OrganisasjonConnection {
 
     private static final String PRIVAT_ARBEIDSGIVER = "Privat arbeidsgiver";
     private static final Logger LOG = LoggerFactory.getLogger(OrganisasjonConnection.class);
+    private final WebClient webClient;
     private final OrganisasjonConfig cfg;
     private final PDLConnection oppslag;
 
     public OrganisasjonConnection(@Qualifier(ORGANISASJON) WebClient client, PDLConnection oppslag, OrganisasjonConfig cfg) {
-        super(client, cfg);
+        this.webClient = client;
         this.cfg = cfg;
         this.oppslag = oppslag;
     }
@@ -97,13 +96,8 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
     }
 
     @Override
-    public String name() {
-        return capitalize(ORGANISASJON.toLowerCase());
-    }
-
-    @Override
     public String toString() {
-        return getClass().getSimpleName() + "[cfg=" + cfg + ", name=" + name() + ", client=" + webClient + "]";
+        return getClass().getSimpleName() + "[cfg=" + cfg + ", client=" + webClient + "]";
     }
 
 }

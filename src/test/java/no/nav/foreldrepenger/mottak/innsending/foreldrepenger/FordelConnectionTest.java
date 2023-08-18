@@ -92,8 +92,7 @@ class FordelConnectionTest {
         mockWebServer.start();
         baseUrl = String.format("http://localhost:%s", mockWebServer.getPort());
         var webClient = WebClient.create();
-        var fordelConfig = new FordelConfig(URI.create(baseUrl),
-            "/ping", "/innsending", 3, true);
+        var fordelConfig = new FordelConfig(URI.create(baseUrl), "/innsending", 3);
         fordelConnection = new FordelConnection(webClient, fordelConfig);
     }
 

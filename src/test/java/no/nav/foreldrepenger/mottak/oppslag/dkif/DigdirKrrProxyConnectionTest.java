@@ -30,7 +30,7 @@ class DigdirKrrProxyConnectionTest {
 
         var baseUrl = String.format("http://localhost:%s", mockWebServer.getPort());
         var webClient = WebClient.create();
-        var digdirKrrProxyConfig = new DigdirKrrProxyConfig(URI.create(baseUrl), "rest/ping", "rest/v1/person", true);
+        var digdirKrrProxyConfig = new DigdirKrrProxyConfig(URI.create(baseUrl), "rest/v1/person");
         digdirKrrProxyConnection = new DigdirKrrProxyConnection(webClient, digdirKrrProxyConfig);
     }
 
