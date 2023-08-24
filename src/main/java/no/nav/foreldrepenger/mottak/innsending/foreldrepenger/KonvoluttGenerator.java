@@ -1,5 +1,29 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.felles.DokumentType;
+import no.nav.foreldrepenger.common.domain.felles.Ettersending;
+import no.nav.foreldrepenger.common.domain.felles.InnsendingsType;
+import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.common.domain.felles.VedleggMetaData;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
+import no.nav.foreldrepenger.common.innsending.SøknadType;
+import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.pdf.MappablePdfGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+
 import static no.nav.boot.conditionals.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.SEND_SENERE;
@@ -10,29 +34,8 @@ import static org.springframework.http.HttpHeaders.CONTENT_ENCODING;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_PDF;
 import static org.springframework.http.MediaType.APPLICATION_XML;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.client.MultipartBodyBuilder;
-import org.springframework.stereotype.Component;
-
-import no.nav.foreldrepenger.common.domain.AktørId;
-import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.domain.felles.DokumentType;
-import no.nav.foreldrepenger.common.domain.felles.Ettersending;
-import no.nav.foreldrepenger.common.domain.felles.InnsendingsType;
-import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
-import no.nav.foreldrepenger.common.innsending.SøknadType;
-import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.pdf.MappablePdfGenerator;
+import static org.springframework.http.MediaType.IMAGE_JPEG;
+import static org.springframework.http.MediaType.IMAGE_PNG;
 
 @Component
 public class KonvoluttGenerator {
@@ -106,9 +109,20 @@ public class KonvoluttGenerator {
         } else {
             LOG.info("Legger til vedlegg av type {} og størrelse {}", vedlegg.getDokumentType(),
                     vedlegg.getStørrelse());
-            builder.part(VEDLEGG, vedlegg.getInnhold(), APPLICATION_PDF)
+            builder.part(VEDLEGG, vedlegg.getInnhold(), tilMediatype(vedlegg.getMetadata()))
                     .headers(headers(vedlegg, contentId));
         }
+    }
+
+    private static MediaType tilMediatype(VedleggMetaData metadata) {
+        if (metadata.mediaType() == null) {
+            return APPLICATION_PDF;
+        }
+        return switch (metadata.mediaType()) {
+            case PDF -> APPLICATION_PDF;
+            case PNG -> IMAGE_PNG;
+            case JPEG -> IMAGE_JPEG;
+        };
     }
 
     private static VedleggHeaderConsumer headers(Vedlegg vedlegg, AtomicInteger contentId) {

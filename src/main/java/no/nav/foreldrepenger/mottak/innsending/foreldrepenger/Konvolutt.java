@@ -8,6 +8,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -90,7 +91,7 @@ public class Konvolutt {
 
     public List<byte[]> getVedlegg() {
         return get(VEDLEGG)
-                .filter(mediaType(APPLICATION_PDF_VALUE))
+                .filter(mediaType(APPLICATION_PDF_VALUE, IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE))
                 .filter(HttpEntity::hasBody)
                 .map(HttpEntity::getBody)
                 .map(byte[].class::cast)
@@ -124,8 +125,8 @@ public class Konvolutt {
                 .stream();
     }
 
-    private static Predicate<? super HttpEntity<?>> mediaType(String type) {
-        return e -> type.equals(e.getHeaders().getFirst(CONTENT_TYPE));
+    private static Predicate<? super HttpEntity<?>> mediaType(String... type) {
+        return e -> Arrays.stream(type).anyMatch(t -> t.equals(e.getHeaders().getFirst(CONTENT_TYPE)));
     }
 
     @Override
