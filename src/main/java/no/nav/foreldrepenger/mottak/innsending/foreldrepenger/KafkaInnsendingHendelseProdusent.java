@@ -63,17 +63,24 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
     }
 
     private void send(Message<String> melding) {
-        kafkaOperations.send(melding)
-                .whenComplete((input, exception) -> handleResponse(melding, input, exception));
+        try {
+            var callId = callId();
+            kafkaOperations.send(melding).thenAccept(result -> loggVellykket(result, callId)).exceptionally(ex -> loggFeilet(melding, ex, callId));
+        } catch (Exception ex) {
+            // send() er blocking blant annet inntil den har oppdaterte metadata fra clusteret
+            loggFeilet(melding, ex, callId());
+        }
     }
 
-    private void handleResponse(Message<String> melding, SendResult<String, String> input, Throwable exception) {
-        if (exception != null) {
-            LOG.warn("Kunne ikke sende melding til topic {}, se secure logs for detaljer.", topic, exception);
-            SECURE_LOG.warn("Kunne ikke sende melding til topic {}. Melding: {}", topic, melding, exception);
-        } else {
-            LOG.info("Sendte hendelse med offset {} OK", input.getRecordMetadata().offset());
-        }
+    private static Void loggFeilet(Message<String> melding, Throwable ex, String callId) {
+        LOG.warn("Kunne ikke sende hendelse med callId {}, se secure logs for detaljer.", callId, ex);
+        SECURE_LOG.warn("Kunne ikke sende hendelse med callId {}. Melding: {}", callId, melding.getPayload(), ex);
+        return null;
+    }
+
+    private static void loggVellykket(SendResult<String, String> result, String callId) {
+        LOG.info("Sendte hendelse med offset {} til partisjon {} på topic {} for calLId {} OK", result.getRecordMetadata().offset(),
+            result.getRecordMetadata().partition(), result.getRecordMetadata().topic(), callId);
     }
 
     @Override
