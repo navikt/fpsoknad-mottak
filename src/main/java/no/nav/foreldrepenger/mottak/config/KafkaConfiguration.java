@@ -13,6 +13,7 @@ public class KafkaConfiguration {
     @Bean
     public LoggingProducerListener<String, String> loggingProducerListener() {
         LoggingProducerListener<String, String> loggingProducerListener = new LoggingProducerListener<>();
+        loggingProducerListener.setIncludeContents(false);
         KafkaUtils.setProducerRecordFormatter(r -> String.format("Feil mot topic %s for callId %s" + r.topic() + r.headers().headers(NAV_CALL_ID)));
         return loggingProducerListener;
     }
