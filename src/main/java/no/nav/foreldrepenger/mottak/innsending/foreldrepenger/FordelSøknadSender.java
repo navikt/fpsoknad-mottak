@@ -64,17 +64,9 @@ public class FordelSøknadSender implements SøknadSender {
             fordelKvittering = new FordelResultat(null, null);
         }
 
-        publiserHendelse(konvolutt, dialogId, fordelKvittering, person);
+        hendelser.publiser(fordelKvittering, dialogId, konvolutt, person);
 
         return new Kvittering(mottattDato, fordelKvittering.saksnummer(), pdfHovedDokument, infoskrivPdf);
-    }
-
-    private void publiserHendelse(Konvolutt konvolutt, String dialogId, FordelResultat kvittering, InnsendingPersonInfo person) {
-        try {
-            hendelser.publiser(kvittering, dialogId, konvolutt, person);
-        } catch (Exception e) {
-            LOG.warn("Kunne ikke publisere hendelse", e);
-        }
     }
 
     private byte[] infoskrivPdf(byte[] pdf) {
