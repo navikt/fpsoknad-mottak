@@ -25,11 +25,6 @@ spring:
       spec: maximumSize=100,expireAfterAccess=3600s
   application:
     name: fpsoknad-mottak
-  kafka:
-    producer:
-      bootstrap-servers: ${kafka.brokers}
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
   main:
     banner-mode: off
 springdoc:
@@ -37,11 +32,6 @@ springdoc:
   swagger-ui:
     disable-swagger-default-url: true
 
-mottak:
-  sender:
-    domainevent:
-      enabled: true
-      topic: teamforeldrepenger.selvbetjening-innsendinghendelse-v1
 no.nav.security:
   jwt:
     dont-propagate-bearertoken: true

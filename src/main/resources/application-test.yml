@@ -14,14 +14,6 @@ spring:
       enabled: false
   mvc:
     log-request-details : true
-  kafka:
-    properties:
-      security:
-        protocol: SASL_SSL
-      sasl:
-        mechanism: PLAIN
-        jaas:
-          config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${kafka.username}" password="${kafka.password}";
 no.nav:
   security:
     jwt:
@@ -67,9 +59,3 @@ fpfordel:
   fpfordel-max: ${fpfordel.max}
 digdir:
   base-uri: ${digdir.base.url}
-
-mottak:
-  sender:
-    domainevent:
-      enabled : true # Konsumeres av fpinfo-historikk ifm meldinger for dittnav
-      topic: ${kafka.innsendinghendelse.topic}

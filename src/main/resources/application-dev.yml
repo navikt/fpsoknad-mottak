@@ -28,16 +28,6 @@ spring:
     log-request-details: true
   mvc:
     log-request-details : true
-  kafka:
-    security:
-      protocol: SSL
-    ssl:
-      trust-store-location: file:${kafka.truststore.path}
-      trust-store-type: JKS
-      trust-store-password: ${kafka.credstore.password}
-      key-store-location: file:${kafka.keystore.path}
-      key-store-type: PKCS12
-      key-store-password: ${kafka.credstore.password}
 
 arbeidsforhold:
   base-uri: https://aareg-services.dev.intern.nav.no/api

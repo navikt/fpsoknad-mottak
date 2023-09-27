@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import no.nav.foreldrepenger.common.domain.Orgnummer;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.ArbeidsforholdDTO;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.ArbeidsgiverDTO;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto.ArbeidsgiverType;
@@ -35,11 +34,6 @@ public class ArbeidsforholdTjeneste implements ArbeidsInfo {
             .toList();
         LOG.trace("Arbeidsforhold: {}", enkleArbeidsforhold);
         return enkleArbeidsforhold;
-    }
-
-    @Override
-    public String orgnavn(Orgnummer orgnr) {
-        return orgConnection.navn(orgnr.value());
     }
 
     public EnkeltArbeidsforhold tilEnkeltArbeidsforhold(ArbeidsforholdDTO a) {

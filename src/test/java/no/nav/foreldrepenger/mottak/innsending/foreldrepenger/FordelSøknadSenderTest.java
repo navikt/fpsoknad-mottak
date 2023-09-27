@@ -16,9 +16,6 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfEkstraktor;
 
 @ExtendWith(MockitoExtension.class)
 class FordelSøknadSenderTest {
-
-    @Mock
-    private InnsendingHendelseProdusent hendelser;
     @Mock
     private InfoskrivPdfEkstraktor ekstraktor;
     @Mock
@@ -29,7 +26,7 @@ class FordelSøknadSenderTest {
     @BeforeEach
     void before() {
         fordelSøknadSender = new FordelSøknadSender(connection,
-            null, ekstraktor, hendelser);
+            null, ekstraktor);
     }
 
     @Test
@@ -37,7 +34,7 @@ class FordelSøknadSenderTest {
         when(connection.send(any())).thenThrow(new UventetPollingStatusFpFordelException("Feil"));
         var konvolutt = new Konvolutt(SøknadEgenskap.INITIELL_FORELDREPENGER, null, null, null, null);
 
-        var kvittering = fordelSøknadSender.send(konvolutt, null);
+        var kvittering = fordelSøknadSender.send(konvolutt);
 
         assertThat(kvittering).isNotNull();
         assertThat(kvittering.mottattDato()).isNotNull();
@@ -49,7 +46,7 @@ class FordelSøknadSenderTest {
         when(connection.send(any())).thenThrow(new InnsendingFeiletFpFordelException("Kritisk feil!"));
         var konvolutt = new Konvolutt(SøknadEgenskap.INITIELL_FORELDREPENGER, null, null, null, null);
 
-        assertThatThrownBy(() -> fordelSøknadSender.send(konvolutt, null))
+        assertThatThrownBy(() -> fordelSøknadSender.send(konvolutt))
             .isInstanceOf(InnsendingFeiletFpFordelException.class);
     }
 
