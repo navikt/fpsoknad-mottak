@@ -12,15 +12,12 @@ spec:
   azure:
     application:
       enabled: true
-  kafka:
-    pool: {{kafkaPool}}
   webproxy: true
   tokenx:
     enabled: true
   accessPolicy:
     inbound:
       rules:
-        - application: fpinfo-historikk
         - application: foreldrepengesoknad-api
           cluster: {{ cluster_foreldrepengesoknad-api }}
     # Outbound rules gjelder bare GCP clusters.

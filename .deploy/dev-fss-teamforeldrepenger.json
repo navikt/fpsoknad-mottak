@@ -1,6 +1,5 @@
 {
     "cluster_foreldrepengesoknad-api": "dev-gcp",
-    "kafkaPool": "nav-dev",
     "ingresses":  [
         "https://fpsoknad-mottak.dev.intern.nav.no",
         "https://fpsoknad-mottak.dev-fss-pub.nais.io"

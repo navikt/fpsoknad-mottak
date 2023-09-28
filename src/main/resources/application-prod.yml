@@ -16,16 +16,6 @@ spring:
         backend: kv/prod/fss
         application-name: fpsoknad-mottak/teamforeldrepenger
         default-context: fpsoknad-mottak/teamforeldrepenger
-  kafka:
-    security:
-      protocol: SSL
-    ssl:
-      trust-store-location: file:${kafka.truststore.path}
-      trust-store-type: JKS
-      trust-store-password: ${kafka.credstore.password}
-      key-store-location: file:${kafka.keystore.path}
-      key-store-type: PKCS12
-      key-store-password: ${kafka.credstore.password}
 no.nav:
   security:
     jwt:

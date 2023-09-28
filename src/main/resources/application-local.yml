@@ -14,15 +14,6 @@ spring:
       enabled: false
   mvc:
     log-request-details : true
-  kafka:
-    bootstrap-servers: localhost:9093
-    properties:
-      security:
-        protocol: SASL_SSL
-      sasl:
-        mechanism: PLAIN
-        jaas:
-          config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${kafka.username}" password="${kafka.password}";
 arbeidsforhold:
   base-uri: http://localhost:8060/rest/aareg-services/api
 organisasjon:
@@ -39,13 +30,6 @@ fpfordel:
   base-uri: http://localhost:8090/fpfordel
 digdir:
   base-uri: http://localhost:8060/rest/api/digdir
-kafka:
-  username: vtp
-  password: vtp
-mottak:
-  sender:
-    domainevent:
-      enabled: false
 no.nav:
   security:
     jwt:
