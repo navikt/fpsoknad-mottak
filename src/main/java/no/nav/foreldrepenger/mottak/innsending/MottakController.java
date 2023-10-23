@@ -3,6 +3,9 @@ package no.nav.foreldrepenger.mottak.innsending;
 import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerFørstegangssøknad;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerSøknad;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.Ytelse.ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.Ytelse.FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.Ytelse.SVANGERSKAPSPENGER;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,13 +13,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.validation.Valid;
 import no.nav.foreldrepenger.common.domain.Kvittering;
 import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
+import no.nav.foreldrepenger.common.domain.felles.EttersendingsType;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.Svangerskapspenger;
 import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.Ytelse;
 
 @ProtectedRestController(MottakController.INNSENDING)
 public class MottakController {
@@ -37,7 +44,7 @@ public class MottakController {
     public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
         var søknadEgenskap = Inspektør.inspiser(søknad);
         validerFørstegangssøknad(søknad);
-        var innsendingPersonInfo = personInfo();
+        var innsendingPersonInfo = personInfo(tilYtelse(søknad.getYtelse()));
         return søknadSender.søk(søknad, søknadEgenskap, innsendingPersonInfo);
     }
 
@@ -47,22 +54,38 @@ public class MottakController {
 
     @PostMapping("/ettersend")
     public Kvittering ettersend(@Valid @RequestBody Ettersending ettersending) {
-        var innsendingPersonInfo = personInfo();
+        var innsendingPersonInfo = personInfo(tilYtelse(ettersending.type()));
         return søknadSender.ettersend(ettersending, Inspektør.inspiser(ettersending), innsendingPersonInfo);
     }
 
     @PostMapping("/endre")
     public Kvittering endre(@Valid @RequestBody Endringssøknad endringssøknad) {
         validerSøknad(endringssøknad.getYtelse());
-        var innsendingPersonInfo = personInfo();
+        var innsendingPersonInfo = personInfo(tilYtelse(endringssøknad.getYtelse()));
         return søknadSender.endreSøknad(endringssøknad, ENDRING_FORELDREPENGER, innsendingPersonInfo);
     }
 
-    private InnsendingPersonInfo personInfo() {
-        //TODO erstatte med et enklere pdl oppslag
+    private InnsendingPersonInfo personInfo(Ytelse ytelse) {
         var fnr = tokenUtil.autentisertBrukerOrElseThrowException();
-        var person = pdl.hentPerson(fnr);
+        var person = pdl.hentPerson(fnr, ytelse);
         return map(person);
+    }
+
+    private static Ytelse tilYtelse(EttersendingsType ettersendingsType) {
+        return switch (ettersendingsType) {
+            case ENGANGSSTØNAD -> ENGANGSSTØNAD;
+            case FORELDREPENGER -> FORELDREPENGER;
+            case SVANGERSKAPSPENGER -> SVANGERSKAPSPENGER;
+        };
+    }
+    private static Ytelse tilYtelse(no.nav.foreldrepenger.common.domain.Ytelse ytelse) {
+        if (ytelse instanceof Engangsstønad) {
+            return ENGANGSSTØNAD;
+        } else if (ytelse instanceof Svangerskapspenger) {
+            return SVANGERSKAPSPENGER;
+        } else {
+            return FORELDREPENGER;
+        }
     }
 
     @Override

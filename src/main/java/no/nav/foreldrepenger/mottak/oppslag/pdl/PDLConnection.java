@@ -15,6 +15,7 @@ import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLId
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe.FOLKEREGISTERIDENT;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.map;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.mapIdent;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.Ytelse.FORELDREPENGER;
 
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
+import graphql.kickstart.spring.webclient.boot.GraphQLRequest;
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
@@ -44,11 +46,13 @@ import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConnection;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConnection;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.UtenlandskKontoInfo;
+import reactor.core.publisher.Mono;
 
 @Component
 public class PDLConnection implements AktørIdTilFnrConverter {
 
     private static final String IDENT = "ident";
+    private static final String BEHANDLINGSNUMMER = "behandlingsnummer";
     private static final Logger LOG = LoggerFactory.getLogger(PDLConnection.class);
 
     private final GraphQLWebClient userClient;
@@ -57,6 +61,8 @@ public class PDLConnection implements AktørIdTilFnrConverter {
     private final DigdirKrrProxyConnection digdir;
     private final PDLErrorResponseHandler errorHandler;
     private final KontoregisterConnection kontoregister;
+    private final Ytelse defaultYtelse;
+
 
     PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient,
                   @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
@@ -69,24 +75,26 @@ public class PDLConnection implements AktørIdTilFnrConverter {
         this.kontoregister = kontoregister;
         this.cfg = cfg;
         this.errorHandler = errorHandler;
+        this.defaultYtelse = FORELDREPENGER;
     }
 
     public Person hentPerson(Fødselsnummer fnr) {
-        return hentPersonInternal(fnr, b -> b.erNyligFødt(cfg.getBarnFødtInnen()));
+        return hentPerson(fnr, defaultYtelse);
     }
 
-    public Person hentPersonMedAlleBarn(Fødselsnummer fnr) {
-        return hentPersonInternal(fnr, b -> true);
+    public Person hentPerson(Fødselsnummer fnr, Ytelse ytelse) {
+        return hentPersonInternal(fnr, ytelse, b -> b.erNyligFødt(cfg.getBarnFødtInnen()));
     }
 
-    private Person hentPersonInternal(Fødselsnummer fnr, Predicate<PDLBarn> filter) {
-        return Optional.ofNullable(oppslagSøker(fnr))
-            .map(s -> map(fnr, aktørId(fnr), målform(), kontonr(), barn(s, filter), s))
+    //TODO erstatte med et enklere pdl oppslag... Gjøres opp til 4 separate kall..
+    private Person hentPersonInternal(Fødselsnummer fnr, Ytelse ytelse, Predicate<PDLBarn> filter) {
+        return Optional.ofNullable(oppslagSøker(fnr, ytelse))
+            .map(s -> map(fnr, aktørId(fnr), målform(), kontonr(), barn(s, ytelse, filter), s))
             .orElse(null);
     }
 
     public Navn navnFor(String id) {
-        return Optional.ofNullable(oppslag(() -> postClientCredential(NAVN_QUERY, id, PDLWrappedNavn.class), "navn"))
+        return Optional.ofNullable(oppslag(() -> postClientCredential(NAVN_QUERY, defaultYtelse, id, PDLWrappedNavn.class), "navn"))
                 .flatMap(navn -> safeStream(navn.navn())
                         .findFirst()
                         .map(n -> new Navn(n.fornavn(), n.mellomnavn(), n.etternavn())))
@@ -94,27 +102,35 @@ public class PDLConnection implements AktørIdTilFnrConverter {
     }
 
     public AktørId aktørId(Fødselsnummer fnr) {
+        return aktørId(fnr, defaultYtelse);
+    }
+
+    public AktørId aktørId(Fødselsnummer fnr, Ytelse ytelse) {
         return Optional.ofNullable(fnr)
-                .map(this::oppslagId)
+                .map(id -> oppslagId(id, ytelse))
                 .map(id -> mapIdent(id, AKTORID))
                 .map(AktørId::new)
                 .orElse(null);
     }
 
     public Fødselsnummer fnr(AktørId aktørId) {
+        return fnr(aktørId, defaultYtelse);
+    }
+
+    public Fødselsnummer fnr(AktørId aktørId, Ytelse ytelse) {
         return Optional.ofNullable(aktørId)
-                .map(this::oppslagId)
+                .map(id -> oppslagId(id, ytelse))
                 .map(id -> mapIdent(id, FOLKEREGISTERIDENT))
                 .map(Fødselsnummer::new)
                 .orElse(null);
     }
 
-    private List<PDLBarn> barn(PDLSøker søker, Predicate<PDLBarn> filter) {
+    private List<PDLBarn> barn(PDLSøker søker, Ytelse ytelse, Predicate<PDLBarn> filter) {
         var barn = safeStream(søker.getForelderBarnRelasjon()).filter(
                 b -> b.relatertPersonsrolle().equals(BARN))
             .map(PDLForelderBarnRelasjon::id)
             .filter(Objects::nonNull)
-            .map(b -> oppslagBarn(søker.getId(), b))
+            .map(b -> oppslagBarn(søker.getId(), ytelse, b))
             .filter(Objects::nonNull)
             .distinct();
         var dødFødtBarn = safeStream(søker.getDødfødtBarn())
@@ -130,57 +146,66 @@ public class PDLConnection implements AktørIdTilFnrConverter {
             Set.of(new PDLDødsfall(dfb.dato())));
     }
 
-    private PDLSøker oppslagSøker(Fødselsnummer fnr) {
-        return Optional.ofNullable(oppslag(() -> postOnBehalfOf(SØKER_QUERY, fnr.value(), PDLSøker.class), "søker"))
+    private PDLSøker oppslagSøker(Fødselsnummer fnr, Ytelse ytelse) {
+        return Optional.ofNullable(oppslag(() -> postOnBehalfOf(SØKER_QUERY, ytelse, fnr.value(), PDLSøker.class), "søker"))
                 .map(s -> s.withId(fnr.value()))
                 .orElse(null);
     }
 
-    private PDLIdenter oppslagId(Fødselsnummer id) {
-        return oppslagId(id.value(), "fødselsnummer");
+    private PDLIdenter oppslagId(Fødselsnummer id, Ytelse ytelse) {
+        return oppslagId(id.value(), ytelse, "fødselsnummer");
     }
 
-    private PDLIdenter oppslagId(AktørId id) {
-        return oppslagId(id.value(), "aktør");
+    private PDLIdenter oppslagId(AktørId id, Ytelse ytelse) {
+        return oppslagId(id.value(), ytelse, "aktør");
     }
 
-    private PDLIdenter oppslagId(String id, String type) {
-        return oppslag(() -> postClientCredential(IDENT_QUERY, id, PDLIdenter.class), type);
+    private PDLIdenter oppslagId(String id, Ytelse ytelse, String type) {
+        return oppslag(() -> postClientCredential(IDENT_QUERY, ytelse, id, PDLIdenter.class), type);
     }
 
-    private PDLBarn oppslagBarn(String fnrSøker, String id) {
-        return Optional.ofNullable(oppslag(() -> postClientCredential(BARN_QUERY, id, PDLBarn.class), "barn"))
+    private PDLBarn oppslagBarn(String fnrSøker, Ytelse ytelse, String id) {
+        return Optional.ofNullable(oppslag(() -> postClientCredential(BARN_QUERY, ytelse, id, PDLBarn.class), "barn"))
             .filter(b -> !b.erBeskyttet())
-            .map(b -> medAnnenPart(b, fnrSøker))
+            .map(b -> medAnnenPart(b, ytelse, fnrSøker))
             .map(b -> b.withId(id))
             .orElse(null);
     }
 
-    private PDLBarn medAnnenPart(PDLBarn barn, String fnrSøker) {
+    private PDLBarn medAnnenPart(PDLBarn barn, Ytelse ytelse, String fnrSøker) {
         return Optional.ofNullable(barn.annenPart(fnrSøker))
-                .map(id -> barn.withAnnenPart(oppslagAnnenPart(id)))
+                .map(id -> barn.withAnnenPart(oppslagAnnenPart(id, ytelse)))
                 .orElse(barn);
     }
 
-    private PDLAnnenPart oppslagAnnenPart(String id) {
-        return Optional.ofNullable(oppslag(() -> postClientCredential(ANNEN_PART_QUERY, id, PDLAnnenPart.class), "annenpart"))
+    private PDLAnnenPart oppslagAnnenPart(String id, Ytelse ytelse) {
+        return Optional.ofNullable(oppslag(() -> postClientCredential(ANNEN_PART_QUERY, ytelse, id, PDLAnnenPart.class), "annenpart"))
                 .filter(not(PDLAnnenPart::erDød))
                 .filter(not(PDLAnnenPart::erBeskyttet))
                 .map(a -> a.withId(id))
                 .orElse(null);
     }
 
-    private <T> T postOnBehalfOf(String query, String id, Class<T> responseType) {
-        return post(userClient, query, id, responseType);
+    private <T> T postOnBehalfOf(String query, Ytelse ytelse, String id, Class<T> responseType) {
+        return post(userClient, query, id, ytelse, responseType);
     }
 
-    private <T> T postClientCredential(String query, String id, Class<T> responseType) {
-        return post(systemClient, query, id, responseType);
+    private <T> T postClientCredential(String query, Ytelse ytelse, String id, Class<T> responseType) {
+        return post(systemClient, query, id, ytelse, responseType);
     }
 
     @Retry
-    private <T> T post(GraphQLWebClient client, String query, String id, Class<T> responseType) {
-        return client.post(query, idFra(id), responseType)
+    private <T> T post(GraphQLWebClient client, String query, String id, Ytelse ytelse, Class<T> responseType) {
+        var request = GraphQLRequest.builder()
+            .header(BEHANDLINGSNUMMER, ytelse.getBehandlingsnummer())
+            .resource(query)
+            .variables(idFra(id))
+            .build();
+        return client.post(request)
+            .flatMap(it -> {
+                it.validateNoErrors();
+                return Mono.justOrEmpty(it.getFirst(responseType));
+            })
             .onErrorMap(this::mapTilKjentGraphQLException)
             .block();
     }
