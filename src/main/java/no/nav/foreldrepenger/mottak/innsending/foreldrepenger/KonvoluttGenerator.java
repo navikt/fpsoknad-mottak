@@ -68,8 +68,9 @@ public class KonvoluttGenerator {
             .header(CONTENT_ID, id(id))
             .header(CONTENT_ENCODING, "base64");
         safeStream(søknad.getVedlegg())
-            .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
-            .forEach(vedlegg -> addVedlegg(builder, vedlegg, vedleggsinnhold.get(vedlegg.getId()), id));
+            .filter(v -> v.getMetadata().innsendingsType() == null || LASTET_OPP.equals(v.getMetadata().innsendingsType()))
+            .filter(v -> vedleggsinnhold.containsKey(v.getId()))
+            .forEach(v -> addVedlegg(builder, v, vedleggsinnhold.get(v.getId()), id));
         return new Konvolutt(egenskap, søknad, builder.build(),
             opplastedeVedleggFra(søknad), ikkeOpplastedeVedleggFra(søknad));
     }
