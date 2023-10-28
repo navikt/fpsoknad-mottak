@@ -61,7 +61,7 @@ public class MottakController {
 
     @PostMapping(value = "/send/v2", consumes = { MediaType.MULTIPART_MIXED_VALUE })
     public Kvittering sendSøknad(@Valid @RequestPart("body") Søknad søknad,
-                                 @RequestPart(value = "vedlegg", required = false) List<Part> vedlegg) throws IOException {
+                                 @Valid @RequestPart(value = "vedlegg", required = false) List<@Valid Part> vedlegg) throws IOException {
         var søknadEgenskap = Inspektør.inspiser(søknad);
         var vedleggsinnhold = hentInnholdFraVedleggPart(vedlegg);
         validerRiktigAntallVedlegg(søknad, vedleggsinnhold);
