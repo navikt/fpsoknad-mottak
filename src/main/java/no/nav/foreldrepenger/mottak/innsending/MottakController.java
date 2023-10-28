@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
+import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerFørstegangssøknad;
@@ -25,7 +26,6 @@ import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.felles.EttersendingsType;
-import no.nav.foreldrepenger.common.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.Svangerskapspenger;
@@ -72,10 +72,10 @@ public class MottakController {
 
     private static void validerRiktigAntallVedlegg(Søknad søknad, Map<String, byte[]> vedleggsinnhold) {
         var antallVedlegg = safeStream(søknad.getVedlegg())
-            .filter(v -> InnsendingsType.LASTET_OPP.equals(v.getInnsendingsType()))
+            .filter(v -> v.getMetadata().innsendingsType() == null || LASTET_OPP.equals(v.getMetadata().innsendingsType()))
             .count();
         if (antallVedlegg != vedleggsinnhold.size()) {
-            throw new IllegalStateException("Utviklerfeil: Antall vedlegg i body " + antallVedlegg + "matcher IKKE antall vedlegg i vedlegg part " + vedleggsinnhold.size());
+            throw new IllegalStateException("Utviklerfeil: Antall vedlegg i body " + antallVedlegg + " matcher IKKE antall vedlegg i vedlegg part " + vedleggsinnhold.size());
         }
     }
 
