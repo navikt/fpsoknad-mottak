@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
+import java.util.Map;
+
 import no.nav.foreldrepenger.common.domain.Kvittering;
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
@@ -15,4 +17,5 @@ public interface SøknadSender {
 
     Kvittering endreSøknad(Endringssøknad endringsøknad, SøknadEgenskap egenskap, InnsendingPersonInfo person);
 
+    Kvittering søk(Søknad søknad, Map<String, byte[]> vedleggsinnhold, SøknadEgenskap egenskap, InnsendingPersonInfo person);
 }

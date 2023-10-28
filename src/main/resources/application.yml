@@ -27,6 +27,11 @@ spring:
     name: fpsoknad-mottak
   main:
     banner-mode: off
+  servlet:
+    multipart:
+      file-size-threshold: 2KB
+      max-file-size: 17MB
+      max-request-size: 100MB
 springdoc:
   packages-to-scan: no.nav.foreldrepenger.mottak
   swagger-ui:

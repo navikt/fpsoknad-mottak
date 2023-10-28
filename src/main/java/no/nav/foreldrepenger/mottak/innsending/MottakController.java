@@ -1,21 +1,31 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
 import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerFørstegangssøknad;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerSøknad;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.Ytelse.ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.Ytelse.FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.Ytelse.SVANGERSKAPSPENGER;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 
+import jakarta.servlet.http.Part;
 import jakarta.validation.Valid;
 import no.nav.foreldrepenger.common.domain.Kvittering;
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.felles.EttersendingsType;
+import no.nav.foreldrepenger.common.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.Svangerskapspenger;
@@ -28,6 +38,7 @@ import no.nav.foreldrepenger.mottak.oppslag.pdl.Ytelse;
 @ProtectedRestController(MottakController.INNSENDING)
 public class MottakController {
     public static final String INNSENDING = "/mottak";
+    private static final String VEDLEGG_REFERANSE_HEADER = "vedleggsreferanse";
     private final PDLConnection pdl;
     private final SøknadSender søknadSender;
     private final TokenUtil tokenUtil;
@@ -46,6 +57,40 @@ public class MottakController {
         validerFørstegangssøknad(søknad);
         var innsendingPersonInfo = personInfo(tilYtelse(søknad.getYtelse()));
         return søknadSender.søk(søknad, søknadEgenskap, innsendingPersonInfo);
+    }
+
+    @PostMapping(value = "/send/v2", consumes = { MediaType.MULTIPART_MIXED_VALUE })
+    public Kvittering sendSøknad(@Valid @RequestPart("body") Søknad søknad,
+                                 @RequestPart(value = "vedlegg", required = false) List<Part> vedlegg) throws IOException {
+        var søknadEgenskap = Inspektør.inspiser(søknad);
+        var vedleggsinnhold = hentInnholdFraVedleggPart(vedlegg);
+        validerRiktigAntallVedlegg(søknad, vedleggsinnhold);
+        validerFørstegangssøknad(søknad);
+        var innsendingPersonInfo = personInfo(tilYtelse(søknad.getYtelse()));
+        return søknadSender.søk(søknad, vedleggsinnhold, søknadEgenskap, innsendingPersonInfo);
+    }
+
+    private static void validerRiktigAntallVedlegg(Søknad søknad, Map<String, byte[]> vedleggsinnhold) {
+        var antallVedlegg = safeStream(søknad.getVedlegg())
+            .filter(v -> InnsendingsType.LASTET_OPP.equals(v.getInnsendingsType()))
+            .count();
+        if (antallVedlegg != vedleggsinnhold.size()) {
+            throw new IllegalStateException("Utviklerfeil: Antall vedlegg i body " + antallVedlegg + "matcher IKKE antall vedlegg i vedlegg part " + vedleggsinnhold.size());
+        }
+    }
+
+    private static Map<String, byte[]> hentInnholdFraVedleggPart(List<Part> vedlegg) throws IOException {
+        var mappedevedlegg = new HashMap<String, byte[]>();
+        if (vedlegg == null) {
+            return mappedevedlegg;
+        }
+
+        for (var parten : vedlegg) {
+            var vedleggsreferanse = parten.getHeader(VEDLEGG_REFERANSE_HEADER);
+            var innhold = parten.getInputStream().readAllBytes();
+            mappedevedlegg.put(vedleggsreferanse, innhold);
+        }
+        return mappedevedlegg;
     }
 
     private InnsendingPersonInfo map(Person person) {
