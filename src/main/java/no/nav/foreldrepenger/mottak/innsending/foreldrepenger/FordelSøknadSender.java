@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,11 @@ public class FordelSøknadSender implements SøknadSender {
     @Override
     public Kvittering endreSøknad(Endringssøknad endring, SøknadEgenskap egenskap, InnsendingPersonInfo person) {
         return send(generator.generer(endring, egenskap, person));
+    }
+
+    @Override
+    public Kvittering søk(Søknad søknad, Map<String, byte[]> vedleggsinnhold, SøknadEgenskap egenskap, InnsendingPersonInfo person) {
+        return send(generator.generer(søknad, vedleggsinnhold, egenskap, person));
     }
 
     @Override
