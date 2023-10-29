@@ -76,7 +76,7 @@ public class KonvoluttGenerator {
     }
 
     private void addVedlegg(MultipartBodyBuilder builder, Vedlegg vedlegg, byte[] innhold, AtomicInteger id) {
-        if (vedlegg.getStørrelse() == 0) {
+        if (innhold == null || innhold.length == 0) {
             LOG.warn("Vedlegg {} har størrelse 0, kan ikke sendes", vedlegg);
         } else {
             LOG.info("Legger til vedlegg av type {} og størrelse {}", vedlegg.getDokumentType(),
