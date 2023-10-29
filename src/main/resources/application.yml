@@ -12,6 +12,9 @@ management:
     diskspace:
       enabled: false
 server:
+  tomcat:
+    max-http-form-post-size: 100MB
+    max-swallow-size: 100MB
   servlet:
     context-path: /api
 
