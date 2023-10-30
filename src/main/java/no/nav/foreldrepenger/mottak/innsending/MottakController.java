@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 
 import jakarta.servlet.http.Part;
@@ -40,6 +39,9 @@ import no.nav.foreldrepenger.mottak.oppslag.pdl.Ytelse;
 public class MottakController {
     public static final String INNSENDING = "/mottak";
     private static final String VEDLEGG_REFERANSE_HEADER = "vedleggsreferanse";
+    private static final String BODY_PART_NAME = "body";
+    private static final String VEDLEGG_PART_NAME = "vedlegg";
+
     private final PDLConnection pdl;
     private final SøknadSender søknadSender;
     private final TokenUtil tokenUtil;
@@ -52,31 +54,30 @@ public class MottakController {
         this.tokenUtil = tokenUtil;
     }
 
-    @PostMapping("/send")
-    public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
-        var søknadEgenskap = Inspektør.inspiser(søknad);
-        validerFørstegangssøknad(søknad);
-        var innsendingPersonInfo = personInfo(tilYtelse(søknad.getYtelse()));
-        return søknadSender.søk(søknad, søknadEgenskap, innsendingPersonInfo);
-    }
-
-    @PostMapping("/ettersend")
-    public Kvittering ettersend(@Valid @RequestBody Ettersending ettersending) {
-        var innsendingPersonInfo = personInfo(tilYtelse(ettersending.type()));
-        return søknadSender.ettersend(ettersending, Inspektør.inspiser(ettersending), innsendingPersonInfo);
-    }
-
-    @PostMapping("/endre")
-    public Kvittering endre(@Valid @RequestBody Endringssøknad endringssøknad) {
-        validerSøknad(endringssøknad.getYtelse());
-        var innsendingPersonInfo = personInfo(tilYtelse(endringssøknad.getYtelse()));
-        return søknadSender.endreSøknad(endringssøknad, ENDRING_FORELDREPENGER, innsendingPersonInfo);
-    }
-
-
+    @Deprecated
     @PostMapping(value = "/send/multipart", consumes = { MediaType.MULTIPART_MIXED_VALUE })
-    public Kvittering sendSøknad(@Valid @RequestPart("body") Søknad søknad,
-                                 @Valid @RequestPart(value = "vedlegg", required = false) List<@Valid Part> vedlegg) {
+    public Kvittering sendSøknadOld(@Valid @RequestPart(BODY_PART_NAME) Søknad søknad,
+                                    @Valid @RequestPart(value = VEDLEGG_PART_NAME, required = false) List<@Valid Part> vedlegg) {
+        return sendSøknad(søknad, vedlegg);
+    }
+
+    @Deprecated
+    @PostMapping(value = "/endre/multipart", consumes = { MediaType.MULTIPART_MIXED_VALUE })
+    public Kvittering endreOld(@Valid @RequestPart(BODY_PART_NAME) Endringssøknad endringssøknad,
+                               @Valid @RequestPart(value = VEDLEGG_PART_NAME, required = false) List<@Valid Part> vedlegg) {
+        return endre(endringssøknad, vedlegg);
+    }
+
+    @Deprecated
+    @PostMapping(value = "/ettersend/multipart", consumes = { MediaType.MULTIPART_MIXED_VALUE })
+    public Kvittering ettersendOld(@Valid @RequestPart(BODY_PART_NAME) Ettersending ettersending,
+                                   @Valid @RequestPart(value = VEDLEGG_PART_NAME, required = false) List<@Valid Part> vedlegg) {
+        return ettersend(ettersending, vedlegg);
+    }
+
+    @PostMapping(value = "/send", consumes = { MediaType.MULTIPART_MIXED_VALUE })
+    public Kvittering sendSøknad(@Valid @RequestPart(BODY_PART_NAME) Søknad søknad,
+                                 @Valid @RequestPart(value = VEDLEGG_PART_NAME, required = false) List<@Valid Part> vedlegg) {
         var søknadEgenskap = Inspektør.inspiser(søknad);
         hentInnholdOpplastedeVedlegg(søknad.getVedlegg(), vedlegg);
         validerRiktigAntallVedlegg(søknad.getVedlegg(), vedlegg);
@@ -85,9 +86,9 @@ public class MottakController {
         return søknadSender.søk(søknad, søknadEgenskap, innsendingPersonInfo);
     }
 
-    @PostMapping(value = "/endre/multipart", consumes = { MediaType.MULTIPART_MIXED_VALUE })
-    public Kvittering endre(@Valid @RequestPart("body") Endringssøknad endringssøknad,
-                            @Valid @RequestPart(value = "vedlegg", required = false) List<@Valid Part> vedlegg) {
+    @PostMapping(value = "/endre", consumes = { MediaType.MULTIPART_MIXED_VALUE })
+    public Kvittering endre(@Valid @RequestPart(BODY_PART_NAME) Endringssøknad endringssøknad,
+                            @Valid @RequestPart(value = VEDLEGG_PART_NAME, required = false) List<@Valid Part> vedlegg) {
         hentInnholdOpplastedeVedlegg(endringssøknad.getVedlegg(), vedlegg);
         validerRiktigAntallVedlegg(endringssøknad.getVedlegg(), vedlegg);
         validerSøknad(endringssøknad.getYtelse());
@@ -95,9 +96,9 @@ public class MottakController {
         return søknadSender.endreSøknad(endringssøknad, ENDRING_FORELDREPENGER, innsendingPersonInfo);
     }
 
-    @PostMapping(value = "/ettersend/multipart", consumes = { MediaType.MULTIPART_MIXED_VALUE })
-    public Kvittering ettersend(@Valid @RequestPart("body") Ettersending ettersending,
-                                @Valid @RequestPart(value = "vedlegg", required = false) List<@Valid Part> vedlegg) {
+    @PostMapping(value = "/ettersend", consumes = { MediaType.MULTIPART_MIXED_VALUE })
+    public Kvittering ettersend(@Valid @RequestPart(BODY_PART_NAME) Ettersending ettersending,
+                                @Valid @RequestPart(value = VEDLEGG_PART_NAME, required = false) List<@Valid Part> vedlegg) {
         hentInnholdOpplastedeVedlegg(ettersending.vedlegg(), vedlegg);
         validerRiktigAntallVedlegg(ettersending.vedlegg(), vedlegg);
         var innsendingPersonInfo = personInfo(tilYtelse(ettersending.type()));
@@ -151,7 +152,7 @@ public class MottakController {
                 var vedleggsreferanse = parten.getHeader(VEDLEGG_REFERANSE_HEADER);
                 vedleggsreferanseTilInnholdMap.put(vedleggsreferanse, is.readAllBytes());
             } catch (IOException e) {
-                throw new IllegalStateException("Vedlegg sendt ned uten innhold", e);
+                throw new IllegalStateException("Noe gikk galt med lesing av innhold i vedlegg", e);
             }
 
         }
