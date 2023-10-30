@@ -54,6 +54,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private static final DateTimeFormatter DATEFMT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final float STARTY = PdfElementRenderer.calculateStartY();
     private static final int INDENT = 20;
+    private static final int DOUBLE_INDENT = INDENT * 2;
     private final PdfElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
     private final SvangerskapspengerInfoRenderer infoRenderer;
@@ -130,11 +131,11 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 var scratchcos = new FontAwareCos(doc, scratch1);
                 var startY = STARTY;
                 startY -= header(doc, scratchcos, startY, person);
-                var size = infoRenderer.frilansOpptjening(svp.opptjening().frilans(), scratchcos, startY);
+                var size = infoRenderer.frilansOpptjeningSvangerskapspenger(svp.opptjening().frilans(), scratchcos, startY);
                 var behov = startY - size;
                 if (behov < y) {
                     scratchcos.close();
-                    y = infoRenderer.frilansOpptjening(svp.opptjening().frilans(), cos, y);
+                    y = infoRenderer.frilansOpptjeningSvangerskapspenger(svp.opptjening().frilans(), cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
@@ -201,7 +202,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private List<EnkeltArbeidsforhold> aktiveArbeidsforhold(LocalDate termindato, LocalDate fødselsdato) {
         var relasjonsDato = fødselsdato != null ? fødselsdato : termindato;
         return safeStream(arbeidsforhold.hentArbeidsforhold())
-            .filter(a -> a.to().isEmpty() || (a.to().isPresent() && a.to().get().isAfter(relasjonsDato)))
+            .filter(a -> a.to().isEmpty() || a.to().get().isAfter(relasjonsDato))
             .collect(Collectors.toList());
     }
 
@@ -318,7 +319,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         var startY = y;
         y -= renderer.addBulletPoint(INDENT,
                 txt("svp.tilretteleggingfra", DATEFMT.format(periode.getTilrettelagtArbeidFom())), cos, y);
-        y -= renderer.addBulletPoint(INDENT,
+        y -= renderer.addBulletPoint(DOUBLE_INDENT,
                 txt("svp.stillingsprosent", prosentFra(periode.getStillingsprosent())), cos, y);
         return startY - y;
     }

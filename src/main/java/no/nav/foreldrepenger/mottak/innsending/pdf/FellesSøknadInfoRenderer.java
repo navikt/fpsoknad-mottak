@@ -32,6 +32,7 @@ public class FellesSøknadInfoRenderer {
     protected static final String ARBEIDSGIVER = "arbeidsgiver";
 
     private static final int INDENT = 20;
+    private static final int INDENT_DOUBLE = INDENT * 2;
 
     private final PdfElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
@@ -41,15 +42,19 @@ public class FellesSøknadInfoRenderer {
         this.textFormatter = textFormatter;
     }
 
-    public float frilansOpptjening(Frilans frilans, FontAwareCos cos, float y) throws IOException {
+    public float frilansOpptjeningForeldrepenger(Frilans frilans, FontAwareCos cos, float y) throws IOException {
+        // bruker stilles spm om harInntektFraFosterhjem og nyOppstartet kun i fp
+        return frilansOpptjening(frilans, cos, y, true);
+    }
+
+    public float frilansOpptjeningSvangerskapspenger(Frilans frilans, FontAwareCos cos, float y) throws IOException {
+        return frilansOpptjening(frilans, cos, y, false);
+    }
+
+    private float frilansOpptjening(Frilans frilans, FontAwareCos cos, float y, boolean gjelderForeldrepenger) throws IOException {
         if (frilans == null) {
             return y;
         }
-        y = frilans(frilans, cos, y);
-        return y;
-    }
-
-    private float frilans(Frilans frilans, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("frilans"), cos, y);
         List<String> attributter = new ArrayList<>();
         if (frilans.jobberFremdelesSomFrilans()) {
@@ -57,24 +62,24 @@ public class FellesSøknadInfoRenderer {
         } else {
             attributter.add(txt("frilansavsluttet", textFormatter.dato(frilans.periode().fom())));
         }
-        attributter.add(txt("fosterhjem", jaNei(frilans.harInntektFraFosterhjem())));
-        attributter.add(txt("nyoppstartet", jaNei(frilans.nyOppstartet())));
-        y -= renderer.addLinesOfRegularText(attributter, cos, y);
+        if (gjelderForeldrepenger) {
+            attributter.add(txt("fosterhjem", jaNei(frilans.harInntektFraFosterhjem())));
+            attributter.add(txt("nyoppstartet", jaNei(frilans.nyOppstartet())));
+        }
+        y -= renderer.addLinesOfRegularText(INDENT, attributter, cos, y);
         if (!frilans.frilansOppdrag().isEmpty()) {
-            y -= renderer.addLineOfRegularText(txt("oppdrag"), cos, y);
+            y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag"), cos, y);
             var oppdrag = safeStream(frilans.frilansOppdrag())
                 .map(o -> o.oppdragsgiver() + " " + textFormatter.periode(o.periode()))
                 .toList();
-            y -= renderer.addBulletList(INDENT, oppdrag, cos, y);
+            y -= renderer.addBulletList(INDENT_DOUBLE, oppdrag, cos, y);
             y -= PdfElementRenderer.BLANK_LINE;
         } else {
-            y -= renderer.addLineOfRegularText(txt("oppdrag") + ": Nei", cos, y);
+            y -= renderer.addLineOfRegularText(INDENT,txt("oppdrag") + ": Nei", cos, y);
         }
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
-
-
 
     public float egneNæringerOpptjening(List<EgenNæring> egneNæringer, FontAwareCos cos, float y)
         throws IOException {
@@ -250,9 +255,7 @@ public class FellesSøknadInfoRenderer {
     }
 
     protected void addIfSet(List<String> attributter, String key, Optional<LocalDate> dato) {
-        if (dato.isPresent()) {
-            attributter.add(txt(key, textFormatter.dato(dato.get())));
-        }
+        dato.ifPresent(localDate -> attributter.add(txt(key, textFormatter.dato(localDate))));
     }
 
     protected void addMoneyIfSet(List<String> attributter, String key, Long sum) {
