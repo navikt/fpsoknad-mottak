@@ -12,7 +12,6 @@ import static org.springframework.http.MediaType.APPLICATION_PDF;
 import static org.springframework.http.MediaType.APPLICATION_XML;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -53,37 +52,6 @@ public class KonvoluttGenerator {
         this.metadataGenerator = metadataGenerator;
         this.domainMapper = domainMapper;
         this.pdfGenerator = pdfGenerator;
-    }
-
-
-    public Konvolutt generer(Søknad søknad, Map<String,byte[]> vedleggsinnhold, SøknadEgenskap egenskap, InnsendingPersonInfo person) {
-        LOG.trace("Genererer konvolutt fra søknad {}", søknad);
-        var id = new AtomicInteger(1);
-        var builder = new MultipartBodyBuilder();
-        var aktørId = person.aktørId();
-        builder.part(METADATA, metadataFor(søknad, egenskap.getType(), aktørId), APPLICATION_JSON);
-        builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, aktørId, egenskap), APPLICATION_XML)
-            .header(CONTENT_ID, id(id));
-        builder.part(HOVEDDOKUMENT, pdfHovedDokument(søknad, egenskap, person), APPLICATION_PDF)
-            .header(CONTENT_ID, id(id))
-            .header(CONTENT_ENCODING, "base64");
-        safeStream(søknad.getVedlegg())
-            .filter(v -> v.getMetadata().innsendingsType() == null || LASTET_OPP.equals(v.getMetadata().innsendingsType()))
-            .filter(v -> vedleggsinnhold.containsKey(v.getId()))
-            .forEach(v -> addVedlegg(builder, v, vedleggsinnhold.get(v.getId()), id));
-        return new Konvolutt(egenskap, søknad, builder.build(),
-            opplastedeVedleggFra(søknad), ikkeOpplastedeVedleggFra(søknad));
-    }
-
-    private void addVedlegg(MultipartBodyBuilder builder, Vedlegg vedlegg, byte[] innhold, AtomicInteger id) {
-        if (innhold == null || innhold.length == 0) {
-            LOG.warn("Vedlegg {} har størrelse 0, kan ikke sendes", vedlegg);
-        } else {
-            LOG.info("Legger til vedlegg av type {} og størrelse {}", vedlegg.getDokumentType(),
-                vedlegg.getStørrelse());
-            builder.part(VEDLEGG, innhold, APPLICATION_PDF)
-                .headers(headers(vedlegg, id));
-        }
     }
 
     public Konvolutt generer(Søknad søknad, SøknadEgenskap egenskap, InnsendingPersonInfo person) {

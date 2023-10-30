@@ -27,6 +27,7 @@ import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.felles.EttersendingsType;
 import no.nav.foreldrepenger.common.domain.felles.Person;
+import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.Svangerskapspenger;
 import no.nav.foreldrepenger.common.util.TokenUtil;
@@ -59,44 +60,6 @@ public class MottakController {
         return søknadSender.søk(søknad, søknadEgenskap, innsendingPersonInfo);
     }
 
-    @PostMapping(value = "/send/v2", consumes = { MediaType.MULTIPART_MIXED_VALUE })
-    public Kvittering sendSøknad(@Valid @RequestPart("body") Søknad søknad,
-                                 @Valid @RequestPart(value = "vedlegg", required = false) List<@Valid Part> vedlegg) throws IOException {
-        var søknadEgenskap = Inspektør.inspiser(søknad);
-        var vedleggsinnhold = hentInnholdFraVedleggPart(vedlegg);
-        validerRiktigAntallVedlegg(søknad, vedleggsinnhold);
-        validerFørstegangssøknad(søknad);
-        var innsendingPersonInfo = personInfo(tilYtelse(søknad.getYtelse()));
-        return søknadSender.søk(søknad, vedleggsinnhold, søknadEgenskap, innsendingPersonInfo);
-    }
-
-    private static void validerRiktigAntallVedlegg(Søknad søknad, Map<String, byte[]> vedleggsinnhold) {
-        var antallVedlegg = safeStream(søknad.getVedlegg())
-            .filter(v -> v.getMetadata().innsendingsType() == null || LASTET_OPP.equals(v.getMetadata().innsendingsType()))
-            .count();
-        if (antallVedlegg != vedleggsinnhold.size()) {
-            throw new IllegalStateException("Utviklerfeil: Antall vedlegg i body " + antallVedlegg + " matcher IKKE antall vedlegg i vedlegg part " + vedleggsinnhold.size());
-        }
-    }
-
-    private static Map<String, byte[]> hentInnholdFraVedleggPart(List<Part> vedlegg) throws IOException {
-        var mappedevedlegg = new HashMap<String, byte[]>();
-        if (vedlegg == null) {
-            return mappedevedlegg;
-        }
-
-        for (var parten : vedlegg) {
-            var vedleggsreferanse = parten.getHeader(VEDLEGG_REFERANSE_HEADER);
-            var innhold = parten.getInputStream().readAllBytes();
-            mappedevedlegg.put(vedleggsreferanse, innhold);
-        }
-        return mappedevedlegg;
-    }
-
-    private InnsendingPersonInfo map(Person person) {
-        return new InnsendingPersonInfo(person.navn(), person.aktørId(), person.fnr());
-    }
-
     @PostMapping("/ettersend")
     public Kvittering ettersend(@Valid @RequestBody Ettersending ettersending) {
         var innsendingPersonInfo = personInfo(tilYtelse(ettersending.type()));
@@ -110,10 +73,47 @@ public class MottakController {
         return søknadSender.endreSøknad(endringssøknad, ENDRING_FORELDREPENGER, innsendingPersonInfo);
     }
 
+
+    @PostMapping(value = "/send/multipart", consumes = { MediaType.MULTIPART_MIXED_VALUE })
+    public Kvittering sendSøknad(@Valid @RequestPart("body") Søknad søknad,
+                                 @Valid @RequestPart(value = "vedlegg", required = false) List<@Valid Part> vedlegg) {
+        var søknadEgenskap = Inspektør.inspiser(søknad);
+        hentInnholdOpplastedeVedlegg(søknad.getVedlegg(), vedlegg);
+        validerRiktigAntallVedlegg(søknad.getVedlegg(), vedlegg);
+        validerFørstegangssøknad(søknad);
+        var innsendingPersonInfo = personInfo(tilYtelse(søknad.getYtelse()));
+        return søknadSender.søk(søknad, søknadEgenskap, innsendingPersonInfo);
+    }
+
+    @PostMapping(value = "/endre/multipart", consumes = { MediaType.MULTIPART_MIXED_VALUE })
+    public Kvittering endre(@Valid @RequestPart("body") Endringssøknad endringssøknad,
+                            @Valid @RequestPart(value = "vedlegg", required = false) List<@Valid Part> vedlegg) {
+        hentInnholdOpplastedeVedlegg(endringssøknad.getVedlegg(), vedlegg);
+        validerRiktigAntallVedlegg(endringssøknad.getVedlegg(), vedlegg);
+        validerSøknad(endringssøknad.getYtelse());
+        var innsendingPersonInfo = personInfo(tilYtelse(endringssøknad.getYtelse()));
+        return søknadSender.endreSøknad(endringssøknad, ENDRING_FORELDREPENGER, innsendingPersonInfo);
+    }
+
+    @PostMapping(value = "/ettersend/multipart", consumes = { MediaType.MULTIPART_MIXED_VALUE })
+    public Kvittering ettersend(@Valid @RequestPart("body") Ettersending ettersending,
+                                @Valid @RequestPart(value = "vedlegg", required = false) List<@Valid Part> vedlegg) {
+        hentInnholdOpplastedeVedlegg(ettersending.vedlegg(), vedlegg);
+        validerRiktigAntallVedlegg(ettersending.vedlegg(), vedlegg);
+        var innsendingPersonInfo = personInfo(tilYtelse(ettersending.type()));
+        return søknadSender.ettersend(ettersending, Inspektør.inspiser(ettersending), innsendingPersonInfo);
+    }
+
+
+
     private InnsendingPersonInfo personInfo(Ytelse ytelse) {
         var fnr = tokenUtil.autentisertBrukerOrElseThrowException();
         var person = pdl.hentPerson(fnr, ytelse);
         return map(person);
+    }
+
+    private static InnsendingPersonInfo map(Person person) {
+        return new InnsendingPersonInfo(person.navn(), person.aktørId(), person.fnr());
     }
 
     private static Ytelse tilYtelse(EttersendingsType ettersendingsType) {
@@ -130,6 +130,40 @@ public class MottakController {
             return SVANGERSKAPSPENGER;
         } else {
             return FORELDREPENGER;
+        }
+    }
+
+    private static void hentInnholdOpplastedeVedlegg(List<Vedlegg> vedlegg, List<Part> vedleggParts) {
+        var vedleggsinnhold = hentInnholdFraVedleggPart(vedleggParts);
+        vedlegg.stream()
+            .filter(v -> v.getMetadata().innsendingsType() == null || LASTET_OPP.equals(v.getMetadata().innsendingsType()))
+            .forEach(v -> v.setInnhold(vedleggsinnhold.get(v.getId())));
+    }
+
+    private static Map<String, byte[]> hentInnholdFraVedleggPart(List<Part> vedlegg) {
+        var vedleggsreferanseTilInnholdMap = new HashMap<String, byte[]>();
+        if (vedlegg == null) {
+            return vedleggsreferanseTilInnholdMap;
+        }
+
+        for (var parten : vedlegg) {
+            try (var is = parten.getInputStream())  {
+                var vedleggsreferanse = parten.getHeader(VEDLEGG_REFERANSE_HEADER);
+                vedleggsreferanseTilInnholdMap.put(vedleggsreferanse, is.readAllBytes());
+            } catch (IOException e) {
+                throw new IllegalStateException("Vedlegg sendt ned uten innhold", e);
+            }
+
+        }
+        return vedleggsreferanseTilInnholdMap;
+    }
+    private static void validerRiktigAntallVedlegg(List<Vedlegg> vedlegg, List<Part> vedleggParts) {
+        var antallVedlegg = safeStream(vedlegg)
+            .filter(v -> LASTET_OPP.equals(v.getInnsendingsType()))
+            .count();
+        var antallVedleggPart = vedleggParts != null ? vedleggParts.size() : 0;
+        if (antallVedlegg != antallVedleggPart) {
+            throw new IllegalStateException("Utviklerfeil: Antall opplastede vedlegg i søknad " + antallVedlegg + " matcher IKKE antall vedlegg sendt i vedlegg part " + antallVedleggPart);
         }
     }
 
