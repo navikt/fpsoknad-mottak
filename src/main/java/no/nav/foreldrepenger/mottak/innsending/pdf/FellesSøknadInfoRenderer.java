@@ -65,17 +65,17 @@ public class FellesSøknadInfoRenderer {
         if (gjelderForeldrepenger) {
             attributter.add(txt("fosterhjem", jaNei(frilans.harInntektFraFosterhjem())));
             attributter.add(txt("nyoppstartet", jaNei(frilans.nyOppstartet())));
+            if (frilans.frilansOppdrag().isEmpty()) {
+                attributter.add(txt("oppdrag") + ": Nei");
+            } else {
+                attributter.add(txt("oppdrag"));
+            }
         }
         y -= renderer.addLinesOfRegularText(INDENT, attributter, cos, y);
         if (!frilans.frilansOppdrag().isEmpty()) {
-            y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag"), cos, y);
-            var oppdrag = safeStream(frilans.frilansOppdrag())
-                .map(o -> o.oppdragsgiver() + " " + textFormatter.periode(o.periode()))
-                .toList();
-            y -= renderer.addBulletList(INDENT_DOUBLE, oppdrag, cos, y);
+            var oppdrag = safeStream(frilans.frilansOppdrag()).map(o -> o.oppdragsgiver() + " " + textFormatter.periode(o.periode())).toList();
+            y -= renderer.addBulletList(INDENT_DOUBLE , oppdrag, cos, y);
             y -= PdfElementRenderer.BLANK_LINE;
-        } else {
-            y -= renderer.addLineOfRegularText(INDENT,txt("oppdrag") + ": Nei", cos, y);
         }
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
