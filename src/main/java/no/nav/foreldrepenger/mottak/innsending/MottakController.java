@@ -54,27 +54,6 @@ public class MottakController {
         this.tokenUtil = tokenUtil;
     }
 
-    @Deprecated
-    @PostMapping(value = "/send/multipart", consumes = { MediaType.MULTIPART_MIXED_VALUE })
-    public Kvittering sendSøknadOld(@Valid @RequestPart(BODY_PART_NAME) Søknad søknad,
-                                    @Valid @RequestPart(value = VEDLEGG_PART_NAME, required = false) List<@Valid Part> vedlegg) {
-        return sendSøknad(søknad, vedlegg);
-    }
-
-    @Deprecated
-    @PostMapping(value = "/endre/multipart", consumes = { MediaType.MULTIPART_MIXED_VALUE })
-    public Kvittering endreOld(@Valid @RequestPart(BODY_PART_NAME) Endringssøknad endringssøknad,
-                               @Valid @RequestPart(value = VEDLEGG_PART_NAME, required = false) List<@Valid Part> vedlegg) {
-        return endre(endringssøknad, vedlegg);
-    }
-
-    @Deprecated
-    @PostMapping(value = "/ettersend/multipart", consumes = { MediaType.MULTIPART_MIXED_VALUE })
-    public Kvittering ettersendOld(@Valid @RequestPart(BODY_PART_NAME) Ettersending ettersending,
-                                   @Valid @RequestPart(value = VEDLEGG_PART_NAME, required = false) List<@Valid Part> vedlegg) {
-        return ettersend(ettersending, vedlegg);
-    }
-
     @PostMapping(value = "/send", consumes = { MediaType.MULTIPART_MIXED_VALUE })
     public Kvittering sendSøknad(@Valid @RequestPart(BODY_PART_NAME) Søknad søknad,
                                  @Valid @RequestPart(value = VEDLEGG_PART_NAME, required = false) List<@Valid Part> vedlegg) {
