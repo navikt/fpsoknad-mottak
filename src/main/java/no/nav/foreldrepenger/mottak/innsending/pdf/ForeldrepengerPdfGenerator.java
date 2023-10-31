@@ -115,7 +115,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
 
                 if (opptjening.frilans() != null) {
                     Function<CosyPair, Float> frilansFn = uncheck(p ->
-                        fpRenderer.frilansOpptjening(opptjening.frilans(), p.cos, p.y));
+                        fpRenderer.frilansOpptjeningForeldrepenger(opptjening.frilans(), p.cos, p.y));
                     cosy = render(docParam, frilansFn, cosy);
                 }
 

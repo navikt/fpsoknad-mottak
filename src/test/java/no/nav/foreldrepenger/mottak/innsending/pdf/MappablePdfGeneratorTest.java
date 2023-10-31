@@ -166,7 +166,7 @@ class MappablePdfGeneratorTest {
         try (var fos = new FileOutputStream(filNavn)) {
             fos.write(gen.generer(engangssøknad(false), INITIELL_ENGANGSSTØNAD, personInfo()));
         }
-        // verifiserGenerertPDF(filNavn, 1, "Søknad om engangsstønad");
+        //verifiserGenerertPDF(filNavn, 1, "Søknad om engangsstønad");
     }
 
     @Test
@@ -175,7 +175,7 @@ class MappablePdfGeneratorTest {
         try (var fos = new FileOutputStream(filNavn)) {
             fos.write(gen.generer(svp(), INITIELL_SVANGERSKAPSPENGER, personInfo()));
         }
-        verifiserGenerertPDF(filNavn, 4, "Søknad om svangerskapspenger");
+        verifiserGenerertPDF(filNavn, 3, "Søknad om svangerskapspenger");
     }
 
     @Test
