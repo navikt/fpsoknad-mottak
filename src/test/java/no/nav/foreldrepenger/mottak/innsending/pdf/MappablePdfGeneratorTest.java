@@ -24,13 +24,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -193,7 +194,7 @@ class MappablePdfGeneratorTest {
     }
 
     private void verifiserGenerertPDF(String filNavn, int antallSiderIPDFen, String forventetTekst) throws IOException {
-        try (var document = Loader.loadPDF(new File(filNavn))) {
+        try (var document = PDDocument.load(new FileInputStream(filNavn))) {
             assertThat(document.getNumberOfPages()).isEqualTo(antallSiderIPDFen);
             assertThat(document.isEncrypted()).isFalse();
 

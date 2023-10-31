@@ -76,7 +76,7 @@ public class FontAwarePdfDocument extends PDDocument {
             dc.setTitle("Søknad");
             dc.addCreator("NAV");
 
-            var id = xmp.createAndAddPDFAIdentificationSchema();
+            var id = xmp.createAndAddPFAIdentificationSchema();
             id.setPart(1);
             id.setConformance("B");
 
