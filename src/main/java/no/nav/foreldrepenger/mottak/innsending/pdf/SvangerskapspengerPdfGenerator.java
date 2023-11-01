@@ -24,8 +24,6 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import no.nav.foreldrepenger.common.domain.Fødselsnummer;
-import no.nav.foreldrepenger.common.domain.Orgnummer;
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
@@ -214,14 +212,15 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             List<Vedlegg> vedlegg, FontAwareCos cos, float y)
             throws IOException {
         if (arbeidsforhold instanceof Virksomhet v) {
-            y -= renderer.addLineOfRegularText(
-                    virksomhetsnavn(arbeidsgivere, v.orgnr()), cos, y);
+            var text = virksomhetsnavn(arbeidsgivere, v.orgnr().value())
+                .orElse(txt("arbeidsgiverIkkeFunnet", v.orgnr().value()));
+            y -= renderer.addLineOfRegularText(text, cos, y);
             y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
             y -= blankLine();
         }
-        if (arbeidsforhold instanceof PrivatArbeidsgiver) {
-            var navn = privatArbeidsgiverNavn(arbeidsgivere, ((PrivatArbeidsgiver) arbeidsforhold).fnr());
-            var text = navn.orElse(txt("svp.privatarbeidsgiverNavnIkkeFunnet"));
+        if (arbeidsforhold instanceof PrivatArbeidsgiver p) {
+            var text = virksomhetsnavn(arbeidsgivere, p.fnr().value())
+                .orElse(txt("svp.privatarbeidsgiverNavnIkkeFunnet"));
             y -= renderer.addLineOfRegularText(text, cos, y);
             y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
             y -= blankLine();
@@ -373,19 +372,11 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         return vedlegg.getDokumentType().equals(I000060) || vedlegg.getDokumentType().equals(I000049);
     }
 
-    private String virksomhetsnavn(List<EnkeltArbeidsforhold> arbeidsgivere, Orgnummer orgnr) {
+    private Optional<String> virksomhetsnavn(List<EnkeltArbeidsforhold> arbeidsgivere, String arbeidsgiverId) {
         return safeStream(arbeidsgivere)
-                .filter(arb -> arb.arbeidsgiverId().equals(orgnr.value()))
+                .filter(arb -> arb.arbeidsgiverId().equals(arbeidsgiverId))
                 .findFirst()
-                .map(EnkeltArbeidsforhold::arbeidsgiverNavn)
-                .orElse(txt("arbeidsgiverIkkeFunnet", orgnr.value()));
-    }
-
-    private Optional<String> privatArbeidsgiverNavn(List<EnkeltArbeidsforhold> arbeidsgivere, Fødselsnummer identifikasjonOrgnrFnr) {
-        return safeStream(arbeidsgivere)
-            .filter(arb -> arb.arbeidsgiverId().equals(identifikasjonOrgnrFnr.value()))
-            .findFirst()
-            .map(EnkeltArbeidsforhold::arbeidsgiverNavn);
+                .map(EnkeltArbeidsforhold::arbeidsgiverNavn);
     }
 
     private float omBarn(Svangerskapspenger svp, FontAwareCos cos, float y) throws IOException {
