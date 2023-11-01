@@ -207,7 +207,7 @@ class MappablePdfGeneratorTest {
 
     private static List<EnkeltArbeidsforhold> arbeidsforhold() {
         return List.of(EnkeltArbeidsforhold.builder()
-                    .arbeidsgiverId("342352362")
+                .arbeidsgiverId("342352362")
                 .from(LocalDate.now().minusDays(200))
                 .to(Optional.empty())
                 .stillingsprosent(ProsentAndel.valueOf(90))
