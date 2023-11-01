@@ -11,6 +11,7 @@ import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.INITIELL_E
 import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.INITIELL_SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.NORSK_FORELDER_FNR;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.VEDLEGG1;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.fordeling;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengesøknad;
@@ -125,7 +126,7 @@ class MappablePdfGeneratorTest {
         }
 
         assertThat(søknad.getTilleggsopplysninger()).isNotNull();
-        verifiserGenerertPDF(filNavn, 6, søknad.getTilleggsopplysninger());
+        verifiserGenerertPDF(filNavn, 7, søknad.getTilleggsopplysninger());
     }
 
     @Test
@@ -210,6 +211,12 @@ class MappablePdfGeneratorTest {
                 .from(LocalDate.now().minusDays(200))
                 .to(Optional.of(LocalDate.now().plusDays(10)))
                 .stillingsprosent(ProsentAndel.valueOf(90))
-                .arbeidsgiverNavn("Den Første Bedriften").build());
+                .arbeidsgiverNavn("Den Første Bedriften").build(),
+            EnkeltArbeidsforhold.builder()
+                .arbeidsgiverId(NORSK_FORELDER_FNR.value())
+                .from(LocalDate.now().minusYears(10))
+                .stillingsprosent(ProsentAndel.valueOf(10))
+                .to(Optional.empty())
+                .arbeidsgiverNavn("Test Arbeidsgiversen").build());
     }
 }
