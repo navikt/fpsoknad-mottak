@@ -74,8 +74,8 @@ public class FellesSøknadInfoRenderer {
             y -= PdfElementRenderer.BLANK_LINE;
         } else if (gjelderForeldrepenger) {
             y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag") + ": Nei", cos, y);
+            y -= PdfElementRenderer.BLANK_LINE;
         }
-        y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
