@@ -338,6 +338,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         var startY = y;
         y -= renderer.addBulletPoint(INDENT, txt("svp.tilretteleggingfra",
                 DATEFMT.format(periode.getTilrettelagtArbeidFom())), cos, y);
+        y -= renderer.addBulletPoint(DOUBLE_INDENT, txt("svp.stillingsprosent.full"), cos, y);
         return startY - y;
     }
 

@@ -71,11 +71,10 @@ public class FellesSøknadInfoRenderer {
             y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag"), cos, y);
             var oppdrag = safeStream(frilans.frilansOppdrag()).map(o -> o.oppdragsgiver() + " " + textFormatter.periode(o.periode())).toList();
             y -= renderer.addBulletList(INDENT_DOUBLE , oppdrag, cos, y);
-            y -= PdfElementRenderer.BLANK_LINE;
         } else if (gjelderForeldrepenger) {
             y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag") + ": Nei", cos, y);
-            y -= PdfElementRenderer.BLANK_LINE;
         }
+        y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 

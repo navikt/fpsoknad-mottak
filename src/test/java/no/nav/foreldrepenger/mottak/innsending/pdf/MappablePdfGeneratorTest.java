@@ -176,7 +176,7 @@ class MappablePdfGeneratorTest {
         try (var fos = new FileOutputStream(filNavn)) {
             fos.write(gen.generer(svp(), INITIELL_SVANGERSKAPSPENGER, personInfo()));
         }
-        verifiserGenerertPDF(filNavn, 3, "Søknad om svangerskapspenger");
+        verifiserGenerertPDF(filNavn, 4, "Søknad om svangerskapspenger");
     }
 
     @Test
