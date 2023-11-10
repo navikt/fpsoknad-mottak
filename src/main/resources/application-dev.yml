@@ -32,11 +32,11 @@ spring:
 arbeidsforhold:
   base-uri: https://aareg-services.dev.intern.nav.no/api
 digdir:
-  base-uri: https://digdir-krr-proxy.dev.intern.nav.no
+  base-uri: https://digdir-krr-proxy.intern.dev.nav.no
 organisasjon:
   base-uri: https://ereg-services.dev.intern.nav.no/api/v2/organisasjon
 kontoregister:
-  base-uri: https://sokos-kontoregister-person.dev.intern.nav.no
+  base-uri: https://sokos-kontoregister-person.intern.dev.nav.no
 no.nav:
   security:
     jwt:
