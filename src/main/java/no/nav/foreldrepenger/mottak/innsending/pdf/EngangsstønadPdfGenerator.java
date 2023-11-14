@@ -1,6 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.LASTET_OPP;
+import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.SEND_SENERE;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.mottak.innsending.pdf.FellesSøknadInfoRenderer.tilDokumentBeskrivelse;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,7 +24,6 @@ import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.FremtidigFøds
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Fødsel;
 import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
 import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
-import no.nav.foreldrepenger.common.util.StreamUtil;
 import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.Blokk;
@@ -84,6 +86,23 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         // info om utenlandsopphold og trygdetilknytning
         grupper.add(tilknytning(medlemsskap, stønad));
 
+        // vedlegg
+        var vedlegg = søknad.getVedlegg();
+        if (!vedlegg.isEmpty()) {
+            var opplastedeVedlegg = vedlegg.stream()
+                .filter(v -> LASTET_OPP.equals(v.getInnsendingsType()))
+                .toList();
+            if (!opplastedeVedlegg.isEmpty()) {
+                grupper.add(vedleggSomErOpplastet(opplastedeVedlegg));
+            }
+
+            var sendSenereVedlegg = vedlegg.stream()
+                .filter(v -> SEND_SENERE.equals(v.getInnsendingsType()))
+                .toList();
+            if (!sendSenereVedlegg.isEmpty()) {
+                grupper.add(vedleggSomEttersendes(sendSenereVedlegg));
+            }
+        }
         return grupper;
     }
 
@@ -105,7 +124,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
 
     private static List<TabellRad> tabellRader(List<UtenlandsoppholdFormatert> rader) {
         return rader.stream()
-                .map(r -> new TabellRad(r.land(), r.datointervall(), null))
+                .map(r -> new TabellRad("- " + r.land(), r.datointervall(), null))
                 .toList();
     }
 
@@ -133,7 +152,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
             return adopsjon(stønad, kjønn, søknad.getVedlegg());
         }
         if (erFremtidigFødsel(stønad)) {
-            return fødsel(søknad, stønad);
+            return fødsel(stønad);
         }
         return født(stønad);
     }
@@ -149,9 +168,6 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         }
 
         blokker.add(new FritekstBlokk(txt("antallbarn", a.getAntallBarn())));
-        blokker.add(new ListeBlokk(txt("vedlegg1"), StreamUtil.safeStream(v)
-                .map(Vedlegg::getBeskrivelse)
-                .toList()));
         return blokker;
     }
 
@@ -162,16 +178,11 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         return List.of(new FritekstBlokk(tekst));
     }
 
-    private List<Blokk> fødsel(Søknad søknad, Engangsstønad stønad) {
+    private List<Blokk> fødsel(Engangsstønad stønad) {
         var ff = (FremtidigFødsel) stønad.relasjonTilBarn();
         var antallBarn = stønad.relasjonTilBarn().getAntallBarn();
         var termindato = textFormatter.dato(ff.getTerminDato());
         var barnInfo = new FritekstBlokk(txt("gjeldertermindato", antallBarn, termindato));
-        if (!søknad.getPåkrevdeVedlegg().isEmpty()) {
-            var vedleggInfo = new FritekstBlokk(textFormatter.fromMessageSource("terminbekreftelsedatert",
-                    textFormatter.dato(ff.getUtstedtDato())));
-            return List.of(barnInfo, vedleggInfo);
-        }
         return List.of(barnInfo);
     }
 
@@ -181,6 +192,35 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
 
     private static boolean erAdopsjon(Engangsstønad stønad) {
         return stønad.relasjonTilBarn() instanceof Adopsjon;
+    }
+
+    private TemaBlokk vedleggSomErOpplastet(List<Vedlegg> vedlegg) {
+        List<Blokk> listeBlokk = new ArrayList<>();
+        listeBlokk.add(new ListeBlokk("", dokumentBeskrivelser(vedlegg)));
+        return new TemaBlokk(txt("dokumentasjon.mottatt.overskrift"), listeBlokk);
+    }
+    private TemaBlokk vedleggSomEttersendes(List<Vedlegg> vedlegg) {
+        List<Blokk> listeBlokk = new ArrayList<>();
+        listeBlokk.add(new ListeBlokk("", dokumentBeskrivelser(vedlegg)));
+        listeBlokk.add(new FritekstBlokk(txt("dokumentasjon.innsyn")));
+        return new TemaBlokk(txt("dokumentasjon.senere.overskrift"), listeBlokk);
+    }
+
+    private static List<String> dokumentBeskrivelser(List<Vedlegg> vedlegg) {
+        return vedlegg.stream()
+            .map(EngangsstønadPdfGenerator::dokumentBeskrivelse)
+            .toList();
+    }
+
+    private static String dokumentBeskrivelse(Vedlegg vedlegg) {
+        var dokumentInnslag = new StringBuilder(tilDokumentBeskrivelse(vedlegg.getDokumentType()));
+        if (vedlegg.getInnsendingsType().equals(LASTET_OPP) && vedlegg.getMetadata().filnavn() != null && !vedlegg.getMetadata().filnavn().isBlank()) {
+            dokumentInnslag
+                .append(" (")
+                .append(vedlegg.getMetadata().filnavn())
+                .append(")");
+        }
+        return dokumentInnslag.toString();
     }
 
     private String txt(String gjelder, Object... values) {

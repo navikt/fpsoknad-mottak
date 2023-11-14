@@ -1,11 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.person;
-import static no.nav.foreldrepenger.common.domain.felles.TestUtils.valgfrittVedlegg;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengesøknad;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.opplastetVedlegg;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Saksnummer;
+import no.nav.foreldrepenger.common.domain.felles.DokumentType;
 import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
 import no.nav.foreldrepenger.common.innsending.foreldrepenger.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.common.innsending.foreldrepenger.FordelKvittering;
@@ -44,7 +44,6 @@ import no.nav.foreldrepenger.common.innsending.mappers.AktørIdTilFnrConverter;
 import no.nav.foreldrepenger.common.innsending.mappers.V1SvangerskapspengerDomainMapper;
 import no.nav.foreldrepenger.common.innsending.mappers.V3EngangsstønadDomainMapper;
 import no.nav.foreldrepenger.common.innsending.mappers.V3ForeldrepengerDomainMapper;
-import no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.MappablePdfGenerator;
@@ -389,7 +388,7 @@ class FordelConnectionTest {
     }
 
     private Konvolutt lagDefaultKonvolutt() {
-        var søknad = foreldrepengesøknad( false, valgfrittVedlegg(ForeldrepengerTestUtils.ID142, LASTET_OPP));
+        var søknad = foreldrepengesøknad( false, opplastetVedlegg(DokumentType.I000023, null));
         return konvoluttGenerator.generer(søknad, SøknadEgenskap.of(INITIELL_FORELDREPENGER), new InnsendingPersonInfo(person().navn(), person().aktørId(), person().fnr()));
     }
 

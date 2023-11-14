@@ -71,8 +71,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             var cosy = new CosyPair(cos, y);
 
             if (stønad.relasjonTilBarn() != null) {
-                Function<CosyPair, Float> relasjonTilBarnFn = uncheck(p -> fpRenderer.relasjonTilBarn(stønad.relasjonTilBarn(),
-                    søknad.getVedlegg(), p.cos, p.y));
+                Function<CosyPair, Float> relasjonTilBarnFn = uncheck(p -> fpRenderer.relasjonTilBarn(stønad.relasjonTilBarn(), p.cos, p.y));
                 cosy = render(docParam, relasjonTilBarnFn, cosy);
             }
 
@@ -95,15 +94,12 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                 cosy = render(docParam, arbeidsforholdOpptjFn, cosy);
 
                 if (!opptjening.utenlandskArbeidsforhold().isEmpty()) {
-                    Function<CosyPair, Float> utenlandsArbeidsforholdFn = uncheck(p -> fpRenderer.utenlandskeArbeidsforholdOpptjening(
-                        opptjening.utenlandskArbeidsforhold(),
-                        søknad.getVedlegg(), p.cos, p.y));
+                    Function<CosyPair, Float> utenlandsArbeidsforholdFn = uncheck(p -> fpRenderer.utenlandskeArbeidsforholdOpptjening(opptjening.utenlandskArbeidsforhold(), p.cos, p.y));
                     cosy = render(docParam, utenlandsArbeidsforholdFn, cosy);
                 }
 
                 if (!opptjening.annenOpptjening().isEmpty()) {
-                    Function<CosyPair, Float> annenOpptjeningFn = uncheck(p -> fpRenderer.annenOpptjening(opptjening.annenOpptjening(),
-                        søknad.getVedlegg(), p.cos, p.y));
+                    Function<CosyPair, Float> annenOpptjeningFn = uncheck(p -> fpRenderer.annenOpptjening(opptjening.annenOpptjening(), p.cos, p.y));
                     cosy = render(docParam, annenOpptjeningFn, cosy);
                 }
 
@@ -126,9 +122,16 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                 }
 
                 if (stønad.fordeling() != null) {
-                    var forCos = fpRenderer.fordeling(doc, søknad.getSøker().søknadsRolle(), stønad,
-                            søknad.getVedlegg(), false, cosy.cos(), cosy.y(), person);
+                    var forCos = fpRenderer.fordeling(doc, søknad.getSøker().søknadsRolle(), stønad, false, cosy.cos(), cosy.y(), person);
                     cosy = new CosyPair(forCos, -1);
+                }
+
+                if (søknad.getVedlegg() != null) {
+                    Function<CosyPair, Float> opplastetVedlegg = uncheck(p -> fpRenderer.vedleggSomErOpplastet(søknad.getVedlegg(), p.cos, p.y));
+                    cosy = render(docParam, opplastetVedlegg, cosy);
+
+                    Function<CosyPair, Float> vedleggEttersendes = uncheck(p -> fpRenderer.vedleggSomEttersendes(søknad.getVedlegg(), p.cos, p.y));
+                    cosy = render(docParam, vedleggEttersendes, cosy);
                 }
 
                 if (!arbeidsforhold.isEmpty()) {
@@ -156,8 +159,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             cosy = new CosyPair(cosy.cos(), headerFn.apply(cosy));
 
             if (ytelse.relasjonTilBarn() != null) {
-                Function<CosyPair, Float> relasjonTilBarnFn = uncheck(p -> fpRenderer.relasjonTilBarn(ytelse.relasjonTilBarn(),
-                    søknad.getVedlegg(), p.cos, p.y));
+                Function<CosyPair, Float> relasjonTilBarnFn = uncheck(p -> fpRenderer.relasjonTilBarn(ytelse.relasjonTilBarn(), p.cos, p.y));
                 cosy = render(docParam, relasjonTilBarnFn, cosy);
             }
 
@@ -175,10 +177,18 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             }
 
             if (ytelse.fordeling() != null) {
-                var fordelCos = fpRenderer.fordeling(doc, søknad.getSøker().søknadsRolle(), ytelse,
-                    søknad.getVedlegg(), true, cosy.cos(), cosy.y(), person);
+                var fordelCos = fpRenderer.fordeling(doc, søknad.getSøker().søknadsRolle(), ytelse,true, cosy.cos(), cosy.y(), person);
                 cosy = new CosyPair(fordelCos, -1);
             }
+
+            if (søknad.getVedlegg() != null) {
+                Function<CosyPair, Float> opplastetVedlegg = uncheck(p -> fpRenderer.vedleggSomErOpplastet(søknad.getVedlegg(), p.cos, p.y));
+                cosy = render(docParam, opplastetVedlegg, cosy);
+
+                Function<CosyPair, Float> vedleggEttersendes = uncheck(p -> fpRenderer.vedleggSomEttersendes(søknad.getVedlegg(), p.cos, p.y));
+                cosy = render(docParam, vedleggEttersendes, cosy);
+            }
+
             cosy.cos().close();
             doc.save(baos);
             return baos.toByteArray();

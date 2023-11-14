@@ -42,7 +42,7 @@ public class MottakController {
     private static final Logger LOG = LoggerFactory.getLogger(MottakController.class);
 
     public static final String INNSENDING = "/mottak";
-    private static final String VEDLEGG_REFERANSE_HEADER = "vedleggsreferanse";
+    private static final String VEDLEGG_REFERANSE_HEADER = "vedleggsid";
     private static final String BODY_PART_NAME = "body";
     private static final String VEDLEGG_PART_NAME = "vedlegg";
 
