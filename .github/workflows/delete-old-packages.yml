@@ -1,0 +1,18 @@
+name: Delete old packages
+on:
+  workflow_dispatch:
+
+jobs:
+  delete:
+    name: Delete old
+    permissions:
+      packages: write
+    runs-on: ubuntu-latest
+    needs: build-app
+    if: github.ref_name == 'master'
+    steps:
+      - uses: actions/delete-package-versions@v4
+        with:
+          package-name: 'fpsoknad-mottak'
+          package-type: 'docker'
+          num-old-versions-to-delete: 100
