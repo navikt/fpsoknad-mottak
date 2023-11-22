@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -37,6 +39,8 @@ import no.nav.foreldrepenger.mottak.oppslag.pdl.Ytelse;
 
 @ProtectedRestController(MottakController.INNSENDING)
 public class MottakController {
+    private static final Logger LOG = LoggerFactory.getLogger(MottakController.class);
+
     public static final String INNSENDING = "/mottak";
     private static final String VEDLEGG_REFERANSE_HEADER = "vedleggsreferanse";
     private static final String BODY_PART_NAME = "body";
@@ -137,12 +141,13 @@ public class MottakController {
         }
         return vedleggsreferanseTilInnholdMap;
     }
-    private static void validerRiktigAntallVedlegg(List<Vedlegg> vedlegg, List<Part> vedleggParts) {
-        var antallVedlegg = safeStream(vedlegg)
+    private static void validerRiktigAntallVedlegg(List<Vedlegg> vedleggSøknad, List<Part> vedleggParts) {
+        var antallVedlegg = safeStream(vedleggSøknad)
             .filter(v -> LASTET_OPP.equals(v.getInnsendingsType()))
             .count();
         var antallVedleggPart = vedleggParts != null ? vedleggParts.size() : 0;
         if (antallVedlegg != antallVedleggPart) {
+            LOG.info("Vedlegg i søknaden ({}) er {} mot {} vedlegg i part", antallVedlegg, vedleggSøknad, antallVedleggPart);
             throw new IllegalStateException("Utviklerfeil: Antall opplastede vedlegg i søknad " + antallVedlegg + " matcher IKKE antall vedlegg sendt i vedlegg part " + antallVedleggPart);
         }
     }
