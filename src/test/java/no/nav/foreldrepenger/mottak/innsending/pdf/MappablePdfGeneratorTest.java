@@ -2,6 +2,11 @@ package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static no.nav.boot.conditionals.EnvUtil.LOCAL;
 import static no.nav.boot.conditionals.EnvUtil.TEST;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000037;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000038;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000051;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000061;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000112;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.fødsel;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.hasPdfSignature;
@@ -12,13 +17,15 @@ import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.INITIELL_F
 import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.INITIELL_SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.NORSK_FORELDER_FNR;
-import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.VEDLEGG1;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.fordeling;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengesøknad;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengesøknadMedEttIkkeOpplastedVedlegg;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.ikkeOpplastet;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.norskForelder;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.opplastetVedlegg;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.rettigheter;
-import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.svp;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.svangerskapspenger;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.søknad;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -47,11 +54,17 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Orgnummer;
 import no.nav.foreldrepenger.common.domain.Saksnummer;
+import no.nav.foreldrepenger.common.domain.felles.DokumentType;
+import no.nav.foreldrepenger.common.domain.felles.LukketPeriode;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.common.domain.felles.TestUtils;
+import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.common.domain.felles.VedleggMetaData;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Virksomhet;
 import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
@@ -126,14 +139,20 @@ class MappablePdfGeneratorTest {
         }
 
         assertThat(søknad.getTilleggsopplysninger()).isNotNull();
-        verifiserGenerertPDF(filNavn, 7, søknad.getTilleggsopplysninger());
+        verifiserGenerertPDF(filNavn, 6, søknad.getTilleggsopplysninger());
     }
 
     @Test
     void foreldrepengerFortsettUtenArbeidsforholdVedExceptionFraTjeneste() throws Exception {
         var filNavn = ABSOLUTE_PATH +"/søknad_exception_fra_arbeidsforholdtjeneste.pdf";
         when(arbeidsforholdTjeneste.hentArbeidsforhold()).thenThrow(RuntimeException.class);
-        var søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
+        var søknad = foreldrepengesøknad(
+            true,
+            aktivitestKravMor(I000112),
+            annetVedlegg(DokumentType.I000023, true),
+            annetVedlegg(DokumentType.I000062, false),
+            annetVedlegg(DokumentType.I000110, false)
+        );
         try (var fos = new FileOutputStream(filNavn)) {
             assertDoesNotThrow(() -> fos.write(gen.generer(søknad, INITIELL_FORELDREPENGER, personInfo())));
         }
@@ -148,16 +167,49 @@ class MappablePdfGeneratorTest {
         var endringssøknad = new Endringssøknad(
             LocalDate.now(),
             TestUtils.søker(),
-            new Foreldrepenger(norskForelder(), fødsel(), rettigheter(), null, null,
-                fordeling(VEDLEGG1.getMetadata().id()), null),
+            new Foreldrepenger(norskForelder(), fødsel(), rettigheter(), null, null, fordeling(), null),
             TILLEGGSOPPLYSNINGER,
-            List.of(VEDLEGG1),
+            List.of(
+                aktivitestKravMor(I000037),
+                aktivitestKravMor(I000051),
+                aktivitestKravMor(I000112),
+                aktivitestKravMor(I000038),
+                aktivitestKravMor(I000061),
+                annetVedlegg(DokumentType.I000062, true),
+                annetVedlegg(DokumentType.I000042, true),
+                annetVedlegg(DokumentType.I000036, true),
+                annetVedlegg(DokumentType.I000110, true),
+                annetVedlegg(DokumentType.I000039, true),
+                annetVedlegg(DokumentType.I000023, true),
+                annetVedlegg(DokumentType.I000044, true),
+                annetVedlegg(DokumentType.I000063, true),
+                annetVedlegg(DokumentType.I000007, true),
+                annetVedlegg(DokumentType.I000114, true),
+                annetVedlegg(DokumentType.I000116, true),
+                annetVedlegg(DokumentType.I000117, true),
+                annetVedlegg(DokumentType.I000032, true),
+                annetVedlegg(DokumentType.I000066, true),
+                annetVedlegg(DokumentType.I000062, false),
+                annetVedlegg(DokumentType.I000042, false),
+                annetVedlegg(DokumentType.I000036, false),
+                annetVedlegg(DokumentType.I000110, false),
+                annetVedlegg(DokumentType.I000039, false),
+                annetVedlegg(DokumentType.I000023, false),
+                annetVedlegg(DokumentType.I000044, false),
+                annetVedlegg(DokumentType.I000063, false),
+                annetVedlegg(DokumentType.I000007, false),
+                annetVedlegg(DokumentType.I000114, false),
+                annetVedlegg(DokumentType.I000116, false),
+                annetVedlegg(DokumentType.I000117, false),
+                annetVedlegg(DokumentType.I000032, false),
+                annetVedlegg(DokumentType.I000066, false)
+            ),
             new Saksnummer("123456789"));
         try (var fos = new FileOutputStream(filNavn)) {
             assertDoesNotThrow(() -> fos.write(gen.generer(endringssøknad, ENDRING_FORELDREPENGER, personInfo())));
         }
 
-        verifiserGenerertPDF(filNavn, 3, TILLEGGSOPPLYSNINGER);
+        verifiserGenerertPDF(filNavn, 4, TILLEGGSOPPLYSNINGER);
     }
 
     @Test
@@ -165,18 +217,24 @@ class MappablePdfGeneratorTest {
         when(tokenUtil.autentisertBrukerOrElseThrowException()).thenReturn(new Fødselsnummer("010101010101"));
         var filNavn = ABSOLUTE_PATH + "/engangssøknad.pdf";
         try (var fos = new FileOutputStream(filNavn)) {
-            fos.write(gen.generer(engangssøknad(false), INITIELL_ENGANGSSTØNAD, personInfo()));
+            var engangssøknad = engangssøknad(annetVedlegg(DokumentType.I000062, false));
+            fos.write(gen.generer(engangssøknad, INITIELL_ENGANGSSTØNAD, personInfo()));
         }
         //verifiserGenerertPDF(filNavn, 1, "Søknad om engangsstønad");
     }
-
     @Test
     void svanger() throws Exception {
         var filNavn = ABSOLUTE_PATH + "/svangerskapspenger.pdf";
         try (var fos = new FileOutputStream(filNavn)) {
-            fos.write(gen.generer(svp(), INITIELL_SVANGERSKAPSPENGER, personInfo()));
+            var svp = søknad(
+                svangerskapspenger(),
+                tilretteleggingVedlegg(),
+                annetVedlegg(DokumentType.I000066, true),
+                annetVedlegg(DokumentType.I000062, false)
+            );
+            fos.write(gen.generer(svp, INITIELL_SVANGERSKAPSPENGER, personInfo()));
         }
-        verifiserGenerertPDF(filNavn, 4, "Søknad om svangerskapspenger");
+        verifiserGenerertPDF(filNavn, 3, "Søknad om svangerskapspenger");
     }
 
     @Test
@@ -218,5 +276,69 @@ class MappablePdfGeneratorTest {
                 .stillingsprosent(ProsentAndel.valueOf(10))
                 .to(Optional.empty())
                 .arbeidsgiverNavn("Test Arbeidsgiversen").build());
+    }
+
+    private static Vedlegg aktivitestKravMor(DokumentType dokumentType) {
+        return opplastetVedlegg(
+            dokumentType,
+            new VedleggMetaData.Dokumenterer(
+                VedleggMetaData.Dokumenterer.Type.UTTAK,
+                null,
+                List.of(
+                    new LukketPeriode(LocalDate.now().minusYears(1), LocalDate.now()),
+                    new LukketPeriode(LocalDate.now().minusMonths(1), LocalDate.now().minusMonths(1)))
+            ));
+    }
+
+    private static Vedlegg annetVedlegg(DokumentType dokumentType, boolean opplastet) {
+        if (!opplastet) {
+            return ikkeOpplastet(
+                dokumentType,
+                null);
+        } else  {
+            return opplastetVedlegg(
+                dokumentType,
+                null);
+        }
+    }
+
+    private static Vedlegg anneninntektVedlegg() {
+        return opplastetVedlegg(
+            DokumentType.I000039,
+            new VedleggMetaData.Dokumenterer(
+                VedleggMetaData.Dokumenterer.Type.UTTAK,
+                null,
+                List.of(
+                    new LukketPeriode(LocalDate.now(), LocalDate.now().plusWeeks(2))
+                )));
+    }
+
+    private static Vedlegg tilretteleggingVedlegg() {
+        return opplastetVedlegg(
+            DokumentType.I000109,
+            new VedleggMetaData.Dokumenterer(
+                VedleggMetaData.Dokumenterer.Type.TILRETTELEGGING,
+                new Virksomhet(Orgnummer.MAGIC_ORG),
+                List.of(
+                    new LukketPeriode(LocalDate.now(), LocalDate.now().plusWeeks(2))
+                )));
+    }
+
+    private static Vedlegg sendSenereVedlegg() {
+        return ikkeOpplastet(
+            I000038,
+            new VedleggMetaData.Dokumenterer(
+                VedleggMetaData.Dokumenterer.Type.UTTAK,
+                null,
+                List.of(
+                    new LukketPeriode(LocalDate.now().minusYears(1), LocalDate.now().minusMonths(2)),
+                    new LukketPeriode(LocalDate.now().minusMonths(1).minusDays(1), LocalDate.now()))
+            ));
+    }
+
+    private static Vedlegg ikkeOpplastetTerminbekreftelse() {
+        return ikkeOpplastet(
+            DokumentType.I000062,
+            null);
     }
 }

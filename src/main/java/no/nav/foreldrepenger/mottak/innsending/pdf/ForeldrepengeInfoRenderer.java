@@ -2,6 +2,9 @@ package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static java.util.Arrays.asList;
 import static no.nav.foreldrepenger.common.domain.BrukerRolle.MEDMOR;
+import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.LASTET_OPP;
+import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.SEND_SENERE;
+import static no.nav.foreldrepenger.common.domain.felles.VedleggMetaData.Dokumenterer.Type.UTTAK;
 import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
 import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
 import static no.nav.foreldrepenger.common.util.LangUtil.toBoolean;
@@ -23,6 +26,7 @@ import org.springframework.util.CollectionUtils;
 
 import no.nav.foreldrepenger.common.domain.BrukerRolle;
 import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.common.domain.felles.VedleggMetaData;
 import no.nav.foreldrepenger.common.domain.felles.annenforelder.AnnenForelder;
 import no.nav.foreldrepenger.common.domain.felles.annenforelder.NorskForelder;
 import no.nav.foreldrepenger.common.domain.felles.annenforelder.UkjentForelder;
@@ -51,19 +55,13 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonIn
 public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
     private static final String UTTAKSPERIODETYPE = "uttaksperiodetype";
     private static final String FØDSELSDATO = "fødselsdato";
-    private static final String DOKUMENTASJON = "dokumentasjon";
     private static final String DAGER = "dager";
     private static final String ALENESORG_KEY = "aleneomsorg";
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private static final float STARTY = PdfElementRenderer.calculateStartY();
-    private static final int INDENT = 20;
-    private final PdfElementRenderer renderer;
-    private final SøknadTextFormatter textFormatter;
 
     public ForeldrepengeInfoRenderer(PdfElementRenderer renderer, SøknadTextFormatter textFormatter) {
         super(renderer, textFormatter);
-        this.renderer = renderer;
-        this.textFormatter = textFormatter;
     }
 
     public float header(FontAwarePdfDocument doc, FontAwareCos cos, boolean endring, float y, InnsendingPersonInfo person)
@@ -135,15 +133,13 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
         return y;
     }
 
-    float annenOpptjening(List<AnnenOpptjening> annenOpptjening, List<Vedlegg> vedlegg, FontAwareCos cos, float y)
-            throws IOException {
+    float annenOpptjening(List<AnnenOpptjening> annenOpptjening, FontAwareCos cos, float y) throws IOException {
         if (CollectionUtils.isEmpty(annenOpptjening)) {
             return y;
         }
         y -= renderer.addLeftHeading(txt("annenopptjening"), cos, y);
         for (var annen : annenOpptjening) {
             y -= renderer.addLinesOfRegularText(INDENT, annen(annen), cos, y);
-            y = renderVedlegg(vedlegg, annen.vedlegg(), "vedleggannenopptjening", cos, y);
             y -= PdfElementRenderer.BLANK_LINE;
         }
         return y;
@@ -166,8 +162,7 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
         }
     }
 
-    public float medlemsskap(Medlemsskap medlemsskap, RelasjonTilBarn relasjonTilBarn,
-            FontAwareCos cos, float y) throws IOException {
+    public float medlemsskap(Medlemsskap medlemsskap, RelasjonTilBarn relasjonTilBarn, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
         var tidligereOpphold = medlemsskap.tidligereUtenlandsopphold();
         var framtidigeOpphold = medlemsskap.framtidigUtenlandsopphold();
@@ -180,15 +175,15 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
             y -= renderer.addLineOfRegularText(INDENT,
                     txt("fødtei", land, pluralize(relasjonTilBarn.getAntallBarn())), cos, y);
         }
-        if (relasjonTilBarn instanceof Adopsjon) {
-            if (((Adopsjon) relasjonTilBarn).getOmsorgsovertakelsesdato().isBefore(LocalDate.now())) {
+        if (relasjonTilBarn instanceof Adopsjon a) {
+            if (a.getOmsorgsovertakelsesdato().isBefore(LocalDate.now())) {
                 y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertok", land), cos, y);
             } else {
                 y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertar", land), cos, y);
             }
         }
-        if (relasjonTilBarn instanceof Omsorgsovertakelse) {
-            if (((Omsorgsovertakelse) relasjonTilBarn).getOmsorgsovertakelsesdato().isBefore(LocalDate.now())) {
+        if (relasjonTilBarn instanceof Omsorgsovertakelse o) {
+            if (o.getOmsorgsovertakelsesdato().isBefore(LocalDate.now())) {
                 y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertok", land), cos, y);
             } else {
                 y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertar", land), cos, y);
@@ -197,15 +192,11 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
         y -= renderer.addLineOfRegularText(INDENT, txt("siste12") +
                 (medlemsskap.isBoddINorge() ? " Norge" : ":"), cos, y);
         if (!tidligereOpphold.isEmpty()) {
-            y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(tidligereOpphold),
-                    cos, y);
+            y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(tidligereOpphold), cos, y);
         }
-        y -= renderer.addLineOfRegularText(INDENT, txt("neste12") +
-                (medlemsskap.isNorgeNeste12() ? " Norge" : ":"), cos, y);
+        y -= renderer.addLineOfRegularText(INDENT, txt("neste12") + (medlemsskap.isNorgeNeste12() ? " Norge" : ":"), cos, y);
         if (!framtidigeOpphold.isEmpty()) {
-            y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(framtidigeOpphold),
-                    cos,
-                    y);
+            y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(framtidigeOpphold), cos, y);
         }
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
@@ -224,7 +215,7 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
     }
 
     public FontAwareCos fordeling(FontAwarePdfDocument doc, BrukerRolle rolle, Foreldrepenger stønad,
-                                  List<Vedlegg> vedlegg, boolean erEndring, FontAwareCos cos, float y, InnsendingPersonInfo person)
+                                  boolean erEndring, FontAwareCos cos, float y, InnsendingPersonInfo person)
             throws IOException {
         var fordeling = stønad.fordeling();
         var dekningsgrad = stønad.dekningsgrad();
@@ -239,71 +230,61 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
             if (periode.getClass().equals(UttaksPeriode.class)) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                var x = renderUttaksPeriode((UttaksPeriode) periode, rolle, vedlegg, antallBarn,
+                var x = renderUttaksPeriode((UttaksPeriode) periode, rolle, antallBarn,
                         scratchcos, STARTY - 190);
                 var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderUttaksPeriode((UttaksPeriode) periode, rolle, vedlegg, antallBarn, cos,
+                    y = renderUttaksPeriode((UttaksPeriode) periode, rolle, antallBarn, cos,
                             y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos, erEndring, person);
                     y = STARTY - (headerSize + behov);
                 }
-            } else if (periode instanceof GradertUttaksPeriode) {
+            } else if (periode instanceof GradertUttaksPeriode g) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                var x = renderGradertPeriode((GradertUttaksPeriode) periode, rolle, vedlegg, antallBarn,
-                        scratchcos,
-                        STARTY - 190);
+                var x = renderGradertPeriode(g, rolle, antallBarn, scratchcos, STARTY - 190);
                 var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderGradertPeriode((GradertUttaksPeriode) periode, rolle, vedlegg, antallBarn, cos,
-                            y);
+                    y = renderGradertPeriode(g, rolle, antallBarn, cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos, erEndring, person);
                     y = STARTY - (headerSize + behov);
                 }
-            } else if (periode instanceof OppholdsPeriode) {
+            } else if (periode instanceof OppholdsPeriode o) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                var x = renderOppholdsPeriode((OppholdsPeriode) periode, vedlegg, scratchcos,
-                        STARTY - 190);
+                var x = renderOppholdsPeriode(o, scratchcos, STARTY - 190);
                 var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderOppholdsPeriode((OppholdsPeriode) periode, vedlegg, cos, y);
+                    y = renderOppholdsPeriode(o, cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos, erEndring, person);
                     y = STARTY - (headerSize + behov);
                 }
-            } else if (periode instanceof UtsettelsesPeriode) {
+            } else if (periode instanceof UtsettelsesPeriode u) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                var x = renderUtsettelsesPeriode((UtsettelsesPeriode) periode, vedlegg,
-                        scratchcos, STARTY - 190);
+                var x = renderUtsettelsesPeriode(u, scratchcos, STARTY - 190);
                 var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderUtsettelsesPeriode((UtsettelsesPeriode) periode, vedlegg,
-                            cos,
-                            y);
+                    y = renderUtsettelsesPeriode(u, cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos, erEndring, person);
                     y = STARTY - (headerSize + behov);
                 }
-            } else if (periode instanceof OverføringsPeriode) {
+            } else if (periode instanceof OverføringsPeriode o) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                var x = renderOverføringsPeriode((OverføringsPeriode) periode, rolle, vedlegg,
-                        scratchcos, STARTY - 190);
+                var x = renderOverføringsPeriode(o, rolle, scratchcos, STARTY - 190);
                 var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderOverføringsPeriode((OverføringsPeriode) periode, rolle, vedlegg,
-                            cos,
-                            y);
+                    y = renderOverføringsPeriode(o, rolle, cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos, erEndring, person);
                     y = STARTY - (headerSize + behov);
@@ -346,11 +327,9 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
         return cos;
     }
 
-    public float renderOverføringsPeriode(OverføringsPeriode overføring, BrukerRolle rolle, List<Vedlegg> vedlegg,
-            FontAwareCos cos, float y) throws IOException {
+    public float renderOverføringsPeriode(OverføringsPeriode overføring, BrukerRolle rolle, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addBulletPoint(txt("overføring"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(overføring, rolle), cos, y);
-        y = renderVedlegg(vedlegg, overføring.getVedlegg(), DOKUMENTASJON, cos, y);
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
@@ -365,11 +344,9 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
         return attributter;
     }
 
-    public float renderUtsettelsesPeriode(UtsettelsesPeriode utsettelse, List<Vedlegg> vedlegg,
-                                          FontAwareCos cos, float y) throws IOException {
+    public float renderUtsettelsesPeriode(UtsettelsesPeriode utsettelse, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addBulletPoint(txt("utsettelse"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(utsettelse), cos, y);
-        y = renderVedlegg(vedlegg, utsettelse.getVedlegg(), DOKUMENTASJON, cos, y);
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
@@ -394,11 +371,9 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
         return attributter;
     }
 
-    public float renderOppholdsPeriode(OppholdsPeriode opphold, List<Vedlegg> vedlegg,
-            FontAwareCos cos, float y) throws IOException {
+    public float renderOppholdsPeriode(OppholdsPeriode opphold, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addBulletPoint(txt("opphold"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(opphold), cos, y);
-        y = renderVedlegg(vedlegg, opphold.getVedlegg(), DOKUMENTASJON, cos, y);
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
@@ -416,23 +391,16 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
         return attributter;
     }
 
-    public float renderUttaksPeriode(UttaksPeriode uttak, BrukerRolle rolle, List<Vedlegg> vedlegg, int antallBarn,
-            FontAwareCos cos, float y)
-            throws IOException {
+    public float renderUttaksPeriode(UttaksPeriode uttak, BrukerRolle rolle, int antallBarn, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addBulletPoint(txt("uttak"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(uttak, antallBarn, rolle), cos, y);
-        y = renderVedlegg(vedlegg, uttak.getVedlegg(), DOKUMENTASJON, cos, y);
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
-    public float renderGradertPeriode(GradertUttaksPeriode gradert, BrukerRolle rolle, List<Vedlegg> vedlegg,
-            int antallBarn,
-            FontAwareCos cos, float y)
-            throws IOException {
+    public float renderGradertPeriode(GradertUttaksPeriode gradert, BrukerRolle rolle, int antallBarn, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addBulletPoint(txt("gradertuttak"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(gradert, antallBarn, rolle), cos, y);
-        y = renderVedlegg(vedlegg, gradert.getVedlegg(), DOKUMENTASJON, cos, y);
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
@@ -505,12 +473,9 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
         }
     }
 
-    public float relasjonTilBarn(RelasjonTilBarn relasjon, List<Vedlegg> vedlegg, FontAwareCos cos,
-            float y)
-            throws IOException {
+    public float relasjonTilBarn(RelasjonTilBarn relasjon, FontAwareCos cos, float y) throws IOException {
         y -= PdfElementRenderer.BLANK_LINE;
         y = omBarn(relasjon, cos, y);
-        y = renderVedlegg(vedlegg, relasjon.getVedlegg(), "vedleggrelasjondok", cos, y);
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
@@ -572,17 +537,17 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
     }
 
     private List<String> barn(RelasjonTilBarn relasjonTilBarn) {
-        if (relasjonTilBarn instanceof Fødsel) {
-            return fødsel((Fødsel) relasjonTilBarn);
+        if (relasjonTilBarn instanceof Fødsel f) {
+            return fødsel(f);
         }
-        if (relasjonTilBarn instanceof Adopsjon) {
-            return adopsjon((Adopsjon) relasjonTilBarn);
+        if (relasjonTilBarn instanceof Adopsjon a) {
+            return adopsjon(a);
         }
-        if (relasjonTilBarn instanceof FremtidigFødsel) {
-            return termin((FremtidigFødsel) relasjonTilBarn);
+        if (relasjonTilBarn instanceof FremtidigFødsel f) {
+            return termin(f);
         }
-        if (relasjonTilBarn instanceof Omsorgsovertakelse) {
-            return omsorgsovertakelse((Omsorgsovertakelse) relasjonTilBarn);
+        if (relasjonTilBarn instanceof Omsorgsovertakelse o) {
+            return omsorgsovertakelse(o);
         }
         throw new IllegalArgumentException(relasjonTilBarn.getClass().getSimpleName() + " ikke støttet");
     }
@@ -616,6 +581,83 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
         addIfSet(attributter, FØDSELSDATO, overtakelse.getFødselsdato());
         return attributter;
     }
+
+    public float vedleggSomErOpplastet(List<Vedlegg> vedlegg, FontAwareCos cos, float y) throws IOException {
+        if (CollectionUtils.isEmpty(vedlegg)) {
+            return y;
+        }
+        var opplastedeVedlegg = vedlegg.stream()
+            .filter(v -> LASTET_OPP.equals(v.getInnsendingsType()))
+            .toList();
+        if (!opplastedeVedlegg.isEmpty()) {
+            y -= renderer.addLeftHeading(txt("dokumentasjon.mottatt.overskrift"), cos, y);
+            y = vedlegg(opplastedeVedlegg, cos, y);
+        }
+        return y;
+    }
+
+    public float vedleggSomEttersendes(List<Vedlegg> vedlegg, FontAwareCos cos, float y) throws IOException {
+        if (CollectionUtils.isEmpty(vedlegg)) {
+            return y;
+        }
+        var sendSenereVedlegg = vedlegg.stream()
+            .filter(v -> SEND_SENERE.equals(v.getInnsendingsType()))
+            .toList();
+        if (!sendSenereVedlegg.isEmpty()) {
+            y -= renderer.addLeftHeading(txt("dokumentasjon.senere.overskrift"), cos, y);
+            y = vedlegg(sendSenereVedlegg, cos, y);
+            y -= renderer.addLineOfRegularText(txt("dokumentasjon.innsyn"), cos, y);
+        }
+        return y;
+    }
+
+    private float vedlegg(List<Vedlegg> vedleggene, FontAwareCos cos, float y) throws IOException {
+        for (var vedlegg : vedleggene) {
+            var dokumentInnslag = new StringBuilder(tilDokumentBeskrivelse(vedlegg.getDokumentType()));
+
+            var hvaDokumentererVedlegg = vedlegg.getMetadata().hvaDokumentererVedlegg();
+            if (hvaDokumentererVedlegg != null && UTTAK.equals(hvaDokumentererVedlegg.type())) {
+                dokumentasjonPeriodisertTekst(dokumentInnslag, hvaDokumentererVedlegg);
+            }
+
+            if (vedlegg.getInnsendingsType().equals(LASTET_OPP) && vedlegg.getMetadata().filnavn() != null && !vedlegg.getMetadata().filnavn().isBlank()) {
+                dokumentInnslag
+                    .append(" (")
+                    .append(vedlegg.getMetadata().filnavn())
+                    .append(")");
+            }
+            y -= renderer.addBulletPoint(INDENT, dokumentInnslag.toString(), cos, y);
+        }
+        y -= PdfElementRenderer.BLANK_LINE;
+        return y;
+    }
+
+    private StringBuilder dokumentasjonPeriodisertTekst(StringBuilder dokumentasjonstekst, VedleggMetaData.Dokumenterer hvaDokumentererVedlegg) {
+        var antallPerioderSomDokumenterer = hvaDokumentererVedlegg.perioder().size();
+        if (antallPerioderSomDokumenterer > 1) {
+            dokumentasjonstekst.append(" for periodene ");
+        } else {
+            dokumentasjonstekst.append(" for perioden ");
+        }
+        for (int i = 1; i <= antallPerioderSomDokumenterer; i++) {
+            var periode = hvaDokumentererVedlegg.perioder().get(i-1);
+            dokumentasjonstekst
+                .append(periode.fom().format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
+                .append(" – ")
+                .append(periode.tom().format(DateTimeFormatter.ofPattern(DATE_FORMAT)));
+
+
+            if (i < antallPerioderSomDokumenterer) {
+                if (i + 1 == antallPerioderSomDokumenterer) {
+                    dokumentasjonstekst.append(" og ");
+                } else {
+                    dokumentasjonstekst.append(", ");
+                }
+            }
+        }
+        return dokumentasjonstekst;
+    }
+
 
     @Override
     public String toString() {

@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000049;
-import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000060;
 import static no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper.SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
@@ -26,8 +24,6 @@ import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.common.domain.felles.VedleggReferanse;
 import no.nav.foreldrepenger.common.domain.felles.medlemskap.Medlemsskap;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.Svangerskapspenger;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.DelvisTilrettelegging;
@@ -48,7 +44,6 @@ import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Service
 public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
-    private static final String SVP_VEDLEGG_TILRETTELEGGING = "svp.vedlegg.tilrettelegging";
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private static final DateTimeFormatter DATEFMT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final float STARTY = PdfElementRenderer.calculateStartY();
@@ -86,8 +81,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             var opptjening = svp.opptjening();
             if (!svp.tilrettelegging().isEmpty()) {
                 y -= renderer.addLeftHeading(textFormatter.fromMessageSource("tilrettelegging"), cos, y);
-                var tilretteleggingsPerioder = tilretteleggingByArbeidsforhold(
-                        svp.tilrettelegging());
+                var tilretteleggingsPerioder = tilretteleggingByArbeidsforhold(svp.tilrettelegging());
                 // type arbeidsforhold kommer i random rekkefølge
                 for (var arb : tilretteleggingsPerioder.entrySet()) {
                     var tilrettelagtArbeidsforhold = arb.getKey();
@@ -96,15 +90,11 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                     var scratchcos = new FontAwareCos(doc, scratch1);
                     var startY = STARTY;
                     startY -= header(doc, scratchcos, startY, person);
-                    var size = renderTilrettelegging(arbeidsforhold, tilrettelagtArbeidsforhold, tilrettelegging,
-                            søknad.getVedlegg(), scratchcos,
-                            startY);
+                    var size = renderTilrettelegging(arbeidsforhold, tilrettelagtArbeidsforhold, tilrettelegging, scratchcos, startY);
                     var behov = startY - size;
                     if (behov < y) {
                         scratchcos.close();
-                        y = renderTilrettelegging(arbeidsforhold, tilrettelagtArbeidsforhold, tilrettelegging,
-                                søknad.getVedlegg(),
-                                cos, y);
+                        y = renderTilrettelegging(arbeidsforhold, tilrettelagtArbeidsforhold, tilrettelegging, cos, y);
                     } else {
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
@@ -161,16 +151,11 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 var scratchcos = new FontAwareCos(doc, scratch1);
                 var startY = STARTY;
                 startY -= header(doc, scratchcos, startY, person);
-                var size = infoRenderer.utenlandskeArbeidsforholdOpptjening(
-                        opptjening.utenlandskArbeidsforhold(),
-                        søknad.getVedlegg(),
-                        scratchcos, startY);
+                var size = infoRenderer.utenlandskeArbeidsforholdOpptjening(opptjening.utenlandskArbeidsforhold(), scratchcos, startY);
                 var behov = startY - size;
                 if (behov <= y) {
                     scratchcos.close();
-                    y = infoRenderer.utenlandskeArbeidsforholdOpptjening(
-                            opptjening.utenlandskArbeidsforhold(),
-                            søknad.getVedlegg(), cos, y);
+                    y = infoRenderer.utenlandskeArbeidsforholdOpptjening(opptjening.utenlandskArbeidsforhold(), cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
@@ -191,6 +176,38 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                     y = nesteSideStart(headerSize, behov);
                 }
             }
+            if (søknad.getVedlegg() != null) {
+                var scratch1 = newPage();
+                var scratchcos = new FontAwareCos(doc, scratch1);
+                var startY = STARTY;
+                startY -= header(doc, scratchcos, startY, person);
+                var size = infoRenderer.vedleggSomErOpplastet(søknad.getVedlegg(), arbeidsforhold, scratchcos, startY);
+                var behov = startY - size;
+                if (behov < y) {
+                    scratchcos.close();
+                    y = infoRenderer.vedleggSomErOpplastet(søknad.getVedlegg(), arbeidsforhold, cos, y);
+                } else {
+                    cos = nySide(doc, cos, scratch1, scratchcos);
+                    y = nesteSideStart(headerSize, behov);
+                }
+            }
+
+            if (søknad.getVedlegg() != null) {
+                var scratch1 = newPage();
+                var scratchcos = new FontAwareCos(doc, scratch1);
+                var startY = STARTY;
+                startY -= header(doc, scratchcos, startY, person);
+                var size = infoRenderer.vedleggSomEttersendes(søknad.getVedlegg(), arbeidsforhold, scratchcos, startY);
+                var behov = startY - size;
+                if (behov < y) {
+                    scratchcos.close();
+                    y = infoRenderer.vedleggSomEttersendes(søknad.getVedlegg(), arbeidsforhold, cos, y);
+                } else {
+                    cos = nySide(doc, cos, scratch1, scratchcos);
+                    y = nesteSideStart(headerSize, behov);
+                }
+            }
+
             cos.close();
             doc.save(baos);
             return baos.toByteArray();
@@ -206,28 +223,24 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             .collect(Collectors.toList());
     }
 
-    private float renderTilrettelegging(List<EnkeltArbeidsforhold> arbeidsgivere,
-            Arbeidsforhold arbeidsforhold,
-            List<Tilrettelegging> tilrettelegging,
-            List<Vedlegg> vedlegg, FontAwareCos cos, float y)
-            throws IOException {
+    private float renderTilrettelegging(List<EnkeltArbeidsforhold> arbeidsgivere, Arbeidsforhold arbeidsforhold, List<Tilrettelegging> tilrettelegging, FontAwareCos cos, float y) throws IOException {
         if (arbeidsforhold instanceof Virksomhet v) {
             var text = virksomhetsnavn(arbeidsgivere, v.orgnr().value())
                 .orElse(txt("arbeidsgiverIkkeFunnet", v.orgnr().value()));
             y -= renderer.addLineOfRegularText(text, cos, y);
-            y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
+            y -= renderTilretteleggingsperioder(tilrettelegging, cos, y);
             y -= blankLine();
         }
         if (arbeidsforhold instanceof PrivatArbeidsgiver p) {
             var text = virksomhetsnavn(arbeidsgivere, p.fnr().value())
                 .orElse(txt("svp.privatarbeidsgiverNavnIkkeFunnet"));
             y -= renderer.addLineOfRegularText(text, cos, y);
-            y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
+            y -= renderTilretteleggingsperioder(tilrettelegging, cos, y);
             y -= blankLine();
         }
         if (arbeidsforhold instanceof SelvstendigNæringsdrivende s) {
             y -= renderer.addLineOfRegularText(txt("svp.selvstendig"), cos, y);
-            y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
+            y -= renderTilretteleggingsperioder(tilrettelegging, cos, y);
             y -= renderer.addBulletPoint(INDENT, txt("svp.risikofaktorer",
                     s.risikoFaktorer()),
                     cos, y);
@@ -238,7 +251,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         }
         if (arbeidsforhold instanceof Frilanser f) {
             y -= renderer.addLineOfRegularText(txt("svp.frilans"), cos, y);
-            y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
+            y -= renderTilretteleggingsperioder(tilrettelegging, cos, y);
             y -= renderer.addBulletPoint(INDENT, txt("svp.risikofaktorer",
                     f.risikoFaktorer()), cos, y);
             y -= renderer.addBulletPoint(INDENT, txt("svp.tiltak",
@@ -284,8 +297,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 .collect(Collectors.toList());
     }
 
-    private float renderTilretteleggingsperioder(List<Tilrettelegging> perioder,
-            List<Vedlegg> vedlegg, FontAwareCos cos, float y)
+    private float renderTilretteleggingsperioder(List<Tilrettelegging> perioder, FontAwareCos cos, float y)
             throws IOException {
         var startY = y;
         var tilrettelegging = perioder.stream().findAny().orElseThrow(IllegalArgumentException::new);
@@ -300,12 +312,6 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 y -= renderIngenTilrettelegging(i, cos, y);
             }
         }
-        var vedleggRefs = perioder.stream()
-                .map(Tilrettelegging::getVedlegg)
-                .findAny()
-                .orElseGet(List::of);
-
-        y -= renderVedlegg(vedlegg, vedleggRefs, SVP_VEDLEGG_TILRETTELEGGING, cos, y);
         return startY - y;
     }
 
@@ -340,37 +346,6 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 DATEFMT.format(periode.getTilrettelagtArbeidFom())), cos, y);
         y -= renderer.addBulletPoint(DOUBLE_INDENT, txt("svp.stillingsprosent.full"), cos, y);
         return startY - y;
-    }
-
-    private float renderVedlegg(List<Vedlegg> vedlegg, List<VedleggReferanse> vedleggRefs, String keyIfAnnet,
-                                FontAwareCos cos, float y) throws IOException {
-        var startY = y;
-        if (!vedleggRefs.isEmpty()) {
-            y -= renderer.addBulletPoint(INDENT, txt("vedlegg1"), cos, y);
-        }
-        for (var vedleggRef : vedleggRefs) {
-            var details = safeStream(vedlegg)
-                    .filter(s -> vedleggRef.referanse().equals(s.getId()))
-                    .findFirst();
-            if (details.isPresent()) {
-                var beskrivelse = vedleggsBeskrivelse(keyIfAnnet, details.get());
-                y -= renderer.addBulletPoint(INDENT * 2,
-                        txt("vedlegg2", beskrivelse, details.get().getInnsendingsType().name()),
-                        cos, y);
-            } else {
-                // Never, hopefully
-                y -= renderer.addBulletPoint(INDENT * 2, txt("vedlegg2", "vedlegg"), cos, y);
-            }
-        }
-        return startY - y;
-    }
-
-    private String vedleggsBeskrivelse(String key, Vedlegg vedlegg) {
-        return erAnnenDokumentType(vedlegg) ? txt(key) : vedlegg.getBeskrivelse();
-    }
-
-    private static boolean erAnnenDokumentType(Vedlegg vedlegg) {
-        return vedlegg.getDokumentType().equals(I000060) || vedlegg.getDokumentType().equals(I000049);
     }
 
     private Optional<String> virksomhetsnavn(List<EnkeltArbeidsforhold> arbeidsgivere, String arbeidsgiverId) {

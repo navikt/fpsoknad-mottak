@@ -41,24 +41,24 @@ class SøknadValidatorTest {
 
     @Test
     void adopsjon_ulik_antall_barn_og_fødselsdatoer_skal_gi_feil() {
-        var adopsjon = new Adopsjon(2, null, false, false, List.of(), LocalDate.now(), List.of(LocalDate.now()));
+        var adopsjon = new Adopsjon(2, null, false, false, LocalDate.now(), List.of(LocalDate.now()));
         assertThatThrownBy(() -> SøknadValidator.validerAdopsjon(adopsjon)).isInstanceOf(UnexpectedInputException.class);
     }
 
     @Test
     void adopsjon_fødselsdatoer_null_skal_ikke_gi_exception() {
-        var adopsjon = new Adopsjon(2, null, false, false, List.of(), LocalDate.now(), null);
+        var adopsjon = new Adopsjon(2, null, false, false, LocalDate.now(), null);
         assertThatCode(() -> SøknadValidator.validerAdopsjon(adopsjon)).doesNotThrowAnyException();
     }
 
     @Test
     void adopsjon_likt_antall_barn_og_fødselsdatoer_skal_ikke_gi_feil() {
-        var adopsjon = new Adopsjon(2, null, false, false, List.of(), LocalDate.now(), List.of(LocalDate.now(), LocalDate.now().minusYears(1)));
+        var adopsjon = new Adopsjon(2, null, false, false, LocalDate.now(), List.of(LocalDate.now(), LocalDate.now().minusYears(1)));
         assertThatCode(() -> SøknadValidator.validerAdopsjon(adopsjon)).doesNotThrowAnyException();
     }
 
     private static UttaksPeriode getUttaksPeriode(LocalDate fom, LocalDate tom) {
-        return new UttaksPeriode(fom, tom, List.of(), StønadskontoType.FELLESPERIODE, false, null, false, null, false);
+        return new UttaksPeriode(fom, tom, StønadskontoType.FELLESPERIODE, false, null, false, null, false);
     }
 
 }

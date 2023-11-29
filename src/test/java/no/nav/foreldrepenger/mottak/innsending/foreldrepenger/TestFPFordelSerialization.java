@@ -1,10 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.person;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.termin;
-import static no.nav.foreldrepenger.common.domain.felles.TestUtils.valgfrittVedlegg;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_FORELDREPENGER;
@@ -15,6 +13,7 @@ import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.VEDLEGG2
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.VEDLEGG3;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.endringssøknad;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengesøknad;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.opplastetVedlegg;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.svp;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -39,6 +38,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Saksnummer;
+import no.nav.foreldrepenger.common.domain.felles.DokumentType;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.felles.EttersendingsType;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
@@ -123,7 +123,7 @@ class TestFPFordelSerialization {
 
     @Test
     void testKonvolutt() {
-        var søknad = foreldrepengesøknad( false, valgfrittVedlegg(ForeldrepengerTestUtils.ID142, LASTET_OPP));
+        var søknad = foreldrepengesøknad( false, opplastetVedlegg(DokumentType.I000062, null));
         var innsendingPersonInfo = new InnsendingPersonInfo(person().navn(), person().aktørId(), person().fnr());
         var konvolutt = konvoluttGenerator.generer(søknad, SøknadEgenskap.of(INITIELL_FORELDREPENGER), innsendingPersonInfo);
         assertNotNull(konvolutt.getMetadata());

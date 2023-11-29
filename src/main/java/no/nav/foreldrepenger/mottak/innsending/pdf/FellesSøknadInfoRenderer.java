@@ -1,8 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static java.util.stream.Collectors.joining;
-import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000049;
-import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000060;
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 
 import java.io.IOException;
@@ -17,9 +15,8 @@ import org.springframework.util.CollectionUtils;
 
 import com.neovisionaries.i18n.CountryCode;
 
+import no.nav.foreldrepenger.common.domain.felles.DokumentType;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.common.domain.felles.VedleggReferanse;
 import no.nav.foreldrepenger.common.domain.felles.opptjening.EgenNæring;
 import no.nav.foreldrepenger.common.domain.felles.opptjening.Frilans;
 import no.nav.foreldrepenger.common.domain.felles.opptjening.Regnskapsfører;
@@ -30,12 +27,13 @@ import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 public class FellesSøknadInfoRenderer {
 
     protected static final String ARBEIDSGIVER = "arbeidsgiver";
+    protected static final String DATE_FORMAT = "dd.MM.yyyy";
 
-    private static final int INDENT = 20;
-    private static final int INDENT_DOUBLE = INDENT * 2;
+    protected static final int INDENT = 20;
+    protected static final int INDENT_DOUBLE = INDENT * 2;
 
-    private final PdfElementRenderer renderer;
-    private final SøknadTextFormatter textFormatter;
+    protected final PdfElementRenderer renderer;
+    protected final SøknadTextFormatter textFormatter;
 
     public FellesSøknadInfoRenderer(PdfElementRenderer renderer, SøknadTextFormatter textFormatter) {
         this.renderer = renderer;
@@ -104,41 +102,15 @@ public class FellesSøknadInfoRenderer {
         return y;
     }
 
-    public float utenlandskeArbeidsforholdOpptjening(List<UtenlandskArbeidsforhold> utenlandskArbeidsforhold,
-                                                     List<Vedlegg> vedlegg, FontAwareCos cos,
-                                                     float y) throws IOException {
+    public float utenlandskeArbeidsforholdOpptjening(List<UtenlandskArbeidsforhold> utenlandskArbeidsforhold, FontAwareCos cos, float y) throws IOException {
         if (CollectionUtils.isEmpty(utenlandskArbeidsforhold)) {
             return y;
         }
         y -= renderer.addLeftHeading(txt("utenlandskarbeid"), cos, y);
         for (var forhold : sorterUtelandske(utenlandskArbeidsforhold)) {
             y -= renderer.addLinesOfRegularText(INDENT, utenlandskeArbeidsforhold(forhold), cos, y);
-            y = renderVedlegg(vedlegg, forhold.vedlegg(), "vedleggutenlandskarbeid", cos, y);
         }
         y -= PdfElementRenderer.BLANK_LINE;
-        return y;
-    }
-
-    protected float renderVedlegg(List<Vedlegg> vedlegg, List<VedleggReferanse> vedleggRefs, String keyIfAnnet,
-                                FontAwareCos cos,
-                                float y) throws IOException {
-        if (!vedleggRefs.isEmpty()) {
-            y -= renderer.addLineOfRegularText(INDENT, txt("vedlegg1"), cos, y);
-        }
-        for (var id : vedleggRefs) {
-            var details = safeStream(vedlegg)
-                .filter(s -> id.referanse().equals(s.getId()))
-                .findFirst();
-            if (details.isPresent()) {
-                var beskrivelse = vedleggsBeskrivelse(keyIfAnnet, details.get());
-                y -= renderer.addBulletPoint(INDENT,
-                    txt("vedlegg2", beskrivelse, cap(details.get().getInnsendingsType().name())),
-                    cos, y);
-            } else {
-                // Never, hopefully
-                y -= renderer.addBulletPoint(INDENT, txt("vedlegg2", "vedlegg"), cos, y);
-            }
-        }
         return y;
     }
 
@@ -188,7 +160,7 @@ public class FellesSøknadInfoRenderer {
 
         addIfSet(attributter, "virksomhetsnavn", næring.orgName());
         addIfSet(attributter, "registrertiland", næring.registrertILand());
-        attributter.add(txt("egennæringtyper", næring.vedlegg().size() > 1 ? "r" : "",
+        attributter.add(txt("egennæringtyper", næring.virksomhetsTyper().size() > 1 ? "r" : "",
             safeStream(næring.virksomhetsTyper())
                 .map(v -> textFormatter.capitalize(v.toString()))
                 .collect(joining(","))));
@@ -273,15 +245,28 @@ public class FellesSøknadInfoRenderer {
             .orElse(0d);
     }
 
+    protected static String tilDokumentBeskrivelse(DokumentType dokumentType) {
+        return switch (dokumentType) {
+            case I000023 -> "Sykdom (med legeerklæring)";
+            case I000036 -> "Avtalt ferie";
+            case I000039 -> "Militær- eller siviltjeneste";
+            case I000041 -> "Termindato, fødsel eller dato for omsorgsovertakelse";
+            case I000042 -> "Overtakelse av omsorg";
+            case I000044 -> "Etterlønn eller sluttvederlag";
+            case I000062 -> "Termin";
+            case I000063 -> "Fødsel (med fødselsattest)";
+            case I000109 -> "Tilrettelegging og omplassering ved graviditet";
+            case I000110 -> "Aleneomsorg for barnet";
+            case I000111 -> "Hvorfor jeg søker tilbake i tid";
+            case I000112 -> "Deltakelse i introduksjonsprogrammet";
+            case I000116 -> "Øvelse eller tjeneste i Forsvaret eller Sivilforsvaret";
+            case I000117 -> "Tilak i regi av Arbeids- og velferdsetaten (NAV)";
+            default ->  dokumentType.getBeskrivelse();
+        };
+    }
+
     protected String txt(String key, Object... values) {
         return textFormatter.fromMessageSource(key, values);
     }
 
-    protected String vedleggsBeskrivelse(String key, Vedlegg vedlegg) {
-        return erAnnenDokumentType(vedlegg) ? txt(key) : vedlegg.getBeskrivelse();
-    }
-
-    protected static boolean erAnnenDokumentType(Vedlegg vedlegg) {
-        return vedlegg.getDokumentType().equals(I000060) || vedlegg.getDokumentType().equals(I000049);
-    }
 }
