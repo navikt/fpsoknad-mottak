@@ -1,7 +1,7 @@
 {
     "cluster_foreldrepengesoknad-api": "dev-gcp",
     "ingresses":  [
-        "https://fpsoknad-mottak.dev.intern.nav.no",
+        "https://fpsoknad-mottak.intern.dev.nav.no",
         "https://fpsoknad-mottak.dev-fss-pub.nais.io"
     ],
     "minReplicas": "1",
