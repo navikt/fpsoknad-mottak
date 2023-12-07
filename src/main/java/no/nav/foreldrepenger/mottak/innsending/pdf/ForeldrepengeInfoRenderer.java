@@ -180,15 +180,15 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
             y -= renderer.addLineOfRegularText(INDENT,
                     txt("fødtei", land, pluralize(relasjonTilBarn.getAntallBarn())), cos, y);
         }
-        if (relasjonTilBarn instanceof Adopsjon) {
-            if (((Adopsjon) relasjonTilBarn).getOmsorgsovertakelsesdato().isBefore(LocalDate.now())) {
+        if (relasjonTilBarn instanceof Adopsjon adopsjonRelasjon) {
+            if (adopsjonRelasjon.getOmsorgsovertakelsesdato().isBefore(LocalDate.now())) {
                 y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertok", land), cos, y);
             } else {
                 y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertar", land), cos, y);
             }
         }
-        if (relasjonTilBarn instanceof Omsorgsovertakelse) {
-            if (((Omsorgsovertakelse) relasjonTilBarn).getOmsorgsovertakelsesdato().isBefore(LocalDate.now())) {
+        if (relasjonTilBarn instanceof Omsorgsovertakelse omsorgsovertakelseRelasjon) {
+            if (omsorgsovertakelseRelasjon.getOmsorgsovertakelsesdato().isBefore(LocalDate.now())) {
                 y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertok", land), cos, y);
             } else {
                 y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertar", land), cos, y);
@@ -250,58 +250,58 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
                     cos = nySide(doc, cos, scratch1, scratchcos, erEndring, person);
                     y = STARTY - (headerSize + behov);
                 }
-            } else if (periode instanceof GradertUttaksPeriode) {
+            } else if (periode instanceof GradertUttaksPeriode gradertUttaksPeriode) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                var x = renderGradertPeriode((GradertUttaksPeriode) periode, rolle, vedlegg, antallBarn,
+                var x = renderGradertPeriode(gradertUttaksPeriode, rolle, vedlegg, antallBarn,
                         scratchcos,
                         STARTY - 190);
                 var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderGradertPeriode((GradertUttaksPeriode) periode, rolle, vedlegg, antallBarn, cos,
+                    y = renderGradertPeriode(gradertUttaksPeriode, rolle, vedlegg, antallBarn, cos,
                             y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos, erEndring, person);
                     y = STARTY - (headerSize + behov);
                 }
-            } else if (periode instanceof OppholdsPeriode) {
+            } else if (periode instanceof OppholdsPeriode oppholdsPeriode) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                var x = renderOppholdsPeriode((OppholdsPeriode) periode, vedlegg, scratchcos,
+                var x = renderOppholdsPeriode(oppholdsPeriode, vedlegg, scratchcos,
                         STARTY - 190);
                 var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderOppholdsPeriode((OppholdsPeriode) periode, vedlegg, cos, y);
+                    y = renderOppholdsPeriode(oppholdsPeriode, vedlegg, cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos, erEndring, person);
                     y = STARTY - (headerSize + behov);
                 }
-            } else if (periode instanceof UtsettelsesPeriode) {
+            } else if (periode instanceof UtsettelsesPeriode utsettelsesPeriode) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                var x = renderUtsettelsesPeriode((UtsettelsesPeriode) periode, vedlegg,
+                var x = renderUtsettelsesPeriode(utsettelsesPeriode, vedlegg,
                         scratchcos, STARTY - 190);
                 var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderUtsettelsesPeriode((UtsettelsesPeriode) periode, vedlegg,
+                    y = renderUtsettelsesPeriode(utsettelsesPeriode, vedlegg,
                             cos,
                             y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos, erEndring, person);
                     y = STARTY - (headerSize + behov);
                 }
-            } else if (periode instanceof OverføringsPeriode) {
+            } else if (periode instanceof OverføringsPeriode overføringsPeriode) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                var x = renderOverføringsPeriode((OverføringsPeriode) periode, rolle, vedlegg,
+                var x = renderOverføringsPeriode(overføringsPeriode, rolle, vedlegg,
                         scratchcos, STARTY - 190);
                 var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderOverføringsPeriode((OverføringsPeriode) periode, rolle, vedlegg,
+                    y = renderOverføringsPeriode(overføringsPeriode, rolle, vedlegg,
                             cos,
                             y);
                 } else {
@@ -314,16 +314,15 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
             var scratch1 = newPage();
             var scratchcos = new FontAwareCos(doc, scratch1);
             var x = STARTY - 190;
-            x -= renderer.addLineOfRegularText(txt("fp.justeruttak",
-                jaNei(toBoolean(fordeling.ønskerJustertUttakVedFødsel())), pluralize(antallBarn)), scratchcos, STARTY - 190);
+            x -= renderer.addLineOfRegularText(
+                txt("fp.justeruttak", jaNei(toBoolean(fordeling.ønskerJustertUttakVedFødsel())), pluralize(antallBarn)), scratchcos, STARTY - 190);
             var behov = STARTY - 190 - x;
             if (behov < y) {
                 scratchcos.close();
-                y = renderer.addLineOfRegularText(txt("fp.justeruttak",
-                    jaNei(toBoolean(fordeling.ønskerJustertUttakVedFødsel())), pluralize(antallBarn)), cos, y);
+                renderer.addLineOfRegularText(txt("fp.justeruttak", jaNei(toBoolean(fordeling.ønskerJustertUttakVedFødsel())), pluralize(antallBarn)),
+                    cos, y);
             } else {
                 cos = nySide(doc, cos, scratch1, scratchcos, erEndring, person);
-                y = STARTY - (headerSize + behov);
             }
         }
         return cos;
@@ -386,7 +385,6 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
             attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
         }
 
-        // attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
         addIfSet(attributter, utsettelse.getMorsAktivitetsType());
         if (!utsettelse.getÅrsak().equals(LOVBESTEMT_FERIE)) {
             attributter.add(txt("erarbeidstaker", jaNei(utsettelse.isErArbeidstaker())));
@@ -572,17 +570,17 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
     }
 
     private List<String> barn(RelasjonTilBarn relasjonTilBarn) {
-        if (relasjonTilBarn instanceof Fødsel) {
-            return fødsel((Fødsel) relasjonTilBarn);
+        if (relasjonTilBarn instanceof Fødsel fødselRelasjon) {
+            return fødsel(fødselRelasjon);
         }
-        if (relasjonTilBarn instanceof Adopsjon) {
-            return adopsjon((Adopsjon) relasjonTilBarn);
+        if (relasjonTilBarn instanceof Adopsjon adopsjonRelasjon) {
+            return adopsjon(adopsjonRelasjon);
         }
-        if (relasjonTilBarn instanceof FremtidigFødsel) {
-            return termin((FremtidigFødsel) relasjonTilBarn);
+        if (relasjonTilBarn instanceof FremtidigFødsel fremtidigFødselRelasjon) {
+            return termin(fremtidigFødselRelasjon);
         }
-        if (relasjonTilBarn instanceof Omsorgsovertakelse) {
-            return omsorgsovertakelse((Omsorgsovertakelse) relasjonTilBarn);
+        if (relasjonTilBarn instanceof Omsorgsovertakelse omsorgsovertakelseRelasjon) {
+            return omsorgsovertakelse(omsorgsovertakelseRelasjon);
         }
         throw new IllegalArgumentException(relasjonTilBarn.getClass().getSimpleName() + " ikke støttet");
     }

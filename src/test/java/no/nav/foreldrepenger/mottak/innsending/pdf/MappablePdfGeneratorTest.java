@@ -126,7 +126,7 @@ class MappablePdfGeneratorTest {
         }
 
         assertThat(søknad.getTilleggsopplysninger()).isNotNull();
-        verifiserGenerertPDF(filNavn, 7, søknad.getTilleggsopplysninger());
+        verifiserGenerertPDF(filNavn, 6, søknad.getTilleggsopplysninger());
     }
 
     @Test
@@ -139,7 +139,7 @@ class MappablePdfGeneratorTest {
         }
 
         assertThat(søknad.getTilleggsopplysninger()).isNotNull();
-        verifiserGenerertPDF(filNavn, 5, søknad.getTilleggsopplysninger());
+        verifiserGenerertPDF(filNavn, 4, søknad.getTilleggsopplysninger());
     }
 
     @Test

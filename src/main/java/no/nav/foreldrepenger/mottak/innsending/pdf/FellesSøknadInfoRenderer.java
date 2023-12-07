@@ -32,7 +32,6 @@ public class FellesSøknadInfoRenderer {
     protected static final String ARBEIDSGIVER = "arbeidsgiver";
 
     private static final int INDENT = 20;
-    private static final int INDENT_DOUBLE = INDENT * 2;
 
     private final PdfElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
@@ -42,16 +41,7 @@ public class FellesSøknadInfoRenderer {
         this.textFormatter = textFormatter;
     }
 
-    public float frilansOpptjeningForeldrepenger(Frilans frilans, FontAwareCos cos, float y) throws IOException {
-        // bruker stilles spm om harInntektFraFosterhjem og nyOppstartet kun i fp
-        return frilansOpptjening(frilans, cos, y, true);
-    }
-
-    public float frilansOpptjeningSvangerskapspenger(Frilans frilans, FontAwareCos cos, float y) throws IOException {
-        return frilansOpptjening(frilans, cos, y, false);
-    }
-
-    private float frilansOpptjening(Frilans frilans, FontAwareCos cos, float y, boolean gjelderForeldrepenger) throws IOException {
+    public float frilansOpptjening(Frilans frilans, FontAwareCos cos, float y) throws IOException {
         if (frilans == null) {
             return y;
         }
@@ -62,18 +52,7 @@ public class FellesSøknadInfoRenderer {
         } else {
             attributter.add(txt("frilansavsluttet", textFormatter.dato(frilans.periode().fom())));
         }
-        if (gjelderForeldrepenger) {
-            attributter.add(txt("fosterhjem", jaNei(frilans.harInntektFraFosterhjem())));
-            attributter.add(txt("nyoppstartet", jaNei(frilans.nyOppstartet())));
-        }
         y -= renderer.addLinesOfRegularText(INDENT, attributter, cos, y);
-        if (gjelderForeldrepenger && !frilans.frilansOppdrag().isEmpty()) {
-            y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag"), cos, y);
-            var oppdrag = safeStream(frilans.frilansOppdrag()).map(o -> o.oppdragsgiver() + " " + textFormatter.periode(o.periode())).toList();
-            y -= renderer.addBulletList(INDENT_DOUBLE , oppdrag, cos, y);
-        } else if (gjelderForeldrepenger) {
-            y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag") + ": Nei", cos, y);
-        }
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
