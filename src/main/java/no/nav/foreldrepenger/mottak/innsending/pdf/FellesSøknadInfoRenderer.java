@@ -63,16 +63,12 @@ public class FellesSøknadInfoRenderer {
             attributter.add(txt("frilansavsluttet", textFormatter.dato(frilans.periode().fom())));
         }
         if (gjelderForeldrepenger) {
-            attributter.add(txt("fosterhjem", jaNei(frilans.harInntektFraFosterhjem())));
             attributter.add(txt("nyoppstartet", jaNei(frilans.nyOppstartet())));
         }
         y -= renderer.addLinesOfRegularText(INDENT, attributter, cos, y);
         if (gjelderForeldrepenger && !frilans.frilansOppdrag().isEmpty()) {
-            y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag"), cos, y);
             var oppdrag = safeStream(frilans.frilansOppdrag()).map(o -> o.oppdragsgiver() + " " + textFormatter.periode(o.periode())).toList();
             y -= renderer.addBulletList(INDENT_DOUBLE , oppdrag, cos, y);
-        } else if (gjelderForeldrepenger) {
-            y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag") + ": Nei", cos, y);
         }
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
