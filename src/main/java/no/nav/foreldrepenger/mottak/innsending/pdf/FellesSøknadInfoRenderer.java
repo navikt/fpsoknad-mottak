@@ -32,7 +32,6 @@ public class FellesSøknadInfoRenderer {
     protected static final String ARBEIDSGIVER = "arbeidsgiver";
 
     private static final int INDENT = 20;
-    private static final int INDENT_DOUBLE = INDENT * 2;
 
     private final PdfElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
