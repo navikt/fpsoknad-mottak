@@ -131,11 +131,11 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 var scratchcos = new FontAwareCos(doc, scratch1);
                 var startY = STARTY;
                 startY -= header(doc, scratchcos, startY, person);
-                var size = infoRenderer.frilansOpptjeningSvangerskapspenger(svp.opptjening().frilans(), scratchcos, startY);
+                var size = infoRenderer.frilansOpptjening(svp.opptjening().frilans(), scratchcos, startY);
                 var behov = startY - size;
                 if (behov < y) {
                     scratchcos.close();
-                    y = infoRenderer.frilansOpptjeningSvangerskapspenger(svp.opptjening().frilans(), cos, y);
+                    y = infoRenderer.frilansOpptjening(svp.opptjening().frilans(), cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
