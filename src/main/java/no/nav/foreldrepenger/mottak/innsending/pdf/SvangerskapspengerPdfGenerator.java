@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,16 +56,16 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private final PdfElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
     private final SvangerskapspengerInfoRenderer infoRenderer;
-    private final ArbeidsInfo arbeidsforhold;
+    private final ArbeidsInfo arbeidsInfo;
 
     @Autowired
     public SvangerskapspengerPdfGenerator(PdfElementRenderer renderer,
                                           SøknadTextFormatter textFormatter,
-                                          ArbeidsInfo arbeidsforhold,
+                                          ArbeidsInfo arbeidsInfo,
                                           SvangerskapspengerInfoRenderer infoRenderer) {
         this.renderer = renderer;
         this.textFormatter = textFormatter;
-        this.arbeidsforhold = arbeidsforhold;
+        this.arbeidsInfo = arbeidsInfo;
         this.infoRenderer = infoRenderer;
     }
 
@@ -185,10 +184,9 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 var behov = startY - size;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderMedlemskap(svp.medlemsskap(), cos, y);
+                    renderMedlemskap(svp.medlemsskap(), cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos);
-                    y = nesteSideStart(headerSize, behov);
                 }
             }
             cos.close();
@@ -201,9 +199,9 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private List<EnkeltArbeidsforhold> aktiveArbeidsforhold(LocalDate termindato, LocalDate fødselsdato) {
         var relasjonsDato = fødselsdato != null ? fødselsdato : termindato;
-        return safeStream(arbeidsforhold.hentArbeidsforhold())
+        return safeStream(arbeidsInfo.hentArbeidsforhold())
             .filter(a -> a.to().isEmpty() || a.to().get().isAfter(relasjonsDato))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     private float renderTilrettelegging(List<EnkeltArbeidsforhold> arbeidsgivere,
@@ -281,7 +279,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private static List<Tilrettelegging> sortertTilretteleggingsliste(List<Tilrettelegging> liste) {
         return safeStream(liste)
                 .sorted(Comparator.comparing(Tilrettelegging::getBehovForTilretteleggingFom))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private float renderTilretteleggingsperioder(List<Tilrettelegging> perioder,
