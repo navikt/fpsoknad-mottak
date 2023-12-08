@@ -19,7 +19,6 @@ server:
     context-path: /api
 
 spring:
-  cloud.discovery.client.health-indicator.enabled: false
   codec:
     max-in-memory-size: 32MB
   cache:

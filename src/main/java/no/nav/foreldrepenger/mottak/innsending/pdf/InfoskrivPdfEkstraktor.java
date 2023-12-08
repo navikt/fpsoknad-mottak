@@ -5,6 +5,7 @@ import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.INFOSKR
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.multipdf.PageExtractor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageDestination;
@@ -19,7 +20,7 @@ public class InfoskrivPdfEkstraktor {
     public static final Logger LOG = LoggerFactory.getLogger(InfoskrivPdfEkstraktor.class);
 
     public byte[] infoskriv(byte[] pdf) {
-        try (var doc = PDDocument.load(pdf)) {
+        try (var doc = Loader.loadPDF(pdf)) {
             var outline = doc.getDocumentCatalog().getDocumentOutline();
             var node = outline.getFirstChild();
             var startpageExtraction = infoskrivStartpage(node);

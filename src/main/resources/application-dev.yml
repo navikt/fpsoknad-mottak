@@ -6,24 +6,6 @@ management :
   endpoint:
     health:
       show-details : always
-spring:
-  config.import: vault://
-  cloud:
-    vault:
-      reactive:
-        enabled: false
-      enabled: true
-      uri: https://vault.adeo.no
-      authentication: KUBERNETES
-      kubernetes:
-        role: fpsoknad-mottak
-        kubernetes-path: kubernetes/preprod/fss
-        service-account-token-file: /var/run/secrets/kubernetes.io/serviceaccount/token
-      kv:
-        enabled: true
-        backend: kv/preprod/fss
-        application-name: fpsoknad-mottak/teamforeldrepenger
-        default-context: fpsoknad-mottak/teamforeldrepenger
   codec:
     log-request-details: true
   mvc:
