@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.5</version>
+        <version>3.2.0</version>
         <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -31,17 +31,16 @@
         <sonar.organization>navikt</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-        <boot-conditionals.version>5.0.9</boot-conditionals.version>
-        <token-support.version>3.0.10</token-support.version>
+        <boot-conditionals.version>5.1.1</boot-conditionals.version>
+        <token-support.version>3.2.0</token-support.version>
         <fpsoknad-felles.version>3.0.0</fpsoknad-felles.version>
 
         <jacoco.version>0.8.11</jacoco.version>
-        <pdfbox.version>2.0.29</pdfbox.version>
+        <pdfbox.version>3.0.1</pdfbox.version>
         <nv-i18n.version>1.29</nv-i18n.version>
         <reflections.version>0.10.2</reflections.version>
         <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
-        <springdoc.version>2.2.0</springdoc.version>
-        <spring.vault.version>4.0.1</spring.vault.version>
+        <springdoc.version>2.3.0</springdoc.version>
         <spring.graphql.version>2.0.1</spring.graphql.version>
     </properties>
     <scm>
@@ -111,17 +110,6 @@
             </plugin>
         </plugins>
     </build>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-vault-dependencies</artifactId>
-                <version>${spring.vault.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -157,10 +145,6 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-vault-config</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
