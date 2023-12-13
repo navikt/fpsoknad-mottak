@@ -26,6 +26,16 @@ spec:
   replicas:
     min: {{minReplicas}}
     max: {{maxReplicas}}
+    scalingStrategy:
+      cpu:
+        thresholdPercentage: 80
+  resources:
+    limits:
+      cpu: "{{limits.cpu}}"
+      memory: "{{limits.mem}}"
+    requests:
+      cpu: "{{requests.cpu}}"
+      memory: "{{requests.mem}}"
   liveness:
     path: /api/actuator/health/liveness
     initialDelay: 15
@@ -39,12 +49,5 @@ spec:
   {{#each ingresses as |url|}}
      - {{url}}
   {{/each}}
-  resources:
-    limits:
-      cpu: 1500m
-      memory: 3072Mi
-    requests:
-      cpu: 200m
-      memory: 1024Mi
   secureLogs:
     enabled: true
