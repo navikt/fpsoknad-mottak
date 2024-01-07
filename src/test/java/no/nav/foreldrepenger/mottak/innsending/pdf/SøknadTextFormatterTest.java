@@ -71,8 +71,8 @@ class SøknadTextFormatterTest {
     void skalLoggeManglendeTekstnøkler() {
         var formatterer = new SøknadTextFormatter(null, kvitteringstekster);
 
-        Logger logger = (Logger) LoggerFactory.getLogger(SøknadTextFormatter.class);
-        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+        var logger = (Logger) LoggerFactory.getLogger(SøknadTextFormatter.class);
+        var listAppender = new ListAppender<ILoggingEvent>();
         listAppender.start();
         logger.addAppender(listAppender);
 
