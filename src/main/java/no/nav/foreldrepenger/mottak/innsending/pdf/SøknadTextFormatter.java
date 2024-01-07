@@ -144,7 +144,7 @@ public class SøknadTextFormatter {
         } catch (NoSuchMessageException ex) {
             var bundle = ((ResourceBundleMessageSource) messages).getBasenameSet();
             var bundleShort = String.join(", ", bundle);
-            LOG.info("Finner ikke nøkkel '{}' i messagebundle '{}' for locale '{}'", key, bundleShort, locale);
+            LOG.warn("Finner ikke nøkkel '{}' i messagebundle '{}' for locale '{}'", key, bundleShort, locale);
             return null;
         }
     }
