@@ -52,7 +52,7 @@ import no.nav.foreldrepenger.common.domain.felles.TestUtils;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.common.util.TokenUtil;
-import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
+import no.nav.foreldrepenger.mottak.config.MessageSourceConfiguration;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorStub;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
@@ -63,7 +63,7 @@ import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
 @ActiveProfiles(profiles = { LOCAL, TEST })
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
-        MottakConfiguration.class,
+        MessageSourceConfiguration.class,
         SøknadTextFormatter.class,
         ForeldrepengeInfoRenderer.class,
         PdfElementRenderer.class,
