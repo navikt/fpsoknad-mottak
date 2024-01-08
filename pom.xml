@@ -41,7 +41,7 @@
         <reflections.version>0.10.2</reflections.version>
         <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
         <springdoc.version>2.3.0</springdoc.version>
-        <spring.graphql.version>2.0.1</spring.graphql.version>
+        <spring.graphql.version>2.1.0</spring.graphql.version>
     </properties>
     <scm>
         <connection>scm:git:https://github.com/navikt/fpsoknad-mottak.git</connection>
