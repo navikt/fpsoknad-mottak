@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
 @Configuration
-public class MottakConfiguration {
+public class MessageSourceConfiguration {
 
     public static final String LANDKODER = "landkoder";
     public static final String KVITTERINGSTEKSTER = "kvitteringstekster";
@@ -27,4 +27,5 @@ public class MottakConfiguration {
         messageSource.setBasename(KVITTERINGSTEKSTER);
         return messageSource;
     }
+
 }

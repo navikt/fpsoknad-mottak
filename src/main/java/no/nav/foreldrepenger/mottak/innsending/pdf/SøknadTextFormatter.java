@@ -2,8 +2,8 @@ package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static java.util.stream.Collectors.joining;
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
-import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.KVITTERINGSTEKSTER;
-import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.LANDKODER;
+import static no.nav.foreldrepenger.mottak.config.MessageSourceConfiguration.KVITTERINGSTEKSTER;
+import static no.nav.foreldrepenger.mottak.config.MessageSourceConfiguration.LANDKODER;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -14,9 +14,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -29,6 +32,7 @@ import no.nav.foreldrepenger.common.domain.felles.ÅpenPeriode;
 
 @Component
 public class SøknadTextFormatter {
+    private static final Logger LOG = LoggerFactory.getLogger(SøknadTextFormatter.class);
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd.MM.uuuu");
     private final MessageSource landkoder;
     private final MessageSource kvitteringstekster;
@@ -134,12 +138,15 @@ public class SøknadTextFormatter {
     }
 
     private String getMessage(String key, MessageSource messages, Object... values) {
-        return getMessage(key, null, messages, values);
-    }
-
-    private String getMessage(String key, String defaultValue, MessageSource messages, Object... values) {
         ((ResourceBundleMessageSource) messages).setDefaultEncoding("utf-8");
-        return messages.getMessage(key, values, defaultValue, locale);
+        try {
+            return messages.getMessage(key, values, locale);
+        } catch (NoSuchMessageException ex) {
+            var bundle = ((ResourceBundleMessageSource) messages).getBasenameSet();
+            var bundleShort = String.join(", ", bundle);
+            LOG.warn("Finner ikke nøkkel '{}' i messagebundle '{}' for locale '{}'", key, bundleShort, locale);
+            return null;
+        }
     }
 
     public List<UtenlandsoppholdFormatert> utenlandsPerioder(List<Utenlandsopphold> opphold) {
@@ -148,7 +155,7 @@ public class SøknadTextFormatter {
         }
         return safeStream(opphold)
                 .map(o -> new UtenlandsoppholdFormatert(countryName(o.land(), o.land().getName()), dato(o.fom(), o.tom())))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private String dato(LocalDate fom, LocalDate tom) {

@@ -1,13 +1,31 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static no.nav.foreldrepenger.mottak.config.MessageSourceConfiguration.KVITTERINGSTEKSTER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import no.nav.foreldrepenger.common.domain.Navn;
+import no.nav.foreldrepenger.mottak.config.MessageSourceConfiguration;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {MessageSourceConfiguration.class})
 class SøknadTextFormatterTest {
+
+    @Autowired
+    @Qualifier(KVITTERINGSTEKSTER)
+    private MessageSource kvitteringstekster;
 
     @Test
     void capitalize() {
@@ -47,5 +65,22 @@ class SøknadTextFormatterTest {
         var sammensattNavnFraNavn = søknadTextFormatter.sammensattNavn(navn);
 
         assertThat(sammensattNavnFraNavn).isEmpty();
+    }
+
+    @Test
+    void skalLoggeManglendeTekstnøkler() {
+        var formatterer = new SøknadTextFormatter(null, kvitteringstekster);
+
+        var logger = (Logger) LoggerFactory.getLogger(SøknadTextFormatter.class);
+        var listAppender = new ListAppender<ILoggingEvent>();
+        listAppender.start();
+        logger.addAppender(listAppender);
+
+        formatterer.fromMessageSource("ikke-eksisterende-nøkkel");
+
+        assertThat(listAppender.list).isNotEmpty();
+        assertThat(listAppender.list.getFirst().getFormattedMessage()).contains("Finner ikke nøkkel 'ikke-eksisterende-nøkkel'");
+
+        logger.detachAppender(listAppender);
     }
 }
