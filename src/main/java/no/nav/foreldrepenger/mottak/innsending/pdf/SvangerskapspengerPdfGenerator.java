@@ -188,6 +188,19 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos);
                 }
+            } else if (svp.utenlandsopphold() != null) {
+                var scratch1 = newPage();
+                var scratchcos = new FontAwareCos(doc, scratch1);
+                var startY = STARTY;
+                startY -= header(doc, scratchcos, startY, person);
+                var size = infoRenderer.utenlandsopphold(svp.utenlandsopphold(), scratchcos, startY);
+                var behov = startY - size;
+                if (behov < y) {
+                    scratchcos.close();
+                    infoRenderer.utenlandsopphold(svp.utenlandsopphold(), cos, y);
+                } else {
+                    cos = nySide(doc, cos, scratch1, scratchcos);
+                }
             }
             cos.close();
             doc.save(baos);
@@ -255,6 +268,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         return tilretteleggingByArbeidsforhold;
     }
 
+    @Deprecated
     private float renderMedlemskap(Medlemsskap medlemsskap, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
         var tidligereOpphold = medlemsskap.tidligereUtenlandsopphold();

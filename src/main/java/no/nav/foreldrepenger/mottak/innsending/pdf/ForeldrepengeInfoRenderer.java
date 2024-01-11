@@ -166,8 +166,8 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
         }
     }
 
-    public float medlemsskap(Medlemsskap medlemsskap, RelasjonTilBarn relasjonTilBarn,
-            FontAwareCos cos, float y) throws IOException {
+    @Deprecated
+    public float medlemsskap(Medlemsskap medlemsskap, RelasjonTilBarn relasjonTilBarn, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
         var tidligereOpphold = medlemsskap.tidligereUtenlandsopphold();
         var framtidigeOpphold = medlemsskap.framtidigUtenlandsopphold();
@@ -194,8 +194,7 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
                 y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertar", land), cos, y);
             }
         }
-        y -= renderer.addLineOfRegularText(INDENT, txt("siste12") +
-                (medlemsskap.isBoddINorge() ? " Norge" : ":"), cos, y);
+        y -= renderer.addLineOfRegularText(INDENT, txt("siste12") + (medlemsskap.isBoddINorge() ? " Norge" : ":"), cos, y);
         if (!tidligereOpphold.isEmpty()) {
             y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(tidligereOpphold),
                     cos, y);

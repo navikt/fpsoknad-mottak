@@ -82,9 +82,25 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         grupper.add(omBarn(søknad, kjønn, stønad));
 
         // info om utenlandsopphold og trygdetilknytning
-        grupper.add(tilknytning(medlemsskap, stønad));
+        if (medlemsskap != null) {
+            grupper.add(tilknytning(medlemsskap, stønad));
+        } else {
+            grupper.add(tilknytning(stønad));
+        }
 
         return grupper;
+    }
+
+    private TemaBlokk tilknytning(Engangsstønad stønad) {
+        var utenlandsopphold = stønad.utenlandsopphold();
+        List<Blokk> tabeller = new ArrayList<>();
+        if (utenlandsopphold.opphold().isEmpty()) {
+            tabeller.add(new FritekstBlokk(textFormatter.fromMessageSource("medlemsskap.norge.fortiden")));
+            tabeller.add(new FritekstBlokk(textFormatter.fromMessageSource("medlemsskap.norge.fremtiden")));
+        } else {
+            tabeller.addAll(tabellRader(textFormatter.utenlandsPerioder(utenlandsopphold.opphold())));
+        }
+        return new TemaBlokk(txt("medlemsskap"), tabeller);
     }
 
     private TemaBlokk tilknytning(Medlemsskap medlemsskap, Engangsstønad stønad) {
@@ -113,7 +129,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         if (erFremtidigFødsel(stønad) || erAdopsjon(stønad)) {
             return textFormatter.fromMessageSource("terminføderi",
                     textFormatter.countryName(medlemsskap.landVedDato(stønad.relasjonTilBarn().relasjonsDato())),
-                    stønad.relasjonTilBarn().getAntallBarn() > 1 ? "a" : "et");
+                stønad.relasjonTilBarn().getAntallBarn() > 1 ? "a" : "et");
         }
 
         var fødsel = (Fødsel) stønad.relasjonTilBarn();
@@ -121,7 +137,6 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         return textFormatter.fromMessageSource("fødtei",
                 textFormatter.countryName(land),
                 fødsel.getAntallBarn() > 1 ? "a" : "et");
-
     }
 
     private TemaBlokk omBarn(Søknad søknad, Kjønn kjønn, Engangsstønad stønad) {

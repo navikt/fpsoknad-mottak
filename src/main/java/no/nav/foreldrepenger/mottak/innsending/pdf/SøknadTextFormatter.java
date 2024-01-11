@@ -8,6 +8,7 @@ import static no.nav.foreldrepenger.mottak.config.MessageSourceConfiguration.LAN
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -126,6 +127,7 @@ public class SøknadTextFormatter {
             return Collections.singletonList(countryName(CountryCode.NO));
         }
         return safeStream(opphold)
+                .sorted(Comparator.comparing(Utenlandsopphold::fom))
                 .map(this::formatOpphold)
                 .toList();
     }
@@ -154,6 +156,7 @@ public class SøknadTextFormatter {
             return Collections.singletonList(new UtenlandsoppholdFormatert(countryName(CountryCode.NO), null));
         }
         return safeStream(opphold)
+                .sorted(Comparator.comparing(Utenlandsopphold::fom))
                 .map(o -> new UtenlandsoppholdFormatert(countryName(o.land(), o.land().getName()), dato(o.fom(), o.tom())))
                 .toList();
     }
