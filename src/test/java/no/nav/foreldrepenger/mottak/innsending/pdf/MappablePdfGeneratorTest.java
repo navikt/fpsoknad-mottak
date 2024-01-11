@@ -148,7 +148,7 @@ class MappablePdfGeneratorTest {
             LocalDate.now(),
             TestUtils.søker(),
             new Foreldrepenger(norskForelder(), fødsel(), rettigheter(), null, null,
-                fordeling(VEDLEGG1.getMetadata().id()), null),
+                fordeling(VEDLEGG1.getMetadata().id()), null, null),
             TILLEGGSOPPLYSNINGER,
             List.of(VEDLEGG1),
             new Saksnummer("123456789"));
