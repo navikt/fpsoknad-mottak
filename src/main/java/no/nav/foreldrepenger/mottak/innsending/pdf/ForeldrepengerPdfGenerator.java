@@ -119,11 +119,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                     cosy = render(docParam, frilansFn, cosy);
                 }
 
-                if (stønad.medlemsskap() != null) {
-                    Function<CosyPair, Float> medlemskapFn = uncheck(p ->
-                        fpRenderer.medlemsskap(stønad.medlemsskap(), stønad.relasjonTilBarn(), p.cos, p.y));
-                    cosy = render(docParam, medlemskapFn, cosy);
-                } else if (stønad.utenlandsopphold() != null) {
+                if (stønad.utenlandsopphold() != null) {
                     Function<CosyPair, Float> medlemskapFn = uncheck(p ->
                         fpRenderer.utenlandsopphold(stønad.utenlandsopphold(), p.cos, p.y));
                     cosy = render(docParam, medlemskapFn, cosy);

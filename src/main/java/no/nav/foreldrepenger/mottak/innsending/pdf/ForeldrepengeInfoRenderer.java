@@ -27,7 +27,6 @@ import no.nav.foreldrepenger.common.domain.felles.annenforelder.AnnenForelder;
 import no.nav.foreldrepenger.common.domain.felles.annenforelder.NorskForelder;
 import no.nav.foreldrepenger.common.domain.felles.annenforelder.UkjentForelder;
 import no.nav.foreldrepenger.common.domain.felles.annenforelder.UtenlandskForelder;
-import no.nav.foreldrepenger.common.domain.felles.medlemskap.Medlemsskap;
 import no.nav.foreldrepenger.common.domain.felles.opptjening.AnnenOpptjening;
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Adopsjon;
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.FremtidigFødsel;
@@ -164,50 +163,6 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
         if (value) {
             attributter.add(txt(key, jaNei(value)));
         }
-    }
-
-    @Deprecated
-    public float medlemsskap(Medlemsskap medlemsskap, RelasjonTilBarn relasjonTilBarn, FontAwareCos cos, float y) throws IOException {
-        y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
-        var tidligereOpphold = medlemsskap.tidligereUtenlandsopphold();
-        var framtidigeOpphold = medlemsskap.framtidigUtenlandsopphold();
-        var land = textFormatter.countryName(medlemsskap.landVedDato(relasjonTilBarn.relasjonsDato()));
-        if (relasjonTilBarn instanceof FremtidigFødsel) {
-            y -= renderer.addLineOfRegularText(INDENT,
-                    txt("terminføderi", land, pluralize(relasjonTilBarn.getAntallBarn())), cos, y);
-        }
-        if (relasjonTilBarn instanceof Fødsel) {
-            y -= renderer.addLineOfRegularText(INDENT,
-                    txt("fødtei", land, pluralize(relasjonTilBarn.getAntallBarn())), cos, y);
-        }
-        if (relasjonTilBarn instanceof Adopsjon adopsjonRelasjon) {
-            if (adopsjonRelasjon.getOmsorgsovertakelsesdato().isBefore(LocalDate.now())) {
-                y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertok", land), cos, y);
-            } else {
-                y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertar", land), cos, y);
-            }
-        }
-        if (relasjonTilBarn instanceof Omsorgsovertakelse omsorgsovertakelseRelasjon) {
-            if (omsorgsovertakelseRelasjon.getOmsorgsovertakelsesdato().isBefore(LocalDate.now())) {
-                y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertok", land), cos, y);
-            } else {
-                y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertar", land), cos, y);
-            }
-        }
-        y -= renderer.addLineOfRegularText(INDENT, txt("siste12") + (medlemsskap.isBoddINorge() ? " Norge" : ":"), cos, y);
-        if (!tidligereOpphold.isEmpty()) {
-            y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(tidligereOpphold),
-                    cos, y);
-        }
-        y -= renderer.addLineOfRegularText(INDENT, txt("neste12") +
-                (medlemsskap.isNorgeNeste12() ? " Norge" : ":"), cos, y);
-        if (!framtidigeOpphold.isEmpty()) {
-            y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(framtidigeOpphold),
-                    cos,
-                    y);
-        }
-        y -= PdfElementRenderer.BLANK_LINE;
-        return y;
     }
 
     private static String pluralize(int antallBarn) {

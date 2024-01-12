@@ -20,7 +20,7 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.common.domain.felles.VedleggReferanse;
-import no.nav.foreldrepenger.common.domain.felles.medlemskap.OppholdIUtlandet;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.Utenlandsopphold;
 import no.nav.foreldrepenger.common.domain.felles.opptjening.EgenNæring;
 import no.nav.foreldrepenger.common.domain.felles.opptjening.Frilans;
 import no.nav.foreldrepenger.common.domain.felles.opptjening.Regnskapsfører;
@@ -42,13 +42,13 @@ public class FellesSøknadInfoRenderer {
         this.textFormatter = textFormatter;
     }
 
-    public float utenlandsopphold(OppholdIUtlandet oppholdIUtlandet, FontAwareCos cos, float y) throws IOException {
+    public float utenlandsopphold(Utenlandsopphold utenlandsopphold, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
-        if (oppholdIUtlandet.opphold().isEmpty()) {
+        if (utenlandsopphold.opphold().isEmpty()) {
             y -= renderer.addLineOfRegularText(INDENT, txt("medlemsskap.norge.fortiden"), cos, y);
             y -= renderer.addLineOfRegularText(INDENT, txt("medlemsskap.norge.fremtiden"), cos, y);
         } else {
-            y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(oppholdIUtlandet.opphold()), cos, y);
+            y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(utenlandsopphold.opphold()), cos, y);
         }
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
