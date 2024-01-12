@@ -27,7 +27,6 @@ import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.common.domain.felles.VedleggReferanse;
-import no.nav.foreldrepenger.common.domain.felles.medlemskap.Medlemsskap;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.Svangerskapspenger;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.DelvisTilrettelegging;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.HelTilrettelegging;
@@ -175,20 +174,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                     y = nesteSideStart(headerSize, behov);
                 }
             }
-            if (svp.medlemsskap() != null) {
-                var scratch1 = newPage();
-                var scratchcos = new FontAwareCos(doc, scratch1);
-                var startY = STARTY;
-                startY -= header(doc, scratchcos, startY, person);
-                var size = renderMedlemskap(svp.medlemsskap(), scratchcos, startY);
-                var behov = startY - size;
-                if (behov < y) {
-                    scratchcos.close();
-                    renderMedlemskap(svp.medlemsskap(), cos, y);
-                } else {
-                    cos = nySide(doc, cos, scratch1, scratchcos);
-                }
-            } else if (svp.utenlandsopphold() != null) {
+            if (svp.utenlandsopphold() != null) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
                 var startY = STARTY;
@@ -266,28 +252,6 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 .computeIfAbsent(tp.getArbeidsforhold(), key -> new ArrayList<>())
                 .add(tp));
         return tilretteleggingByArbeidsforhold;
-    }
-
-    @Deprecated
-    private float renderMedlemskap(Medlemsskap medlemsskap, FontAwareCos cos, float y) throws IOException {
-        y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
-        var tidligereOpphold = medlemsskap.tidligereUtenlandsopphold();
-        var framtidigeOpphold = medlemsskap.framtidigUtenlandsopphold();
-        y -= renderer.addLineOfRegularText(txt("siste12") +
-                (medlemsskap.isBoddINorge() ? " Norge" : ":"), cos, y);
-        if (!tidligereOpphold.isEmpty()) {
-            y -= renderer.addBulletList(textFormatter.utenlandsOpphold(tidligereOpphold),
-                    cos, y);
-        }
-        y -= renderer.addLineOfRegularText(txt("neste12") +
-                (medlemsskap.isNorgeNeste12() ? " Norge" : ":"), cos, y);
-        if (!framtidigeOpphold.isEmpty()) {
-            y -= renderer.addBulletList(textFormatter.utenlandsOpphold(framtidigeOpphold),
-                    cos,
-                    y);
-        }
-        y -= PdfElementRenderer.BLANK_LINE;
-        return y;
     }
 
     private static List<Tilrettelegging> sortertTilretteleggingsliste(List<Tilrettelegging> liste) {

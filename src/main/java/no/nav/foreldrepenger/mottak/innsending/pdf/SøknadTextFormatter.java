@@ -122,17 +122,17 @@ public class SøknadTextFormatter {
         return lowerWithSpace.substring(0, 1).toUpperCase() + lowerWithSpace.substring(1);
     }
 
-    public List<String> utenlandsOpphold(List<Utenlandsopphold> opphold) {
+    public List<String> utenlandsOpphold(List<Utenlandsopphold.Opphold> opphold) {
         if (CollectionUtils.isEmpty(opphold)) {
             return Collections.singletonList(countryName(CountryCode.NO));
         }
         return safeStream(opphold)
-                .sorted(Comparator.comparing(Utenlandsopphold::fom))
+                .sorted(Comparator.comparing(Utenlandsopphold.Opphold::fom))
                 .map(this::formatOpphold)
                 .toList();
     }
 
-    private String formatOpphold(Utenlandsopphold opphold) {
+    private String formatOpphold(Utenlandsopphold.Opphold opphold) {
         return countryName(opphold.land(), opphold.land().getName())
                 + ": "
                 + dato(opphold.fom()) + " - "
@@ -151,12 +151,12 @@ public class SøknadTextFormatter {
         }
     }
 
-    public List<UtenlandsoppholdFormatert> utenlandsPerioder(List<Utenlandsopphold> opphold) {
+    public List<UtenlandsoppholdFormatert> utenlandsPerioder(List<Utenlandsopphold.Opphold> opphold) {
         if (CollectionUtils.isEmpty(opphold)) {
             return Collections.singletonList(new UtenlandsoppholdFormatert(countryName(CountryCode.NO), null));
         }
         return safeStream(opphold)
-                .sorted(Comparator.comparing(Utenlandsopphold::fom))
+                .sorted(Comparator.comparing(Utenlandsopphold.Opphold::fom))
                 .map(o -> new UtenlandsoppholdFormatert(countryName(o.land(), o.land().getName()), dato(o.fom(), o.tom())))
                 .toList();
     }

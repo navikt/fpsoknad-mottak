@@ -15,7 +15,6 @@ import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.common.domain.felles.Kjønn;
 import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.common.domain.felles.medlemskap.Medlemsskap;
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Adopsjon;
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.FremtidigFødsel;
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Fødsel;
@@ -28,7 +27,6 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.modell.Blokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentBestilling;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentPerson;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.FritekstBlokk;
-import no.nav.foreldrepenger.mottak.innsending.pdf.modell.GruppeBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.ListeBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.MottattDato;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TabellRad;
@@ -73,7 +71,6 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
 
     private List<TemaBlokk> lagOverskrifter(Søknad søknad) {
         var stønad = (Engangsstønad) søknad.getYtelse();
-        var medlemsskap = stønad.medlemsskap();
         List<TemaBlokk> grupper = new ArrayList<>();
 
         var kjønn = tokenUtil.autentisertBrukerOrElseThrowException().kjønn();
@@ -82,11 +79,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         grupper.add(omBarn(søknad, kjønn, stønad));
 
         // info om utenlandsopphold og trygdetilknytning
-        if (medlemsskap != null) {
-            grupper.add(tilknytning(medlemsskap, stønad));
-        } else {
-            grupper.add(tilknytning(stønad));
-        }
+        grupper.add(tilknytning(stønad));
 
         return grupper;
     }
@@ -103,40 +96,11 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         return new TemaBlokk(txt("medlemsskap"), tabeller);
     }
 
-    private TemaBlokk tilknytning(Medlemsskap medlemsskap, Engangsstønad stønad) {
-        var fødselssted = fødselssted(medlemsskap, stønad);
-        var tidligereUtenlandsopphold = textFormatter
-                .utenlandsPerioder(medlemsskap.tidligereUtenlandsopphold());
-        List<Blokk> tabeller = new ArrayList<>();
-        if (!tidligereUtenlandsopphold.isEmpty()) {
-            tabeller.add(new GruppeBlokk(txt("siste12"), tabellRader(tidligereUtenlandsopphold)));
-        }
-        var fremtidige = textFormatter.utenlandsPerioder(medlemsskap.framtidigUtenlandsopphold());
-        if (!fremtidige.isEmpty()) {
-            tabeller.add(new GruppeBlokk(txt("neste12"), tabellRader(fremtidige)));
-        }
-        tabeller.add(new FritekstBlokk(fødselssted));
-        return new TemaBlokk(txt("tilknytning"), tabeller);
-    }
 
     private static List<TabellRad> tabellRader(List<UtenlandsoppholdFormatert> rader) {
         return rader.stream()
                 .map(r -> new TabellRad(r.land(), r.datointervall(), null))
                 .toList();
-    }
-
-    private String fødselssted(Medlemsskap medlemsskap, Engangsstønad stønad) {
-        if (erFremtidigFødsel(stønad) || erAdopsjon(stønad)) {
-            return textFormatter.fromMessageSource("terminføderi",
-                    textFormatter.countryName(medlemsskap.landVedDato(stønad.relasjonTilBarn().relasjonsDato())),
-                stønad.relasjonTilBarn().getAntallBarn() > 1 ? "a" : "et");
-        }
-
-        var fødsel = (Fødsel) stønad.relasjonTilBarn();
-        var land = stønad.medlemsskap().landVedDato(fødsel.getFødselsdato().get(0));
-        return textFormatter.fromMessageSource("fødtei",
-                textFormatter.countryName(land),
-                fødsel.getAntallBarn() > 1 ? "a" : "et");
     }
 
     private TemaBlokk omBarn(Søknad søknad, Kjønn kjønn, Engangsstønad stønad) {
