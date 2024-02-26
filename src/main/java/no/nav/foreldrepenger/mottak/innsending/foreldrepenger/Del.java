@@ -32,7 +32,7 @@ class Del {
             @JsonProperty("contentId") int contentId) {
         this.dokumentTypeId = dokumentType.name();
         this.contentId = String.valueOf(contentId);
-        LOG.debug("La til del {} med id {} ({})", dokumentType.name(), contentId, dokumentType.getBeskrivelse());
+        LOG.debug("La til del {} med id {} ({})", dokumentType.name(), contentId, dokumentType.getTittel());
     }
 
     @Override
