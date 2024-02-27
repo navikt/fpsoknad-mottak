@@ -16,6 +16,8 @@ import no.nav.foreldrepenger.mottak.http.Retry;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.dto.Konto;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+
 @Component
 public class KontoregisterConnection {
 
@@ -51,6 +53,7 @@ public class KontoregisterConnection {
                     return Mono.empty();
                 })
             .bodyToMono(Konto.class)
+            .timeout(Duration.ofSeconds(5))
             .defaultIfEmpty(UKJENT)
             .block();
     }
