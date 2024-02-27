@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.mottak.oppslag.dkif;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.KRR;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
+import java.time.Duration;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -42,6 +44,7 @@ public class DigdirKrrProxyConnection {
             .bodyToMono(Kontaktinformasjon.class)
             .mapNotNull(Kontaktinformasjon::målform)
             .defaultIfEmpty(Målform.standard())
+            .timeout(Duration.ofSeconds(3))
             .block();
     }
 
