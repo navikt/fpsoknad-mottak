@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.3</version>
+        <version>3.2.4</version>
         <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -36,11 +36,11 @@
         <fpsoknad-felles.version>3.0.6</fpsoknad-felles.version>
 
         <jacoco.version>0.8.11</jacoco.version>
-        <pdfbox.version>3.0.1</pdfbox.version>
+        <pdfbox.version>3.0.2</pdfbox.version>
         <nv-i18n.version>1.29</nv-i18n.version>
         <reflections.version>0.10.2</reflections.version>
         <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
-        <springdoc.version>2.3.0</springdoc.version>
+        <springdoc.version>2.5.0</springdoc.version>
         <spring.graphql.version>2.1.0</spring.graphql.version>
     </properties>
     <scm>
