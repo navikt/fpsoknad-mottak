@@ -32,7 +32,7 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
         <boot-conditionals.version>5.1.1</boot-conditionals.version>
-        <token-support.version>3.2.0</token-support.version>
+        <token-support.version>4.1.4</token-support.version>
         <fpsoknad-felles.version>3.0.6</fpsoknad-felles.version>
 
         <jacoco.version>0.8.11</jacoco.version>
