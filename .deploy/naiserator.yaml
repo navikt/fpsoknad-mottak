@@ -21,6 +21,10 @@ spec:
         - application: foreldrepengesoknad-api
           cluster: {{ cluster_foreldrepengesoknad-api }}
     # Outbound rules gjelder bare GCP clusters.
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   image: {{image}}
   port: 8080
   replicas:
