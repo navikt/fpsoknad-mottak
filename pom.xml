@@ -31,9 +31,9 @@
         <sonar.organization>navikt</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-        <boot-conditionals.version>5.1.1</boot-conditionals.version>
+        <boot-conditionals.version>5.1.2</boot-conditionals.version>
         <token-support.version>3.2.0</token-support.version>
-        <fpsoknad-felles.version>3.0.6</fpsoknad-felles.version>
+        <fpsoknad-felles.version>3.0.9</fpsoknad-felles.version>
 
         <jacoco.version>0.8.12</jacoco.version>
         <pdfbox.version>3.0.2</pdfbox.version>
