@@ -35,9 +35,10 @@ public class TokenXExchangeFilterFunction implements ExchangeFilterFunction {
         var urlUtenQueryParam = url.toString().split("\\?")[0];
         LOG.trace("Sjekker token exchange for {}", urlUtenQueryParam);
         var config = matcher.findProperties(configs, url);
-        if (config.isPresent() && tokenUtil.erAutentisert()) {
+
+        if (config != null && tokenUtil.erAutentisert()) {
             LOG.trace("Gjør token exchange for {} med konfig {}", urlUtenQueryParam, config);
-            var token = service.getAccessToken(config.get()).getAccessToken();
+            var token = service.getAccessToken(config).getAccessToken();
             LOG.info("Token exchange for {} OK", urlUtenQueryParam);
             return next.exchange(ClientRequest.from(req).header(AUTHORIZATION, BEARER + token)
                 .build());
