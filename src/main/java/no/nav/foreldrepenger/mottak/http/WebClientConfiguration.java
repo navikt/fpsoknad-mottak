@@ -13,8 +13,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import java.time.Duration;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.reactive.function.client.WebClientCustomizer;
@@ -41,14 +39,11 @@ import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConfig;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
-import no.nav.security.token.support.client.spring.oauth2.ClientConfigurationPropertiesMatcher;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
 
 @Configuration
 public class WebClientConfiguration {
-    private static final Logger LOG = LoggerFactory.getLogger(WebClientConfiguration.class);
-
     private static final String TEMA = "TEMA";
     public static final String PDL_USER = "PDL";
     public static final String PDL_SYSTEM = "PDL-RELASJON";
@@ -192,19 +187,4 @@ public class WebClientConfiguration {
         return Optional.ofNullable(MDCUtil.consumerId())
                 .orElse(consumer);
     }
-
-    @Bean
-    public ClientConfigurationPropertiesMatcher tokenxClientConfigMatcher() {
-        return (properties, uri) -> {
-            LOG.trace("Oppslag token X konfig for {}", uri.getHost());
-            var cfg = properties.getRegistration().get(uri.getHost().split("\\.")[0]);
-            if (cfg != null) {
-                LOG.trace("Oppslag token X konfig for {} OK", uri.getHost());
-            } else {
-                LOG.trace("Oppslag token X konfig for {} fant ingenting", uri.getHost());
-            }
-            return Optional.ofNullable(cfg);
-        };
-    }
-
 }
