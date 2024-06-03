@@ -7,7 +7,7 @@ import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID1;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID2;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_PERSON_IDENT;
-import static no.nav.foreldrepenger.mottak.http.TokenUtil.BEARER;
+import static no.nav.foreldrepenger.common.util.TokenUtil.BEARER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.time.Duration;
@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.common.util.MDCUtil;
+import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelConfig;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorConfig;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
