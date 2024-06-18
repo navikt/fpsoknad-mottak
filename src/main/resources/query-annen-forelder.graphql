@@ -14,8 +14,8 @@ query($ident: ID!){
      adressebeskyttelse {
         gradering
     },
-    foedsel {
-        foedselsdato 
+    foedselsdato {
+        foedselsdato
     }
-  }  
+  }
 }

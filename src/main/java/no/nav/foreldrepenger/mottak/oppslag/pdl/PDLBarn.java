@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 class PDLBarn {
     private static final Logger LOG = LoggerFactory.getLogger(PDLBarn.class);
-    @JsonProperty("foedsel")
+    @JsonProperty("foedselsdato")
     private final Set<PDLFødsel> fødselsdato;
     private final Set<PDLForelderBarnRelasjon> forelderBarnRelasjon;
 

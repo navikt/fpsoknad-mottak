@@ -1,7 +1,7 @@
 query($ident: ID!){
   hentPerson(ident: $ident) {
-    foedsel {
-        foedselsdato 
+    foedselsdato {
+        foedselsdato
     },
     navn {
 	  fornavn
@@ -22,5 +22,5 @@ query($ident: ID!){
         relatertPersonsRolle
         minRolleForPerson
     }
-  }  
+  }
 }
