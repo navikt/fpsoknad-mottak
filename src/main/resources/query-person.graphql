@@ -8,7 +8,7 @@ query($ident: ID!){
     kjoenn {
         kjoenn
     },
-    foedsel {
+    foedselsdato {
         foedselsdato
     },
     doedfoedtBarn {

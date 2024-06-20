@@ -305,7 +305,7 @@ class PDLConnectionTest {
                             "kjoenn": "%s"
                         }
                     ],
-                    "foedsel": [
+                    "foedselsdato": [
                         {
                             "foedselsdato": "%s"
                         }
@@ -362,7 +362,7 @@ class PDLConnectionTest {
                             "kjoenn": "MANN"
                         }
                     ],
-                    "foedsel": [
+                    "foedselsdato": [
                         {
                             "foedselsdato": "%s"
                         }
