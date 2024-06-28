@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.http;
 
-import static no.nav.foreldrepenger.common.util.TokenUtil.BEARER;
+import static no.nav.foreldrepenger.mottak.http.TokenUtil.BEARER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import org.slf4j.Logger;
@@ -10,7 +10,6 @@ import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeFunction;
-import no.nav.foreldrepenger.common.util.TokenUtil;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 import no.nav.security.token.support.client.spring.oauth2.ClientConfigurationPropertiesMatcher;
@@ -23,6 +22,7 @@ public class TokenXExchangeFilterFunction implements ExchangeFilterFunction {
     private final ClientConfigurationPropertiesMatcher matcher;
     private final ClientConfigurationProperties configs;
     private final TokenUtil tokenUtil;
+
     TokenXExchangeFilterFunction(ClientConfigurationProperties configs, OAuth2AccessTokenService service, ClientConfigurationPropertiesMatcher matcher, TokenUtil tokenUtil) {
         this.service = service;
         this.matcher = matcher;
@@ -36,7 +36,7 @@ public class TokenXExchangeFilterFunction implements ExchangeFilterFunction {
         LOG.trace("Sjekker token exchange for {}", urlUtenQueryParam);
         var config = matcher.findProperties(configs, url);
 
-        if (config != null && tokenUtil.erAutentisert()) {
+        if (config != null && tokenUtil.erInnloggetBruker()) {
             LOG.trace("Gjør token exchange for {} med konfig {}", urlUtenQueryParam, config);
             var token = service.getAccessToken(config).getAccessToken();
             LOG.info("Token exchange for {} OK", urlUtenQueryParam);

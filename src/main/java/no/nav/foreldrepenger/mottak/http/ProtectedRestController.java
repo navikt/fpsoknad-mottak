@@ -2,9 +2,9 @@ package no.nav.foreldrepenger.mottak.http;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import static no.nav.foreldrepenger.common.util.TokenUtil.CLAIMS;
-import static no.nav.foreldrepenger.common.util.TokenUtil.IDPORTENV2_CLAIMS;
-import static no.nav.foreldrepenger.common.util.TokenUtil.TOKENX;
+import static no.nav.foreldrepenger.mottak.http.TokenUtil.ACR_IDPORTEN;
+import static no.nav.foreldrepenger.mottak.http.TokenUtil.ACR_IDPORTEN_LEGACY;
+import static no.nav.foreldrepenger.mottak.http.TokenUtil.TOKENX;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.lang.annotation.Documented;
@@ -21,7 +21,7 @@ import no.nav.security.token.support.core.api.RequiredIssuers;
 
 @RestController
 @Documented
-@RequiredIssuers(@ProtectedWithClaims(issuer = TOKENX, claimMap = { CLAIMS, IDPORTENV2_CLAIMS }, combineWithOr = true))
+@RequiredIssuers(@ProtectedWithClaims(issuer = TOKENX, claimMap = { ACR_IDPORTEN_LEGACY, ACR_IDPORTEN }, combineWithOr = true))
 @Target(TYPE)
 @Retention(RUNTIME)
 @Validated
