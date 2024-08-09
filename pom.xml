@@ -32,8 +32,8 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
         <boot-conditionals.version>5.1.2</boot-conditionals.version>
-        <token-support.version>4.1.0</token-support.version>
-        <fpsoknad-felles.version>3.0.9</fpsoknad-felles.version>
+        <token-support.version>4.1.0</token-support.version> <!-- OBS! Bug i versjon > 4.1.0!-->
+        <fpsoknad-felles.version>3.1.2</fpsoknad-felles.version>
 
         <jacoco.version>0.8.12</jacoco.version>
         <pdfbox.version>3.0.2</pdfbox.version>

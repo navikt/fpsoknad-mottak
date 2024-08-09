@@ -1,11 +1,14 @@
 package no.nav.foreldrepenger.mottak.error;
 
-import jakarta.validation.ConstraintViolationException;
-import no.nav.foreldrepenger.common.error.SøknadEgenskapException;
-import no.nav.foreldrepenger.common.error.UnexpectedInputException;
-import no.nav.foreldrepenger.common.util.TokenUtil;
-import no.nav.security.token.support.core.exceptions.JwtTokenValidatorException;
-import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException;
+import static java.util.Arrays.asList;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
+
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -20,14 +23,12 @@ import org.springframework.web.reactive.function.client.WebClientRequestExceptio
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
+import jakarta.validation.ConstraintViolationException;
+import no.nav.foreldrepenger.common.error.SøknadEgenskapException;
+import no.nav.foreldrepenger.common.error.UnexpectedInputException;
+import no.nav.foreldrepenger.mottak.http.TokenUtil;
+import no.nav.security.token.support.core.exceptions.JwtTokenValidatorException;
+import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException;
 
 @ControllerAdvice
 public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
@@ -107,7 +108,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         if (ikkeLoggExceptionsMedSensitiveOpplysnignerTilVanligLogg(e)) {
             LOG.warn("[{} ({})] {}", req.getContextPath(), status, apiError.getMessages());
             SECURE_LOG.warn("[{}] {} {}", req.getContextPath(), status, apiError.getMessages(), e);
-        } else if (tokenUtil.erAutentisert() && !tokenUtil.erUtløpt()) {
+        } else if (tokenUtil.erInnloggetBruker() && !tokenUtil.erUtløpt()) {
             LOG.warn("[{}] {} {}", req.getContextPath(), status, apiError.getMessages(), e);
         } else {
             LOG.debug("[{}] {} {}", req.getContextPath(), status, apiError.getMessages(), e);
