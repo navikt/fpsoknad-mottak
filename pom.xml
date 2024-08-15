@@ -33,7 +33,7 @@
 
         <boot-conditionals.version>5.1.2</boot-conditionals.version>
         <token-support.version>4.1.0</token-support.version> <!-- OBS! Bug i versjon > 4.1.0!-->
-        <fpsoknad-felles.version>3.1.2</fpsoknad-felles.version>
+        <fpsoknad-felles.version>3.1.3</fpsoknad-felles.version>
 
         <jacoco.version>0.8.12</jacoco.version>
         <pdfbox.version>3.0.3</pdfbox.version>

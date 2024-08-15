@@ -58,7 +58,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
     }
 
     private byte[] generer(Søknad søknad, InnsendingPersonInfo person) {
-        var stønad = (Foreldrepenger) søknad.getYtelse();
+        var foreldrepenger = (Foreldrepenger) søknad.getYtelse();
 
         try (var doc = new FontAwarePdfDocument(); var baos = new ByteArrayOutputStream()) {
             var page = new PDPage(A4);
@@ -70,16 +70,16 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             var docParam = new DocParam(doc, headerFn);
             var cosy = new CosyPair(cos, y);
 
-            if (stønad.relasjonTilBarn() != null) {
-                Function<CosyPair, Float> relasjonTilBarnFn = uncheck(p -> fpRenderer.relasjonTilBarn(stønad.relasjonTilBarn(),
+            if (foreldrepenger.relasjonTilBarn() != null) {
+                Function<CosyPair, Float> relasjonTilBarnFn = uncheck(p -> fpRenderer.relasjonTilBarn(foreldrepenger.relasjonTilBarn(),
                     søknad.getVedlegg(), p.cos, p.y));
                 cosy = render(docParam, relasjonTilBarnFn, cosy);
             }
 
-            var annenForelder = stønad.annenForelder();
+            var annenForelder = foreldrepenger.annenForelder();
             if (annenForelder != null) {
-                Function<CosyPair, Float> annenForelderFn = uncheck(p -> fpRenderer.annenForelder(annenForelder, stønad.fordeling().erAnnenForelderInformert(),
-                    stønad.rettigheter(), p.cos, p.y));
+                Function<CosyPair, Float> annenForelderFn = uncheck(p -> fpRenderer.annenForelder(annenForelder, foreldrepenger.fordeling().erAnnenForelderInformert(),
+                    foreldrepenger.rettigheter(), p.cos, p.y));
                 cosy = render(docParam, annenForelderFn, cosy);
             }
 
@@ -88,8 +88,8 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                 cosy = render(docParam, tilleggsopplysningerFn, cosy);
             }
 
-            var opptjening = stønad.opptjening();
-            var arbeidsforhold = aktiveArbeidsforhold(stønad.relasjonTilBarn().relasjonsDato());
+            var opptjening = foreldrepenger.opptjening();
+            var arbeidsforhold = aktiveArbeidsforhold(foreldrepenger.getFørsteUttaksdag());
             if (opptjening != null) {
                 Function<CosyPair, Float> arbeidsforholdOpptjFn = uncheck(p -> fpRenderer.arbeidsforholdOpptjening(arbeidsforhold, p.cos, p.y));
                 cosy = render(docParam, arbeidsforholdOpptjFn, cosy);
@@ -119,20 +119,20 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                     cosy = render(docParam, frilansFn, cosy);
                 }
 
-                if (stønad.utenlandsopphold() != null) {
+                if (foreldrepenger.utenlandsopphold() != null) {
                     Function<CosyPair, Float> medlemskapFn = uncheck(p ->
-                        fpRenderer.utenlandsopphold(stønad.utenlandsopphold(), p.cos, p.y));
+                        fpRenderer.utenlandsopphold(foreldrepenger.utenlandsopphold(), p.cos, p.y));
                     cosy = render(docParam, medlemskapFn, cosy);
                 }
 
-                if (stønad.fordeling() != null) {
-                    var forCos = fpRenderer.fordeling(doc, søknad.getSøker().søknadsRolle(), stønad,
+                if (foreldrepenger.fordeling() != null) {
+                    var forCos = fpRenderer.fordeling(doc, søknad.getSøker().søknadsRolle(), foreldrepenger,
                             søknad.getVedlegg(), false, cosy.cos(), cosy.y(), person);
                     cosy = new CosyPair(forCos, -1);
                 }
 
                 if (!arbeidsforhold.isEmpty()) {
-                    cosy = new CosyPair(infoskrivRenderer.renderInfoskriv(arbeidsforhold, søknad, cosy.cos(), doc, person), -1);
+                    cosy = new CosyPair(infoskrivRenderer.renderInfoskriv(arbeidsforhold, foreldrepenger, cosy.cos(), doc, person), -1);
                 }
             }
             cosy.cos().close();
@@ -187,9 +187,9 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
         }
     }
 
-    private List<EnkeltArbeidsforhold> aktiveArbeidsforhold(LocalDate relasjonsdato) {
+    private List<EnkeltArbeidsforhold> aktiveArbeidsforhold(LocalDate førsteUttaksdato) {
         return tryOrEmpty(arbeidsInfo::hentArbeidsforhold).stream()
-            .filter(a -> a.to().isEmpty() || a.to().get().isAfter(relasjonsdato))
+            .filter(a -> a.to().isEmpty() ||  a.to().get().isAfter(førsteUttaksdato))
             .sorted(comparing(EnkeltArbeidsforhold::from))
             .toList();
     }

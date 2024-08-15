@@ -71,7 +71,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     @Override
     public byte[] generer(Søknad søknad, SøknadEgenskap egenskap, InnsendingPersonInfo person) {
         var svp = (Svangerskapspenger) søknad.getYtelse();
-        var arbeidsforhold = aktiveArbeidsforhold(svp.termindato(), svp.fødselsdato());
+        var arbeidsforhold = aktiveArbeidsforhold(svp.getTidligstDatoForTilrettelegging());
         try (var doc = new FontAwarePdfDocument(); var baos = new ByteArrayOutputStream()) {
             var page = newPage();
             doc.addPage(page);
@@ -196,10 +196,9 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         }
     }
 
-    private List<EnkeltArbeidsforhold> aktiveArbeidsforhold(LocalDate termindato, LocalDate fødselsdato) {
-        var relasjonsDato = fødselsdato != null ? fødselsdato : termindato;
+    private List<EnkeltArbeidsforhold> aktiveArbeidsforhold(LocalDate tidligstDatoForTilrettelegging) {
         return safeStream(arbeidsInfo.hentArbeidsforhold())
-            .filter(a -> a.to().isEmpty() || a.to().get().isAfter(relasjonsDato))
+            .filter(a -> a.to().isEmpty() || a.to().get().isAfter(tidligstDatoForTilrettelegging))
             .toList();
     }
 

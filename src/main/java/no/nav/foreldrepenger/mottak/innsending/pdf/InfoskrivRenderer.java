@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.GradertUttaksPeriode;
@@ -46,19 +45,18 @@ public class InfoskrivRenderer {
     }
 
     FontAwareCos renderInfoskriv(List<EnkeltArbeidsforhold> arbeidsforhold,
-                                 Søknad søknad,
+                                 Foreldrepenger foreldrepenger,
                                  FontAwareCos cosOriginal,
                                  FontAwarePdfDocument doc,
                                  InnsendingPersonInfo person) throws IOException {
-        if (søknad.getFørsteInntektsmeldingDag() == null) {
+        if (foreldrepenger.getFørsteInntektsmeldingDag() == null) {
             LOG.warn("Ingen førsteInntektsmeldingDag i søknad, dropper infoskriv til bruker.");
             return cosOriginal;
         }
 
         var fulltNavn = person.navn().navn();
         var formattertFornavn = formattertFornavn(fulltNavn);
-        var datoInntektsmelding = søknad.getFørsteInntektsmeldingDag();
-        var ytelse = (Foreldrepenger) søknad.getYtelse();
+        var datoInntektsmelding = foreldrepenger.getFørsteInntektsmeldingDag();
 
         var cos = førstesideInfoskriv(doc, cosOriginal);
 
@@ -85,11 +83,11 @@ public class InfoskrivRenderer {
         List<String> opplysninger = new ArrayList<>();
         opplysninger.add(txt("infoskriv.arbeidstaker", person.fnr().value()));
         opplysninger.add(txt("infoskriv.ytelse"));
-        opplysninger.add(txt("infoskriv.startdato", formattertDato(søknad.getFørsteUttaksdag())));
+        opplysninger.add(txt("infoskriv.startdato", formattertDato(foreldrepenger.getFørsteUttaksdag())));
         y -= renderer.addLinesOfRegularText(opplysninger, cos, y);
         y -= addBlankLine();
 
-        var perioder = sorted(ytelse.fordeling().perioder());
+        var perioder = sorted(foreldrepenger.fordeling().perioder());
         var ferieArbeidsperioder = ferieOgArbeid(perioder);
 
         if (!ferieArbeidsperioder.isEmpty()) {
