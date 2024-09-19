@@ -11,13 +11,11 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,10 +82,10 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             var opptjening = svp.opptjening();
             if (!svp.tilrettelegging().isEmpty()) {
                 y -= renderer.addLeftHeading(textFormatter.fromMessageSource("tilrettelegging"), cos, y);
-                var tilretteleggingsPerioder = tilretteleggingByArbeidsforhold(
-                        svp.tilrettelegging());
+                var arbeidsforholdTilretteleggingMap = svp.tilrettelegging().stream()
+                    .collect(Collectors.groupingBy(Tilrettelegging::getArbeidsforhold));
                 // type arbeidsforhold kommer i random rekkefølge
-                for (var arb : tilretteleggingsPerioder.entrySet()) {
+                for (var arb : arbeidsforholdTilretteleggingMap.entrySet()) {
                     var tilrettelagtArbeidsforhold = arb.getKey();
                     var tilrettelegging = sortertTilretteleggingsliste(arb.getValue());
                     var scratch1 = newPage();
@@ -174,6 +172,21 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                     y = nesteSideStart(headerSize, behov);
                 }
             }
+            if (!svp.avtaltFerie().isEmpty()) {
+                var scratch1 = newPage();
+                var scratchcos = new FontAwareCos(doc, scratch1);
+                var startY = STARTY;
+                startY -= header(doc, scratchcos, startY, person);
+                var size = infoRenderer.feriePerioder(svp.avtaltFerie(), scratchcos, startY);
+                var behov = startY - size;
+                if (behov <= y) {
+                    scratchcos.close();
+                    y = infoRenderer.feriePerioder(svp.avtaltFerie(), cos, y);
+                } else {
+                    cos = nySide(doc, cos, scratch1, scratchcos);
+                    y = nesteSideStart(headerSize, behov);
+                }
+            }
             if (svp.utenlandsopphold() != null) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
@@ -242,15 +255,6 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             y -= blankLine();
         }
         return y;
-    }
-
-    private static Map<Arbeidsforhold, List<Tilrettelegging>> tilretteleggingByArbeidsforhold(
-            List<Tilrettelegging> tilretteleggingsPerioder) {
-        Map<Arbeidsforhold, List<Tilrettelegging>> tilretteleggingByArbeidsforhold = new HashMap<>();
-        tilretteleggingsPerioder.forEach(tp -> tilretteleggingByArbeidsforhold
-                .computeIfAbsent(tp.getArbeidsforhold(), key -> new ArrayList<>())
-                .add(tp));
-        return tilretteleggingByArbeidsforhold;
     }
 
     private static List<Tilrettelegging> sortertTilretteleggingsliste(List<Tilrettelegging> liste) {
