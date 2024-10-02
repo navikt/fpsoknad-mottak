@@ -5,6 +5,7 @@ import static no.nav.boot.conditionals.EnvUtil.TEST;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.fødsel;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.hasPdfSignature;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.opphold;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.person;
 import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.INITIELL_ENGANGSSTØNAD;
@@ -13,12 +14,20 @@ import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.INITIELL_S
 import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.NORSK_FORELDER_FNR;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.VEDLEGG1;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.VEDLEGG2;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.delTilrettelegging;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.fordeling;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengesøknad;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.foreldrepengesøknadMedEttIkkeOpplastedVedlegg;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.helTilrettelegging;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.ingenTilrettelegging;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.norskForelder;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.opptjening;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.rettigheter;
 import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.svp;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.søknad;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.vedleggRefs;
+import static no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils.virksomhet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -51,6 +60,8 @@ import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.common.domain.felles.TestUtils;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.Svangerskapspenger;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilretteleggingsbehov.Tilretteleggingbehov;
 import no.nav.foreldrepenger.mottak.config.MessageSourceConfiguration;
 import no.nav.foreldrepenger.mottak.http.TokenUtil;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
@@ -176,6 +187,34 @@ class MappablePdfGeneratorTest {
             fos.write(gen.generer(svp(), INITIELL_SVANGERSKAPSPENGER, personInfo()));
         }
         verifiserGenerertPDF(filNavn, 4, "Søknad om svangerskapspenger");
+    }
+
+    @Test
+    void svangerNyTilretteleggingsbehov() throws Exception {
+        var filNavn = ABSOLUTE_PATH + "/svptilrettelegging.pdf";
+
+        var tilretteleggingbehov = new Tilretteleggingbehov(
+            virksomhet(),
+            LocalDate.now().minusMonths(3),
+            List.of(helTilrettelegging(), delTilrettelegging(), ingenTilrettelegging()),
+            List.of(vedleggRefs(VEDLEGG1, VEDLEGG2))
+        );
+        var svp = new Svangerskapspenger(
+            LocalDate.now().plusMonths(1),
+            null,
+            opphold(),
+            opptjening(),
+            null,
+            List.of(tilretteleggingbehov),
+            List.of()
+        );
+        var soknad = søknad(svp, VEDLEGG1, VEDLEGG2);
+
+
+        try (var fos = new FileOutputStream(filNavn)) {
+            fos.write(gen.generer(soknad, INITIELL_SVANGERSKAPSPENGER, personInfo()));
+        }
+        verifiserGenerertPDF(filNavn, 3, "Søknad om svangerskapspenger");
     }
 
     @Test
