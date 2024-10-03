@@ -382,6 +382,10 @@ class ArbeidsforholdTjenesteTest {
             new AnsettelsesperiodeDTO(new Periode(fom, null)),
             List.of(new ArbeidsavtaleDTO(new Periode(fom, null), null)));
 
+        mockWebServer.enqueue(new MockResponse()
+            .setBody(DEFAULT_RESPONSE_EEREG)
+            .addHeader("Content-Type", "application/json"));
+
         var enkeltArbeidsforhold = arbeidsforholdTjeneste.tilEnkeltArbeidsforhold(arbeidsforholdDTO);
         assertThat(enkeltArbeidsforhold.arbeidsgiverId()).isEqualTo(Orgnummer.MAGIC_ORG.value());
         assertThat(enkeltArbeidsforhold.arbeidsgiverIdType()).isEqualTo("orgnr");

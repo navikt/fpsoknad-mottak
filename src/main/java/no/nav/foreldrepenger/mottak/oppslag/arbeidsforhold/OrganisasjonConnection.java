@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
-import static no.nav.foreldrepenger.common.domain.Orgnummer.MAGIC;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ORGANISASJON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -51,7 +50,7 @@ public class OrganisasjonConnection {
     }
 
     private static boolean isOrgnr(String nr) {
-        return nr != null && nr.length() == 9 && !nr.equals(MAGIC);
+        return nr != null && nr.length() == 9;
     }
 
     public String orgNavn(Orgnummer orgnr) {
