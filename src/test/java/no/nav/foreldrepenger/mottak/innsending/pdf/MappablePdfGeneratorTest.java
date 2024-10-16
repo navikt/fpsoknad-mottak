@@ -72,8 +72,6 @@ import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
         RestTemplate.class,
         PdfGeneratorStub.class,
         DelegerendePDFGenerator.class,
-        InfoskrivRenderer.class,
-        InfoskrivPdfEkstraktor.class,
         SvangerskapspengerInfoRenderer.class,
         SvangerskapspengerPdfGenerator.class,
         SpringTokenValidationContextHolder.class })
@@ -87,9 +85,6 @@ class MappablePdfGeneratorTest {
     @Autowired
     @Qualifier(DELEGERENDE)
     MappablePdfGenerator gen;
-
-    @Autowired
-    InfoskrivPdfEkstraktor pdfExtracter;
 
     @MockBean
     ArbeidsforholdTjeneste arbeidsforholdTjeneste;
@@ -125,7 +120,7 @@ class MappablePdfGeneratorTest {
         }
 
         assertThat(søknad.getTilleggsopplysninger()).isNotNull();
-        verifiserGenerertPDF(filNavn, 6, søknad.getTilleggsopplysninger());
+        verifiserGenerertPDF(filNavn, 5, søknad.getTilleggsopplysninger());
     }
 
     @Test
@@ -176,21 +171,6 @@ class MappablePdfGeneratorTest {
             fos.write(gen.generer(svp(), INITIELL_SVANGERSKAPSPENGER, personInfo()));
         }
         verifiserGenerertPDF(filNavn, 4, "Søknad om svangerskapspenger");
-    }
-
-    @Test
-    void infoskrivSplitter() throws Exception {
-        var filNavn = ABSOLUTE_PATH +"/infoskriv.pdf";
-        try (var fos = new FileOutputStream(filNavn)) {
-            var søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
-            var fullSøknadPdf = gen.generer(søknad, INITIELL_FORELDREPENGER, personInfo());
-            var infoskriv = pdfExtracter.infoskriv(fullSøknadPdf);
-            if (infoskriv != null) {
-                fos.write(infoskriv);
-                assertTrue(hasPdfSignature(infoskriv));
-            }
-        }
-        verifiserGenerertPDF(filNavn, 1, "NAV trenger inntektsmelding så snart som mulig");
     }
 
     private void verifiserGenerertPDF(String filNavn, int antallSiderIPDFen, String forventetTekst) throws IOException {

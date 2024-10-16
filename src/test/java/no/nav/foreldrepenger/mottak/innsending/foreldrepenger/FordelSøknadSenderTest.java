@@ -12,12 +12,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfEkstraktor;
 
 @ExtendWith(MockitoExtension.class)
 class FordelSøknadSenderTest {
-    @Mock
-    private InfoskrivPdfEkstraktor ekstraktor;
     @Mock
     private FordelConnection connection;
 
@@ -26,7 +23,7 @@ class FordelSøknadSenderTest {
     @BeforeEach
     void before() {
         fordelSøknadSender = new FordelSøknadSender(connection,
-            null, ekstraktor);
+            null);
     }
 
     @Test
