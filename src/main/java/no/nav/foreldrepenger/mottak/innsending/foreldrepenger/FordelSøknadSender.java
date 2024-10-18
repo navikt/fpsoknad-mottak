@@ -12,7 +12,6 @@ import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
-import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfEkstraktor;
 
 @Service
 public class FordelSøknadSender implements SøknadSender {
@@ -20,14 +19,11 @@ public class FordelSøknadSender implements SøknadSender {
     private static final Logger LOG = LoggerFactory.getLogger(FordelSøknadSender.class);
     private final FordelConnection connection;
     private final KonvoluttGenerator generator;
-    private final InfoskrivPdfEkstraktor ekstraktor;
 
     public FordelSøknadSender(FordelConnection connection,
-                              KonvoluttGenerator generator,
-                              InfoskrivPdfEkstraktor ekstraktor) {
+                              KonvoluttGenerator generator) {
         this.connection = connection;
         this.generator = generator;
-        this.ekstraktor = ekstraktor;
     }
 
     @Override
@@ -47,7 +43,6 @@ public class FordelSøknadSender implements SøknadSender {
 
     Kvittering send(Konvolutt konvolutt) {
         var pdfHovedDokument = konvolutt.PDFHovedDokument();
-        var infoskrivPdf = konvolutt.erInitiellForeldrepenger() ? infoskrivPdf(pdfHovedDokument) : null;
         var mottattDato = LocalDateTime.now();
         FordelResultat fordelKvittering;
         try {
@@ -57,15 +52,11 @@ public class FordelSøknadSender implements SøknadSender {
             fordelKvittering = new FordelResultat(null, null);
         }
 
-        return new Kvittering(mottattDato, fordelKvittering.saksnummer(), pdfHovedDokument, infoskrivPdf);
-    }
-
-    private byte[] infoskrivPdf(byte[] pdf) {
-        return ekstraktor.infoskriv(pdf);
+        return new Kvittering(mottattDato, fordelKvittering.saksnummer(), pdfHovedDokument);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [connection=" + connection + ", generator=" + generator + ", ekstraktor=" + ekstraktor + "]";
+        return getClass().getSimpleName() + " [connection=" + connection + ", generator=" + generator + "]";
     }
 }

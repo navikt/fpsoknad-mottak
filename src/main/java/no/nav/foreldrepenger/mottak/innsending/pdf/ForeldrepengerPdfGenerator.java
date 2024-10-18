@@ -33,14 +33,11 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
     private final ArbeidsInfo arbeidsInfo;
 
     private final ForeldrepengeInfoRenderer fpRenderer;
-    private final InfoskrivRenderer infoskrivRenderer;
 
     public ForeldrepengerPdfGenerator(ArbeidsInfo arbeidsInfo,
-                                      ForeldrepengeInfoRenderer fpRenderer,
-                                      InfoskrivRenderer infoskrivRenderer) {
+                                      ForeldrepengeInfoRenderer fpRenderer) {
         this.arbeidsInfo = arbeidsInfo;
         this.fpRenderer = fpRenderer;
-        this.infoskrivRenderer = infoskrivRenderer;
     }
 
     @Override
@@ -131,9 +128,6 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                     cosy = new CosyPair(forCos, -1);
                 }
 
-                if (!arbeidsforhold.isEmpty()) {
-                    cosy = new CosyPair(infoskrivRenderer.renderInfoskriv(arbeidsforhold, foreldrepenger, cosy.cos(), doc, person), -1);
-                }
             }
             cosy.cos().close();
             doc.save(baos);
