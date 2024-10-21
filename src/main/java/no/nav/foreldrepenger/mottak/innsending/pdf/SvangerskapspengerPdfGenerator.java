@@ -281,11 +281,11 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         y -= renderer.addBulletPoint(INDENT,
             txt("svp.behovfra", DATEFMT.format(tilretteleggingbehov.behovForTilretteleggingFom())), cos, y);
         for (var periode : tilretteleggingbehov.tilrettelegginger()) {
-            if (periode instanceof Tilretteleggingbehov.HelTilrettelegging h) {
+            if (periode instanceof Tilretteleggingbehov.Tilrettelegging.Hel h) {
                 y -= renderHelTilrettelegging(h, cos, y);
-            } else if (periode instanceof Tilretteleggingbehov.DelvisTilrettelegging d) {
+            } else if (periode instanceof Tilretteleggingbehov.Tilrettelegging.Delvis d) {
                 y -= renderDelvisTilrettelegging(d, cos, y);
-            } else if (periode instanceof Tilretteleggingbehov.IngenTilrettelegging i) {
+            } else if (periode instanceof Tilretteleggingbehov.Tilrettelegging.Ingen i) {
                 y -= renderIngenTilrettelegging(i, cos, y);
             }
         }
@@ -294,30 +294,30 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         return startY - y;
     }
 
-    private float renderIngenTilrettelegging(Tilretteleggingbehov.IngenTilrettelegging periode, FontAwareCos cos, float y)
+    private float renderIngenTilrettelegging(Tilretteleggingbehov.Tilrettelegging.Ingen periode, FontAwareCos cos, float y)
         throws IOException {
         var startY = y;
         y -= renderer.addBulletPoint(INDENT,
-            txt("svp.sluttearbeid", DATEFMT.format(periode.slutteArbeidFom())), cos, y);
+            txt("svp.sluttearbeid", DATEFMT.format(periode.fom())), cos, y);
         return startY - y;
     }
 
-    private float renderDelvisTilrettelegging(Tilretteleggingbehov.DelvisTilrettelegging periode, FontAwareCos cos, float y)
+    private float renderDelvisTilrettelegging(Tilretteleggingbehov.Tilrettelegging.Delvis periode, FontAwareCos cos, float y)
         throws IOException {
         var startY = y;
         y -= renderer.addBulletPoint(INDENT,
-            txt("svp.tilretteleggingfra", DATEFMT.format(periode.tilrettelagtArbeidFom())), cos, y);
+            txt("svp.tilretteleggingfra", DATEFMT.format(periode.fom())), cos, y);
         y -= renderer.addBulletPoint(DOUBLE_INDENT,
             txt("svp.stillingsprosent", periode.stillingsprosent()), cos, y);
         return startY - y;
     }
 
 
-    private float renderHelTilrettelegging(Tilretteleggingbehov.HelTilrettelegging periode, FontAwareCos cos, float y)
+    private float renderHelTilrettelegging(Tilretteleggingbehov.Tilrettelegging.Hel periode, FontAwareCos cos, float y)
         throws IOException {
         var startY = y;
         y -= renderer.addBulletPoint(INDENT, txt("svp.tilretteleggingfra",
-            DATEFMT.format(periode.tilrettelagtArbeidFom())), cos, y);
+            DATEFMT.format(periode.fom())), cos, y);
         y -= renderer.addBulletPoint(DOUBLE_INDENT, txt("svp.stillingsprosent.full"), cos, y);
         return startY - y;
     }
