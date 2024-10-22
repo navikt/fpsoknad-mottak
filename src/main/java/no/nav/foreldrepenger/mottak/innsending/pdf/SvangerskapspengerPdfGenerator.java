@@ -15,26 +15,21 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Orgnummer;
 import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.common.domain.felles.VedleggReferanse;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.Svangerskapspenger;
-import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.DelvisTilrettelegging;
-import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.HelTilrettelegging;
-import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.IngenTilrettelegging;
-import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.Tilrettelegging;
-import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Arbeidsforhold;
-import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Frilanser;
-import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.PrivatArbeidsgiver;
-import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.SelvstendigNæringsdrivende;
-import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Virksomhet;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.Frilanser;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.PrivatArbeidsgiver;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.SelvstendigNæringsdrivende;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.Virksomhet;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilretteleggingsbehov.Tilretteleggingbehov;
 import no.nav.foreldrepenger.common.error.UnexpectedInputException;
 import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
@@ -81,33 +76,6 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             y -= omBarn(svp, cos, y);
             y -= blankLine();
             var opptjening = svp.opptjening();
-            if (!svp.tilrettelegging().isEmpty()) {
-                y -= renderer.addLeftHeading(textFormatter.fromMessageSource("tilrettelegging"), cos, y);
-                var arbeidsforholdTilretteleggingMap = svp.tilrettelegging().stream()
-                    .collect(Collectors.groupingBy(Tilrettelegging::getArbeidsforhold));
-                // type arbeidsforhold kommer i random rekkefølge
-                for (var arb : arbeidsforholdTilretteleggingMap.entrySet()) {
-                    var tilrettelagtArbeidsforhold = arb.getKey();
-                    var tilrettelegging = sortertTilretteleggingsliste(arb.getValue());
-                    var scratch1 = newPage();
-                    var scratchcos = new FontAwareCos(doc, scratch1);
-                    var startY = STARTY;
-                    startY -= header(doc, scratchcos, startY, person);
-                    var size = renderTilrettelegging(arbeidsforhold, tilrettelagtArbeidsforhold, tilrettelegging,
-                            søknad.getVedlegg(), scratchcos,
-                            startY);
-                    var behov = startY - size;
-                    if (behov < y) {
-                        scratchcos.close();
-                        y = renderTilrettelegging(arbeidsforhold, tilrettelagtArbeidsforhold, tilrettelegging,
-                                søknad.getVedlegg(),
-                                cos, y);
-                    } else {
-                        cos = nySide(doc, cos, scratch1, scratchcos);
-                        y = nesteSideStart(headerSize, behov);
-                    }
-                }
-            }
             if (!svp.tilretteleggingbehov().isEmpty()) {
                 y -= renderer.addLeftHeading(textFormatter.fromMessageSource("tilrettelegging"), cos, y);
                 var sorterteTilrettelegginger = svp.tilretteleggingbehov().stream().sorted(Comparator.comparing(Tilretteleggingbehov::behovForTilretteleggingFom)).toList();
@@ -239,38 +207,32 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                                           Tilretteleggingbehov tilretteleggingbehov,
                                           List<Vedlegg> vedlegg, FontAwareCos cos, float y)throws IOException {
         var arbeidsforhold = tilretteleggingbehov.arbeidsforhold();
-        if (arbeidsforhold instanceof Virksomhet v) {
-            var text = virksomhetsnavn(arbeidsgivere, v.orgnr().value())
-                .orElse(txt("arbeidsgiverIkkeFunnet", v.orgnr().value()));
+        if (arbeidsforhold instanceof Virksomhet(Orgnummer orgnr)) {
+            var text = virksomhetsnavn(arbeidsgivere, orgnr.value())
+                .orElse(txt("arbeidsgiverIkkeFunnet", orgnr.value()));
             y -= renderer.addLineOfRegularText(text, cos, y);
             y -= renderTilretteleggingsperiodene(tilretteleggingbehov, vedlegg, cos, y);
             y -= blankLine();
         }
-        if (arbeidsforhold instanceof PrivatArbeidsgiver p) {
-            var text = virksomhetsnavn(arbeidsgivere, p.fnr().value())
+        if (arbeidsforhold instanceof PrivatArbeidsgiver(Fødselsnummer fnr)) {
+            var text = virksomhetsnavn(arbeidsgivere, fnr.value())
                 .orElse(txt("svp.privatarbeidsgiverNavnIkkeFunnet"));
             y -= renderer.addLineOfRegularText(text, cos, y);
             y -= renderTilretteleggingsperiodene(tilretteleggingbehov, vedlegg, cos, y);
             y -= blankLine();
         }
-        if (arbeidsforhold instanceof SelvstendigNæringsdrivende s) {
+        if (arbeidsforhold instanceof SelvstendigNæringsdrivende(String risikoFaktorer, String tilretteleggingstiltak)) {
             y -= renderer.addLineOfRegularText(txt("svp.selvstendig"), cos, y);
             y -= renderTilretteleggingsperiodene(tilretteleggingbehov, vedlegg, cos, y);
-            y -= renderer.addBulletPoint(INDENT, txt("svp.risikofaktorer",
-                    s.risikoFaktorer()),
-                cos, y);
-            y -= renderer.addBulletPoint(INDENT, txt("svp.tiltak",
-                    s.tilretteleggingstiltak()),
-                cos, y);
+            y -= renderer.addBulletPoint(INDENT, txt("svp.risikofaktorer", risikoFaktorer), cos, y);
+            y -= renderer.addBulletPoint(INDENT, txt("svp.tiltak", tilretteleggingstiltak), cos, y);
             y -= blankLine();
         }
-        if (arbeidsforhold instanceof Frilanser f) {
+        if (arbeidsforhold instanceof Frilanser(String risikoFaktorer, String tilretteleggingstiltak)) {
             y -= renderer.addLineOfRegularText(txt("svp.frilans"), cos, y);
             y -= renderTilretteleggingsperiodene(tilretteleggingbehov, vedlegg, cos, y);
-            y -= renderer.addBulletPoint(INDENT, txt("svp.risikofaktorer",
-                f.risikoFaktorer()), cos, y);
-            y -= renderer.addBulletPoint(INDENT, txt("svp.tiltak",
-                f.tilretteleggingstiltak()), cos, y);
+            y -= renderer.addBulletPoint(INDENT, txt("svp.risikofaktorer", risikoFaktorer), cos, y);
+            y -= renderer.addBulletPoint(INDENT, txt("svp.tiltak", tilretteleggingstiltak), cos, y);
             y -= blankLine();
         }
         return y;
@@ -318,113 +280,6 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         var startY = y;
         y -= renderer.addBulletPoint(INDENT, txt("svp.tilretteleggingfra",
             DATEFMT.format(periode.fom())), cos, y);
-        y -= renderer.addBulletPoint(DOUBLE_INDENT, txt("svp.stillingsprosent.full"), cos, y);
-        return startY - y;
-    }
-
-    @Deprecated
-    private float renderTilrettelegging(List<EnkeltArbeidsforhold> arbeidsgivere,
-            Arbeidsforhold arbeidsforhold,
-            List<Tilrettelegging> tilrettelegging,
-            List<Vedlegg> vedlegg, FontAwareCos cos, float y)
-            throws IOException {
-        if (arbeidsforhold instanceof Virksomhet v) {
-            var text = virksomhetsnavn(arbeidsgivere, v.orgnr().value())
-                .orElse(txt("arbeidsgiverIkkeFunnet", v.orgnr().value()));
-            y -= renderer.addLineOfRegularText(text, cos, y);
-            y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
-            y -= blankLine();
-        }
-        if (arbeidsforhold instanceof PrivatArbeidsgiver p) {
-            var text = virksomhetsnavn(arbeidsgivere, p.fnr().value())
-                .orElse(txt("svp.privatarbeidsgiverNavnIkkeFunnet"));
-            y -= renderer.addLineOfRegularText(text, cos, y);
-            y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
-            y -= blankLine();
-        }
-        if (arbeidsforhold instanceof SelvstendigNæringsdrivende s) {
-            y -= renderer.addLineOfRegularText(txt("svp.selvstendig"), cos, y);
-            y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
-            y -= renderer.addBulletPoint(INDENT, txt("svp.risikofaktorer",
-                    s.risikoFaktorer()),
-                    cos, y);
-            y -= renderer.addBulletPoint(INDENT, txt("svp.tiltak",
-                    s.tilretteleggingstiltak()),
-                    cos, y);
-            y -= blankLine();
-        }
-        if (arbeidsforhold instanceof Frilanser f) {
-            y -= renderer.addLineOfRegularText(txt("svp.frilans"), cos, y);
-            y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
-            y -= renderer.addBulletPoint(INDENT, txt("svp.risikofaktorer",
-                    f.risikoFaktorer()), cos, y);
-            y -= renderer.addBulletPoint(INDENT, txt("svp.tiltak",
-                    f.tilretteleggingstiltak()), cos, y);
-            y -= blankLine();
-        }
-        return y;
-    }
-
-    private static List<Tilrettelegging> sortertTilretteleggingsliste(List<Tilrettelegging> liste) {
-        return safeStream(liste)
-                .sorted(Comparator.comparing(Tilrettelegging::getBehovForTilretteleggingFom))
-                .toList();
-    }
-
-    private float renderTilretteleggingsperioder(List<Tilrettelegging> perioder,
-            List<Vedlegg> vedlegg, FontAwareCos cos, float y)
-            throws IOException {
-        var startY = y;
-        var tilrettelegging = perioder.stream().findAny().orElseThrow(IllegalArgumentException::new);
-        y -= renderer.addBulletPoint(INDENT,
-                txt("svp.behovfra", DATEFMT.format(tilrettelegging.getBehovForTilretteleggingFom())), cos, y);
-        for (var periode : perioder) {
-            if (periode instanceof HelTilrettelegging h) {
-                y -= renderHelTilrettelegging(h, cos, y);
-            } else if (periode instanceof DelvisTilrettelegging d) {
-                y -= renderDelvisTilrettelegging(d, cos, y);
-            } else if (periode instanceof IngenTilrettelegging i) {
-                y -= renderIngenTilrettelegging(i, cos, y);
-            }
-        }
-        var vedleggRefs = perioder.stream()
-                .map(Tilrettelegging::getVedlegg)
-                .findAny()
-                .orElseGet(List::of);
-
-        y -= renderVedlegg(vedlegg, vedleggRefs, SVP_VEDLEGG_TILRETTELEGGING, cos, y);
-        return startY - y;
-    }
-
-    private float renderIngenTilrettelegging(IngenTilrettelegging periode, FontAwareCos cos, float y)
-            throws IOException {
-        var startY = y;
-        y -= renderer.addBulletPoint(INDENT,
-                txt("svp.sluttearbeid", DATEFMT.format(periode.getSlutteArbeidFom())), cos, y);
-        return startY - y;
-    }
-
-    private float renderDelvisTilrettelegging(DelvisTilrettelegging periode, FontAwareCos cos, float y)
-            throws IOException {
-        var startY = y;
-        y -= renderer.addBulletPoint(INDENT,
-                txt("svp.tilretteleggingfra", DATEFMT.format(periode.getTilrettelagtArbeidFom())), cos, y);
-        y -= renderer.addBulletPoint(DOUBLE_INDENT,
-                txt("svp.stillingsprosent", prosentFra(periode.getStillingsprosent())), cos, y);
-        return startY - y;
-    }
-
-    private static double prosentFra(ProsentAndel prosent) {
-        return Optional.ofNullable(prosent)
-                .map(ProsentAndel::prosent)
-                .orElse(0d);
-    }
-
-    private float renderHelTilrettelegging(HelTilrettelegging periode, FontAwareCos cos, float y)
-            throws IOException {
-        var startY = y;
-        y -= renderer.addBulletPoint(INDENT, txt("svp.tilretteleggingfra",
-                DATEFMT.format(periode.getTilrettelagtArbeidFom())), cos, y);
         y -= renderer.addBulletPoint(DOUBLE_INDENT, txt("svp.stillingsprosent.full"), cos, y);
         return startY - y;
     }
