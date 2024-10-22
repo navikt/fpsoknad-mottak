@@ -30,7 +30,7 @@ import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.Fri
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.PrivatArbeidsgiver;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.SelvstendigNæringsdrivende;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.Virksomhet;
-import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilretteleggingsbehov.Tilretteleggingbehov;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.Tilretteleggingbehov;
 import no.nav.foreldrepenger.common.error.UnexpectedInputException;
 import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
 import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
