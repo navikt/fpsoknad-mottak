@@ -31,6 +31,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import no.nav.foreldrepenger.common.domain.Orgnummer;
+
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.jupiter.api.BeforeEach;
@@ -185,6 +187,7 @@ class MappablePdfGeneratorTest {
     }
 
     private static List<EnkeltArbeidsforhold> arbeidsforhold() {
+        var magicBedriftOrgnummer = Orgnummer.MAGIC_ORG.value();
         return List.of(EnkeltArbeidsforhold.builder()
                 .arbeidsgiverId("342352362")
                 .from(LocalDate.now().minusDays(200))
@@ -196,6 +199,13 @@ class MappablePdfGeneratorTest {
                 .from(LocalDate.now().minusYears(10))
                 .stillingsprosent(ProsentAndel.valueOf(10))
                 .to(Optional.empty())
-                .arbeidsgiverNavn("Test Arbeidsgiversen").build());
+                .arbeidsgiverNavn("Test Arbeidsgiversen").build(),
+            EnkeltArbeidsforhold.builder()
+                .arbeidsgiverId(magicBedriftOrgnummer)
+                .from(LocalDate.now().minusYears(10))
+                .stillingsprosent(ProsentAndel.valueOf(60))
+                .to(Optional.empty())
+                .arbeidsgiverNavn("Magisk virksomhet A/S")
+                .build());
     }
 }
