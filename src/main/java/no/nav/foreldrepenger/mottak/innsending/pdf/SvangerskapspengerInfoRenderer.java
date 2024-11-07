@@ -80,7 +80,7 @@ public class SvangerskapspengerInfoRenderer extends FellesSøknadInfoRenderer {
     private float renderDatoPerioder(List<AvtaltFerie> ferie, FontAwareCos cos, float y) throws IOException {
         var startY = y;
         for (var feriePeriode : ferie) {
-            var generellPeriode = new ÅpenPeriode(feriePeriode.ferieFom(), feriePeriode.ferieFom());
+            var generellPeriode = new ÅpenPeriode(feriePeriode.ferieFom(), feriePeriode.ferieTom());
             var formattertPeriode = textFormatter.enkelPeriode(generellPeriode);
             y -= renderer.addBulletPoint(INDENT * 2, formattertPeriode, cos, y);
         }
