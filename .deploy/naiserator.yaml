@@ -36,6 +36,14 @@ spec:
     requests:
       cpu: "{{requests.cpu}}"
       memory: "{{requests.mem}}"
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+    logging:
+      destinations:
+        - id: loki
+        - id: elastic
   liveness:
     path: /api/actuator/health/liveness
     initialDelay: 15
