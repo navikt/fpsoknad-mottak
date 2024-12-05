@@ -42,8 +42,8 @@ spec:
       runtime: java
     logging:
       destinations:
-        - id: loki
-        - id: elastic
+        - id: "grafana-lgtm"
+        - id: "elastic-apm"
   liveness:
     path: /api/actuator/health/liveness
     initialDelay: 15
