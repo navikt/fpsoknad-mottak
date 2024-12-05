@@ -40,7 +40,6 @@ spec:
     autoInstrumentation:
       enabled: true
       runtime: java
-    logging:
       destinations:
         - id: "grafana-lgtm"
         - id: "elastic-apm"
