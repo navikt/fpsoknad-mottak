@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.5</version>
+        <version>3.4.0</version>
         <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -40,7 +40,7 @@
         <nv-i18n.version>1.29</nv-i18n.version>
         <reflections.version>0.10.2</reflections.version>
         <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
-        <springdoc.version>2.6.0</springdoc.version>
+        <springdoc.version>2.7.0</springdoc.version>
         <spring.graphql.version>2.1.0</spring.graphql.version>
     </properties>
     <scm>
