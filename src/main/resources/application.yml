@@ -21,8 +21,6 @@ server:
 spring:
   codec:
     max-in-memory-size: 32MB
-  cache:
-    cache-names: organisasjon
   application:
     name: fpsoknad-mottak
   main:
