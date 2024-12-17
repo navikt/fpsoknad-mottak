@@ -12,7 +12,6 @@ import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig.NAVN_QUERY;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig.SØKER_QUERY;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLForelderBarnRelasjon.PDLRelasjonsRolle.BARN;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe.AKTORID;
-import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe.FOLKEREGISTERIDENT;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.map;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.mapIdent;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.Ytelse.FORELDREPENGER;
@@ -113,18 +112,6 @@ public class PDLConnection implements AktørIdTilFnrConverter {
                 .orElse(null);
     }
 
-    public Fødselsnummer fnr(AktørId aktørId) {
-        return fnr(aktørId, defaultYtelse);
-    }
-
-    public Fødselsnummer fnr(AktørId aktørId, Ytelse ytelse) {
-        return Optional.ofNullable(aktørId)
-                .map(id -> oppslagId(id, ytelse))
-                .map(id -> mapIdent(id, FOLKEREGISTERIDENT))
-                .map(Fødselsnummer::new)
-                .orElse(null);
-    }
-
     private List<PDLBarn> barn(PDLSøker søker, Ytelse ytelse, Predicate<PDLBarn> filter) {
         var barn = safeStream(søker.getForelderBarnRelasjon()).filter(
                 b -> b.relatertPersonsrolle().equals(BARN))
@@ -153,15 +140,7 @@ public class PDLConnection implements AktørIdTilFnrConverter {
     }
 
     private PDLIdenter oppslagId(Fødselsnummer id, Ytelse ytelse) {
-        return oppslagId(id.value(), ytelse, "fødselsnummer");
-    }
-
-    private PDLIdenter oppslagId(AktørId id, Ytelse ytelse) {
-        return oppslagId(id.value(), ytelse, "aktør");
-    }
-
-    private PDLIdenter oppslagId(String id, Ytelse ytelse, String type) {
-        return oppslag(() -> postClientCredential(IDENT_QUERY, ytelse, id, PDLIdenter.class), type);
+        return oppslag(() -> postClientCredential(IDENT_QUERY, ytelse, id.value(), PDLIdenter.class), "fødselsnummer");
     }
 
     private PDLBarn oppslagBarn(String fnrSøker, Ytelse ytelse, String id) {
