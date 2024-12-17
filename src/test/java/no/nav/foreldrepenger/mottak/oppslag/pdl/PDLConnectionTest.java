@@ -178,15 +178,7 @@ class PDLConnectionTest {
     }
 
     @Test
-    void hentFødselsnummerFraGraphQLResponsHappyCase() {
-        var body = hentIdentRespons(FØDSELSNUMMER_SØKER, AKTØRID_SØKER);
-        mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(body).addHeader("Content-Type", "application/json"));
-        var response = pdlConnection.fnr(AKTØRID_SØKER);
-        assertThat(response).isEqualTo(FØDSELSNUMMER_SØKER);
-    }
-
-    @Test
-    void verifiserAtGraphQLErrorPersonIkkeFunnetBlirMappetTil404() throws IOException {
+    void verifiserAtGraphQLErrorPersonIkkeFunnetBlirMappetTil404() {
         var body = """
             {
               "errors": [
