@@ -42,7 +42,7 @@
     </springProfile>
 
     <springProfile name="dev | local">
-            <logger name="no.nav.foreldrepenger" level="trace" />
+            <logger name="no.nav" level="trace" />
     </springProfile>
     <logger name="secureLogger" level="INFO" additivity="false">
         <appender-ref ref="secureLogger" />
