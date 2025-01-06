@@ -41,7 +41,7 @@
         <reflections.version>0.10.2</reflections.version>
         <okhttp.version>4.12.0</okhttp.version>
         <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
-        <springdoc.version>2.7.0</springdoc.version>
+        <springdoc.version>2.8.0</springdoc.version>
         <spring.graphql.version>2.1.0</spring.graphql.version>
     </properties>
     <scm>
