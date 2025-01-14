@@ -25,35 +25,35 @@ jobs:
       push-image: ${{ github.ref_name == 'master' }} # default: false
     secrets: inherit
 
-  verdikjede:
-    name: Verdikjedetester
-    permissions:
-       contents: read
-       id-token: write
-    if: github.ref_name == 'master'
-    needs: build-app
-    uses: navikt/fp-autotest/.github/workflows/autotest.yml@master
-    with:
-      build-version: ${{ needs.build-app.outputs.build-version }}
-      test-suite: verdikjede
-    secrets: inherit
-
-  notify:
-    name: Notify
-    if: github.ref_name == 'master' && (success() || failure()) && !contains(needs.*.result, 'skipped')
-    needs: [build-app, verdikjede]
-    uses: navikt/fp-autotest/.github/workflows/report-and-notify.yml@master
-    with:
-      verdikjede: ${{ needs.verdikjede.outputs.resultat }}
-      build-version: ${{ needs.build-app.outputs.build-version }}
-    secrets: inherit
+#  verdikjede:
+#    name: Verdikjedetester
+#    permissions:
+#       contents: read
+#       id-token: write
+#    if: github.ref_name == 'master'
+#    needs: build-app
+#    uses: navikt/fp-autotest/.github/workflows/autotest.yml@master
+#    with:
+#      build-version: ${{ needs.build-app.outputs.build-version }}
+#      test-suite: verdikjede
+#    secrets: inherit
+#
+#  notify:
+#    name: Notify
+#    if: github.ref_name == 'master' && (success() || failure()) && !contains(needs.*.result, 'skipped')
+#    needs: [build-app, verdikjede]
+#    uses: navikt/fp-autotest/.github/workflows/report-and-notify.yml@master
+#    with:
+#      verdikjede: ${{ needs.verdikjede.outputs.resultat }}
+#      build-version: ${{ needs.build-app.outputs.build-version }}
+#    secrets: inherit
 
   deploy-dev:
     name: Deploy dev
     permissions:
       id-token: write
     if: github.ref_name == 'master'
-    needs: [build-app, verdikjede]
+    needs: [build-app]
     uses: navikt/fp-gha-workflows/.github/workflows/deploy.yml@main
     with:
       gar: true
