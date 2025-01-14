@@ -52,14 +52,14 @@ public class WebClientConfiguration {
     @Value("${spring.application.name:fpsoknad-mottak}")
     private String consumer;
 
-    static HttpClient httpClientUtenProxy() {
+    private static HttpClient httpClientProxyDisabled() {
         return HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(30))
             .proxy(HttpClient.Builder.NO_PROXY)
             .build();
     }
 
-    static HttpClient httpClientProxyEnabled() {
+    private static HttpClient httpClientProxyEnabled() {
         return HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(30))
             .proxy(ProxySelector.getDefault())
@@ -71,7 +71,7 @@ public class WebClientConfiguration {
     public WebClient webClientPdfGenerator(PdfGeneratorConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return WebClient.builder()
             .baseUrl(cfg.getBaseUri().toString())
-            .clientConnector(new JdkClientHttpConnector(httpClientUtenProxy()))
+            .clientConnector(new JdkClientHttpConnector(httpClientProxyDisabled()))
             .filter(correlatingFilterFunction())
             .filter(tokenXFilterFunction)
             .build();
@@ -82,7 +82,7 @@ public class WebClientConfiguration {
     public WebClient webClientFpfordel(FordelConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return WebClient.builder()
             .baseUrl(cfg.getBaseUri().toString())
-            .clientConnector(new JdkClientHttpConnector(httpClientUtenProxy()))
+            .clientConnector(new JdkClientHttpConnector(httpClientProxyDisabled()))
             .filter(correlatingFilterFunction())
             .filter(tokenXFilterFunction)
             .build();
@@ -118,7 +118,7 @@ public class WebClientConfiguration {
                                                    TokenXExchangeFilterFunction tokenXFilterFunction) {
         return WebClient.builder()
             .baseUrl(cfg.getBaseUri().toString())
-            .clientConnector(new JdkClientHttpConnector(httpClientUtenProxy()))
+            .clientConnector(new JdkClientHttpConnector(httpClientProxyDisabled()))
             .filter(correlatingFilterFunction())
             .filter(navPersonIdentFunction(tokenUtil))
             .filter(tokenXFilterFunction)
@@ -130,7 +130,7 @@ public class WebClientConfiguration {
     public WebClient webClientOrganisasjon(OrganisasjonConfig cfg) {
         return WebClient.builder()
             .baseUrl(cfg.getBaseUri().toString())
-            .clientConnector(new JdkClientHttpConnector(httpClientUtenProxy()))
+            .clientConnector(new JdkClientHttpConnector(httpClientProxyDisabled()))
             .filter(correlatingFilterFunction())
             .build();
     }
@@ -141,7 +141,7 @@ public class WebClientConfiguration {
         return WebClient.builder()
             .baseUrl(cfg.getBaseUri().toString())
             .defaultHeader(TEMA, FORELDREPENGER)
-            .clientConnector(new JdkClientHttpConnector(httpClientUtenProxy()))
+            .clientConnector(new JdkClientHttpConnector(httpClientProxyDisabled()))
             .filter(correlatingFilterFunction())
             .filter(tokenXFilterFunction)
             .build();
@@ -153,7 +153,7 @@ public class WebClientConfiguration {
         return WebClient.builder()
             .baseUrl(cfg.getBaseUri().toString())
             .defaultHeader(TEMA, FORELDREPENGER)
-            .clientConnector(new JdkClientHttpConnector(httpClientUtenProxy()))
+            .clientConnector(new JdkClientHttpConnector(httpClientProxyDisabled()))
             .filter(correlatingFilterFunction())
             .filter(azureADClientCredentailFilterFunction("client-credentials-pdl", configs, service))
             .build();
