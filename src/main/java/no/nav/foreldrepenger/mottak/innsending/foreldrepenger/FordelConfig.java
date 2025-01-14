@@ -14,7 +14,7 @@ public class FordelConfig {
     private static final String DEFAULT_BASE_PATH = "api/dokumentforsendelse";
     private static final String DEFAULT_POLLING_MAX = "10";
 
-    private static final String DEFAULT_URI = "http://fpfordel.svc.nais.local/fpfordel";
+    private static final String DEFAULT_URI = "http://fpfordel.teamforeldrepenger.svc.nais.local/fpfordel";
 
     private final String basePath;
     private final int fpfordelMax;
