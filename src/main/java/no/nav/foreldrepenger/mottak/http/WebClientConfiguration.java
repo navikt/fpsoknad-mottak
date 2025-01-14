@@ -52,19 +52,26 @@ public class WebClientConfiguration {
     @Value("${spring.application.name:fpsoknad-mottak}")
     private String consumer;
 
-    @Bean
-    public HttpClient.Builder defaultNoProxyHttpClient() {
+    static HttpClient httpClientUtenProxy() {
         return HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(30))
-            .proxy(HttpClient.Builder.NO_PROXY);
+            .proxy(HttpClient.Builder.NO_PROXY)
+            .build();
+    }
+
+    static HttpClient httpClientProxyEnabled() {
+        return HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(30))
+            .proxy(ProxySelector.getDefault())
+            .build();
     }
 
     @Bean
     @Qualifier(PDF_GENERATOR)
-    public WebClient webClientPdfGenerator(HttpClient.Builder httpClientBuilder, PdfGeneratorConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
+    public WebClient webClientPdfGenerator(PdfGeneratorConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return WebClient.builder()
             .baseUrl(cfg.getBaseUri().toString())
-            .clientConnector(new JdkClientHttpConnector(httpClientBuilder.build()))
+            .clientConnector(new JdkClientHttpConnector(httpClientUtenProxy()))
             .filter(correlatingFilterFunction())
             .filter(tokenXFilterFunction)
             .build();
@@ -72,10 +79,10 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(FPFORDEL)
-    public WebClient webClientFpfordel(HttpClient.Builder httpClientBuilder, FordelConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
+    public WebClient webClientFpfordel(FordelConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return WebClient.builder()
             .baseUrl(cfg.getBaseUri().toString())
-            .clientConnector(new JdkClientHttpConnector(httpClientBuilder.build()))
+            .clientConnector(new JdkClientHttpConnector(httpClientUtenProxy()))
             .filter(correlatingFilterFunction())
             .filter(tokenXFilterFunction)
             .build();
@@ -83,10 +90,10 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(KRR)
-    public WebClient webClientDigdir(HttpClient.Builder httpClientBuilder, DigdirKrrProxyConfig cfg, TokenUtil tokenUtil, TokenXExchangeFilterFunction tokenXFilterFunction) {
+    public WebClient webClientDigdir(DigdirKrrProxyConfig cfg, TokenUtil tokenUtil, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return WebClient.builder()
             .baseUrl(cfg.getBaseUri().toString())
-            .clientConnector(new JdkClientHttpConnector(httpClientBuilder.proxy(ProxySelector.getDefault()).build()))
+            .clientConnector(new JdkClientHttpConnector(httpClientProxyEnabled()))
             .filter(correlatingFilterFunction())
             .filter(navPersonIdentFunction(tokenUtil))
             .filter(tokenXFilterFunction)
@@ -95,10 +102,10 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(KONTOREGISTER)
-    public WebClient webClientKontoregister(HttpClient.Builder httpClientBuilder, KontoregisterConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
+    public WebClient webClientKontoregister(KontoregisterConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return WebClient.builder()
             .baseUrl(cfg.getBaseUri().toString())
-            .clientConnector(new JdkClientHttpConnector(httpClientBuilder.proxy(ProxySelector.getDefault()).build()))
+            .clientConnector(new JdkClientHttpConnector(httpClientProxyEnabled()))
             .filter(correlatingFilterFunction())
             .filter(tokenXFilterFunction)
             .build();
@@ -106,13 +113,12 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(ARBEIDSFORHOLD)
-    public WebClient webClientArbeidsforholdTokenX(HttpClient.Builder httpClientBuilder,
-                                                   ArbeidsforholdConfig cfg,
+    public WebClient webClientArbeidsforholdTokenX(ArbeidsforholdConfig cfg,
                                                    TokenUtil tokenUtil,
                                                    TokenXExchangeFilterFunction tokenXFilterFunction) {
         return WebClient.builder()
             .baseUrl(cfg.getBaseUri().toString())
-            .clientConnector(new JdkClientHttpConnector(httpClientBuilder.build()))
+            .clientConnector(new JdkClientHttpConnector(httpClientUtenProxy()))
             .filter(correlatingFilterFunction())
             .filter(navPersonIdentFunction(tokenUtil))
             .filter(tokenXFilterFunction)
@@ -121,21 +127,21 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(ORGANISASJON)
-    public WebClient webClientOrganisasjon(HttpClient.Builder httpClientBuilder, OrganisasjonConfig cfg) {
+    public WebClient webClientOrganisasjon(OrganisasjonConfig cfg) {
         return WebClient.builder()
             .baseUrl(cfg.getBaseUri().toString())
-            .clientConnector(new JdkClientHttpConnector(httpClientBuilder.build()))
+            .clientConnector(new JdkClientHttpConnector(httpClientUtenProxy()))
             .filter(correlatingFilterFunction())
             .build();
     }
 
     @Bean
     @Qualifier(PDL_USER)
-    public WebClient webClientPDL(HttpClient.Builder httpClientBuilder, PDLConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
+    public WebClient webClientPDL(PDLConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return WebClient.builder()
             .baseUrl(cfg.getBaseUri().toString())
             .defaultHeader(TEMA, FORELDREPENGER)
-            .clientConnector(new JdkClientHttpConnector(httpClientBuilder.build()))
+            .clientConnector(new JdkClientHttpConnector(httpClientUtenProxy()))
             .filter(correlatingFilterFunction())
             .filter(tokenXFilterFunction)
             .build();
@@ -143,11 +149,11 @@ public class WebClientConfiguration {
 
     @Qualifier(PDL_SYSTEM)
     @Bean
-    public WebClient webClientSystemPDL(HttpClient.Builder httpClientBuilder, PDLConfig cfg, ClientConfigurationProperties configs, OAuth2AccessTokenService service) {
+    public WebClient webClientSystemPDL(PDLConfig cfg, ClientConfigurationProperties configs, OAuth2AccessTokenService service) {
         return WebClient.builder()
             .baseUrl(cfg.getBaseUri().toString())
             .defaultHeader(TEMA, FORELDREPENGER)
-            .clientConnector(new JdkClientHttpConnector(httpClientBuilder.build()))
+            .clientConnector(new JdkClientHttpConnector(httpClientUtenProxy()))
             .filter(correlatingFilterFunction())
             .filter(azureADClientCredentailFilterFunction("client-credentials-pdl", configs, service))
             .build();

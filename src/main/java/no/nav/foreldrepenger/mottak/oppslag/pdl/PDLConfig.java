@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 @ConfigurationProperties(prefix = "pdl")
 public class PDLConfig {
     private static final String DEFAULT_FØDSEL_MÅNEDER_TILBAKE = "40";
-    private static final String DEFAULT_BASE_URI = "http://pdl-api.pdl.svc.nais.local/graphql";
+    private static final String DEFAULT_BASE_URI = "http://pdl-api.pdl/graphql";
 
     static final String NAVN_QUERY = "query-navn.graphql";
     static final String BARN_QUERY = "query-barn.graphql";
