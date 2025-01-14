@@ -68,8 +68,8 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(PDF_GENERATOR)
-    public WebClient webClientPdfGenerator(PdfGeneratorConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
-        return WebClient.builder()
+    public WebClient webClientPdfGenerator(WebClient.Builder builder, PdfGeneratorConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
+        return builder.clone()
             .baseUrl(cfg.getBaseUri().toString())
             .clientConnector(new JdkClientHttpConnector(httpClientProxyDisabled()))
             .filter(correlatingFilterFunction())
@@ -79,8 +79,8 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(FPFORDEL)
-    public WebClient webClientFpfordel(FordelConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
-        return WebClient.builder()
+    public WebClient webClientFpfordel(WebClient.Builder builder, FordelConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
+        return builder.clone()
             .baseUrl(cfg.getBaseUri().toString())
             .clientConnector(new JdkClientHttpConnector(httpClientProxyDisabled()))
             .filter(correlatingFilterFunction())
@@ -90,8 +90,8 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(KRR)
-    public WebClient webClientDigdir(DigdirKrrProxyConfig cfg, TokenUtil tokenUtil, TokenXExchangeFilterFunction tokenXFilterFunction) {
-        return WebClient.builder()
+    public WebClient webClientDigdir(WebClient.Builder builder, DigdirKrrProxyConfig cfg, TokenUtil tokenUtil, TokenXExchangeFilterFunction tokenXFilterFunction) {
+        return builder.clone()
             .baseUrl(cfg.getBaseUri().toString())
             .clientConnector(new JdkClientHttpConnector(httpClientProxyEnabled()))
             .filter(correlatingFilterFunction())
@@ -102,8 +102,8 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(KONTOREGISTER)
-    public WebClient webClientKontoregister(KontoregisterConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
-        return WebClient.builder()
+    public WebClient webClientKontoregister(WebClient.Builder builder, KontoregisterConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
+        return builder.clone()
             .baseUrl(cfg.getBaseUri().toString())
             .clientConnector(new JdkClientHttpConnector(httpClientProxyEnabled()))
             .filter(correlatingFilterFunction())
@@ -113,10 +113,11 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(ARBEIDSFORHOLD)
-    public WebClient webClientArbeidsforholdTokenX(ArbeidsforholdConfig cfg,
+    public WebClient webClientArbeidsforholdTokenX(WebClient.Builder builder,
+                                                   ArbeidsforholdConfig cfg,
                                                    TokenUtil tokenUtil,
                                                    TokenXExchangeFilterFunction tokenXFilterFunction) {
-        return WebClient.builder()
+        return builder.clone()
             .baseUrl(cfg.getBaseUri().toString())
             .clientConnector(new JdkClientHttpConnector(httpClientProxyDisabled()))
             .filter(correlatingFilterFunction())
@@ -127,8 +128,8 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(ORGANISASJON)
-    public WebClient webClientOrganisasjon(OrganisasjonConfig cfg) {
-        return WebClient.builder()
+    public WebClient webClientOrganisasjon(WebClient.Builder builder, OrganisasjonConfig cfg) {
+        return builder.clone()
             .baseUrl(cfg.getBaseUri().toString())
             .clientConnector(new JdkClientHttpConnector(httpClientProxyDisabled()))
             .filter(correlatingFilterFunction())
@@ -137,8 +138,8 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(PDL_USER)
-    public WebClient webClientPDL(PDLConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
-        return WebClient.builder()
+    public WebClient webClientPDL(WebClient.Builder builder, PDLConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
+        return builder.clone()
             .baseUrl(cfg.getBaseUri().toString())
             .defaultHeader(TEMA, FORELDREPENGER)
             .clientConnector(new JdkClientHttpConnector(httpClientProxyDisabled()))
@@ -149,8 +150,8 @@ public class WebClientConfiguration {
 
     @Qualifier(PDL_SYSTEM)
     @Bean
-    public WebClient webClientSystemPDL(PDLConfig cfg, ClientConfigurationProperties configs, OAuth2AccessTokenService service) {
-        return WebClient.builder()
+    public WebClient webClientSystemPDL(WebClient.Builder builder, PDLConfig cfg, ClientConfigurationProperties configs, OAuth2AccessTokenService service) {
+        return builder.clone()
             .baseUrl(cfg.getBaseUri().toString())
             .defaultHeader(TEMA, FORELDREPENGER)
             .clientConnector(new JdkClientHttpConnector(httpClientProxyDisabled()))
