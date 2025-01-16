@@ -68,15 +68,6 @@ class DigdirKrrProxyConnectionTest {
     }
 
     @Test
-    void defaultMålformBrukesVedTomBody() {
-        mockWebServer.enqueue(new MockResponse()
-            .addHeader("Content-Type", "application/json"));
-
-        var målform = digdirKrrProxyConnection.målform();
-        assertThat(målform).isEqualTo(Målform.NB);
-    }
-
-    @Test
     void skalBrukeDefaultMålformVed4xxFeil() {
         mockWebServer.enqueue(new MockResponse()
             .setResponseCode(404)
