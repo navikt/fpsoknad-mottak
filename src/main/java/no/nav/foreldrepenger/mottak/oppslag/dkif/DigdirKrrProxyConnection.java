@@ -26,13 +26,8 @@ public class DigdirKrrProxyConnection {
     }
 
     public Målform målform() {
-        try {
-            LOG.info("Henter målform fra digdir-krr-proxy");
-            return hentMålform();
-        } catch (Exception e) {
-            LOG.warn("DKIF oppslag målform feilet. Bruker default Målform", e);
-            return Målform.standard();
-        }
+        LOG.info("Henter målform fra digdir-krr-proxy");
+        return hentMålform();
     }
 
     @Retry
@@ -44,6 +39,8 @@ public class DigdirKrrProxyConnection {
             .bodyToMono(Kontaktinformasjon.class)
             .mapNotNull(Kontaktinformasjon::målform)
             .defaultIfEmpty(Målform.standard())
+            .doOnError(e -> LOG.warn("DKIF oppslag målform feilet. Bruker default Målform", e))
+            .onErrorReturn(Målform.standard())
             .timeout(Duration.ofSeconds(3))
             .block();
     }
