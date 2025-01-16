@@ -13,6 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.mottak.http.Retry;
+import reactor.core.publisher.Mono;
 
 @Component
 public class DigdirKrrProxyConnection {
@@ -26,8 +27,13 @@ public class DigdirKrrProxyConnection {
     }
 
     public Målform målform() {
-        LOG.info("Henter målform fra digdir-krr-proxy");
-        return hentMålform();
+        try {
+            LOG.info("Henter målform fra digdir-krr-proxy");
+            return hentMålform();
+        } catch (Exception e) {
+            LOG.warn("DKIF oppslag målform feilet. Bruker default Målform", e);
+            return Målform.standard();
+        }
     }
 
     @Retry
@@ -38,9 +44,11 @@ public class DigdirKrrProxyConnection {
             .retrieve()
             .bodyToMono(Kontaktinformasjon.class)
             .mapNotNull(Kontaktinformasjon::målform)
+            .onErrorResume(e -> {
+                LOG.warn("DKIF oppslag målform feilet. Bruker default Målform", e);
+                return Mono.empty();
+            })
             .defaultIfEmpty(Målform.standard())
-            .doOnError(e -> LOG.warn("DKIF oppslag målform feilet. Bruker default Målform", e))
-            .onErrorReturn(Målform.standard())
             .timeout(Duration.ofSeconds(3))
             .block();
     }
