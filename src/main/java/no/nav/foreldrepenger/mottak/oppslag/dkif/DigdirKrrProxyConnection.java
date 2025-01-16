@@ -44,12 +44,11 @@ public class DigdirKrrProxyConnection {
             .retrieve()
             .bodyToMono(Kontaktinformasjon.class)
             .mapNotNull(Kontaktinformasjon::målform)
+            .timeout(Duration.ofSeconds(3))
             .onErrorResume(e -> {
                 LOG.warn("DKIF oppslag målform feilet. Bruker default Målform", e);
-                return Mono.empty();
+                return Mono.just(Målform.standard());
             })
-            .defaultIfEmpty(Målform.standard())
-            .timeout(Duration.ofSeconds(3))
             .block();
     }
 
