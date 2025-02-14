@@ -14,10 +14,14 @@ import java.net.http.HttpClient;
 import java.time.Duration;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.client.reactive.JdkClientHttpConnector;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
@@ -36,9 +40,12 @@ import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConfig;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
+import reactor.core.publisher.Hooks;
 
 @Configuration
 public class WebClientConfiguration {
+    private static final Logger LOG = LoggerFactory.getLogger(WebClientConfiguration.class);
+
     private static final String TEMA = "TEMA";
     public static final String PDL_USER = "PDL";
     public static final String PDL_SYSTEM = "PDL-RELASJON";
@@ -64,6 +71,12 @@ public class WebClientConfiguration {
             .connectTimeout(Duration.ofSeconds(30))
             .proxy(ProxySelector.getDefault())
             .build();
+    }
+
+    // global config for å unngå unødig onErrorDropped på Error-nivå
+    @EventListener(ApplicationReadyEvent.class)
+    public void setupReactorErrorHandler() {
+        Hooks.onErrorDropped(e -> LOG.info("onErrorDropped: {}", e.getMessage()));
     }
 
     @Bean
