@@ -107,7 +107,6 @@ public class WebClientConfiguration {
             .baseUrl(cfg.getBaseUri().toString())
             .clientConnector(new JdkClientHttpConnector(httpClientProxyEnabled()))
             .filter(correlatingFilterFunction())
-            .filter(navPersonIdentFunction(tokenUtil))
             .filter(tokenXFilterFunction)
             .build();
     }
