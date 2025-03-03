@@ -50,7 +50,7 @@ public class DigdirKrrProxyConnection {
                 .accept(APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(Kontaktinformasjoner.class)
-                .defaultIfEmpty(new Kontaktinformasjoner(Map.of(), Map.of(fødselsnummer, Kontaktinformasjoner.FeilKode.noen_andre)))
+                .defaultIfEmpty(new Kontaktinformasjoner(Map.of(), Map.of(fødselsnummer, Kontaktinformasjoner.FeilKode.person_ikke_funnet)))
                 .timeout(Duration.ofSeconds(5))
                 .block();
         if (respons.feil() != null && !respons.feil().isEmpty()) {
