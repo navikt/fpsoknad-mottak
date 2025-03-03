@@ -1,11 +1,8 @@
 package no.nav.foreldrepenger.mottak.oppslag.dkif;
 
-import static io.netty.handler.codec.http.HttpResponseStatus.BAD_GATEWAY;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.IOException;
-import java.net.URI;
-
+import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -13,9 +10,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
+import java.io.IOException;
+import java.net.URI;
+
+import static io.netty.handler.codec.http.HttpResponseStatus.BAD_GATEWAY;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 class DigdirKrrProxyConnectionTest {

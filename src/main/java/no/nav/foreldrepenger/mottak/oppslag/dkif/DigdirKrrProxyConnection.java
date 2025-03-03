@@ -1,19 +1,18 @@
 package no.nav.foreldrepenger.mottak.oppslag.dkif;
 
-import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.KRR;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-
-import java.time.Duration;
-
+import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
+import no.nav.foreldrepenger.mottak.http.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
-import no.nav.foreldrepenger.mottak.http.Retry;
 import reactor.core.publisher.Mono;
+
+import java.time.Duration;
+
+import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.KRR;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Component
 public class DigdirKrrProxyConnection {
@@ -38,7 +37,7 @@ public class DigdirKrrProxyConnection {
 
     @Retry
     private Målform hentMålform() {
-        return webClient.get()
+        return webClient.post()
             .uri(uri -> cfg.kontaktUri())
             .accept(APPLICATION_JSON)
             .retrieve()
