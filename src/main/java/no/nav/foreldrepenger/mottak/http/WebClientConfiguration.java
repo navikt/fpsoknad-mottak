@@ -1,19 +1,17 @@
 package no.nav.foreldrepenger.mottak.http;
 
-import static no.nav.foreldrepenger.common.util.Constants.FORELDREPENGER;
-import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
-import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID1;
-import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID2;
-import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_ID;
-import static no.nav.foreldrepenger.common.util.Constants.NAV_PERSON_IDENT;
-import static no.nav.foreldrepenger.mottak.http.TokenUtil.BEARER;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
-import java.net.ProxySelector;
-import java.net.http.HttpClient;
-import java.time.Duration;
-import java.util.Optional;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
+import no.nav.foreldrepenger.common.util.MDCUtil;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelConfig;
+import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorConfig;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
+import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConfig;
+import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConfig;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig;
+import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
+import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,21 +24,22 @@ import org.springframework.http.client.reactive.JdkClientHttpConnector;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
-import no.nav.foreldrepenger.common.util.MDCUtil;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelConfig;
-import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorConfig;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
-import no.nav.foreldrepenger.mottak.oppslag.dkif.DigdirKrrProxyConfig;
-import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontoregisterConfig;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig;
-import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
-import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 import reactor.core.publisher.Hooks;
+
+import java.net.ProxySelector;
+import java.net.http.HttpClient;
+import java.time.Duration;
+import java.util.Optional;
+
+import static no.nav.foreldrepenger.common.util.Constants.FORELDREPENGER;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID1;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID2;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_ID;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_PERSON_IDENT;
+import static no.nav.foreldrepenger.mottak.http.TokenUtil.BEARER;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 
 @Configuration
 public class WebClientConfiguration {
@@ -108,7 +107,6 @@ public class WebClientConfiguration {
             .baseUrl(cfg.getBaseUri().toString())
             .clientConnector(new JdkClientHttpConnector(httpClientProxyEnabled()))
             .filter(correlatingFilterFunction())
-            .filter(navPersonIdentFunction(tokenUtil))
             .filter(tokenXFilterFunction)
             .build();
     }
