@@ -23,12 +23,6 @@ Få tak i en Java truststore med gyldige sertifikater for aktuelt miljø.
 
 ---
 
-# Henvendelser
-
-Spørsmål kan rettes til:
-
-* nav.team.foreldrepenger@nav.no
-
 ## For NAV-ansatte
 
 Interne henvendelser kan sendes via Slack i kanalen #teamforeldrepenger. 
