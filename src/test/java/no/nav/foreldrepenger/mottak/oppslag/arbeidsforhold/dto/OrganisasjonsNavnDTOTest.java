@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.dto;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class OrganisasjonsNavnDTOTest {
 
@@ -12,7 +12,7 @@ class OrganisasjonsNavnDTOTest {
         var organisasjonsNavnDTO = new OrganisasjonsNavnDTO(navn);
 
         assertThat(organisasjonsNavnDTO.tilOrganisasjonsnavn())
-            .isEqualTo("navnelinje1, navnelinje2, navnelinje3, navnelinje4, navnelinje5");
+            .isEqualTo("navnelinje1 navnelinje2 navnelinje3 navnelinje4 navnelinje5");
     }
 
     @Test
@@ -21,7 +21,7 @@ class OrganisasjonsNavnDTOTest {
         var organisasjonsNavnDTO = new OrganisasjonsNavnDTO(navn);
 
         assertThat(organisasjonsNavnDTO.tilOrganisasjonsnavn())
-            .isEqualTo("navnelinje1, navnelinje2");
+            .isEqualTo("navnelinje1 navnelinje2");
     }
 
     @Test
