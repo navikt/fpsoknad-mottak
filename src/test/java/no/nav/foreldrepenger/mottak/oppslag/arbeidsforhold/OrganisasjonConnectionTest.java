@@ -1,10 +1,8 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.IOException;
-import java.net.URI;
-
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,9 +12,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
+import java.io.IOException;
+import java.net.URI;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 class OrganisasjonConnectionTest {
@@ -46,7 +45,7 @@ class OrganisasjonConnectionTest {
     }
 
     @Test
-    void returnererNavnSomErSammensettningenAvNavnelinjerSeparertMedKomma() {
+    void returnererNavnSomErSammensettningenAvNavnelinjerSeparertMedMellomrom() {
         var body = """
                     {
                         "navn": {
@@ -61,7 +60,7 @@ class OrganisasjonConnectionTest {
             .addHeader("Content-Type", "application/json"));
 
         var navn = organisasjonConnection.navn("999999999");
-        assertThat(navn).isEqualTo("Sauefabrikk AS, navnelinje2, navnelinje3");
+        assertThat(navn).isEqualTo("Sauefabrikk AS navnelinje2 navnelinje3");
     }
 
     @Test
