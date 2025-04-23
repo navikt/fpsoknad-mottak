@@ -8,7 +8,6 @@ import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Støn
 import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
 import static no.nav.foreldrepenger.common.util.LangUtil.toBoolean;
 import static no.nav.foreldrepenger.common.util.StreamUtil.distinct;
-import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.IOException;
@@ -20,15 +19,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import no.nav.foreldrepenger.common.domain.felles.DokumentType;
-import no.nav.foreldrepenger.common.domain.felles.VedleggReferanse;
-
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import no.nav.foreldrepenger.common.domain.BrukerRolle;
+import no.nav.foreldrepenger.common.domain.felles.DokumentType;
 import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.common.domain.felles.VedleggReferanse;
 import no.nav.foreldrepenger.common.domain.felles.annenforelder.AnnenForelder;
 import no.nav.foreldrepenger.common.domain.felles.annenforelder.NorskForelder;
 import no.nav.foreldrepenger.common.domain.felles.annenforelder.UkjentForelder;
@@ -373,26 +371,49 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
                                        float y) throws IOException {
         List<VedleggReferanse> vedleggRefs = uttak.getVedlegg();
 
-        if (vedleggRefs.isEmpty() && MorsAktivitet.ARBEID.equals(uttak.getMorsAktivitetsType())
-                && (MEDMOR.equals(brukerRolle) || FAR.equals(brukerRolle))
-                && FELLESPERIODE.equals(uttak.getUttaksperiodeType()))
-            {
-                y -= renderer.addLineOfRegularText(INDENT, txt("vedlegg1"), cos, y);
-                y -= renderer.addBulletPoint(INDENT, txt("vedlegg2", DokumentType.I000132.getTittel(), "Automatisk"), cos, y);
-                return y;
-            }
-
+        if (skalRenderAutomatiskVedlegg(uttak, brukerRolle)) {
+            renderAutomatiskVedlegg(cos, y);
+        }
         return renderVedlegg(vedlegg, vedleggRefs, keyIfAnnet, cos, y);
     }
 
-    public float renderGradertPeriode(GradertUttaksPeriode gradert, BrukerRolle rolle, List<Vedlegg> vedlegg,
-                                      int antallBarn, FontAwareCos cos, float y) throws IOException {
+    public float renderGradertPeriode(GradertUttaksPeriode gradert,
+                                      BrukerRolle rolle,
+                                      List<Vedlegg> vedlegg,
+                                      int antallBarn,
+                                      FontAwareCos cos,
+                                      float y) throws IOException {
         y -= renderer.addBulletPoint(txt("gradertuttak"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(gradert, antallBarn, rolle), cos, y);
-        y = renderVedlegg(vedlegg, gradert.getVedlegg(), DOKUMENTASJON, cos, y);
+        y = renderGradertPeriodeVedlegg(vedlegg, gradert, rolle, cos, y);
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
+
+    protected float renderGradertPeriodeVedlegg(List<Vedlegg> vedlegg,
+                                                GradertUttaksPeriode gradert,
+                                                BrukerRolle rolle,
+                                                FontAwareCos cos,
+                                                float y) throws IOException {
+        if (skalRenderAutomatiskVedlegg(gradert, rolle)) {
+            renderAutomatiskVedlegg(cos, y);
+        }
+        return renderVedlegg(vedlegg, gradert.getVedlegg(), DOKUMENTASJON, cos, y);
+    }
+
+    private boolean skalRenderAutomatiskVedlegg(UttaksPeriode uttaksPeriode, BrukerRolle rolle) {
+        return uttaksPeriode.getVedlegg().isEmpty()
+            && MorsAktivitet.ARBEID.equals(uttaksPeriode.getMorsAktivitetsType())
+            && (MEDMOR.equals(rolle) || FAR.equals(rolle))
+            && FELLESPERIODE.equals(uttaksPeriode.getUttaksperiodeType());
+    }
+
+    private float renderAutomatiskVedlegg(FontAwareCos cos, float y) throws IOException {
+        y -= renderer.addLineOfRegularText(INDENT, txt("vedlegg1"), cos, y);
+        y -= renderer.addBulletPoint(INDENT, txt("vedlegg2", DokumentType.I000132.getTittel(), "Automatisk"), cos, y);
+        return y;
+    }
+
 
     private List<String> uttaksData(GradertUttaksPeriode gradert, int antallBarn, BrukerRolle rolle) {
         List<String> attributter = new ArrayList<>();
@@ -412,8 +433,7 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
         }
         attributter.add(txt("gradertprosent", prosentFra(gradert.getArbeidstidProsent())));
         attributter.add(txt("ønskersamtidiguttak", jaNei(gradert.isØnskerSamtidigUttak())));
-        addIfSet(attributter, gradert.isØnskerSamtidigUttak(), "samtidiguttakprosent",
-                String.valueOf(prosentFra(gradert.getSamtidigUttakProsent())));
+        addIfSet(attributter, gradert.isØnskerSamtidigUttak(), "samtidiguttakprosent", String.valueOf(prosentFra(gradert.getSamtidigUttakProsent())));
         return attributter;
     }
 
@@ -435,8 +455,7 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
             attributter.add(txt("ønskerflerbarnsdager", jaNei(uttak.isØnskerFlerbarnsdager())));
         }
         attributter.add(txt("ønskersamtidiguttak", jaNei(uttak.isØnskerSamtidigUttak())));
-        addIfSet(attributter, uttak.isØnskerSamtidigUttak(), "samtidiguttakprosent",
-                String.valueOf(prosentFra(uttak.getSamtidigUttakProsent())));
+        addIfSet(attributter, uttak.isØnskerSamtidigUttak(), "samtidiguttakprosent", String.valueOf(prosentFra(uttak.getSamtidigUttakProsent())));
         return attributter;
     }
 
@@ -476,22 +495,15 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
 
     private List<String> utenlandskForelder(UtenlandskForelder utenlandsForelder) {
         List<String> attributter = new ArrayList<>();
-        attributter.add(Optional.ofNullable(utenlandsForelder.navn())
-                .map(n -> txt("navninline", n))
-                .orElse("Ukjent"));
-        attributter.add(txt("nasjonalitetinline",
-                textFormatter.countryName(utenlandsForelder.land(),
-                        utenlandsForelder.land().getName())));
+        attributter.add(Optional.ofNullable(utenlandsForelder.navn()).map(n -> txt("navninline", n)).orElse("Ukjent"));
+        attributter.add(txt("nasjonalitetinline", textFormatter.countryName(utenlandsForelder.land(), utenlandsForelder.land().getName())));
         addIfSet(attributter, "utenlandskid", utenlandsForelder.id());
         return attributter;
     }
 
     private List<String> norskForelder(NorskForelder norskForelder) {
-        return asList(
-                Optional.ofNullable(norskForelder.navn())
-                        .map(n -> txt("navninline", n))
-                        .orElse("Ukjent"),
-                txt("fnr", norskForelder.fnr().value()));
+        return asList(Optional.ofNullable(norskForelder.navn()).map(n -> txt("navninline", n)).orElse("Ukjent"),
+            txt("fnr", norskForelder.fnr().value()));
     }
 
     private void addListIfSet(List<String> attributter, String key, List<String> values) {
