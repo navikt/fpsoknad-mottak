@@ -14,7 +14,7 @@ import no.nav.foreldrepenger.common.domain.svangerskapspenger.AvtaltFerie;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.Arbeidsforhold;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.PrivatArbeidsgiver;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.Virksomhet;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
+import no.nav.foreldrepenger.mottak.oversikt.EnkeltArbeidsforhold;
 
 import static no.nav.foreldrepenger.mottak.innsending.pdf.SvangerskapspengerHelper.virksomhetsnavn;
 

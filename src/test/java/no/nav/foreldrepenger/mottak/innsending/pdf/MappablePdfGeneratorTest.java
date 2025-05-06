@@ -1,5 +1,40 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Orgnummer;
+import no.nav.foreldrepenger.common.domain.Saksnummer;
+import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.domain.felles.TestUtils;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.mottak.config.MessageSourceConfiguration;
+import no.nav.foreldrepenger.mottak.http.TokenUtil;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
+import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorStub;
+import no.nav.foreldrepenger.mottak.oversikt.EnkeltArbeidsforhold;
+import no.nav.foreldrepenger.mottak.oversikt.OversiktTjeneste;
+import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.text.PDFTextStripper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.client.RestTemplate;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
 import static no.nav.boot.conditionals.EnvUtil.LOCAL;
 import static no.nav.boot.conditionals.EnvUtil.TEST;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.engangssøknad;
@@ -23,43 +58,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
-import no.nav.foreldrepenger.common.domain.Orgnummer;
-
-import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.text.PDFTextStripper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.client.RestTemplate;
-
-import no.nav.foreldrepenger.common.domain.Fødselsnummer;
-import no.nav.foreldrepenger.common.domain.Saksnummer;
-import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.common.domain.felles.TestUtils;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
-import no.nav.foreldrepenger.mottak.config.MessageSourceConfiguration;
-import no.nav.foreldrepenger.mottak.http.TokenUtil;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
-import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorStub;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
-import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
 
 @AutoConfigureJsonTesters
 @ActiveProfiles(profiles = { LOCAL, TEST })
@@ -89,7 +87,7 @@ class MappablePdfGeneratorTest {
     MappablePdfGenerator gen;
 
     @MockBean
-    ArbeidsforholdTjeneste arbeidsforholdTjeneste;
+    OversiktTjeneste oversiktTjeneste;
 
     @MockBean
     TokenUtil tokenUtil;
@@ -98,7 +96,7 @@ class MappablePdfGeneratorTest {
 
     @BeforeEach
     void before() {
-        when(arbeidsforholdTjeneste.hentArbeidsforhold()).thenReturn(ARB_FORHOLD);
+        when(oversiktTjeneste.hentArbeidsforhold()).thenReturn(ARB_FORHOLD);
         var classLoader = getClass().getClassLoader();
         var file = new File(classLoader.getResource(".").getFile());
         ABSOLUTE_PATH = file.getAbsolutePath();
@@ -128,7 +126,7 @@ class MappablePdfGeneratorTest {
     @Test
     void foreldrepengerFortsettUtenArbeidsforholdVedExceptionFraTjeneste() throws Exception {
         var filNavn = ABSOLUTE_PATH +"/søknad_exception_fra_arbeidsforholdtjeneste.pdf";
-        when(arbeidsforholdTjeneste.hentArbeidsforhold()).thenThrow(RuntimeException.class);
+        when(oversiktTjeneste.hentArbeidsforhold()).thenThrow(RuntimeException.class);
         var søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
         try (var fos = new FileOutputStream(filNavn)) {
             assertDoesNotThrow(() -> fos.write(gen.generer(søknad, INITIELL_FORELDREPENGER, personInfo())));

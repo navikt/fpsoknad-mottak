@@ -19,40 +19,13 @@ no.nav:
           fpfordel:
             token-exchange:
               audience: lokal
-          pdl-api:
+          fpoversikt:
             token-exchange:
               audience: lokal
-          aareg-services:
-            token-exchange:
-              audience: lokal
-          digdir-krr-proxy:
-            token-exchange:
-              audience: lokal
-          client-credentials-pdl:
-            scope: ${pdl.scopes}
-          sokos-kontoregister-person: # TODO: Legg inn i application.yml
-            token-exchange:
-              audience: lokal
-            well-known-url: ${token.x.well.known.url}
-            grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-            authentication:
-              client-id: ${token.x.client.id}
-              client-jwk: ${token.x.private.jwk}
-              client-auth-method: private_key_jwt
-arbeidsforhold:
-  base-uri: ${aareg.rs.url}
-organisasjon:
-  base-uri: ${organisasjon.rs.url}
 fppdfgen:
   enabled: false
-pdl:
-  base-uri: ${pdl.graphql.base.url}
-kontonummer:
-  base-uri: ${oppslag.url}
-kontoregister:
-  base-uri: ${oppslag.url}
 fpfordel:
   base-uri: ${fpfordel.override.url}
   fpfordel-max: ${fpfordel.max}
-digdir:
-  base-uri: ${digdir.base.url}
+oversikt:
+  base-uri: ${fpoversikt.override.url}

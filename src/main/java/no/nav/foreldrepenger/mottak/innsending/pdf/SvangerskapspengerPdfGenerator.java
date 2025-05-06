@@ -1,11 +1,25 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000049;
-import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000060;
-import static no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper.SVANGERSKAPSPENGER;
-import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
-import static no.nav.foreldrepenger.mottak.innsending.pdf.SvangerskapspengerHelper.virksomhetsnavn;
-import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Orgnummer;
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.common.domain.felles.VedleggReferanse;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.Svangerskapspenger;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.Tilretteleggingbehov;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.Frilanser;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.PrivatArbeidsgiver;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.SelvstendigNæringsdrivende;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.Virksomhet;
+import no.nav.foreldrepenger.common.error.UnexpectedInputException;
+import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
+import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
+import no.nav.foreldrepenger.mottak.oversikt.EnkeltArbeidsforhold;
+import no.nav.foreldrepenger.mottak.oversikt.Oversikt;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -15,29 +29,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import no.nav.foreldrepenger.common.domain.Fødselsnummer;
-import no.nav.foreldrepenger.common.domain.Orgnummer;
-import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.common.domain.felles.VedleggReferanse;
-import no.nav.foreldrepenger.common.domain.svangerskapspenger.Svangerskapspenger;
-import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.Frilanser;
-import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.PrivatArbeidsgiver;
-import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.SelvstendigNæringsdrivende;
-import no.nav.foreldrepenger.common.domain.svangerskapspenger.arbeidsforhold.Virksomhet;
-import no.nav.foreldrepenger.common.domain.svangerskapspenger.Tilretteleggingbehov;
-import no.nav.foreldrepenger.common.error.UnexpectedInputException;
-import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
-import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000049;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000060;
+import static no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper.SVANGERSKAPSPENGER;
+import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
+import static no.nav.foreldrepenger.mottak.innsending.pdf.SvangerskapspengerHelper.virksomhetsnavn;
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 @Service
 public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
@@ -50,12 +48,12 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private final PdfElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
     private final SvangerskapspengerInfoRenderer infoRenderer;
-    private final ArbeidsInfo arbeidsInfo;
+    private final Oversikt arbeidsInfo;
 
     @Autowired
     public SvangerskapspengerPdfGenerator(PdfElementRenderer renderer,
                                           SøknadTextFormatter textFormatter,
-                                          ArbeidsInfo arbeidsInfo,
+                                          Oversikt arbeidsInfo,
                                           SvangerskapspengerInfoRenderer infoRenderer) {
         this.renderer = renderer;
         this.textFormatter = textFormatter;

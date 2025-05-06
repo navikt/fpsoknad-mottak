@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
+import no.nav.foreldrepenger.mottak.oversikt.EnkeltArbeidsforhold;
 
 import java.util.List;
 import java.util.Optional;

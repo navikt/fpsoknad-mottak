@@ -25,7 +25,7 @@ import no.nav.foreldrepenger.common.domain.felles.opptjening.EgenNæring;
 import no.nav.foreldrepenger.common.domain.felles.opptjening.Frilans;
 import no.nav.foreldrepenger.common.domain.felles.opptjening.Regnskapsfører;
 import no.nav.foreldrepenger.common.domain.felles.opptjening.UtenlandskArbeidsforhold;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
+import no.nav.foreldrepenger.mottak.oversikt.EnkeltArbeidsforhold;
 
 @Component
 public class FellesSøknadInfoRenderer {

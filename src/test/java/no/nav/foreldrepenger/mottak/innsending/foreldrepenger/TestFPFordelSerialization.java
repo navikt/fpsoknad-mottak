@@ -1,5 +1,37 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.Saksnummer;
+import no.nav.foreldrepenger.common.domain.felles.Ettersending;
+import no.nav.foreldrepenger.common.domain.felles.EttersendingsType;
+import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
+import no.nav.foreldrepenger.common.innsending.mappers.AktørIdTilFnrConverter;
+import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
+import no.nav.foreldrepenger.common.innsending.mappers.V1SvangerskapspengerDomainMapper;
+import no.nav.foreldrepenger.common.innsending.mappers.V3EngangsstønadDomainMapper;
+import no.nav.foreldrepenger.common.innsending.mappers.V3ForeldrepengerDomainMapper;
+import no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils;
+import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
+import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.pdf.MappablePdfGenerator;
+import no.nav.foreldrepenger.mottak.oversikt.EnkeltArbeidsforhold;
+import no.nav.foreldrepenger.mottak.oversikt.OversiktTjeneste;
+import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
 import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.person;
@@ -22,39 +54,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import no.nav.foreldrepenger.common.domain.AktørId;
-import no.nav.foreldrepenger.common.domain.Saksnummer;
-import no.nav.foreldrepenger.common.domain.felles.Ettersending;
-import no.nav.foreldrepenger.common.domain.felles.EttersendingsType;
-import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
-import no.nav.foreldrepenger.common.innsending.mappers.AktørIdTilFnrConverter;
-import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
-import no.nav.foreldrepenger.common.innsending.mappers.V1SvangerskapspengerDomainMapper;
-import no.nav.foreldrepenger.common.innsending.mappers.V3EngangsstønadDomainMapper;
-import no.nav.foreldrepenger.common.innsending.mappers.V3ForeldrepengerDomainMapper;
-import no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils;
-import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
-import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.pdf.MappablePdfGenerator;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
-import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
@@ -79,7 +78,7 @@ class TestFPFordelSerialization {
     @Qualifier(DELEGERENDE)
     private MappablePdfGenerator mappablePdfGenerator;
     @MockBean
-    private ArbeidsforholdTjeneste arbeidsforhold;
+    private OversiktTjeneste arbeidsforhold;
 
     @Autowired
     private KonvoluttGenerator konvoluttGenerator;

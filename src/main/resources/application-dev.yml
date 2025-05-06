@@ -11,14 +11,8 @@ management :
   mvc:
     log-request-details : true
 
-arbeidsforhold:
-  base-uri: https://aareg-services.dev.intern.nav.no/api
-digdir:
-  base-uri: https://digdir-krr-proxy.intern.dev.nav.no
-organisasjon:
-  base-uri: https://ereg-services.dev.intern.nav.no/api/v2/organisasjon
-kontoregister:
-  base-uri: https://sokos-kontoregister-person.intern.dev.nav.no
+oversikt:
+    base-uri: https://fpoversikt.intern.dev.nav.no
 no.nav:
   security:
     jwt:
@@ -27,17 +21,6 @@ no.nav:
           fpfordel:
             token-exchange:
               audience: dev-fss:teamforeldrepenger:fpfordel
-          pdl-api:
+          fpoversikt:
             token-exchange:
-              audience: dev-fss:pdl:pdl-api
-          aareg-services:
-            token-exchange:
-              audience: dev-fss:arbeidsforhold:aareg-services-nais
-          digdir-krr-proxy:
-            token-exchange:
-              audience: dev-gcp:team-rocket:digdir-krr-proxy
-          client-credentials-pdl:
-            scope: api://dev-fss.pdl.pdl-api/.default
-          sokos-kontoregister-person:
-            token-exchange:
-              audience: dev-gcp:okonomi:sokos-kontoregister-person
+              audience: dev-fss:teamforeldrepenger:fpoversikt

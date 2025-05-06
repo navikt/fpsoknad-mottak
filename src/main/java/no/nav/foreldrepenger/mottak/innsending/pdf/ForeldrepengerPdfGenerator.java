@@ -23,20 +23,20 @@ import no.nav.foreldrepenger.common.error.UnexpectedInputException;
 import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
 import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
+import no.nav.foreldrepenger.mottak.oversikt.Oversikt;
+import no.nav.foreldrepenger.mottak.oversikt.EnkeltArbeidsforhold;
 
 @Component
 public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
 
     private static final float INITIAL_Y = PdfElementRenderer.calculateStartY();
-    private final ArbeidsInfo arbeidsInfo;
+    private final Oversikt arbeidsInfo;
 
     private final ForeldrepengeInfoRenderer fpRenderer;
 
-    public ForeldrepengerPdfGenerator(ArbeidsInfo arbeidsInfo,
+    public ForeldrepengerPdfGenerator(Oversikt oversikt,
                                       ForeldrepengeInfoRenderer fpRenderer) {
-        this.arbeidsInfo = arbeidsInfo;
+        this.arbeidsInfo = oversikt;
         this.fpRenderer = fpRenderer;
     }
 
