@@ -1,40 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import no.nav.foreldrepenger.common.domain.Fødselsnummer;
-import no.nav.foreldrepenger.common.domain.Orgnummer;
-import no.nav.foreldrepenger.common.domain.Saksnummer;
-import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.common.domain.felles.TestUtils;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
-import no.nav.foreldrepenger.mottak.config.MessageSourceConfiguration;
-import no.nav.foreldrepenger.mottak.http.TokenUtil;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
-import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorStub;
-import no.nav.foreldrepenger.mottak.oversikt.EnkeltArbeidsforhold;
-import no.nav.foreldrepenger.mottak.oversikt.OversiktTjeneste;
-import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
-import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.text.PDFTextStripper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.client.RestTemplate;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
 import static no.nav.boot.conditionals.EnvUtil.LOCAL;
 import static no.nav.boot.conditionals.EnvUtil.TEST;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.engangssøknad;
@@ -58,6 +23,42 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.text.PDFTextStripper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.client.RestTemplate;
+
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Orgnummer;
+import no.nav.foreldrepenger.common.domain.Saksnummer;
+import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.domain.felles.TestUtils;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.mottak.config.MessageSourceConfiguration;
+import no.nav.foreldrepenger.mottak.http.TokenUtil;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
+import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorStub;
+import no.nav.foreldrepenger.mottak.oversikt.EnkeltArbeidsforhold;
+import no.nav.foreldrepenger.mottak.oversikt.OversiktTjeneste;
+import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
 
 @AutoConfigureJsonTesters
 @ActiveProfiles(profiles = { LOCAL, TEST })
@@ -186,24 +187,26 @@ class MappablePdfGeneratorTest {
 
     private static List<EnkeltArbeidsforhold> arbeidsforhold() {
         var magicBedriftOrgnummer = Orgnummer.MAGIC_ORG.value();
-        return List.of(EnkeltArbeidsforhold.builder()
-                .arbeidsgiverId("342352362")
-                .from(LocalDate.now().minusDays(200))
-                .to(Optional.empty())
-                .stillingsprosent(ProsentAndel.valueOf(90))
-                .arbeidsgiverNavn("Den Første Bedriften").build(),
-            EnkeltArbeidsforhold.builder()
-                .arbeidsgiverId(NORSK_FORELDER_FNR.value())
-                .from(LocalDate.now().minusYears(10))
-                .stillingsprosent(ProsentAndel.valueOf(10))
-                .to(Optional.empty())
-                .arbeidsgiverNavn("Test Arbeidsgiversen").build(),
-            EnkeltArbeidsforhold.builder()
-                .arbeidsgiverId(magicBedriftOrgnummer)
-                .from(LocalDate.now().minusYears(10))
-                .stillingsprosent(ProsentAndel.valueOf(60))
-                .to(Optional.empty())
-                .arbeidsgiverNavn("Magisk virksomhet A/S")
-                .build());
+        return List.of(new EnkeltArbeidsforhold(
+                "342352362",
+                null,
+                LocalDate.now().minusDays(200),
+                Optional.empty(),
+                ProsentAndel.valueOf(90),
+                "Den Første Bedriften"),
+            new EnkeltArbeidsforhold(
+                NORSK_FORELDER_FNR.value(),
+                null,
+                LocalDate.now().minusYears(10),
+                Optional.empty(),
+                ProsentAndel.valueOf(10),
+                "Test Arbeidsgiversen"),
+            new EnkeltArbeidsforhold(
+                magicBedriftOrgnummer,
+                null,
+                LocalDate.now().minusYears(10),
+                Optional.empty(),
+                ProsentAndel.valueOf(60),
+                "Magisk virksomhet A/S"));
     }
 }

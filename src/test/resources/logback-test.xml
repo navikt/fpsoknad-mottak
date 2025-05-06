@@ -7,7 +7,6 @@
         </layout>
     </appender>
 
-    <logger name="graphql.kickstart" level="trace" />
     <logger name="no.nav.foreldrepenger" level="trace" />
     <root level="info">
         <appender-ref ref="stdout" />
