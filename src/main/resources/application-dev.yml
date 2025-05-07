@@ -11,7 +11,7 @@ management :
   mvc:
     log-request-details : true
 
-oversikt:
+fpoversikt:
     base-uri: https://fpoversikt.intern.dev.nav.no
 no.nav:
   security:

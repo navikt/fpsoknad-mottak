@@ -8,9 +8,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
@@ -30,7 +30,7 @@ public class OversiktConnection {
 
     PersonDto hentPersoninfo(Ytelse ytelse) {
         return webClient.get()
-                .uri(b -> cfg.personOppslagURI(ytelse))
+                .uri(cfg.personOppslagURI(ytelse))
                 .accept(APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(PersonDto.class)
@@ -40,18 +40,17 @@ public class OversiktConnection {
     List<EnkeltArbeidsforhold> hentArbeidsforhold() {
         LOG.info("Henter arbeidsforhold");
         var arbeidsforhold = webClient.get()
-            .uri(b -> cfg.mineArbeidsforholdURI())
+            .uri(cfg.mineArbeidsforholdURI())
             .accept(APPLICATION_JSON)
             .retrieve()
+            .onStatus(HttpStatusCode::isError, response ->
+                response.bodyToMono(String.class).map(body -> {
+                    LOG.info("Feil fra server: " + body);
+                    throw new RuntimeException("Feilstatus: " + response.statusCode());
+                }))
             .bodyToFlux(EnkeltArbeidsforhold.class)
-            .onErrorResume(e -> e instanceof WebClientResponseException.NotFound notFound && notFound.getResponseBodyAsString().contains("Fant ikke forespurt(e) ressurs(er)"),
-                error -> {
-                    LOG.info("Personen har ikke arbeidsforhold i Aareg");
-                    return Mono.empty();
-                })
             .collectList()
-            .blockOptional()
-            .orElse(List.of());
+            .block();
 
         LOG.info("Hentet {} arbeidsforhold", arbeidsforhold.size());
         return arbeidsforhold;
@@ -60,7 +59,7 @@ public class OversiktConnection {
     AktørId aktørId(Fødselsnummer fnr) {
         LOG.info("Henter aktørid for {}", fnr);
         var aktørId = webClient.post()
-            .uri(b -> cfg.aktørid())
+            .uri(cfg.aktørid())
             .body(Mono.just(new AnnenpartAktørIdRequest(fnr)), AnnenpartAktørIdRequest.class)
             .retrieve()
             .bodyToMono(AktørId.class)

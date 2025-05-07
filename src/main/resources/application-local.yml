@@ -15,7 +15,7 @@ fppdfgen:
   enabled: false
 fpfordel:
   base-uri: http://localhost:8090/fpfordel
-oversikt:
+fpoversikt:
   base-uri: http://localhost:8889
 no.nav:
   security:

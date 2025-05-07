@@ -75,7 +75,7 @@ class TestFPFordelSerialization {
     @Qualifier(DELEGERENDE)
     private MappablePdfGenerator mappablePdfGenerator;
     @MockBean
-    private OversiktTjeneste arbeidsforhold;
+    private OversiktTjeneste oversiktTjeneste;
 
     @Autowired
     private KonvoluttGenerator konvoluttGenerator;
@@ -85,9 +85,9 @@ class TestFPFordelSerialization {
 
     @BeforeEach
     void before() {
-        when(arbeidsforhold.hentArbeidsforhold()).thenReturn(ARB_FORHOLD);
+        when(oversiktTjeneste.hentArbeidsforhold()).thenReturn(ARB_FORHOLD);
         when(mappablePdfGenerator.generer(any(), any(), any())).thenReturn(new byte[0]);
-        when(arbeidsforhold.konverter(any())).thenReturn(new AktørId("1234"));
+        when(oversiktTjeneste.konverter(any())).thenReturn(new AktørId("1234"));
     }
 
     @Test

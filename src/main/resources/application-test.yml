@@ -27,5 +27,5 @@ fppdfgen:
 fpfordel:
   base-uri: ${fpfordel.override.url}
   fpfordel-max: ${fpfordel.max}
-oversikt:
+fpoversikt:
   base-uri: ${fpoversikt.override.url}
