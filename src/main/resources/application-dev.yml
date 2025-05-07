@@ -23,4 +23,4 @@ no.nav:
               audience: dev-fss:teamforeldrepenger:fpfordel
           fpoversikt:
             token-exchange:
-              audience: dev-fss:teamforeldrepenger:fpoversikt
+              audience: dev-gcp:teamforeldrepenger:fpoversikt
