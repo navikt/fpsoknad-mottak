@@ -94,14 +94,14 @@ public class MottakController {
 
     private static no.nav.foreldrepenger.mottak.oversikt.Ytelse tilYtelse(EttersendingsType ettersendingsType) {
         return switch (ettersendingsType) {
-            case ENGANGSSTØNAD -> no.nav.foreldrepenger.mottak.oversikt.Ytelse.ENGANGSSTØNAD;
+            case ENGANGSSTØNAD -> no.nav.foreldrepenger.mottak.oversikt.Ytelse.ENGANGSSTONAD;
             case FORELDREPENGER -> no.nav.foreldrepenger.mottak.oversikt.Ytelse.FORELDREPENGER;
             case SVANGERSKAPSPENGER -> no.nav.foreldrepenger.mottak.oversikt.Ytelse.SVANGERSKAPSPENGER;
         };
     }
     private static no.nav.foreldrepenger.mottak.oversikt.Ytelse tilYtelse(no.nav.foreldrepenger.common.domain.Ytelse ytelse) {
         if (ytelse instanceof Engangsstønad) {
-            return no.nav.foreldrepenger.mottak.oversikt.Ytelse.ENGANGSSTØNAD;
+            return no.nav.foreldrepenger.mottak.oversikt.Ytelse.ENGANGSSTONAD;
         } else if (ytelse instanceof Svangerskapspenger) {
             return no.nav.foreldrepenger.mottak.oversikt.Ytelse.SVANGERSKAPSPENGER;
         } else {
