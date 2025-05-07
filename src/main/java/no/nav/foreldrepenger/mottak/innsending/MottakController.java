@@ -5,9 +5,6 @@ import static no.nav.foreldrepenger.common.innsending.SøknadEgenskap.ENDRING_FO
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerFørstegangssøknad;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadValidator.validerSøknad;
-import static no.nav.foreldrepenger.mottak.oppslag.pdl.Ytelse.ENGANGSSTØNAD;
-import static no.nav.foreldrepenger.mottak.oppslag.pdl.Ytelse.FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.oppslag.pdl.Ytelse.SVANGERSKAPSPENGER;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -27,15 +24,14 @@ import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.felles.EttersendingsType;
-import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.Svangerskapspenger;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
-import no.nav.foreldrepenger.mottak.http.TokenUtil;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.Ytelse;
+import no.nav.foreldrepenger.mottak.oversikt.Oversikt;
+import no.nav.foreldrepenger.mottak.oversikt.OversiktTjeneste;
+import no.nav.foreldrepenger.mottak.oversikt.PersonDto;
 
 @ProtectedRestController(MottakController.INNSENDING)
 public class MottakController {
@@ -46,16 +42,13 @@ public class MottakController {
     private static final String BODY_PART_NAME = "body";
     private static final String VEDLEGG_PART_NAME = "vedlegg";
 
-    private final PDLConnection pdl;
+    private final Oversikt oversikt;
     private final SøknadSender søknadSender;
-    private final TokenUtil tokenUtil;
 
     public MottakController(SøknadSender søknadSender,
-                            PDLConnection pdl,
-                            TokenUtil tokenUtil) {
+                            OversiktTjeneste oversikt) {
         this.søknadSender = søknadSender;
-        this.pdl = pdl;
-        this.tokenUtil = tokenUtil;
+        this.oversikt = oversikt;
     }
 
     @PostMapping(value = "/send", consumes = { MediaType.MULTIPART_MIXED_VALUE })
@@ -90,30 +83,29 @@ public class MottakController {
 
 
 
-    private InnsendingPersonInfo personInfo(Ytelse ytelse) {
-        var fnr = tokenUtil.autentisertBrukerOrElseThrowException();
-        var person = pdl.hentPerson(fnr, ytelse);
+    private InnsendingPersonInfo personInfo(no.nav.foreldrepenger.mottak.oversikt.Ytelse ytelse) {
+        var person = oversikt.personinfo(ytelse);
         return map(person);
     }
 
-    private static InnsendingPersonInfo map(Person person) {
-        return new InnsendingPersonInfo(person.navn(), person.aktørId(), person.fnr());
+    private static InnsendingPersonInfo map(PersonDto person) {
+        return new InnsendingPersonInfo(person.navn(), person.aktørid(), person.fnr());
     }
 
-    private static Ytelse tilYtelse(EttersendingsType ettersendingsType) {
+    private static no.nav.foreldrepenger.mottak.oversikt.Ytelse tilYtelse(EttersendingsType ettersendingsType) {
         return switch (ettersendingsType) {
-            case ENGANGSSTØNAD -> ENGANGSSTØNAD;
-            case FORELDREPENGER -> FORELDREPENGER;
-            case SVANGERSKAPSPENGER -> SVANGERSKAPSPENGER;
+            case ENGANGSSTØNAD -> no.nav.foreldrepenger.mottak.oversikt.Ytelse.ENGANGSSTØNAD;
+            case FORELDREPENGER -> no.nav.foreldrepenger.mottak.oversikt.Ytelse.FORELDREPENGER;
+            case SVANGERSKAPSPENGER -> no.nav.foreldrepenger.mottak.oversikt.Ytelse.SVANGERSKAPSPENGER;
         };
     }
-    private static Ytelse tilYtelse(no.nav.foreldrepenger.common.domain.Ytelse ytelse) {
+    private static no.nav.foreldrepenger.mottak.oversikt.Ytelse tilYtelse(no.nav.foreldrepenger.common.domain.Ytelse ytelse) {
         if (ytelse instanceof Engangsstønad) {
-            return ENGANGSSTØNAD;
+            return no.nav.foreldrepenger.mottak.oversikt.Ytelse.ENGANGSSTØNAD;
         } else if (ytelse instanceof Svangerskapspenger) {
-            return SVANGERSKAPSPENGER;
+            return no.nav.foreldrepenger.mottak.oversikt.Ytelse.SVANGERSKAPSPENGER;
         } else {
-            return FORELDREPENGER;
+            return no.nav.foreldrepenger.mottak.oversikt.Ytelse.FORELDREPENGER;
         }
     }
 
@@ -154,7 +146,7 @@ public class MottakController {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [pdl=" + pdl + ", søknadSender="
+        return getClass().getSimpleName() + " [pdl=" + oversikt + ", søknadSender="
                 + søknadSender +"]";
     }
 

@@ -43,7 +43,6 @@ import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.felles.EttersendingsType;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.common.innsending.SøknadEgenskap;
-import no.nav.foreldrepenger.common.innsending.mappers.AktørIdTilFnrConverter;
 import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.common.innsending.mappers.V1SvangerskapspengerDomainMapper;
 import no.nav.foreldrepenger.common.innsending.mappers.V3EngangsstønadDomainMapper;
@@ -52,8 +51,8 @@ import no.nav.foreldrepenger.common.util.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.MappablePdfGenerator;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
+import no.nav.foreldrepenger.mottak.oversikt.EnkeltArbeidsforhold;
+import no.nav.foreldrepenger.mottak.oversikt.OversiktTjeneste;
 import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
 
 @ExtendWith(MockitoExtension.class)
@@ -73,13 +72,10 @@ class TestFPFordelSerialization {
     private static final List<EnkeltArbeidsforhold> ARB_FORHOLD = arbeidsforhold();
 
     @MockBean
-    private AktørIdTilFnrConverter aktørIdTilFnrConverter;
-
-    @MockBean
     @Qualifier(DELEGERENDE)
     private MappablePdfGenerator mappablePdfGenerator;
     @MockBean
-    private ArbeidsforholdTjeneste arbeidsforhold;
+    private OversiktTjeneste oversiktTjeneste;
 
     @Autowired
     private KonvoluttGenerator konvoluttGenerator;
@@ -89,9 +85,9 @@ class TestFPFordelSerialization {
 
     @BeforeEach
     void before() {
-        when(arbeidsforhold.hentArbeidsforhold()).thenReturn(ARB_FORHOLD);
+        when(oversiktTjeneste.hentArbeidsforhold()).thenReturn(ARB_FORHOLD);
         when(mappablePdfGenerator.generer(any(), any(), any())).thenReturn(new byte[0]);
-        when(aktørIdTilFnrConverter.konverter(any())).thenReturn(new AktørId("1234"));
+        when(oversiktTjeneste.konverter(any())).thenReturn(new AktørId("1234"));
     }
 
     @Test
@@ -161,11 +157,13 @@ class TestFPFordelSerialization {
     }
 
     private static List<EnkeltArbeidsforhold> arbeidsforhold() {
-        return List.of(EnkeltArbeidsforhold.builder()
-                .arbeidsgiverId("1234")
-                .from(LocalDate.now().minusDays(200))
-                .to(Optional.of(LocalDate.now()))
-                .stillingsprosent(ProsentAndel.valueOf(90))
-                .arbeidsgiverNavn("El Bedrifto").build());
+        return List.of(new EnkeltArbeidsforhold(
+            "1234",
+            null,
+            LocalDate.now().minusDays(200),
+            Optional.of(LocalDate.now()),
+            ProsentAndel.valueOf(90),
+            "El Bedrifto"
+        ));
     }
 }

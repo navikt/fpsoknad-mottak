@@ -31,8 +31,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import no.nav.foreldrepenger.common.domain.Orgnummer;
-
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,6 +46,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Orgnummer;
 import no.nav.foreldrepenger.common.domain.Saksnummer;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.common.domain.felles.TestUtils;
@@ -57,8 +56,8 @@ import no.nav.foreldrepenger.mottak.config.MessageSourceConfiguration;
 import no.nav.foreldrepenger.mottak.http.TokenUtil;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingPersonInfo;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorStub;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
+import no.nav.foreldrepenger.mottak.oversikt.EnkeltArbeidsforhold;
+import no.nav.foreldrepenger.mottak.oversikt.OversiktTjeneste;
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
 
 @AutoConfigureJsonTesters
@@ -89,7 +88,7 @@ class MappablePdfGeneratorTest {
     MappablePdfGenerator gen;
 
     @MockBean
-    ArbeidsforholdTjeneste arbeidsforholdTjeneste;
+    OversiktTjeneste oversiktTjeneste;
 
     @MockBean
     TokenUtil tokenUtil;
@@ -98,7 +97,7 @@ class MappablePdfGeneratorTest {
 
     @BeforeEach
     void before() {
-        when(arbeidsforholdTjeneste.hentArbeidsforhold()).thenReturn(ARB_FORHOLD);
+        when(oversiktTjeneste.hentArbeidsforhold()).thenReturn(ARB_FORHOLD);
         var classLoader = getClass().getClassLoader();
         var file = new File(classLoader.getResource(".").getFile());
         ABSOLUTE_PATH = file.getAbsolutePath();
@@ -128,7 +127,7 @@ class MappablePdfGeneratorTest {
     @Test
     void foreldrepengerFortsettUtenArbeidsforholdVedExceptionFraTjeneste() throws Exception {
         var filNavn = ABSOLUTE_PATH +"/søknad_exception_fra_arbeidsforholdtjeneste.pdf";
-        when(arbeidsforholdTjeneste.hentArbeidsforhold()).thenThrow(RuntimeException.class);
+        when(oversiktTjeneste.hentArbeidsforhold()).thenThrow(RuntimeException.class);
         var søknad = foreldrepengesøknadMedEttIkkeOpplastedVedlegg(true);
         try (var fos = new FileOutputStream(filNavn)) {
             assertDoesNotThrow(() -> fos.write(gen.generer(søknad, INITIELL_FORELDREPENGER, personInfo())));
@@ -188,24 +187,26 @@ class MappablePdfGeneratorTest {
 
     private static List<EnkeltArbeidsforhold> arbeidsforhold() {
         var magicBedriftOrgnummer = Orgnummer.MAGIC_ORG.value();
-        return List.of(EnkeltArbeidsforhold.builder()
-                .arbeidsgiverId("342352362")
-                .from(LocalDate.now().minusDays(200))
-                .to(Optional.empty())
-                .stillingsprosent(ProsentAndel.valueOf(90))
-                .arbeidsgiverNavn("Den Første Bedriften").build(),
-            EnkeltArbeidsforhold.builder()
-                .arbeidsgiverId(NORSK_FORELDER_FNR.value())
-                .from(LocalDate.now().minusYears(10))
-                .stillingsprosent(ProsentAndel.valueOf(10))
-                .to(Optional.empty())
-                .arbeidsgiverNavn("Test Arbeidsgiversen").build(),
-            EnkeltArbeidsforhold.builder()
-                .arbeidsgiverId(magicBedriftOrgnummer)
-                .from(LocalDate.now().minusYears(10))
-                .stillingsprosent(ProsentAndel.valueOf(60))
-                .to(Optional.empty())
-                .arbeidsgiverNavn("Magisk virksomhet A/S")
-                .build());
+        return List.of(new EnkeltArbeidsforhold(
+                "342352362",
+                null,
+                LocalDate.now().minusDays(200),
+                Optional.empty(),
+                ProsentAndel.valueOf(90),
+                "Den Første Bedriften"),
+            new EnkeltArbeidsforhold(
+                NORSK_FORELDER_FNR.value(),
+                null,
+                LocalDate.now().minusYears(10),
+                Optional.empty(),
+                ProsentAndel.valueOf(10),
+                "Test Arbeidsgiversen"),
+            new EnkeltArbeidsforhold(
+                magicBedriftOrgnummer,
+                null,
+                LocalDate.now().minusYears(10),
+                Optional.empty(),
+                ProsentAndel.valueOf(60),
+                "Magisk virksomhet A/S"));
     }
 }

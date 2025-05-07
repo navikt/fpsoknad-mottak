@@ -6,19 +6,6 @@ no.nav:
           fpfordel:
             token-exchange:
               audience: prod-fss:teamforeldrepenger:fpfordel
-          pdl-api:
+          fpoversikt:
             token-exchange:
-              audience: prod-fss:pdl:pdl-api
-          aareg-services:
-            token-exchange:
-              audience: prod-fss:arbeidsforhold:aareg-services-nais
-          digdir-krr-proxy:
-            token-exchange:
-              audience: prod-gcp:team-rocket:digdir-krr-proxy
-          client-credentials-pdl:
-            scope: api://prod-fss.pdl.pdl-api/.default
-          sokos-kontoregister-person:
-            token-exchange:
-              audience: prod-gcp:okonomi:sokos-kontoregister-person
-kontoregister:
-  enabled: false
+              audience: prod-fss:teamforeldrepenger:fpoversikt

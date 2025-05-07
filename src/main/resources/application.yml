@@ -46,35 +46,7 @@ no.nav.security:
             client-id: ${token.x.client.id}
             client-jwk: ${token.x.private.jwk}
             client-auth-method: private_key_jwt
-        pdl-api:
-          well-known-url: ${token.x.well.known.url}
-          grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-          authentication:
-            client-id: ${token.x.client.id}
-            client-jwk: ${token.x.private.jwk}
-            client-auth-method: private_key_jwt
-        aareg-services:
-          well-known-url: ${token.x.well.known.url}
-          grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-          authentication:
-            client-id: ${token.x.client.id}
-            client-jwk: ${token.x.private.jwk}
-            client-auth-method: private_key_jwt
-        digdir-krr-proxy:
-          well-known-url: ${token.x.well.known.url}
-          grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-          authentication:
-            client-id: ${token.x.client.id}
-            client-jwk: ${token.x.private.jwk}
-            client-auth-method: private_key_jwt
-        client-credentials-pdl:
-          token-endpoint-url: ${azure.openid.config.token.endpoint}
-          grant-type: client_credentials
-          authentication:
-            client-id: ${azure.app.client.id}
-            client-jwk: ${azure.app.jwk}
-            client-auth-method: private_key_jwt
-        sokos-kontoregister-person:
+        fpoversikt:
           well-known-url: ${token.x.well.known.url}
           grant-type: urn:ietf:params:oauth:grant-type:token-exchange
           authentication:
