@@ -372,7 +372,7 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
         List<VedleggReferanse> vedleggRefs = uttak.getVedlegg();
 
         if (skalRenderAutomatiskVedlegg(uttak, brukerRolle)) {
-            renderAutomatiskVedlegg(cos, y);
+            return renderAutomatiskVedlegg(cos, y);
         }
         return renderVedlegg(vedlegg, vedleggRefs, keyIfAnnet, cos, y);
     }
@@ -396,7 +396,7 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
                                                 FontAwareCos cos,
                                                 float y) throws IOException {
         if (skalRenderAutomatiskVedlegg(gradert, rolle)) {
-            renderAutomatiskVedlegg(cos, y);
+            return renderAutomatiskVedlegg(cos, y);
         }
         return renderVedlegg(vedlegg, gradert.getVedlegg(), DOKUMENTASJON, cos, y);
     }
