@@ -24,7 +24,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import no.nav.foreldrepenger.common.domain.BrukerRolle;
-import no.nav.foreldrepenger.common.domain.felles.DokumentType;
 import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.common.domain.felles.VedleggReferanse;
 import no.nav.foreldrepenger.common.domain.felles.annenforelder.AnnenForelder;
@@ -410,10 +409,10 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
 
     private float renderAutomatiskVedlegg(FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLineOfRegularText(INDENT, txt("vedlegg1"), cos, y);
-        y -= renderer.addBulletPoint(INDENT, txt("vedlegg2", DokumentType.I000132.getTittel(), "Automatisk"), cos, y);
+        y -= renderer.addBulletPoint(INDENT,
+            txt("vedlegg2", "Ingen", "Opplysninger om mors arbeid innhentes fra Arbeidsgiver- og arbeidstakerregisteret"), cos, y);
         return y;
     }
-
 
     private List<String> uttaksData(GradertUttaksPeriode gradert, int antallBarn, BrukerRolle rolle) {
         List<String> attributter = new ArrayList<>();
