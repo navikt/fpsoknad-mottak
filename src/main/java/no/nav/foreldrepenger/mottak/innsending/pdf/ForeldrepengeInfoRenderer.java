@@ -5,6 +5,7 @@ import static no.nav.foreldrepenger.common.domain.BrukerRolle.FAR;
 import static no.nav.foreldrepenger.common.domain.BrukerRolle.MEDMOR;
 import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
 import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType.FELLESPERIODE;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType.FORELDREPENGER;
 import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
 import static no.nav.foreldrepenger.common.util.LangUtil.toBoolean;
 import static no.nav.foreldrepenger.common.util.StreamUtil.distinct;
@@ -25,7 +26,6 @@ import org.springframework.util.CollectionUtils;
 
 import no.nav.foreldrepenger.common.domain.BrukerRolle;
 import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.common.domain.felles.VedleggReferanse;
 import no.nav.foreldrepenger.common.domain.felles.annenforelder.AnnenForelder;
 import no.nav.foreldrepenger.common.domain.felles.annenforelder.NorskForelder;
 import no.nav.foreldrepenger.common.domain.felles.annenforelder.UkjentForelder;
@@ -228,11 +228,11 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
             } else if (periode instanceof UtsettelsesPeriode utsettelsesPeriode) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                var x = renderUtsettelsesPeriode(utsettelsesPeriode, vedlegg, scratchcos, STARTY - 190);
+                var x = renderUtsettelsesPeriode(utsettelsesPeriode, rolle, vedlegg, scratchcos, STARTY - 190);
                 var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderUtsettelsesPeriode(utsettelsesPeriode, vedlegg, cos, y);
+                    y = renderUtsettelsesPeriode(utsettelsesPeriode, rolle, vedlegg, cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos, erEndring, person);
                     y = STARTY - (headerSize + behov);
@@ -304,10 +304,10 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
         return attributter;
     }
 
-    public float renderUtsettelsesPeriode(UtsettelsesPeriode utsettelse, List<Vedlegg> vedlegg, FontAwareCos cos, float y) throws IOException {
+    public float renderUtsettelsesPeriode(UtsettelsesPeriode utsettelse, BrukerRolle rolle, List<Vedlegg> vedlegg, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addBulletPoint(txt("utsettelse"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(utsettelse), cos, y);
-        y = renderVedlegg(vedlegg, utsettelse.getVedlegg(), DOKUMENTASJON, cos, y);
+        y = renderVedleggMedAutomatiskVedleggSjekk(vedlegg, utsettelse, rolle, cos, y);
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
@@ -357,23 +357,9 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
             throws IOException {
         y -= renderer.addBulletPoint(txt("uttak"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(uttak, antallBarn, rolle), cos, y);
-        y = renderUttakVedlegg(vedlegg, uttak, rolle, DOKUMENTASJON, cos, y);
+        y = renderVedleggMedAutomatiskVedleggSjekk(vedlegg, uttak, rolle, cos, y);
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
-    }
-
-    protected float renderUttakVedlegg(List<Vedlegg> vedlegg,
-                                       UttaksPeriode uttak,
-                                       BrukerRolle brukerRolle,
-                                       String keyIfAnnet,
-                                       FontAwareCos cos,
-                                       float y) throws IOException {
-        List<VedleggReferanse> vedleggRefs = uttak.getVedlegg();
-
-        if (skalRenderAutomatiskVedlegg(uttak, brukerRolle)) {
-            return renderAutomatiskVedlegg(cos, y);
-        }
-        return renderVedlegg(vedlegg, vedleggRefs, keyIfAnnet, cos, y);
     }
 
     public float renderGradertPeriode(GradertUttaksPeriode gradert,
@@ -384,27 +370,41 @@ public class ForeldrepengeInfoRenderer extends FellesSøknadInfoRenderer {
                                       float y) throws IOException {
         y -= renderer.addBulletPoint(txt("gradertuttak"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(gradert, antallBarn, rolle), cos, y);
-        y = renderGradertPeriodeVedlegg(vedlegg, gradert, rolle, cos, y);
+        y = renderVedleggMedAutomatiskVedleggSjekk(vedlegg, gradert, rolle, cos, y);
         y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
-    protected float renderGradertPeriodeVedlegg(List<Vedlegg> vedlegg,
-                                                GradertUttaksPeriode gradert,
-                                                BrukerRolle rolle,
-                                                FontAwareCos cos,
-                                                float y) throws IOException {
-        if (skalRenderAutomatiskVedlegg(gradert, rolle)) {
+    private float renderVedleggMedAutomatiskVedleggSjekk(List<Vedlegg> vedlegg,
+                                                         LukketPeriodeMedVedlegg periode,
+                                                         BrukerRolle brukerRolle,
+                                                         FontAwareCos cos,
+                                                         float y) throws IOException {
+        if (skalRenderAutomatiskVedlegg(periode, brukerRolle)) {
             return renderAutomatiskVedlegg(cos, y);
         }
-        return renderVedlegg(vedlegg, gradert.getVedlegg(), DOKUMENTASJON, cos, y);
+        return renderVedlegg(vedlegg, periode.getVedlegg(), DOKUMENTASJON, cos, y);
     }
 
-    private boolean skalRenderAutomatiskVedlegg(UttaksPeriode uttaksPeriode, BrukerRolle rolle) {
-        return uttaksPeriode.getVedlegg().isEmpty()
-            && MorsAktivitet.ARBEID.equals(uttaksPeriode.getMorsAktivitetsType())
-            && (MEDMOR.equals(rolle) || FAR.equals(rolle))
-            && FELLESPERIODE.equals(uttaksPeriode.getUttaksperiodeType());
+    private boolean skalRenderAutomatiskVedlegg(LukketPeriodeMedVedlegg periodeMedVedlegg, BrukerRolle rolle) {
+        if (!FAR.equals(rolle) && !MEDMOR.equals(rolle)) {
+            return false;
+        }
+
+        if (!periodeMedVedlegg.getVedlegg().isEmpty()) {
+            return false;
+        }
+
+        if (periodeMedVedlegg instanceof UttaksPeriode uttaksPeriode) { // Ugradert og gradert uttaksperiode likestilles
+            return MorsAktivitet.ARBEID.equals(uttaksPeriode.getMorsAktivitetsType())
+                && (FELLESPERIODE.equals(uttaksPeriode.getUttaksperiodeType()) || FORELDREPENGER.equals(uttaksPeriode.getUttaksperiodeType()));
+        }
+
+        if (periodeMedVedlegg instanceof UtsettelsesPeriode utsettelsesPeriode) {
+            return MorsAktivitet.ARBEID.equals(utsettelsesPeriode.getMorsAktivitetsType());
+        }
+
+        return false;
     }
 
     private float renderAutomatiskVedlegg(FontAwareCos cos, float y) throws IOException {
