@@ -17,6 +17,14 @@
             </triggeringPolicy>
             <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
         </appender>
+
+        <appender name="teamLogger" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+            <destination>team-logs.nais-system:5170</destination>
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <customFields>{"google_cloud_project":"${GOOGLE_CLOUD_PROJECT}","nais_namespace_name":"${NAIS_NAMESPACE}","nais_pod_name":"${HOSTNAME}","nais_container_name":"${NAIS_APP_NAME}"}</customFields>
+                <includeContext>false</includeContext>
+            </encoder>
+        </appender>
     </springProfile>
 
     <springProfile name="local | test">
@@ -26,6 +34,11 @@
             </layout>
         </appender>
         <appender name="secureLogger" class="ch.qos.logback.core.ConsoleAppender">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} %X{Nav-CallId} [%thread] %-5level %logger{70} - %msg%n</Pattern>
+            </layout>
+        </appender>
+        <appender name="teamLogger" class="ch.qos.logback.core.ConsoleAppender">
             <layout class="ch.qos.logback.classic.PatternLayout">
                 <Pattern>%d{yyyy-MM-dd HH:mm:ss} %X{Nav-CallId} [%thread] %-5level %logger{70} - %msg%n</Pattern>
             </layout>
@@ -46,6 +59,7 @@
     </springProfile>
     <logger name="secureLogger" level="INFO" additivity="false">
         <appender-ref ref="secureLogger" />
+        <appender-ref ref="teamLogger" />
     </logger>
     <logger name="org.apache.pdfbox.pdmodel.font" level="error" />
     <root level="info">

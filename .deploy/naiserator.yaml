@@ -16,6 +16,10 @@ spec:
   tokenx:
     enabled: true
   accessPolicy:
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
     inbound:
       rules:
         - application: foreldrepengesoknad-api
@@ -43,6 +47,10 @@ spec:
       destinations:
         - id: "grafana-lgtm"
         - id: "elastic-apm"
+    logging:
+      destinations:
+        - id: loki
+        - id: elastic
   liveness:
     path: /api/actuator/health/liveness
     initialDelay: 15
