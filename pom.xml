@@ -31,9 +31,9 @@
         <sonar.organization>navikt</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-        <boot-conditionals.version>5.1.7</boot-conditionals.version>
+        <boot-conditionals.version>5.1.8</boot-conditionals.version>
         <token-support.version>5.0.14</token-support.version> <!-- OBS! Bug i versjon > 4.1.0!-->
-        <fpsoknad-felles.version>3.2.7</fpsoknad-felles.version>
+        <fpsoknad-felles.version>3.2.8</fpsoknad-felles.version>
 
         <jacoco.version>0.8.13</jacoco.version>
         <pdfbox.version>3.0.5</pdfbox.version>
