@@ -136,9 +136,13 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
 
     private List<Blokk> født(Engangsstønad stønad) {
         var ff = (Fødsel) stønad.relasjonTilBarn();
-        var tekst = txt("gjelderfødselsdato", stønad.relasjonTilBarn().getAntallBarn(),
-                textFormatter.datoer(ff.getFødselsdato()));
-        return List.of(new FritekstBlokk(tekst));
+        var antallBarn = stønad.relasjonTilBarn().getAntallBarn();
+        var blokker = new ArrayList<Blokk>();
+        blokker.add(new FritekstBlokk(txt("gjelderfødselsdato", antallBarn, textFormatter.datoer(ff.getFødselsdato()))));
+        if (ff.getTermindato() != null) {
+            blokker.add(new FritekstBlokk(txt("termindato", textFormatter.dato(ff.getTermindato()))));
+        }
+        return blokker;
     }
 
     private List<Blokk> fødsel(Søknad søknad, Engangsstønad stønad) {
