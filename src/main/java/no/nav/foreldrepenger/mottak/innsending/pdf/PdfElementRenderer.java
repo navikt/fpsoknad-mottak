@@ -31,9 +31,9 @@ import no.nav.foreldrepenger.common.error.UnexpectedInputException;
 @Component
 public class PdfElementRenderer {
     static final float BLANK_LINE = 20f;
+    static final float MARGIN = 40f;
     public static final Logger LOG = LoggerFactory.getLogger(PdfElementRenderer.class);
     private static final byte[] NAV_LOGO = logo();
-    private static final float MARGIN = 40f;
     private static final PDRectangle MEDIABOX = new PDPage(A4).getMediaBox();
 
     public static float calculateStartY() {
