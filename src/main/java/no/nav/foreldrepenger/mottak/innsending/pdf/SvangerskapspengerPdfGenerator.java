@@ -84,7 +84,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                     var startY = STARTY;
                     startY -= header(doc, scratchcos, startY, person);
                     var size = renderTilretteleggingen(aktiveArbeidsforhold, tilretteleggingbehov, søknad.getVedlegg(), scratchcos, startY);
-                    var behov = startY - size;
+                    var behov = startY - size - PdfElementRenderer.MARGIN;
                     if (behov < y) {
                         scratchcos.close();
                         y = renderTilretteleggingen(aktiveArbeidsforhold, tilretteleggingbehov, søknad.getVedlegg(), cos, y);
@@ -100,7 +100,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 var startY = STARTY;
                 startY -= header(doc, scratchcos, startY, person);
                 var size = infoRenderer.arbeidsforholdOpptjening(aktiveArbeidsforhold, scratchcos, startY);
-                var behov = startY - size;
+                var behov = startY - size - PdfElementRenderer.MARGIN;
                 if (behov < y) {
                     scratchcos.close();
                     y = infoRenderer.arbeidsforholdOpptjening(aktiveArbeidsforhold, cos, y);
@@ -115,7 +115,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 var startY = STARTY;
                 startY -= header(doc, scratchcos, startY, person);
                 var size = infoRenderer.frilansOpptjening(svp.opptjening().frilans(), scratchcos, startY);
-                var behov = startY - size;
+                var behov = startY - size - PdfElementRenderer.MARGIN;
                 if (behov < y) {
                     scratchcos.close();
                     y = infoRenderer.frilansOpptjening(svp.opptjening().frilans(), cos, y);
@@ -130,7 +130,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 var startY = STARTY;
                 startY -= header(doc, scratchcos, startY, person);
                 var size = infoRenderer.egneNæringerOpptjening(opptjening.egenNæring(), scratchcos, startY);
-                var behov = startY - size;
+                var behov = startY - size - PdfElementRenderer.MARGIN;
                 if (behov <= y) {
                     scratchcos.close();
                     y = infoRenderer.egneNæringerOpptjening(opptjening.egenNæring(), cos, y);
@@ -148,7 +148,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                         opptjening.utenlandskArbeidsforhold(),
                         søknad.getVedlegg(),
                         scratchcos, startY);
-                var behov = startY - size;
+                var behov = startY - size - PdfElementRenderer.MARGIN;
                 if (behov <= y) {
                     scratchcos.close();
                     y = infoRenderer.utenlandskeArbeidsforholdOpptjening(
@@ -165,7 +165,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 var startY = STARTY;
                 startY -= header(doc, scratchcos, startY, person);
                 var size = infoRenderer.feriePerioder(aktiveArbeidsforhold, svp.avtaltFerie(), scratchcos, startY);
-                var behov = startY - size;
+                var behov = startY - size - PdfElementRenderer.MARGIN;
                 if (behov <= y) {
                     scratchcos.close();
                     y = infoRenderer.feriePerioder(aktiveArbeidsforhold, svp.avtaltFerie(), cos, y);
@@ -180,7 +180,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 var startY = STARTY;
                 startY -= header(doc, scratchcos, startY, person);
                 var size = infoRenderer.utenlandsopphold(svp.utenlandsopphold(), scratchcos, startY);
-                var behov = startY - size;
+                var behov = startY - size - PdfElementRenderer.MARGIN;
                 if (behov < y) {
                     scratchcos.close();
                     infoRenderer.utenlandsopphold(svp.utenlandsopphold(), cos, y);
