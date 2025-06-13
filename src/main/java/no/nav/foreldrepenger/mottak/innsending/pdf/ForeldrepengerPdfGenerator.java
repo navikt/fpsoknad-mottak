@@ -29,7 +29,7 @@ import no.nav.foreldrepenger.mottak.oversikt.EnkeltArbeidsforhold;
 @Component
 public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
 
-    private static final float INITIAL_Y = PdfElementRenderer.calculateStartY();
+    private static final float START_Y = PdfElementRenderer.calculateStartY();
     private final Oversikt arbeidsInfo;
 
     private final ForeldrepengeInfoRenderer fpRenderer;
@@ -63,7 +63,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             fpRenderer.addOutlineItem(doc, page, FORELDREPENGER_OUTLINE);
             var cos = new FontAwareCos(doc, page);
             Function<CosyPair, Float> headerFn = uncheck(p -> fpRenderer.header(doc, p.cos(), false, p.y(), person));
-            float y = headerFn.apply(new CosyPair(cos, INITIAL_Y));
+            float y = headerFn.apply(new CosyPair(cos, START_Y));
             var docParam = new DocParam(doc, headerFn);
             var cosy = new CosyPair(cos, y);
 
@@ -146,7 +146,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             doc.addPage(page);
             Function<CosyPair, Float> headerFn = uncheck(p -> fpRenderer.header(doc, p.cos(), true, p.y(), person));
             var docParam = new DocParam(doc, headerFn);
-            var cosy = new CosyPair(new FontAwareCos(doc, page), INITIAL_Y);
+            var cosy = new CosyPair(new FontAwareCos(doc, page), START_Y);
             cosy = new CosyPair(cosy.cos(), headerFn.apply(cosy));
 
             if (ytelse.relasjonTilBarn() != null) {
@@ -189,20 +189,20 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
     }
 
     private static CosyPair render(DocParam param, Function<CosyPair, Float> renderFunction, CosyPair cosy) throws IOException {
-        var scratchPage = new PDPage(A4);
-        var scratchCos = new FontAwareCos(param.doc(), scratchPage);
-        var initialYAfterHeader = param.headerFn().apply(new CosyPair(scratchCos, INITIAL_Y));
-        var scratchCosy = new CosyPair(scratchCos, initialYAfterHeader);
-        var scratchY = renderFunction.apply(scratchCosy);
-        var fitsAvailableYSpace = initialYAfterHeader - scratchY <= cosy.y();
+        var utkastPage = new PDPage(A4);
+        var utkastCos = new FontAwareCos(param.doc(), utkastPage);
+        var startYEtterHeader = param.headerFn().apply(new CosyPair(utkastCos, START_Y));
+        var utkastCosy = new CosyPair(utkastCos, startYEtterHeader);
+        var utkastY = renderFunction.apply(utkastCosy);
+        var fitsAvailableYSpace = startYEtterHeader - utkastY - PdfElementRenderer.MARGIN <= cosy.y();
         if (fitsAvailableYSpace) {
             // innholdet passer på eksisterende side, da skriver vi til den
-            scratchCos.close();
+            utkastCos.close();
             return new CosyPair(cosy.cos(), renderFunction.apply(cosy));
         } else {
             cosy.cos().close();
-            param.doc().addPage(scratchPage);
-            return new CosyPair(scratchCos, scratchY);
+            param.doc().addPage(utkastPage);
+            return new CosyPair(utkastCos, utkastY);
         }
     }
 

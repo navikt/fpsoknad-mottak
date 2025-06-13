@@ -33,8 +33,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
@@ -71,10 +71,10 @@ class TestFPFordelSerialization {
     private static final AktørId AKTØRID = new AktørId("1111111111");
     private static final List<EnkeltArbeidsforhold> ARB_FORHOLD = arbeidsforhold();
 
-    @MockBean
+    @MockitoBean
     @Qualifier(DELEGERENDE)
     private MappablePdfGenerator mappablePdfGenerator;
-    @MockBean
+    @MockitoBean
     private OversiktTjeneste oversiktTjeneste;
 
     @Autowired

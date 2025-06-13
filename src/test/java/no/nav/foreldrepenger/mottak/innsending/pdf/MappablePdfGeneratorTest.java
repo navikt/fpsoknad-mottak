@@ -39,9 +39,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
@@ -87,10 +87,10 @@ class MappablePdfGeneratorTest {
     @Qualifier(DELEGERENDE)
     MappablePdfGenerator gen;
 
-    @MockBean
+    @MockitoBean
     OversiktTjeneste oversiktTjeneste;
 
-    @MockBean
+    @MockitoBean
     TokenUtil tokenUtil;
 
     private String ABSOLUTE_PATH;

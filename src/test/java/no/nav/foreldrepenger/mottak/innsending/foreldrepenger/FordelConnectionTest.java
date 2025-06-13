@@ -25,8 +25,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -69,10 +69,10 @@ class FordelConnectionTest {
     private static final Saksnummer SAKSNUMMER = new Saksnummer("11122233344");
     private static String baseUrl;
 
-    @MockBean
+    @MockitoBean
     private AktørIdTilFnrConverter aktørIdTilFnrConverter;
 
-    @MockBean
+    @MockitoBean
     @Qualifier(DELEGERENDE)
     private MappablePdfGenerator mappablePdfGenerator;
 
