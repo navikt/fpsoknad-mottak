@@ -360,7 +360,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     }
 
     private static float nesteSideStart(float headerSize, float behov) {
-        return STARTY - behov - headerSize;
+        return STARTY - behov - headerSize - PdfElementRenderer.MARGIN;
     }
 
     private static FontAwareCos nySide(FontAwarePdfDocument doc, FontAwareCos cos, PDPage scratch,
