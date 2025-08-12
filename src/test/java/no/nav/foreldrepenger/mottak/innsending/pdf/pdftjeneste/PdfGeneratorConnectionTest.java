@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentBestilling;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
+import mockwebserver3.MockResponse;
+import mockwebserver3.MockWebServer;
 
 class PdfGeneratorConnectionTest {
 
@@ -32,8 +32,8 @@ class PdfGeneratorConnectionTest {
     }
 
     @AfterAll
-    static void tearDown() throws IOException {
-        mockWebServer.shutdown();
+    static void tearDown() {
+        mockWebServer.close();
     }
 
     @Test
@@ -48,9 +48,10 @@ class PdfGeneratorConnectionTest {
 
             PREAMBLE
             """;
-        mockWebServer.enqueue(new MockResponse()
-            .setBody(ettEllerAnnet)
-            .addHeader("Content-Type", "application/json"));
+        mockWebServer.enqueue(new MockResponse.Builder()
+            .body(ettEllerAnnet)
+            .addHeader("Content-Type", "application/json")
+            .build());
 
         var result = pdfGeneratorConnection.genererPdf(new DokumentBestilling("test", null, null, null));
         assertThat(result).isEqualTo(ettEllerAnnet.getBytes());
