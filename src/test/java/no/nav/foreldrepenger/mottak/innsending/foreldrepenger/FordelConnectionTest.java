@@ -17,6 +17,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
 
+import mockwebserver3.MockResponse;
+import mockwebserver3.MockWebServer;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,8 +52,7 @@ import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.MappablePdfGenerator;
 import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
+
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
@@ -111,10 +113,11 @@ class FordelConnectionTest {
     void happyCaseGosysFordelingFirstTry() throws JsonProcessingException {
         // Arrange
         var gosysKvittering = new GosysKvittering(JOURNALPOSTID);
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
-            .setBody(tilBody(gosysKvittering))
-            .addHeader(CONTENT_TYPE, "application/json"));
+        mockWebServer.enqueue(new MockResponse.Builder()
+            .code(200)
+            .body(tilBody(gosysKvittering))
+            .addHeader(CONTENT_TYPE, "application/json")
+            .build());
 
         // Act
         var resultat = fordelConnection.send(defaultRequestKonvolutt);
@@ -132,10 +135,11 @@ class FordelConnectionTest {
     void happyCaseFpsakFordelingFirstTry() throws JsonProcessingException {
         // Arrange
         var fpSakFordeltKvittering = new FPSakFordeltKvittering(JOURNALPOSTID, SAKSNUMMER);
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(303)
-            .setBody(tilBody(fpSakFordeltKvittering))
-            .addHeader(CONTENT_TYPE, "application/json"));
+        mockWebServer.enqueue(new MockResponse.Builder()
+            .code(303)
+            .body(tilBody(fpSakFordeltKvittering))
+            .addHeader(CONTENT_TYPE, "application/json")
+            .build());
 
         // Act
         var resultat = fordelConnection.send(defaultRequestKonvolutt);
@@ -155,17 +159,19 @@ class FordelConnectionTest {
     void forsendelseMottattMenIkkeFordeltFPSAKOrdnesOppIVedPollingFørstegang() throws JsonProcessingException {
         // Arrange
         var pendingKvittering = new PendingKvittering(Duration.ofMillis(100));
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(202)
-            .setBody(tilBody(pendingKvittering))
+        mockWebServer.enqueue(new MockResponse.Builder()
+            .code(202)
+            .body(tilBody(pendingKvittering))
             .addHeader(CONTENT_TYPE, "application/json")
-            .addHeader(LOCATION, baseUrl + "/api/forsendelse/status?forsendelseId=123456789"));
+            .addHeader(LOCATION, baseUrl + "/api/forsendelse/status?forsendelseId=123456789")
+            .build());
 
         var fpSakFordeltKvittering = new FPSakFordeltKvittering(JOURNALPOSTID, SAKSNUMMER);
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(303)
-            .setBody(tilBody(fpSakFordeltKvittering))
-            .addHeader(CONTENT_TYPE, "application/json"));
+        mockWebServer.enqueue(new MockResponse.Builder()
+            .code(303)
+            .body(tilBody(fpSakFordeltKvittering))
+            .addHeader(CONTENT_TYPE, "application/json")
+            .build());
 
         // Act
         var resultat = fordelConnection.send(defaultRequestKonvolutt);
@@ -185,17 +191,19 @@ class FordelConnectionTest {
     void forsendelseMottattMenIkkeFordeltGosysPollerStatusEnGangOK() throws JsonProcessingException {
         // Arrange
         var pendingKvittering = new PendingKvittering(Duration.ofMillis(100));
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(202)
-            .setBody(tilBody(pendingKvittering))
+        mockWebServer.enqueue(new MockResponse.Builder()
+            .code(202)
+            .body(tilBody(pendingKvittering))
             .addHeader(CONTENT_TYPE, "application/json")
-            .addHeader(LOCATION, baseUrl + "/api/forsendelse/status?forsendelseId=123456789"));
+            .addHeader(LOCATION, baseUrl + "/api/forsendelse/status?forsendelseId=123456789")
+            .build());
 
         var gosysKvittering = new GosysKvittering(JOURNALPOSTID);
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
-            .setBody(tilBody(gosysKvittering))
-            .addHeader(CONTENT_TYPE, "application/json"));
+        mockWebServer.enqueue(new MockResponse.Builder()
+            .code(200)
+            .body(tilBody(gosysKvittering))
+            .addHeader(CONTENT_TYPE, "application/json")
+            .build());
 
         // Act
         var resultat = fordelConnection.send(defaultRequestKonvolutt);
@@ -215,24 +223,27 @@ class FordelConnectionTest {
         // Arrange
         // Fra innsendingsendepuntket
         var pendingKvittering = new PendingKvittering(Duration.ofMillis(100));
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(202)
-            .setBody(tilBody(pendingKvittering))
+        mockWebServer.enqueue(new MockResponse.Builder()
+            .code(202)
+            .body(tilBody(pendingKvittering))
             .addHeader(CONTENT_TYPE, "application/json")
-            .addHeader(LOCATION, baseUrl + "/api/forsendelse/status?forsendelseId=123456789"));
+            .addHeader(LOCATION, baseUrl + "/api/forsendelse/status?forsendelseId=123456789")
+            .build());
 
         // Fra statusendepunktet
         // 1) PENDING
         // 2) FORDELT I FPSAK
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
-            .setBody(tilBody(pendingKvittering))
-            .addHeader(CONTENT_TYPE, "application/json"));
+        mockWebServer.enqueue(new MockResponse.Builder()
+            .code(200)
+            .body(tilBody(pendingKvittering))
+            .addHeader(CONTENT_TYPE, "application/json")
+            .build());
         var fpSakFordeltKvittering = new FPSakFordeltKvittering(JOURNALPOSTID, SAKSNUMMER);
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(303)
-            .setBody(tilBody(fpSakFordeltKvittering))
-            .addHeader(CONTENT_TYPE, "application/json"));
+        mockWebServer.enqueue(new MockResponse.Builder()
+            .code(303)
+            .body(tilBody(fpSakFordeltKvittering))
+            .addHeader(CONTENT_TYPE, "application/json")
+            .build());
 
         // Act
         var resultat = fordelConnection.send(defaultRequestKonvolutt);
@@ -254,28 +265,32 @@ class FordelConnectionTest {
         // Arrange
         // Fra innsendingsendepuntket
         var pendingKvittering = new PendingKvittering(Duration.ofMillis(100));
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(202)
-            .setBody(tilBody(pendingKvittering))
+        mockWebServer.enqueue(new MockResponse.Builder()
+            .code(202)
+            .body(tilBody(pendingKvittering))
             .addHeader(CONTENT_TYPE, "application/json")
-            .addHeader(LOCATION, baseUrl + "/api/forsendelse/status?forsendelseId=123456789"));
+            .addHeader(LOCATION, baseUrl + "/api/forsendelse/status?forsendelseId=123456789")
+            .build());
 
         // Fra statusendepunktet
         // 1) PENDING
         // 2) PENDING
         // 3) PENDING
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
-            .setBody(tilBody(pendingKvittering))
-            .addHeader(CONTENT_TYPE, "application/json"));
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
-            .setBody(tilBody(pendingKvittering))
-            .addHeader(CONTENT_TYPE, "application/json"));
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(200)
-            .setBody(tilBody(pendingKvittering))
-            .addHeader(CONTENT_TYPE, "application/json"));
+        mockWebServer.enqueue(new MockResponse.Builder()
+            .code(200)
+            .body(tilBody(pendingKvittering))
+            .addHeader(CONTENT_TYPE, "application/json")
+            .build());
+        mockWebServer.enqueue(new MockResponse.Builder()
+            .code(200)
+            .body(tilBody(pendingKvittering))
+            .addHeader(CONTENT_TYPE, "application/json")
+            .build());
+        mockWebServer.enqueue(new MockResponse.Builder()
+            .code(200)
+            .body(tilBody(pendingKvittering))
+            .addHeader(CONTENT_TYPE, "application/json")
+            .build());
 
         // Act
         assertThatThrownBy(() -> fordelConnection.send(defaultRequestKonvolutt))
@@ -287,10 +302,11 @@ class FordelConnectionTest {
         // Arrange
         // Fra innsendingsendepuntket
         var pendingKvittering = new PendingKvittering(Duration.ofMillis(100));
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(202)
-            .setBody(tilBody(pendingKvittering))
-            .addHeader(CONTENT_TYPE, "application/json"));
+        mockWebServer.enqueue(new MockResponse.Builder()
+            .code(202)
+            .body(tilBody(pendingKvittering))
+            .addHeader(CONTENT_TYPE, "application/json")
+            .build());
             //.addHeader(LOCATION, baseUrl + "/api/forsendelse/status?forsendelseId=123456789"));
 
         // Act
@@ -302,9 +318,10 @@ class FordelConnectionTest {
     @Test
     void forsendelseInneholderUkjentOKStatusFeilerHardt() {
         // Arrange
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(204)
-            .addHeader(CONTENT_TYPE, "application/json"));
+        mockWebServer.enqueue(new MockResponse.Builder()
+            .code(204)
+            .addHeader(CONTENT_TYPE, "application/json")
+            .build());
 
         // Act
         assertThatThrownBy(() -> fordelConnection.send(defaultRequestKonvolutt))
@@ -372,16 +389,18 @@ class FordelConnectionTest {
     void verifiserAtViHiverUventetFpFordelResponseExceptionVedNoContentUnderPolling() throws JsonProcessingException {
         // Arrange - Fra innsendingsendepuntket
         var pendingKvittering = new PendingKvittering(Duration.ofMillis(100));
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(202)
-            .setBody(tilBody(pendingKvittering))
+        mockWebServer.enqueue(new MockResponse.Builder()
+            .code(202)
+            .body(tilBody(pendingKvittering))
             .addHeader(CONTENT_TYPE, "application/json")
-            .addHeader(LOCATION, baseUrl + "/api/forsendelse/status?forsendelseId=123456789"));
+            .addHeader(LOCATION, baseUrl + "/api/forsendelse/status?forsendelseId=123456789")
+            .build());
 
         // Fra statusendepunktet
-        mockWebServer.enqueue(new MockResponse()
-            .setResponseCode(204)
-            .addHeader(CONTENT_TYPE, "application/json"));
+        mockWebServer.enqueue(new MockResponse.Builder()
+            .code(204)
+            .addHeader(CONTENT_TYPE, "application/json")
+            .build());
 
         // Act
         assertThatThrownBy(() -> fordelConnection.send(defaultRequestKonvolutt))
@@ -399,8 +418,8 @@ class FordelConnectionTest {
 
 
     @AfterAll
-    static void tearDown() throws IOException {
-        mockWebServer.shutdown();
+    static void tearDown() {
+        mockWebServer.close();
     }
 
 }

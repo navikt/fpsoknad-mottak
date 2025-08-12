@@ -39,7 +39,7 @@
         <pdfbox.version>3.0.5</pdfbox.version>
         <nv-i18n.version>1.29</nv-i18n.version>
         <reflections.version>0.10.2</reflections.version>
-        <okhttp.version>4.12.0</okhttp.version>
+        <okhttp.version>5.1.0</okhttp.version>
         <logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
         <springdoc.version>2.8.8</springdoc.version>
     </properties>
@@ -256,7 +256,7 @@
         </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>mockwebserver</artifactId>
+            <artifactId>mockwebserver3-junit5</artifactId>
             <version>${okhttp.version}</version>
             <scope>test</scope>
         </dependency>
