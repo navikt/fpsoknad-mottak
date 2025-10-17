@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.0</version>
+        <version>3.5.6</version>
         <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -35,13 +35,13 @@
         <token-support.version>5.0.14</token-support.version> <!-- OBS! Bug i versjon > 4.1.0!-->
         <fpsoknad-felles.version>3.3.5</fpsoknad-felles.version>
 
-        <jacoco.version>0.8.13</jacoco.version>
-        <pdfbox.version>3.0.5</pdfbox.version>
+        <jacoco.version>0.8.14</jacoco.version>
+        <pdfbox.version>3.0.6</pdfbox.version>
         <nv-i18n.version>1.29</nv-i18n.version>
         <reflections.version>0.10.2</reflections.version>
         <okhttp.version>5.1.0</okhttp.version>
         <logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
-        <springdoc.version>2.8.9</springdoc.version>
+        <springdoc.version>2.8.13</springdoc.version>
     </properties>
     <scm>
         <connection>scm:git:https://github.com/navikt/fpsoknad-mottak.git</connection>
